@@ -1,0 +1,17 @@
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+
+# Node (no dependencies are currently installed — http-server is run via
+# `npx` on demand — but ignored defensively in case that changes)
+node_modules/
+npm-debug.log*
+
+# Local scratch/output some tools may create
+*.tmp
+*.log
