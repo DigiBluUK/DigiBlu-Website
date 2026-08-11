@@ -17,12 +17,23 @@
        depending on a neighbour's padding. */
     --section-y: 72px;
     --head-gap: 48px;
+    /* Real height of the fixed nav bar, measured and kept in sync by a small
+       script (see the .site-nav IIFE) rather than hand-guessed, since .hero's
+       padding-top and html's scroll-padding-top both need to match it
+       exactly or content ends up either hidden under the nav or gapped too
+       far below it. 76px is the layout-thrash-free initial value before JS
+       runs (matches the nav's own padding + control height). */
+    --nav-h: 76px;
     /* Escape hatch for elements that sit inside a surface which pins its own
        ink (.hero, .cases) but are visually part of the page rather than that
        surface. Never overridden below the root, so `var(--page-ink-rgb)`
        always resolves to the current theme's page palette. */
     --page-ink-rgb: 255, 255, 255;
     --page-text: #ffffff;
+    /* Tint behind the scrolled nav's frosted glass — dark in dark theme,
+       white in light, so the blur reads as glass over the page rather than
+       a grey wash. */
+    --glass-rgb: 10, 12, 18;
     /* Alpha steps for de-emphasised text. The dark values are the originals,
        kept exactly so the dark theme is unchanged; the light overrides raise
        them because the same alpha on white measured only 2.6-4.3:1. Anything
@@ -45,6 +56,7 @@
     --text: #0d1117;
     --page-ink-rgb: 13, 17, 23;
     --page-text: #0d1117;
+    --glass-rgb: 255, 255, 255;
     --ink-a-faint: 0.60;
     --ink-a-low: 0.62;
     --ink-a-mid: 0.64;
@@ -64,6 +76,7 @@
       --text: #0d1117;
       --page-ink-rgb: 13, 17, 23;
       --page-text: #0d1117;
+      --glass-rgb: 255, 255, 255;
       --a-muted: 0.75;
       --a-soft: 0.66;
       --a-faint: 0.60;
@@ -76,12 +89,10 @@
   .service-card.accent,
   .btn-signup,
   .faq-cta-btn,
-  .tst-nav button,
   .team-nav button,
   .modal-next,
   .modal-submit,
   .modal-done,
-  .footer-logo-mark,
   .modal-step.done .step-num,
   .faq-item.open .faq-chev {
     --ink-rgb: 255, 255, 255;
@@ -157,8 +168,7 @@
   .case-viewall-btn:focus-visible,
   .case-index-item:focus-visible,
   .case-back-btn:focus-visible,
-  .accred-item-btn:focus-visible,
-  .tst-nav button:focus-visible,
+  .accred-chip:focus-visible,
   .modal-close:focus-visible,
   .modal-next:focus-visible,
   .modal-back:focus-visible,
@@ -186,11 +196,14 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* In-page nav anchors glide rather than jump, and land clear of the section
-     edge. Suppressed under reduced-motion. */
+  /* In-page nav anchors glide rather than jump, and land clear of the fixed
+     nav bar (see .site-nav) rather than under it. Suppressed under
+     reduced-motion. */
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 24px;
+    /* --nav-h is the bar's own height; the +26px covers the 12px top margin
+       the glass panel gains once scrolled, plus a little breathing room. */
+    scroll-padding-top: calc(var(--nav-h) + 26px);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -220,6 +233,10 @@
       var(--bg);
     display: flex;
     flex-direction: column;
+    /* Nav used to sit in-flow at the top of this column; now that .site-nav
+       is fixed and out of flow (see below), this keeps the headline centred
+       in the same visual space rather than drifting up to fill the gap. */
+    padding-top: var(--nav-h);
   }
 
   /* Traces one of the bright diagonal bands baked into hero.jpg (traced by
@@ -243,7 +260,81 @@
     .hero-spark { display: none; }
   }
 
-  /* ---------- Nav ---------- */
+  /* ---------- Nav ----------
+     .site-nav is the full-width fixed bar (position + background/shadow);
+     nav itself stays the max-width-centred content row it always was, so
+     none of its children needed to change. Transparent at rest so it reads
+     as part of the hero photo on load; solidifies once .scrolled is added
+     by the script below, both because a transparent bar over arbitrary page
+     content further down would be illegible and to give a visual cue that
+     it has detached from the hero. */
+  .site-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    /* Below .modal-overlay's z-index: 100, so an open dialog always paints
+       above the fixed nav rather than tying with it. */
+    z-index: 80;
+    background: transparent;
+  }
+
+  /* .site-nav is still a DOM descendant of .hero, which pins white ink for
+     every element inside it (see the "surfaces that stay dark or blue" rule
+     near the top of this file) regardless of scroll position — a plain
+     var(--text) reference here would still resolve to hero's pinned white,
+     not the page's actual theme colour. --page-ink-rgb/--page-text are the
+     escape hatch for exactly this (already used by .mobile-menu for the
+     same reason): once detached from the hero this bar is visually part of
+     the page, not the hero photo, so it needs to opt back out. */
+  .site-nav.scrolled {
+    --ink-rgb: var(--page-ink-rgb);
+    --text: var(--page-text);
+  }
+
+  /* Frosted glass rather than a full-bleed opaque bar: the panel is inset
+     from the viewport edges and rounded, so it reads as floating over the
+     page with content visibly moving beneath it. The glass is on `nav` (the
+     max-width content row) rather than on .site-nav (the full-width fixed
+     positioner), which is what keeps it wrapping the nav options instead of
+     painting edge to edge. */
+  .site-nav.scrolled nav {
+    width: calc(100% - (var(--gutter) * 2));
+    margin-top: 12px;
+    border-radius: 16px;
+    /* 0.68 rather than a thinner wash: the panel floats over arbitrary page
+       content, so its text contrast cannot be computed statically the way a
+       flat surface's can. This keeps nav labels legible over even a dark
+       image scrolling beneath, while the blur + saturate still read clearly
+       as glass. */
+    background: rgba(var(--glass-rgb), 0.68);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(var(--page-ink-rgb), 0.12);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Without backdrop-filter the panel would be a flat translucent wash over
+     live text, so fall back to a near-opaque surface instead. */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .site-nav.scrolled nav { background: rgba(var(--glass-rgb), 0.96); }
+  }
+
+  nav {
+    transition: background 0.25s ease, border-color 0.25s ease,
+                box-shadow 0.25s ease, margin-top 0.25s ease, width 0.25s ease;
+    border: 1px solid transparent;
+  }
+
+  /* .logo / .theme-toggle / .nav-toggle hardcode white (not --ink-rgb) for
+     the transparent, over-the-hero-photo state, so redefining --text above
+     doesn't reach them on its own — same asymmetry, different fix. */
+  .site-nav.scrolled .logo,
+  .site-nav.scrolled .theme-toggle,
+  .site-nav.scrolled .nav-toggle {
+    color: var(--text);
+  }
+
   nav {
     width: 100%;
     max-width: var(--maxw);
@@ -255,10 +346,38 @@
   }
 
   .logo {
-    font-size: 27px;
-    font-weight: 500;
-    letter-spacing: -0.5px;
+    display: inline-flex;
+    align-items: center;
     color: #fff;
+  }
+
+  /* Real DigiBlu logo (digiblu.com header mark), painted as a single-ink
+     mask so it reads correctly white-on-hero here and follows --text via
+     .page-header .logo on the standalone pages, same mechanism as the
+     client-logo/accred-badge masks rather than a two-tone image.
+
+     The mask is built from a *repaired* copy of DigiBlu's master file: that
+     master is clipped on its right edge, leaving the final "U" with a 3px
+     stem where every other stem in the wordmark is 4px, flush to the canvas
+     with no anti-aliased margin — at nav size it rendered as a visibly cut
+     "U". The "U" is symmetric about x=299.5, and the existing pixels already
+     mirror correctly (287<->312, 288<->311, 289<->310), so the missing
+     columns were restored by mirroring the glyph's own left edge rather than
+     redrawing anything. Width/height below track the repaired 313x76 mask's
+     4.118 aspect ratio — re-derive them if the mask is ever regenerated. */
+  .logo-mark {
+    display: block;
+    width: 124px;
+    height: 30px;
+    background-color: currentColor;
+    -webkit-mask-image: url('logo-mask.png');
+    mask-image: url('logo-mask.png');
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: left center;
+    mask-position: left center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
   }
 
   .nav-center {
@@ -393,15 +512,6 @@
     padding: 60px var(--gutter) 40px;
   }
 
-  .eyebrow {
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: 2.6px;
-    text-transform: uppercase;
-    color: rgba(var(--ink-rgb),0.88);
-    margin-bottom: 22px;
-  }
-
   h1 {
     font-size: clamp(42px, 7.2vw, 92px);
     line-height: 1.06;
@@ -417,6 +527,11 @@
     margin: 0 auto;
     display: flex;
     align-items: center;
+    /* Centered as a group on desktop so it lines up under the centered
+       headline above it instead of hugging the container's left edge, which
+       read as misaligned. Mobile reverts to flex-start (stacked, left-
+       aligned) in the 620px breakpoint below. */
+    justify-content: center;
     gap: 26px;
     padding: 0 var(--gutter) 42px;
   }
@@ -443,17 +558,11 @@
     max-width: 34ch;
   }
 
-  /* ---------- Accreditations strip ----------
-     Single-ink masks of the six real certification marks, matching the
-     Clients row's treatment so the two logo rows read as one system.
-
-     Why masks and not the badge art: the source badges are raster marks with
-     their own internal greys, so at `grayscale(1)` + 55% opacity they rendered
-     as soft grey mush next to the crisp flat ink of the client logos. Painting
-     an alpha mask with `background-color` gives one flat ink that follows the
-     theme. Masks live in assets/badges/mask/ — see the Files table for the
-     per-badge keying rules (G-Cloud is white-on-transparent and needs its
-     alpha channel, not luminance keying). */
+  /* ---------- Accreditations ----------
+     Written list of the six real certifications, replacing the earlier badge
+     marquee on request — easier to read than an image strip, and each chip
+     still opens the same badge popup (BADGE_DETAILS in the script) with the
+     real artwork and a plain-language description. */
   .accred {
     background: var(--bg);
     padding: 40px 0;
@@ -469,8 +578,8 @@
     gap: 44px;
   }
 
-  /* Anchoring the row with a standing label turns it from a decorative ticker
-     into a stated claim. */
+  /* Anchoring the row with a standing label keeps this reading as a stated
+     claim rather than a loose list of chips. */
   .accred-label {
     flex: 0 0 auto;
     max-width: 96px;
@@ -482,19 +591,23 @@
     color: rgba(var(--ink-rgb), var(--ink-a-mid));
   }
 
+  /* Single-line auto-scroller rather than a wrapping row, matching the
+     Clients carousel so the two strips read as one system. One repetition
+     per group is enough to overflow the widest viewport this can occupy
+     (~1310px of track space at --maxw, against ~1620px of chips), so unlike
+     the old badge marquee no second repetition is needed to avoid a gap. */
   .accred-viewport {
     flex: 1;
     min-width: 0;
     overflow: hidden;
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
-    mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
   }
 
   .accred-track {
     display: flex;
     width: max-content;
-    /* Slow enough to read as ambient drift rather than a scrolling ticker. */
-    animation: accred-scroll 70s linear infinite;
+    animation: accred-scroll 64s linear infinite;
   }
 
   .accred-track:hover { animation-play-state: paused; }
@@ -503,92 +616,58 @@
     to { transform: translateX(-50%); }
   }
 
-  .accred-group { display: flex; align-items: center; flex-shrink: 0; }
-
-  /* Horizontal padding rather than gap, so spacing stays even across the seam
-     where the duplicated group wraps around. */
-  .accred-item {
+  .accred-group {
     display: flex;
     align-items: center;
-    padding: 0 30px;
     flex-shrink: 0;
+    list-style: none;
+    gap: 12px;
+    padding-right: 12px;
   }
 
-  .accred-badge {
-    display: block;
-    background-color: var(--text);
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-    mask-position: center;
-    -webkit-mask-size: contain;
-    mask-size: contain;
-    opacity: 0.5;
-    transition: opacity 0.25s ease;
-  }
-
-  .accred-track:hover .accred-badge { opacity: 0.72; }
-
-  /* Every visible copy is clickable (see the delegated click handler in the
-     script), not just the one that carries the accessible name — scoped to
-     the track so it doesn't leak onto the enlarged modal visual, which
-     reuses this same class but isn't itself clickable. */
-  .accred-track .accred-badge { cursor: pointer; }
-  .accred-badge:hover { opacity: 1; }
-
-  /* The 42001 seal is thin-line art — 14% ink coverage against 46-53% for the
-     other ISO seals — so at the shared opacity it reads noticeably fainter.
-     Lifted rather than scaled up, since enlarging one seal would break the
-     same-size family the four circular marks form. */
-  .ab-42001 { opacity: 0.64; }
-  .accred-track:hover .ab-42001 { opacity: 0.86; }
-  .ab-42001:hover { opacity: 1; }
-
-  /* Sized by optical weight, not a shared height. Forcing every mark to the
-     same height gave a 2.6x spread in rendered area (G-Cloud 2469px^2 vs Cyber
-     Essentials 967px^2) because the shapes run from circular seals to a wide
-     wordmark. The four ISO seals are a visual family so they share a height;
-     the dense solid shield is stepped down and the sparse wide wordmark is
-     stepped down further so its width does not dominate. */
-  .ab-9001   { width: 40px; height: 40px; -webkit-mask-image: url('badges/mask/iso-9001.png');              mask-image: url('badges/mask/iso-9001.png'); }
-  .ab-14001  { width: 40px; height: 40px; -webkit-mask-image: url('badges/mask/iso-14001.png');             mask-image: url('badges/mask/iso-14001.png'); }
-  .ab-27001  { width: 40px; height: 40px; -webkit-mask-image: url('badges/mask/iso-27001.png');             mask-image: url('badges/mask/iso-27001.png'); }
-  .ab-42001  { width: 42px; height: 42px; -webkit-mask-image: url('badges/mask/iso-42001.png');             mask-image: url('badges/mask/iso-42001.png'); }
-  .ab-cyber  { width: 30px; height: 36px; -webkit-mask-image: url('badges/mask/cyber-essentials-plus.png'); mask-image: url('badges/mask/cyber-essentials-plus.png'); }
-  .ab-gcloud { width: 77px; height: 28px; -webkit-mask-image: url('badges/mask/gcloud.png');                mask-image: url('badges/mask/gcloud.png'); }
-
-  /* Only the strip's first, accessible repetition of each mark is a real
-     button — the other three repetitions (filling the track width and
-     driving the seamless loop) stay the plain aria-hidden decoration they
-     already were. Making all 24 interactive would quadruple the tab stops
-     for six identical destinations. */
-  .accred-item-btn {
-    background: none;
-    border: none;
-    padding: 0 30px;
-    font: inherit;
+  .accred-chip {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 16px;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif;
     cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
   }
+
+  .accred-chip:hover { border-color: rgba(var(--ink-rgb),0.3); background: var(--surface-2); }
+
+  .accred-chip-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .accred-chip-desc {
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+    white-space: nowrap;
+  }
+
+  .accred-chip-desc::before { content: '•'; margin-right: 7px; opacity: 0.55; }
 
   @media (max-width: 760px) {
     .accred { padding: 32px 0; }
-    .accred-inner { flex-direction: column; align-items: flex-start; gap: 18px; }
+    .accred-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
     .accred-label { max-width: none; }
     /* The viewport is the flex child that must shrink, not the label. */
     .accred-viewport { width: 100%; flex: none; }
-    .accred-item,
-    .accred-item-btn { padding: 0 22px; }
-    .ab-9001, .ab-14001, .ab-27001 { width: 34px; height: 34px; }
-    .ab-42001 { width: 36px; height: 36px; }
-    .ab-cyber { width: 26px; height: 31px; }
-    .ab-gcloud { width: 66px; height: 24px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .accred-track { animation: none; }
     .accred-group[aria-hidden="true"] { display: none; }
     .accred-viewport { -webkit-mask-image: none; mask-image: none; }
-    .accred-badge { transition: none; }
   }
 
   /* ---------- Services ---------- */
@@ -604,7 +683,6 @@
   .about > h2,
   .services h2,
   .cases h2,
-  .testimonial h2,
   .team-head h2,
   .faq h2,
   .blog h2,
@@ -780,26 +858,35 @@
 
   .about-lede strong { font-weight: 500; }
 
-  /* Brand panel standing in for the reference's photography. */
-  .about-visual {
+  /* Two real, concrete facts in place of the earlier decorative gradient
+     panel, which carried no information of its own. */
+  .about-stats {
     margin-top: 34px;
-    aspect-ratio: 4 / 3;
-    border-radius: 4px;
-    background:
-      radial-gradient(120% 90% at 78% 18%, rgba(110, 168, 255, 0.55), rgba(110, 168, 255, 0) 60%),
-      linear-gradient(150deg, #4a8dff 0%, #1b4fd6 42%, #0a1f6e 100%);
-    position: relative;
-    overflow: hidden;
+    display: flex;
+    gap: 14px;
   }
 
-  .about-visual::after {
-    content: "";
-    position: absolute;
-    inset: -30% -10% auto auto;
-    width: 72%;
-    aspect-ratio: 1;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 42% 58% 50% 50% / 52% 46% 54% 48%;
+  .about-stat {
+    flex: 1;
+    padding: 22px 24px;
+    border-radius: 14px;
+    background: linear-gradient(150deg, #4a8dff 0%, #1b4fd6 45%, #0a1f6e 100%);
+  }
+
+  .about-stat-num {
+    display: block;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+  }
+
+  .about-stat-label {
+    display: block;
+    margin-top: 4px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
   }
 
   @media (max-width: 900px) {
@@ -852,6 +939,13 @@
      cleanly separate from). A background chip gives it the same self-
      contained "pill" read the other sections get for free. */
   .cases .pill { background: rgba(0, 0, 0, 0.35); border-color: rgba(255, 255, 255, 0.4); }
+
+  /* Same reasoning as .cases .pill above: .blog-tag's translucent-ink
+     background reads fine on a flat --bg colour but needs a real dark chip
+     to stay legible directly on the photograph. Reused here (rather than
+     re-styled) so the case-study tags read as the same taxonomy as Blog's,
+     on request. */
+  .cases .blog-tag { background: rgba(0, 0, 0, 0.35); color: rgba(255, 255, 255, 0.85); }
 
   .case-list {
     display: flex;
@@ -997,9 +1091,15 @@
      modal; only the inner content layout is new. */
   .case-modal-panel { max-width: 760px; }
 
+  /* scrollbar-gutter keeps this clear of .modal-close (a 32px circle inset
+     18px from the panel edge) regardless of whether the platform renders an
+     inline scrollbar (Windows) or an overlay one (macOS) — without it, the
+     two behaved inconsistently: same rule as .service-modal-body below, so
+     both popup families sit the same relative to their close button. */
   .case-modal-body {
-    padding: 44px 40px 40px;
+    padding: 44px 52px 40px;
     overflow-y: auto;
+    scrollbar-gutter: stable;
   }
 
   .case-modal-eyebrow { margin-bottom: 18px; }
@@ -1122,6 +1222,7 @@
 
   .case-back-btn svg { width: 13px; height: 13px; }
 
+
   .case-index-list {
     display: flex;
     flex-direction: column;
@@ -1177,7 +1278,7 @@
   .case-index-item .case-index-go svg { width: 13px; height: 13px; }
 
   @media (max-width: 640px) {
-    .case-modal-body { padding: 32px 24px 28px; }
+    .case-modal-body { padding: 32px 34px 28px 24px; }
     .case-stat { flex: 1 1 100%; }
   }
 
@@ -1197,13 +1298,36 @@
 
   .clients h2 { margin-bottom: var(--head-gap); }
 
-  .clients-row {
+  /* Auto-scrolling carousel, same mechanism as the Accreditations strip
+     above: two identical groups in a flex track, animated to -50% so the
+     loop is seamless, paused on hover. Converted from a static row once
+     digiblu.com's own carousel turned out to hold 14 logos across its three
+     slides, not the 5 visible on its first slide. */
+  .clients-viewport {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+  }
+
+  .clients-track {
     display: flex;
-    flex-wrap: wrap;
+    width: max-content;
+    animation: clients-scroll 78s linear infinite;
+  }
+
+  .clients-track:hover { animation-play-state: paused; }
+
+  @keyframes clients-scroll {
+    to { transform: translateX(-50%); }
+  }
+
+  .clients-group {
+    display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 40px 56px;
+    flex-shrink: 0;
     list-style: none;
+    gap: 56px;
+    padding-right: 56px;
   }
 
   .client-logo {
@@ -1223,203 +1347,60 @@
     transition: opacity 0.2s ease;
   }
 
-  .clients-row:hover .client-logo { opacity: 0.85; }
+  .clients-track:hover .client-logo { opacity: 0.85; }
   .client-logo:hover { opacity: 1; }
 
   /* Heights are normalised by area rather than by height alone: the source
-     lockups run from 4.77:1 (Acacium) to 1.25:1 (Equiniti), so matching
-     heights would leave the wide wordmarks visually dominant. Each height is
-     derived from a constant target area, then hand-trimmed. */
-  .cl-acacium {
-    width: 115px; height: 24px;
-    -webkit-mask-image: url('clients/acacium.png');
-    mask-image: url('clients/acacium.png');
-  }
+     lockups run from icon+wordmark blocks to thin single-line wordmarks, so
+     matching heights would leave the wide ones visually dominant. Each
+     height is derived from a constant target area, then hand-trimmed —
+     extreme-aspect wordmarks (AssuranceSD, GatenbySanderson) are stepped
+     down further so their width doesn't dominate, same call already made
+     for G-Cloud in the Accreditations strip. */
+  .cl-acacium     { width: 115px; height: 24px; -webkit-mask-image: url('clients/acacium.png');                     mask-image: url('clients/acacium.png'); }
+  .cl-premex      { width: 90px;  height: 32px; -webkit-mask-image: url('clients/premex.png');                      mask-image: url('clients/premex.png'); }
+  .cl-sunrise     { width: 106px; height: 27px; -webkit-mask-image: url('clients/sunrise-medical.png');             mask-image: url('clients/sunrise-medical.png'); }
+  .cl-equiniti    { width: 53px;  height: 42px; -webkit-mask-image: url('clients/equiniti.png');                    mask-image: url('clients/equiniti.png'); }
+  .cl-ovo         { width: 84px;  height: 34px; -webkit-mask-image: url('clients/ovo-energy.png');                  mask-image: url('clients/ovo-energy.png'); }
+  .cl-peopleplus  { width: 113px; height: 26px; -webkit-mask-image: url('clients/peopleplus.png');                  mask-image: url('clients/peopleplus.png'); }
+  .cl-benchmark   { width: 99px;  height: 34px; -webkit-mask-image: url('clients/benchmark-capital.png');           mask-image: url('clients/benchmark-capital.png'); }
+  .cl-assurancesd { width: 140px; height: 16px; -webkit-mask-image: url('clients/assurancesd.png');                 mask-image: url('clients/assurancesd.png'); }
+  .cl-eversheds   { width: 108px; height: 27px; -webkit-mask-image: url('clients/eversheds-sutherland.png');        mask-image: url('clients/eversheds-sutherland.png'); }
+  .cl-bodybrave   { width: 47px;  height: 44px; -webkit-mask-image: url('clients/body-brave.png');                  mask-image: url('clients/body-brave.png'); }
+  .cl-gatenby     { width: 140px; height: 18px; -webkit-mask-image: url('clients/gatenbysanderson.png');            mask-image: url('clients/gatenbysanderson.png'); }
+  .cl-soc         { width: 122px; height: 24px; -webkit-mask-image: url('clients/special-olympics-canada.png');     mask-image: url('clients/special-olympics-canada.png'); }
+  .cl-nychealth   { width: 82px;  height: 40px; -webkit-mask-image: url('clients/nyc-health-hospitals.png');        mask-image: url('clients/nyc-health-hospitals.png'); }
+  .cl-innovative  { width: 85px;  height: 32px; -webkit-mask-image: url('clients/innovative-business-concepts.png'); mask-image: url('clients/innovative-business-concepts.png'); }
 
-  .cl-premex {
-    width: 90px; height: 32px;
-    -webkit-mask-image: url('clients/premex.png');
-    mask-image: url('clients/premex.png');
-  }
-
-  .cl-sunrise {
-    width: 106px; height: 27px;
-    -webkit-mask-image: url('clients/sunrise-medical.png');
-    mask-image: url('clients/sunrise-medical.png');
-  }
-
-  .cl-equiniti {
-    width: 53px; height: 42px;
-    -webkit-mask-image: url('clients/equiniti.png');
-    mask-image: url('clients/equiniti.png');
-  }
-
-  .cl-ovo {
-    width: 84px; height: 34px;
-    -webkit-mask-image: url('clients/ovo-energy.png');
-    mask-image: url('clients/ovo-energy.png');
-  }
-
-  @media (max-width: 900px) {
-    .clients-row { justify-content: flex-start; gap: 34px 44px; }
+  @media (max-width: 760px) {
+    .clients-group { gap: 44px; padding-right: 44px; }
   }
 
   @media (max-width: 620px) {
-    .clients-row { gap: 30px 36px; }
+    .clients-group { gap: 36px; padding-right: 36px; }
     /* Scale the whole row down together so the optical balance is preserved. */
-    .cl-acacium  { width: 98px;  height: 21px; }
-    .cl-premex   { width: 77px;  height: 27px; }
-    .cl-sunrise  { width: 90px;  height: 23px; }
-    .cl-equiniti { width: 45px;  height: 36px; }
-    .cl-ovo      { width: 71px;  height: 29px; }
+    .cl-acacium     { width: 98px;  height: 21px; }
+    .cl-premex      { width: 77px;  height: 27px; }
+    .cl-sunrise     { width: 90px;  height: 23px; }
+    .cl-equiniti    { width: 45px;  height: 36px; }
+    .cl-ovo         { width: 71px;  height: 29px; }
+    .cl-peopleplus  { width: 96px;  height: 22px; }
+    .cl-benchmark   { width: 84px;  height: 29px; }
+    .cl-assurancesd { width: 119px; height: 14px; }
+    .cl-eversheds   { width: 92px;  height: 23px; }
+    .cl-bodybrave   { width: 40px;  height: 37px; }
+    .cl-gatenby     { width: 119px; height: 15px; }
+    .cl-soc         { width: 104px; height: 20px; }
+    .cl-nychealth   { width: 70px;  height: 34px; }
+    .cl-innovative  { width: 72px;  height: 27px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .clients-track { animation: none; }
+    .clients-group[aria-hidden="true"] { display: none; }
+    .clients-viewport { -webkit-mask-image: none; mask-image: none; }
     .client-logo { transition: none; }
   }
-
-  /* ---------- Testimonial ---------- */
-  .testimonial {
-    max-width: var(--maxw);
-    margin: 0 auto;
-    padding: var(--section-y) var(--gutter);
-  }
-
-  /* The heading keeps the page's left spine; the quote mark balances the row
-     from the right rather than pushing the heading out of alignment. */
-  .tst-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-  }
-
-  .tst-mark {
-    width: 46px;
-    height: auto;
-    color: rgba(var(--ink-rgb), 0.18);
-    flex-shrink: 0;
-  }
-
-  .tst-sub {
-    margin-top: 16px;
-    max-width: 460px;
-    font-size: 13.5px;
-    line-height: 1.6;
-    font-weight: 400;
-    color: rgba(var(--ink-rgb), var(--ink-a-high));
-  }
-
-  .tst-track {
-    display: flex;
-    gap: 24px;
-    margin-top: var(--head-gap);
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
-  }
-
-  .tst-track::-webkit-scrollbar { display: none; }
-
-  .tst-card {
-    position: relative;
-    flex: 0 0 460px;
-    scroll-snap-align: start;
-    background: var(--surface);
-    border: 1px solid rgba(var(--ink-rgb),0.12);
-    border-radius: 16px;
-    padding: 26px 28px 32px;
-  }
-
-  .tst-head {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .tst-avatar {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: radial-gradient(circle at 50% 35%, rgba(74, 141, 255, 0.28), rgba(8, 8, 16, 0) 70%), var(--surface);
-    border: 1px solid rgba(var(--ink-rgb),0.14);
-    color: var(--a, #6ea8ff);
-  }
-
-  .tst-avatar svg { width: 22px; height: 22px; }
-
-  .tst-company { font-size: 14px; font-weight: 700; color: var(--text); }
-  .tst-person { font-size: 11.5px; color: rgba(var(--ink-rgb), var(--ink-a-high)); margin-top: 2px; }
-
-
-  .tst-card .tst-quote-icon {
-    position: absolute;
-    top: 26px;
-    right: 28px;
-    width: 20px;
-    height: auto;
-    color: rgba(var(--ink-rgb),0.35);
-  }
-
-  .tst-text {
-    margin-top: 26px;
-    font-size: 25px;
-    line-height: 1.32;
-    font-weight: 400;
-    letter-spacing: -0.4px;
-    color: var(--text);
-  }
-
-  .tst-foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 28px;
-    margin-top: 34px;
-  }
-
-  .tst-bar {
-    position: relative;
-    flex: 1;
-    height: 3px;
-    border-radius: 999px;
-    background: rgba(var(--ink-rgb),0.14);
-    overflow: hidden;
-  }
-
-  .tst-bar span {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    border-radius: 999px;
-    background: var(--blue);
-  }
-
-  .tst-nav {
-    display: flex;
-    gap: 10px;
-    flex-shrink: 0;
-  }
-
-  .tst-nav button {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: var(--blue);
-    border: none;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-
-  .tst-nav button:disabled { opacity: 0.3; cursor: default; }
-  .tst-nav button svg { width: 17px; height: 17px; }
 
   /* ---------- Team (accordion strip) ---------- */
   .team {
@@ -1469,7 +1450,9 @@
   .team-strip {
     display: flex;
     gap: 6px;
-    height: 440px;
+    /* 280px: 50-70% of the original 440px, per feedback that the desktop
+       boxes ran too tall. */
+    height: 280px;
     border-radius: 20px;
     overflow: hidden;
   }
@@ -1477,9 +1460,17 @@
   /* Inactive slices hold a fixed narrow width and the active one absorbs all
      remaining space. Distributing growth proportionally instead left the
      active panel too narrow to fit its label once the viewport tightened. */
+  /* 80px, not the 56px this started at: the photo is a face-centred square
+     painted with `cover` into a 280px-tall slice, so the visible width is
+     `sliceWidth / 280` of the source. The head spans ~27% of the source
+     width (head width ≈ 0.75 × head height, against a 2.8-head crop), so a
+     56px slice showed ~20% — a vertical sliver *through* the face, which is
+     what read as the photos being cropped. 80px ≈ 28.6% clears the whole
+     head. If the crop factor in process_team_faces.js ever changes, this
+     needs re-deriving with it. */
   .team-slice {
     position: relative;
-    flex: 0 0 64px;
+    flex: 0 0 80px;
     border: none;
     border-radius: 14px;
     background: var(--surface);
@@ -1489,34 +1480,97 @@
     transition: flex-grow 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .team-slice.active {
-    flex-grow: 1;
-    background: linear-gradient(160deg, #1b4fd6 0%, #0a1f6e 100%);
-  }
+  .team-slice.active { flex-grow: 1; }
 
-  .team-slice-icon {
+  /* Real headshots (chroma-keyed cutouts, see the Team section comment in
+     index.html), not the old generic silhouette icon. Grayscale is the
+     photo treatment requested — dimmed at rest, full strength once active,
+     same muted/hover language as the client-logo and accreditation rows. */
+  /* The source crops are face-centred (see process_team_faces.js), which is
+     what makes a plain centred cover-crop safe here: the active slice is a
+     wide, short box (783x280 on desktop) so cover shows only ~36% of the
+     image height, and that band has to land on the face at every viewport
+     width. Centring the face in the image rather than nudging
+     background-position by percentage is what makes it aspect-independent —
+     don't reintroduce a percentage offset. */
+  .team-slice-photo {
     position: absolute;
     inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background-size: cover;
+    background-position: center center;
+    filter: grayscale(1);
+    /* Was 0.4, which is what made these read as washed out — badly so in
+       light theme, where a grayscale cutout faded 60% toward a near-white
+       surface almost disappeared. These are transparent cutouts, so opacity
+       fades the person *toward the slice colour* rather than dimming a
+       filled photo. Inactive slices are already distinguished by width and
+       by the absence of the name label, so they need only a token step
+       down; keep this high. */
+    opacity: 1;
+    transition: opacity 0.4s ease;
   }
 
-  .team-slice-icon svg {
-    width: 64px;
-    height: 64px;
-    color: rgba(var(--ink-rgb), 0.22);
-    transition: color 0.4s ease;
+  /* Inactive slices show a uniform circular face crop, not a full-bleed
+     sliver of the photo.
+
+     Why: full-bleed cannot be made to look aligned across these particular
+     sources. An inactive slice shows the image's whole height, so wherever
+     the subject's cutout ends, a hard horizontal edge appears mid-frame with
+     empty space beneath — which is what made some of the team (David, Jon)
+     read as cropped while others (Vic) looked right. Making every subject
+     reach the frame bottom instead requires a ~1.52-head-height crop, which
+     puts the head at 49% of image width and therefore needs ~139px slices,
+     leaving too little for the active panel and collapsing below ~1150px.
+     The underlying variance is in the photos themselves: body below the eye
+     line ranges 0.76 to 1.46 head-heights across the eight.
+
+     A circle sidesteps all of it — same size, same position, same framing
+     for every person, at any viewport. background-size is zoomed so the head
+     fills the circle rather than showing the whole bust in miniature; the
+     source crops are face-centred, so a centred zoom lands on the face. */
+  .team-slice:not(.active) .team-slice-photo {
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    width: 52px;
+    height: 52px;
+    margin: -26px 0 0 -26px;
+    border-radius: 50%;
+    background-size: 190%;
+    box-shadow: 0 0 0 1px rgba(var(--ink-rgb), 0.16);
   }
 
-  .team-slice.active .team-slice-icon svg { color: rgba(255, 255, 255, 0.9); }
+  .tp-vic    { background-image: url('team/vic-gysin.png'); }
+  .tp-david  { background-image: url('team/david-williams.png'); }
+  .tp-karen  { background-image: url('team/karen-potgieter.png'); }
+  .tp-jon    { background-image: url('team/jon-hinder.png'); }
+  .tp-martin { background-image: url('team/martin-mccloskey.png'); }
+  .tp-dianne { background-image: url('team/dianne-harris.png'); }
+  .tp-dave   { background-image: url('team/dave-vanderwesthuizen.png'); }
+  .tp-nick   { background-image: url('team/nick-bantick.png'); }
+
+  /* Scrim so the name/role stay legible over whatever tone the photo behind
+     them happens to be. Sits between the photo and the label in paint order
+     via the label's own z-index, since a ::after would otherwise paint after
+     (on top of) the label span. */
+  .team-slice::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(4, 8, 26, 0.92) 0%, rgba(4, 8, 26, 0.35) 55%, rgba(4, 8, 26, 0) 78%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .team-slice.active::after { opacity: 1; }
 
   .team-slice-label {
     position: absolute;
+    z-index: 1;
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 24px;
+    padding: 22px;
     text-align: left;
     opacity: 0;
     transform: translateY(8px);
@@ -1525,29 +1579,34 @@
 
   .team-slice.active .team-slice-label { opacity: 1; transform: translateY(0); }
 
-  .team-slice-eyebrow {
+  .team-slice-name {
     display: block;
-    font-size: 11px;
+    font-size: 19px;
     font-weight: 700;
-    letter-spacing: 1.4px;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+    color: #ffffff;
     white-space: nowrap;
   }
 
   .team-slice-role {
     display: block;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.4px;
-    color: #ffffff;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.75);
+    margin-top: 4px;
     white-space: nowrap;
   }
 
-  /* Six slices cannot share a phone-width row and still leave the active one
+  /* Eight 80px slices leave the active one too narrow for the longest name
+     ("Dave van der Westhuizen", nowrap) once the viewport tightens, so the
+     inactive width steps back down before that becomes an overflow. */
+  @media (max-width: 1180px) {
+    .team-slice { flex: 0 0 62px; }
+  }
+
+  /* Eight slices cannot share a phone-width row and still leave the active one
      wide enough to read, so below this the strip becomes a stacked list and
-     every role stays visible without needing to be selected. */
+     every name stays visible without needing to be selected. */
   @media (max-width: 760px) {
     .team-head { flex-direction: column; align-items: flex-start; }
     .team-nav-btns { display: none; }
@@ -1569,32 +1628,44 @@
       cursor: default;
     }
 
-    .team-slice-icon {
+    /* Same circular face crop as the inactive desktop slices, including the
+       zoom — without it the whole bust shrinks into a 48px circle and the
+       face is unreadable. */
+    .team-slice-photo,
+    .team-slice:not(.active) .team-slice-photo {
       position: static;
       inset: auto;
+      top: auto;
+      left: auto;
+      margin: 0;
       flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-size: 190%;
+      opacity: 1;
     }
 
-    .team-slice-icon svg { width: 34px; height: 34px; }
+    /* No scrim needed once the photo is a small static circle rather than
+       the full-bleed background it is on desktop. */
+    .team-slice::after { display: none; }
 
     /* No expand/collapse at this width, so the label must be visible outright
        rather than arriving via a transition that may never run. */
     .team-slice-label {
       position: static;
+      z-index: auto;
       padding: 0;
       opacity: 1;
       transform: none;
       transition: none;
     }
 
-    .team-slice-eyebrow,
+    .team-slice-name,
     .team-slice-role { white-space: normal; }
 
-    .team-slice-role { font-size: 17px; }
-
-    /* Inactive rows keep readable ink on the light/dark surface. */
-    .team-slice:not(.active) .team-slice-eyebrow { color: rgba(var(--ink-rgb), var(--ink-a-high)); }
-    .team-slice:not(.active) .team-slice-role { color: var(--text); }
+    .team-slice-name { font-size: 16.5px; color: var(--text); }
+    .team-slice-role { font-size: 13px; color: rgba(var(--ink-rgb), var(--ink-a-high)); }
   }
 
   /* ---------- FAQ ---------- */
@@ -1675,6 +1746,8 @@
     gap: 14px;
   }
 
+  /* Brand-blue cards (white ink, gradient fill) were tried here on request
+     and reverted — keep these theme-aware. */
   .faq-item {
     background: var(--surface);
     border: 1px solid rgba(var(--ink-rgb),0.14);
@@ -1690,9 +1763,8 @@
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 24px 26px;
+    gap: 16px;
+    padding: 22px 26px;
     background: none;
     border: none;
     text-align: left;
@@ -1702,6 +1774,8 @@
     color: var(--text);
     cursor: pointer;
   }
+
+  .faq-question-text { flex: 1; }
 
   .faq-chev {
     flex-shrink: 0;
@@ -1745,6 +1819,11 @@
 
   .faq-answer-inner { overflow: hidden; }
 
+  /* A "More on [Service]" link was trialled on each answer, opening that
+     service's popup — tried on request, then removed on request once the
+     questions themselves were changed to general engagement questions with
+     no service to link back to. Don't reintroduce a per-question service
+     link; see the comment above .faq-list in index.html. */
   .faq-answer {
     padding: 0 26px 24px;
     font-size: 14.5px;
@@ -1815,6 +1894,14 @@
     height: auto;
     color: rgba(255, 255, 255, 0.9);
   }
+
+  /* The art panel leading the blog detail modal and the standalone blog
+     pages. Shorter than the 16/10 grid card so it introduces the article
+     without pushing the heading below the fold in a dialog. */
+  .blog-modal-art { margin-bottom: 22px; }
+  .blog-modal-art:empty { display: none; }
+  .blog-modal-art .blog-art { aspect-ratio: 16 / 6; border-radius: 14px; }
+  .blog-modal-art .blog-art svg { width: 22%; max-width: 68px; }
 
   .blog-tag {
     display: inline-block;
@@ -1935,9 +2022,18 @@
   }
 
   /* ---------- Footer ---------- */
+  /* A plain themed surface tone (not the artwork treatment tried and
+     reverted earlier), just enough to read as a distinct band rather than
+     blending into whatever plain --bg section sits above it. */
+  /* Same background as the rest of the page (black in dark, white in light)
+     so the footer marries up with the site rather than sitting in its own
+     tinted band — a brand-navy footer and a deeper-neutral band were both
+     tried and explicitly rejected. The single hairline is the *only*
+     intended division from the FAQ section above; keep it. */
   footer {
     position: relative;
     background: var(--bg);
+    border-top: 1px solid var(--hairline);
     overflow: hidden;
   }
 
@@ -1953,27 +2049,9 @@
 
   .footer-brand { max-width: 300px; }
 
-  .footer-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
+  .footer-logo { margin-bottom: 20px; }
 
-  .footer-logo-mark {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--blue);
-    display: grid;
-    place-items: center;
-    color: #fff;
-    flex-shrink: 0;
-  }
-
-  .footer-logo-mark svg { width: 15px; height: 15px; }
-
-  .footer-logo-text { font-size: 18px; font-weight: 500; letter-spacing: -0.4px; color: var(--text); }
+  .footer-logo .logo-mark { width: 107px; height: 26px; }
 
   .footer-desc {
     font-size: 14px;
@@ -2055,22 +2133,6 @@
     color: rgba(var(--ink-rgb), var(--ink-a-aa));
   }
 
-  .footer-wordmark {
-    width: 100%;
-    text-align: center;
-    line-height: 0.78;
-    font-size: clamp(90px, 16vw, 260px);
-    font-weight: 700;
-    letter-spacing: -4px;
-    color: transparent;
-    background: linear-gradient(to bottom, rgba(var(--ink-rgb),0.16), rgba(var(--ink-rgb),0.02));
-    -webkit-background-clip: text;
-    background-clip: text;
-    user-select: none;
-    pointer-events: none;
-    overflow: hidden;
-  }
-
   @media (max-width: 700px) {
     .footer-inner { flex-direction: column; }
     .footer-cols { gap: 40px; }
@@ -2124,6 +2186,9 @@
 
   .modal-close {
     position: absolute;
+    /* Icon-only, so this has no visible effect today — set so the button
+       can't fall back to a UA default if it ever gains a text label. */
+    font-family: 'DM Sans', sans-serif;
     top: 18px;
     right: 18px;
     width: 32px;
@@ -2278,11 +2343,45 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23ffffff88' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 14px center;
+    /* The SVG has no intrinsic width/height, only a viewBox, so without an
+       explicit background-size the browser falls back to rendering it at a
+       UA-default scale — several times too big for a 12x8 chevron. Pin it to
+       the viewBox's own dimensions. */
+    background-size: 12px 8px;
     padding-right: 34px;
   }
 
   .modal-field input::placeholder,
   .modal-field textarea::placeholder { color: rgba(var(--ink-rgb),0.32); }
+
+  /* Overrides .modal-field input's width:100%/appearance:none above (higher
+     specificity), which would otherwise stretch the checkbox into an
+     invisible full-width box rather than a normal native control. */
+  .modal-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .modal-checkbox input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    accent-color: var(--blue);
+    appearance: auto;
+    -webkit-appearance: auto;
+    cursor: pointer;
+  }
+
+  .modal-checkbox span {
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+  }
+
+  .modal-checkbox a { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
 
   .modal-field input:focus-visible,
   .modal-field textarea:focus-visible,
@@ -2383,9 +2482,13 @@
      .modal-close from the contact modal above; single-column content only. ---------- */
   .service-panel { max-width: 640px; }
 
+  /* Same scrollbar-gutter/right-padding treatment as .case-modal-body above,
+     so both popup families sit the same relative to .modal-close instead of
+     drifting depending on which one happens to need a scrollbar. */
   .service-modal-body {
-    padding: 44px 40px 40px;
+    padding: 44px 52px 40px;
     overflow-y: auto;
+    scrollbar-gutter: stable;
   }
 
   .service-modal-eyebrow { margin-bottom: 18px; }
@@ -2428,10 +2531,10 @@
 
   /* ---------- Badge detail modal ----------
      Reuses .service-panel / .service-modal-body / .service-modal-eyebrow /
-     .service-modal-intro (see the Learn More popups). The strip shows a
-     single-ink mask of each mark (see .accred-badge), but the popup shows
-     the real, original artwork — a plain <img> pointed at the un-masked
-     source in assets/badges/*.png, not assets/badges/mask/*.png. */
+     .service-modal-intro (see the Learn More popups). The Accreditations
+     strip itself is now a plain written list (see .accred-chip), but the
+     popup still shows the real original artwork — a plain <img> pointed at
+     assets/badges/*.png. */
   .badge-panel { max-width: 420px; }
 
   .badge-modal-body { text-align: center; }
@@ -2493,7 +2596,7 @@
     .modal-step { flex-direction: column; text-align: center; gap: 6px; flex: 1; }
     .modal-step .step-label { font-size: 11px; }
     .modal-field-row { grid-template-columns: 1fr; gap: 0; }
-    .service-modal-body { padding: 32px 24px 28px; }
+    .service-modal-body { padding: 32px 34px 28px 24px; }
   }
 
   /* ---------- Breakpoints ---------- */
@@ -2520,11 +2623,10 @@
     .hero-bottom {
       flex-direction: column;
       align-items: flex-start;
+      justify-content: flex-start;
       gap: 18px;
     }
     .hero-bottom p { font-size: 17px; }
-    .tst-card { flex-basis: 300px; }
-    .tst-text { font-size: 21px; }
   }
 
   /* ---------- Standalone content pages (case studies / blog / legal) ----------

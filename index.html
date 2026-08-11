@@ -53,42 +53,42 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "How do we best make use of AI?",
+          "name": "What makes DigiBlu different from other consultancies?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "We start by identifying where AI can create real, measurable value for your business, then guide you through governance and ethics so it is adopted responsibly from day one."
+            "text": "We pair consulting judgment with people who have actually built and run the technology, not just advised on it. That, plus staying technology-agnostic rather than pushing one platform, is what keeps us honest about what will and won't work for you."
           }
         },
         {
           "@type": "Question",
-          "name": "How can we simplify complex processes?",
+          "name": "What size of company do you typically work with?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "We map how your people, processes, and technology actually work today, then bring AI, digital, and human effort together into a single, simpler framework built to last."
+            "text": "Everything from mid-sized businesses to large enterprises and public sector bodies, across financial services, energy, healthcare, education and government. What matters more than size is having a real problem worth solving."
           }
         },
         {
           "@type": "Question",
-          "name": "What digital solutions are right for us?",
+          "name": "How long does a typical engagement take?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "That depends on your goals, so we design and deploy tailored automation and digital tools built around them, typically within weeks, with support that continues after go-live."
+            "text": "It depends on scope, but we structure engagements to reach a first measurable result in weeks rather than months, then build from there rather than asking you to commit to a long programme upfront."
           }
         },
         {
           "@type": "Question",
-          "name": "Is our operating model fit for purpose?",
+          "name": "Do we need to replace our existing systems and tools?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Often, it needs realigning rather than replacing. We assess how well your resources, processes, and technology serve your objectives, then shape a model built for sustainable growth."
+            "text": "Usually not. We're technology-agnostic, so we work with what you already have wherever it fits, and only recommend a change where there's a genuine case for it, not because it's our preferred platform."
           }
         },
         {
           "@type": "Question",
-          "name": "How do we maintain a competitive advantage?",
+          "name": "Who will actually be working on our project?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Our work does not stop at go-live. We stay on to adapt your systems as the business changes, so continuous, cost-effective improvement keeps you ahead rather than catching up."
+            "text": "Practitioners with client-side, technology and consultancy backgrounds, not just advisors. The same people scoping the work are typically the ones delivering it, so nothing gets lost in handover."
           }
         }
       ]
@@ -166,8 +166,9 @@
         </circle>
       </g>
     </svg>
+    <div class="site-nav" id="siteNav">
     <nav>
-      <div class="logo">DigiBlu</div>
+      <a href="#hero-content" class="logo" aria-label="DigiBlu, home"><span class="logo-mark" aria-hidden="true"></span></a>
 
       <ul class="nav-center">
         <li><a href="#hero-content">Home</a></li>
@@ -208,9 +209,9 @@
         </ul>
       </div>
     </nav>
+    </div>
 
     <div class="hero-center" id="hero-content">
-      <p class="eyebrow">DigiBlu</p>
       <h1>Consulting judgment.<br>Real technical depth.</h1>
     </div>
 
@@ -223,36 +224,67 @@
   <section class="accred" aria-labelledby="accredLabel">
     <div class="accred-inner">
       <p class="accred-label" id="accredLabel">Accredited &amp; certified</p>
+      <!-- Auto-scrolling single line, same mechanism as the Clients carousel
+           below: two identical groups animated to -50% so the loop is
+           seamless. Only the first group is in the accessibility tree and the
+           tab order; the duplicate is aria-hidden with tabindex="-1" so it
+           stays clickable (the strip moves, so whichever copy happens to be
+           under the cursor is arbitrary) without doubling the tab stops or
+           announcing every certification twice. -->
       <div class="accred-viewport">
         <div class="accred-track">
-        <div class="accred-group">
-          <button type="button" class="accred-item accred-item-btn" data-badge="9001" aria-label="View ISO 9001 certified badge"><span class="accred-badge ab-9001" aria-hidden="true"></span></button>
-          <button type="button" class="accred-item accred-item-btn" data-badge="14001" aria-label="View ISO 14001 certified badge"><span class="accred-badge ab-14001" aria-hidden="true"></span></button>
-          <button type="button" class="accred-item accred-item-btn" data-badge="27001" aria-label="View ISO 27001 certified badge"><span class="accred-badge ab-27001" aria-hidden="true"></span></button>
-          <button type="button" class="accred-item accred-item-btn" data-badge="42001" aria-label="View ISO 42001 certified, AI management system badge"><span class="accred-badge ab-42001" aria-hidden="true"></span></button>
-          <button type="button" class="accred-item accred-item-btn" data-badge="cyber" aria-label="View Cyber Essentials Plus certified badge"><span class="accred-badge ab-cyber" aria-hidden="true"></span></button>
-          <button type="button" class="accred-item accred-item-btn" data-badge="gcloud" aria-label="View UK Government G-Cloud supplier badge"><span class="accred-badge ab-gcloud" aria-hidden="true"></span></button>
-          <span class="accred-item"><span class="accred-badge ab-9001" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-14001" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-27001" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-42001" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-cyber" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-gcloud" aria-hidden="true"></span></span>
-        </div>
-        <div class="accred-group" aria-hidden="true">
-          <span class="accred-item"><span class="accred-badge ab-9001" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-14001" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-27001" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-42001" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-cyber" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-gcloud" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-9001" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-14001" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-27001" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-42001" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-cyber" aria-hidden="true"></span></span>
-          <span class="accred-item"><span class="accred-badge ab-gcloud" aria-hidden="true"></span></span>
-        </div>
+          <ul class="accred-group">
+            <li><button type="button" class="accred-chip" data-badge="9001">
+              <span class="accred-chip-name">ISO 9001</span>
+              <span class="accred-chip-desc">Quality Management</span>
+            </button></li>
+            <li><button type="button" class="accred-chip" data-badge="14001">
+              <span class="accred-chip-name">ISO 14001</span>
+              <span class="accred-chip-desc">Environmental Management</span>
+            </button></li>
+            <li><button type="button" class="accred-chip" data-badge="27001">
+              <span class="accred-chip-name">ISO 27001</span>
+              <span class="accred-chip-desc">Information Security</span>
+            </button></li>
+            <li><button type="button" class="accred-chip" data-badge="42001">
+              <span class="accred-chip-name">ISO/IEC 42001</span>
+              <span class="accred-chip-desc">AI Management</span>
+            </button></li>
+            <li><button type="button" class="accred-chip" data-badge="cyber">
+              <span class="accred-chip-name">Cyber Essentials Plus</span>
+              <span class="accred-chip-desc">Cyber Security</span>
+            </button></li>
+            <li><button type="button" class="accred-chip" data-badge="gcloud">
+              <span class="accred-chip-name">UK Government G-Cloud</span>
+              <span class="accred-chip-desc">Approved Supplier</span>
+            </button></li>
+          </ul>
+          <ul class="accred-group" aria-hidden="true">
+            <li><button type="button" class="accred-chip" data-badge="9001" tabindex="-1">
+              <span class="accred-chip-name">ISO 9001</span>
+              <span class="accred-chip-desc">Quality Management</span>
+            </button></li>
+            <li><button type="button" class="accred-chip" data-badge="14001" tabindex="-1">
+              <span class="accred-chip-name">ISO 14001</span>
+              <span class="accred-chip-desc">Environmental Management</span>
+            </button></li>
+            <li><button type="button" class="accred-chip" data-badge="27001" tabindex="-1">
+              <span class="accred-chip-name">ISO 27001</span>
+              <span class="accred-chip-desc">Information Security</span>
+            </button></li>
+            <li><button type="button" class="accred-chip" data-badge="42001" tabindex="-1">
+              <span class="accred-chip-name">ISO/IEC 42001</span>
+              <span class="accred-chip-desc">AI Management</span>
+            </button></li>
+            <li><button type="button" class="accred-chip" data-badge="cyber" tabindex="-1">
+              <span class="accred-chip-name">Cyber Essentials Plus</span>
+              <span class="accred-chip-desc">Cyber Security</span>
+            </button></li>
+            <li><button type="button" class="accred-chip" data-badge="gcloud" tabindex="-1">
+              <span class="accred-chip-name">UK Government G-Cloud</span>
+              <span class="accred-chip-desc">Approved Supplier</span>
+            </button></li>
+          </ul>
         </div>
       </div>
     </div>
@@ -260,18 +292,18 @@
 
   <section class="about" id="about">
     <span class="pill">About Us</span>
-    <h2>Who We Are.</h2>
+    <h2>Who we are.</h2>
 
     <div class="about-top">
       <div class="about-head">
+        <!-- Vision only, no separate Mission: the two statements said much
+             the same thing in different words, and digiblu.com itself
+             publishes a Vision and no Mission, so this is the real one
+             (condensed from the About page) rather than an authored pair. -->
         <div class="about-statements">
           <div class="statement">
             <h3>Vision</h3>
-            <p>To be the partner organisations turn to when AI and digital transformation need to deliver something real, where technology choices are made on merit and the status quo is challenged rather than inherited.</p>
-          </div>
-          <div class="statement">
-            <h3>Mission</h3>
-            <p>To bring AI, digital, and human capability together into operating models that work, getting clients to measurable value in weeks and keeping it there long after go-live.</p>
+            <p>To be one of the foremost independent AI-enabled digital transformation businesses in the UK. We recognise the pressures organisations face daily - competition, cost, compliance, technology advancement and customer expectation - and believe there is a way to turn these to your advantage, establishing scalable, sustainable ways of working.</p>
           </div>
           <div class="statement">
             <h3>Values</h3>
@@ -283,7 +315,16 @@
       <div class="about-right">
         <p class="about-lede">DigiBlu brings together practitioners with client-side, technology, and consultancy backgrounds. We act as <strong>pragmatic partners, focused on getting to value quickly</strong> rather than getting lost in process.</p>
         <p class="about-lede">We stay technology-agnostic, choosing from leading AI and automation platforms based on what genuinely fits each client.</p>
-        <div class="about-visual" aria-hidden="true"></div>
+        <div class="about-stats">
+          <div class="about-stat">
+            <span class="about-stat-num">2019</span>
+            <span class="about-stat-label">Founded</span>
+          </div>
+          <div class="about-stat">
+            <span class="about-stat-num">+80</span>
+            <span class="about-stat-label">Client NPS</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -291,7 +332,7 @@
 
   <section class="services" id="services">
     <span class="pill">Services</span>
-    <h2>How We Help<br>You Move Forward</h2>
+    <h2>How we help<br>you move forward</h2>
 
     <div class="services-grid">
       <div class="service-card accent">
@@ -359,7 +400,7 @@
   <section class="cases" id="case-studies">
     <div class="cases-inner">
     <span class="pill">Case Studies</span>
-    <h2>Where Our Work<br>Has Made a Difference</h2>
+    <h2>Where our work<br>has made a difference</h2>
 
     <!-- Real client engagements, sourced from digiblu.com/case-studies. The
          three shown here are the featured set; the full eight live in the
@@ -372,7 +413,10 @@
           <span class="case-ref">Old Mutual</span>
         </div>
         <div class="case-grid">
+          <div>
+          <span class="blog-tag">Target Operating Model</span>
           <h3 class="case-headline">Designing, deploying and scaling an automation Centre of Excellence.</h3>
+          </div>
           <div>
             <p class="case-body">Rising costs and a heavier regulatory load meant manual processes could not keep up. We piloted to find the highest-impact opportunities, built a group-level operating model for a scalable digital workforce, then trained Old Mutual's own people to run and grow it.</p>
             <div class="case-tags">
@@ -394,7 +438,10 @@
           <span class="case-ref">SSE / OVO</span>
         </div>
         <div class="case-grid">
+          <div>
+          <span class="blog-tag">Artificial Intelligence</span>
           <h3 class="case-headline">Automating complicated customer service interactions.</h3>
+          </div>
           <div>
             <p class="case-body">As energy bills climbed, so did call volumes. We built virtual agents that handle Direct Debit reviews and collections conversations end to end - across QR codes, URLs and WhatsApp - so customers can resolve arrears without waiting to speak to anyone.</p>
             <div class="case-tags">
@@ -416,7 +463,10 @@
           <span class="case-ref">Workforce provider</span>
         </div>
         <div class="case-grid">
+          <div>
+          <span class="blog-tag">Digital Solutions</span>
           <h3 class="case-headline">Halving onboarding time for a 30,000-strong healthcare workforce.</h3>
+          </div>
           <div>
             <p class="case-body">Onboarding ran on PDFs, email and phone calls, took 90 days and tied up 20 staff. Smart forms, robotic process automation and live dashboards cut that to 45 days and freed the team to double how many candidates they reach.</p>
             <div class="case-tags">
@@ -444,115 +494,49 @@
 
   <section class="clients">
     <span class="pill">Clients</span>
-    <h2>Trusted Across Sectors<br>and Geographies</h2>
+    <h2>Trusted across sectors<br>and geographies</h2>
 
-    <!-- Real client logos, reproduced from the "Our Clients represent multiple
-         sectors & geographies" row on digiblu.com. Rendered as single-ink
-         masks (see .client-logo) rather than the original full-colour art. -->
+    <!-- Real client logos, reproduced from the auto-scrolling "Our Clients
+         represent multiple sectors & geographies" carousel on digiblu.com
+         (all 14 logos across its 3 slides). Rendered as single-ink masks
+         (see .client-logo), same treatment as the Accreditations strip, and
+         looped the same way: two identical groups, only the first carrying
+         real accessible names. -->
 
-    <ul class="clients-row">
-      <li><span class="client-logo cl-acacium" role="img" aria-label="Acacium Group"></span></li>
-      <li><span class="client-logo cl-premex" role="img" aria-label="Premex"></span></li>
-      <li><span class="client-logo cl-sunrise" role="img" aria-label="Sunrise Medical"></span></li>
-      <li><span class="client-logo cl-equiniti" role="img" aria-label="Equiniti"></span></li>
-      <li><span class="client-logo cl-ovo" role="img" aria-label="OVO Energy"></span></li>
-    </ul>
-  </section>
-
-  <section class="testimonial">
-    <span class="pill">Testimonials</span>
-    <div class="tst-title">
-      <h2>Why Clients Rely on Us</h2>
-      <svg class="tst-mark" viewBox="0 0 102 74" fill="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <path id="qm" d="M0 8a8 8 0 0 1 8-8h28a8 8 0 0 1 8 8v30c0 20-12 32-30 36l-5-13c11-3 17-9 17-17H8a8 8 0 0 1-8-8V8z"/>
-        </defs>
-        <use href="#qm"/>
-        <use href="#qm" x="58"/>
-      </svg>
-    </div>
-    <p class="tst-sub">We hold a consistent client NPS of +80 across a wide range of industries and solution types.</p>
-
-    <!-- Real, published client quotes — the same three attributed quotes
-         used in the Case Studies section (OVO, AssuranceSD, Special Olympics
-         Canada), the only client-attributed quotes DigiBlu publishes. The
-         other five case-study quotes are DigiBlu staff speaking generally
-         about method, not clients endorsing DigiBlu, so they don't belong
-         here even though they're real. digiblu.com has no separate
-         testimonials page to draw additional quotes from. -->
-
-    <div class="tst-track">
-      <div class="tst-card">
-        <svg class="tst-quote-icon" viewBox="0 0 102 74" fill="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-          <use href="#qm"/><use href="#qm" x="58"/>
-        </svg>
-        <div class="tst-head">
-          <div class="tst-avatar">
-            <svg viewBox="0 0 96 96" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="48" cy="34" r="17" stroke="currentColor" stroke-width="5"/>
-              <path d="M14 88a34 34 0 0 1 68 0" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div>
-            <div class="tst-company">OVO</div>
-            <div class="tst-person">Jon Willicombe, Head of Early-Stage Collections</div>
-          </div>
-        </div>
-        <p class="tst-text">Our customers now have the option of resolving a debt issue using a Virtual Agent. They can do this as and when it suits them using digital channels. We have seen positive take-up by customers who have rated the overall customer experience as an improvement.</p>
-      </div>
-
-      <div class="tst-card">
-        <svg class="tst-quote-icon" viewBox="0 0 102 74" fill="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-          <use href="#qm"/><use href="#qm" x="58"/>
-        </svg>
-        <div class="tst-head">
-          <div class="tst-avatar" style="--a: #8bb8ff">
-            <svg viewBox="0 0 96 96" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="48" cy="34" r="17" stroke="currentColor" stroke-width="5"/>
-              <path d="M14 88a34 34 0 0 1 68 0" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div>
-            <div class="tst-company">AssuranceSD</div>
-            <div class="tst-person">Jeremy Maynor, SVP of Development</div>
-          </div>
-        </div>
-        <p class="tst-text">There is a lot of paperwork involved in enrolling new participants. For the participant, that paperwork adds no value, and is often a barrier to joining a long-term support program at all. Automating it has been a fantastic decision.</p>
-      </div>
-
-      <div class="tst-card">
-        <svg class="tst-quote-icon" viewBox="0 0 102 74" fill="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-          <use href="#qm"/><use href="#qm" x="58"/>
-        </svg>
-        <div class="tst-head">
-          <div class="tst-avatar" style="--a: #4a8dff">
-            <svg viewBox="0 0 96 96" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="48" cy="34" r="17" stroke="currentColor" stroke-width="5"/>
-              <path d="M14 88a34 34 0 0 1 68 0" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div>
-            <div class="tst-company">Special Olympics Canada</div>
-            <div class="tst-person">Rachel Coutts, Manager, Programs</div>
-          </div>
-        </div>
-        <p class="tst-text">It was a pleasure working alongside Nick and Mustapha from DigiBlu in the development of the Grant Application tool.</p>
-      </div>
-    </div>
-
-    <div class="tst-foot">
-      <div class="tst-bar"><span></span></div>
-      <div class="tst-nav">
-        <button class="prev" aria-label="Previous testimonial">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 12H5m0 0 6-6m-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <button class="next" aria-label="Next testimonial">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
+    <div class="clients-viewport">
+      <div class="clients-track">
+        <ul class="clients-group">
+          <li><span class="client-logo cl-acacium" role="img" aria-label="Acacium Group"></span></li>
+          <li><span class="client-logo cl-premex" role="img" aria-label="Premex"></span></li>
+          <li><span class="client-logo cl-sunrise" role="img" aria-label="Sunrise Medical"></span></li>
+          <li><span class="client-logo cl-equiniti" role="img" aria-label="Equiniti"></span></li>
+          <li><span class="client-logo cl-ovo" role="img" aria-label="OVO Energy"></span></li>
+          <li><span class="client-logo cl-peopleplus" role="img" aria-label="PeoplePlus"></span></li>
+          <li><span class="client-logo cl-benchmark" role="img" aria-label="Benchmark Capital"></span></li>
+          <li><span class="client-logo cl-assurancesd" role="img" aria-label="AssuranceSD"></span></li>
+          <li><span class="client-logo cl-eversheds" role="img" aria-label="Eversheds Sutherland"></span></li>
+          <li><span class="client-logo cl-bodybrave" role="img" aria-label="Body Brave"></span></li>
+          <li><span class="client-logo cl-gatenby" role="img" aria-label="GatenbySanderson"></span></li>
+          <li><span class="client-logo cl-soc" role="img" aria-label="Special Olympics Canada"></span></li>
+          <li><span class="client-logo cl-nychealth" role="img" aria-label="NYC Health + Hospitals"></span></li>
+          <li><span class="client-logo cl-innovative" role="img" aria-label="Innovative Business Concepts"></span></li>
+        </ul>
+        <ul class="clients-group" aria-hidden="true">
+          <li><span class="client-logo cl-acacium"></span></li>
+          <li><span class="client-logo cl-premex"></span></li>
+          <li><span class="client-logo cl-sunrise"></span></li>
+          <li><span class="client-logo cl-equiniti"></span></li>
+          <li><span class="client-logo cl-ovo"></span></li>
+          <li><span class="client-logo cl-peopleplus"></span></li>
+          <li><span class="client-logo cl-benchmark"></span></li>
+          <li><span class="client-logo cl-assurancesd"></span></li>
+          <li><span class="client-logo cl-eversheds"></span></li>
+          <li><span class="client-logo cl-bodybrave"></span></li>
+          <li><span class="client-logo cl-gatenby"></span></li>
+          <li><span class="client-logo cl-soc"></span></li>
+          <li><span class="client-logo cl-nychealth"></span></li>
+          <li><span class="client-logo cl-innovative"></span></li>
+        </ul>
       </div>
     </div>
   </section>
@@ -574,64 +558,72 @@
       </div>
     </div>
 
+    <!-- Real DigiBlu board and exec team, sourced from digiblu.com/about-digiblu
+         (names, titles and photos all real and published). Photos are
+         chroma-keyed cutouts of the originals with a CSS grayscale filter
+         applied — see .team-slice-photo. -->
     <div class="team-strip">
-      <button type="button" class="team-slice" aria-pressed="false">
-        <span class="team-slice-icon" aria-hidden="true">
-          <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="48" cy="34" r="17" stroke="currentColor" stroke-width="3"/><path d="M14 88a34 34 0 0 1 68 0" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
-        </span>
-        <span class="team-slice-label">
-          <span class="team-slice-eyebrow">Leadership</span>
-          <span class="team-slice-role">Managing Director</span>
-        </span>
-      </button>
-
-      <button type="button" class="team-slice" aria-pressed="false">
-        <span class="team-slice-icon" aria-hidden="true">
-          <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="48" cy="34" r="17" stroke="currentColor" stroke-width="3"/><path d="M14 88a34 34 0 0 1 68 0" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
-        </span>
-        <span class="team-slice-label">
-          <span class="team-slice-eyebrow">Artificial Intelligence</span>
-          <span class="team-slice-role">Head of AI &amp; Automation</span>
-        </span>
-      </button>
-
       <button type="button" class="team-slice active" aria-pressed="true">
-        <span class="team-slice-icon" aria-hidden="true">
-          <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="48" cy="34" r="17" stroke="currentColor" stroke-width="3"/><path d="M14 88a34 34 0 0 1 68 0" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
-        </span>
+        <span class="team-slice-photo tp-vic" aria-hidden="true"></span>
         <span class="team-slice-label">
-          <span class="team-slice-eyebrow">Process Excellence</span>
-          <span class="team-slice-role">Head of Process Excellence</span>
+          <span class="team-slice-name">Vic Gysin</span>
+          <span class="team-slice-role">Chief Executive Officer</span>
         </span>
       </button>
 
       <button type="button" class="team-slice" aria-pressed="false">
-        <span class="team-slice-icon" aria-hidden="true">
-          <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="48" cy="34" r="17" stroke="currentColor" stroke-width="3"/><path d="M14 88a34 34 0 0 1 68 0" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
-        </span>
+        <span class="team-slice-photo tp-david" aria-hidden="true"></span>
         <span class="team-slice-label">
-          <span class="team-slice-eyebrow">Digital Solutions</span>
+          <span class="team-slice-name">David Williams</span>
+          <span class="team-slice-role">Chief Strategy Officer</span>
+        </span>
+      </button>
+
+      <button type="button" class="team-slice" aria-pressed="false">
+        <span class="team-slice-photo tp-karen" aria-hidden="true"></span>
+        <span class="team-slice-label">
+          <span class="team-slice-name">Karen Potgieter</span>
+          <span class="team-slice-role">Chief Financial Officer</span>
+        </span>
+      </button>
+
+      <button type="button" class="team-slice" aria-pressed="false">
+        <span class="team-slice-photo tp-jon" aria-hidden="true"></span>
+        <span class="team-slice-label">
+          <span class="team-slice-name">Jon Hinder</span>
+          <span class="team-slice-role">Chief Operating Officer</span>
+        </span>
+      </button>
+
+      <button type="button" class="team-slice" aria-pressed="false">
+        <span class="team-slice-photo tp-martin" aria-hidden="true"></span>
+        <span class="team-slice-label">
+          <span class="team-slice-name">Martin McCloskey</span>
+          <span class="team-slice-role">Company Secretary</span>
+        </span>
+      </button>
+
+      <button type="button" class="team-slice" aria-pressed="false">
+        <span class="team-slice-photo tp-dianne" aria-hidden="true"></span>
+        <span class="team-slice-label">
+          <span class="team-slice-name">Dianne Harris</span>
+          <span class="team-slice-role">Head of Process Improvement</span>
+        </span>
+      </button>
+
+      <button type="button" class="team-slice" aria-pressed="false">
+        <span class="team-slice-photo tp-dave" aria-hidden="true"></span>
+        <span class="team-slice-label">
+          <span class="team-slice-name">Dave van der Westhuizen</span>
+          <span class="team-slice-role">Lead Consultant</span>
+        </span>
+      </button>
+
+      <button type="button" class="team-slice" aria-pressed="false">
+        <span class="team-slice-photo tp-nick" aria-hidden="true"></span>
+        <span class="team-slice-label">
+          <span class="team-slice-name">Nick Bantick</span>
           <span class="team-slice-role">Head of Digital Solutions</span>
-        </span>
-      </button>
-
-      <button type="button" class="team-slice" aria-pressed="false">
-        <span class="team-slice-icon" aria-hidden="true">
-          <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="48" cy="34" r="17" stroke="currentColor" stroke-width="3"/><path d="M14 88a34 34 0 0 1 68 0" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
-        </span>
-        <span class="team-slice-label">
-          <span class="team-slice-eyebrow">Opportunity Discovery</span>
-          <span class="team-slice-role">Principal Consultant</span>
-        </span>
-      </button>
-
-      <button type="button" class="team-slice" aria-pressed="false">
-        <span class="team-slice-icon" aria-hidden="true">
-          <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="48" cy="34" r="17" stroke="currentColor" stroke-width="3"/><path d="M14 88a34 34 0 0 1 68 0" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
-        </span>
-        <span class="team-slice-label">
-          <span class="team-slice-eyebrow">Client Delivery</span>
-          <span class="team-slice-role">Head of Client Delivery</span>
         </span>
       </button>
     </div>
@@ -736,10 +728,20 @@
         </div>
       </div>
 
+      <!-- Deliberately NOT the same territory as Services: those questions
+           ("How do we best make use of AI?" etc.) mapped 1:1 onto the six
+           service lines and were flagged as repetitive with the Services
+           section, twice — once as copy, then again once "More on [Service]"
+           links were added connecting each answer straight back to its
+           service popup. Both were removed on request. These five are
+           general engagement questions instead — about DigiBlu as a firm,
+           not about what any one service includes — so there is no service
+           this content could be confused with or link back to. Don't
+           reintroduce a per-question service link. -->
       <div class="faq-list">
         <div class="faq-item open">
           <button class="faq-question" aria-expanded="true">
-            <span>How do we best make use of AI?</span>
+            <span class="faq-question-text">What makes DigiBlu different from other consultancies?</span>
             <span class="faq-chev">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -748,14 +750,14 @@
           </button>
           <div class="faq-answer-wrap">
             <div class="faq-answer-inner">
-              <p class="faq-answer">We start by identifying where AI can create real, measurable value for your business, then guide you through governance and ethics so it is adopted responsibly from day one.</p>
+              <p class="faq-answer">We pair consulting judgment with people who have actually built and run the technology, not just advised on it. That, plus staying technology-agnostic rather than pushing one platform, is what keeps us honest about what will and won't work for you.</p>
             </div>
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-question" aria-expanded="false">
-            <span>How can we simplify complex processes?</span>
+            <span class="faq-question-text">What size of company do you typically work with?</span>
             <span class="faq-chev">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -764,14 +766,14 @@
           </button>
           <div class="faq-answer-wrap">
             <div class="faq-answer-inner">
-              <p class="faq-answer">We map how your people, processes, and technology actually work today, then bring AI, digital, and human effort together into a single, simpler framework built to last.</p>
+              <p class="faq-answer">Everything from mid-sized businesses to large enterprises and public sector bodies, across financial services, energy, healthcare, education and government. What matters more than size is having a real problem worth solving.</p>
             </div>
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-question" aria-expanded="false">
-            <span>What digital solutions are right for us?</span>
+            <span class="faq-question-text">How long does a typical engagement take?</span>
             <span class="faq-chev">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -780,14 +782,14 @@
           </button>
           <div class="faq-answer-wrap">
             <div class="faq-answer-inner">
-              <p class="faq-answer">That depends on your goals, so we design and deploy tailored automation and digital tools built around them, typically within weeks, with support that continues after go-live.</p>
+              <p class="faq-answer">It depends on scope, but we structure engagements to reach a first measurable result in weeks rather than months, then build from there rather than asking you to commit to a long programme upfront.</p>
             </div>
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-question" aria-expanded="false">
-            <span>Is our operating model fit for purpose?</span>
+            <span class="faq-question-text">Do we need to replace our existing systems and tools?</span>
             <span class="faq-chev">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -796,14 +798,14 @@
           </button>
           <div class="faq-answer-wrap">
             <div class="faq-answer-inner">
-              <p class="faq-answer">Often, it needs realigning rather than replacing. We assess how well your resources, processes, and technology serve your objectives, then shape a model built for sustainable growth.</p>
+              <p class="faq-answer">Usually not. We're technology-agnostic, so we work with what you already have wherever it fits, and only recommend a change where there's a genuine case for it, not because it's our preferred platform.</p>
             </div>
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-question" aria-expanded="false">
-            <span>How do we maintain a competitive advantage?</span>
+            <span class="faq-question-text">Who will actually be working on our project?</span>
             <span class="faq-chev">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -812,7 +814,7 @@
           </button>
           <div class="faq-answer-wrap">
             <div class="faq-answer-inner">
-              <p class="faq-answer">Our work does not stop at go-live. We stay on to adapt your systems as the business changes, so continuous, cost-effective improvement keeps you ahead rather than catching up.</p>
+              <p class="faq-answer">Practitioners with client-side, technology and consultancy backgrounds, not just advisors. The same people scoping the work are typically the ones delivering it, so nothing gets lost in handover.</p>
             </div>
           </div>
         </div>
@@ -826,13 +828,7 @@
     <div class="footer-inner">
       <div class="footer-brand">
         <div class="footer-logo">
-          <span class="footer-logo-mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 16 10 10 14 14 20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M14 6h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-          <span class="footer-logo-text">DigiBlu</span>
+          <span class="logo-mark" role="img" aria-label="DigiBlu"></span>
         </div>
         <p class="footer-desc">Experienced practitioners with client, technology, and consultancy backgrounds, working as pragmatic, technology-agnostic partners focused on speed to value.</p>
         <p class="footer-address">Digiblu UK Ltd., Steeple House, Suite 3 First Floor, Church Lane, Chelmsford, Essex, CM1 1NH, United Kingdom.</p>
@@ -888,8 +884,6 @@
     </div>
 
     <div class="footer-bottom">&copy; DigiBlu UK Limited 2026. All rights reserved.</div>
-
-    <div class="footer-wordmark" aria-hidden="true">DigiBlu</div>
   </footer>
 
   <button type="button" class="scroll-top-btn" id="scrollTopBtn" aria-label="Scroll to top">
@@ -973,6 +967,12 @@
                 <option>Flexible</option>
               </select>
             </div>
+            <div class="modal-field modal-consent">
+              <label class="modal-checkbox">
+                <input type="checkbox" id="cf-consent" required>
+                <span>I agree to DigiBlu's <a href="legal/privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a> and consent to being contacted about my enquiry.</span>
+              </label>
+            </div>
           </div>
 
           <div class="modal-actions">
@@ -1037,6 +1037,9 @@
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 5l14 14M19 5 5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
       <div class="case-modal-body">
+        <!-- A duplicate "All case studies" link was trialled here at the top
+             of the popup and rejected on review — it belongs only in the
+             footer below. Don't re-add it. -->
         <span class="pill case-modal-eyebrow" id="caseDetailSector">Case Study</span>
         <h2 id="caseDetailTitle"></h2>
         <p class="case-modal-client" id="caseDetailClient"></p>
@@ -1062,6 +1065,10 @@
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 5l14 14M19 5 5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
       <div class="service-modal-body">
+        <!-- Cloned from the clicked card's own .blog-art so it can never
+             drift from the grid, and placed above the heading so it leads
+             both the key-points view and the expanded article. -->
+        <div class="blog-modal-art" id="blogDetailArt" aria-hidden="true"></div>
         <span class="pill service-modal-eyebrow" id="blogDetailTag">Artificial Intelligence</span>
         <h2 id="blogDetailTitle"></h2>
         <div class="blog-meta" id="blogDetailMeta"></div>
@@ -1112,51 +1119,6 @@
   </div>
 
   <script>
-    function initCarousel(sel) {
-      var track = document.querySelector(sel.track);
-      var prev = document.querySelector(sel.prev);
-      var next = document.querySelector(sel.next);
-      var thumb = sel.thumb ? document.querySelector(sel.thumb) : null;
-      if (!track || !prev || !next) return;
-
-      // Derive the scroll distance from the live card width so it stays
-      // correct when a breakpoint narrows the cards.
-      function step() {
-        var card = track.querySelector(sel.card);
-        var gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-        return card ? card.getBoundingClientRect().width + gap : 280;
-      }
-
-      function sync() {
-        var max = track.scrollWidth - track.clientWidth;
-        prev.disabled = track.scrollLeft <= 1;
-        next.disabled = track.scrollLeft >= max - 1;
-        if (thumb) {
-          // Size the thumb to the visible proportion and slide it by progress,
-          // so it reads as a real scrollbar rather than a static decoration.
-          var ratio = track.clientWidth / track.scrollWidth;
-          thumb.style.width = Math.min(ratio * 100, 100) + '%';
-          thumb.style.left = (track.scrollLeft / track.scrollWidth) * 100 + '%';
-        }
-      }
-
-      prev.addEventListener('click', function () {
-        track.scrollBy({ left: -step(), behavior: 'smooth' });
-      });
-      next.addEventListener('click', function () {
-        track.scrollBy({ left: step(), behavior: 'smooth' });
-      });
-      track.addEventListener('scroll', sync, { passive: true });
-      window.addEventListener('resize', sync);
-      sync();
-    }
-
-    initCarousel({
-      track: '.tst-track', card: '.tst-card',
-      prev: '.tst-nav .prev', next: '.tst-nav .next',
-      thumb: '.tst-bar span'
-    });
-
     (function () {
       var items = document.querySelectorAll('.faq-item');
       items.forEach(function (item, i) {
@@ -1228,6 +1190,32 @@
           window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
         });
       }
+    })();
+
+    (function () {
+      // Nav is now position: fixed (see .site-nav) so it stays available
+      // while scrolling instead of disappearing with the hero, on request.
+      // --nav-h drives .hero's padding-top and html's scroll-padding-top, so
+      // it is measured from the real rendered nav rather than hand-guessed —
+      // a mismatch either hides content under the bar or leaves a gap.
+      var siteNav = document.getElementById('siteNav');
+      var navEl = siteNav ? siteNav.querySelector('nav') : null;
+      if (!siteNav || !navEl) return;
+
+      function syncHeight() {
+        document.documentElement.style.setProperty('--nav-h', navEl.offsetHeight + 'px');
+      }
+      window.addEventListener('resize', syncHeight);
+      syncHeight();
+
+      // Solidifies almost immediately on scroll, not only once the hero is
+      // fully passed — a transparent bar over the very top of the next
+      // section's content would still be hard to read.
+      function syncScrolled() {
+        siteNav.classList.toggle('scrolled', window.scrollY > 24);
+      }
+      window.addEventListener('scroll', syncScrolled, { passive: true });
+      syncScrolled();
     })();
 
     (function () {
@@ -1636,11 +1624,11 @@
             { v: 'Zero', l: 'Version-control issues' }
           ],
           overview: 'Special Olympics is a global grassroots movement bringing community programmes and competition to more than 4.5 million children and adults with intellectual disabilities across 170 countries. In Canada, over 41,000 people take part, supported by local sport clubs and more than 17,500 volunteers.',
-          problem: 'Provincial and territorial Chapters apply to Special Olympics Canada for programme funding each year. The process ran on Microsoft Excel and long email chains, losing version control and giving everyone a poor experience. SOC already used Jotform elsewhere, but this data was more complex - needing careful analysis of the future-state workflow and custom widgets.',
+          problem: 'Provincial and territorial Chapters apply to Special Olympics Canada (SOC) for programme funding each year. The process ran on Microsoft Excel and long email chains, losing version control and giving everyone a poor experience. SOC already used Jotform elsewhere, but this data was more complex - needing careful analysis of the future-state workflow and custom widgets.',
           solution: 'Jotform introduced SOC to DigiBlu as an Elite Partner experienced in complex custom builds. A discovery workshop with SOC subject-matter experts mapped the workflow and found opportunities to improve it. We built custom widgets alongside a portal where SOC and the Chapters collaborate on grant applications, document budget expenditure and track performance against targets.',
           outcome: 'The portal gives both SOC and the Chapters a clear experience for submitting applications and updating records through the year. Custom widgets handle standardisation and automation, and structuring a yearly record per Chapter eliminated the version-control problem entirely - leaving everyone free to focus on the events that change thousands of lives.',
           quote: {
-            text: '“It was a pleasure working alongside Nick and Mustapha from DigiBlu in the development of the Grant Application tool.”',
+            text: '“It was a pleasure working alongside Nick and Mustapha from DigiBlu in the development of the Grant Application tool. We cannot thank DigiBlu enough for this custom solution and look forward to future projects with them.”',
             cite: 'Rachel Coutts, Manager, Programs - Special Olympics Canada'
           }
         },
@@ -1651,7 +1639,7 @@
           service: 'Digital Solutions',
           title: 'Halving onboarding time for a 30,000-strong healthcare workforce.',
           stats: [
-            { v: '90 → 45', l: 'Days to onboard' },
+            { v: '90 → 45 days', l: 'Time to onboard' },
             { v: '2×', l: 'Candidate outreach' },
             { v: '30,000+', l: 'Professionals placed weekly' }
           ],
@@ -1746,6 +1734,7 @@
       var quoteTextEl = document.getElementById('caseDetailQuoteText');
       var quoteCiteEl = document.getElementById('caseDetailQuoteCite');
       var backBtn = document.getElementById('caseDetailBack');
+
 
       function renderIndex() {
         listEl.innerHTML = '';
@@ -2314,6 +2303,7 @@
       if (!overlay) return;
       var modal = createModalController(overlay);
 
+      var artEl = document.getElementById('blogDetailArt');
       var tagEl = document.getElementById('blogDetailTag');
       var titleEl = document.getElementById('blogDetailTitle');
       var metaEl = document.getElementById('blogDetailMeta');
@@ -2354,6 +2344,12 @@
       function populate(key) {
         var post = BLOG_POSTS[key];
         if (!post) return false;
+
+        // Reuse the grid card's own art panel rather than re-deriving which
+        // gradient/icon this post uses, so the two can never disagree.
+        artEl.innerHTML = '';
+        var cardArt = document.querySelector('.blog-card[data-post="' + key + '"] .blog-art');
+        if (cardArt) artEl.appendChild(cardArt.cloneNode(true));
 
         tagEl.textContent = post.tag;
         titleEl.textContent = post.title;
@@ -2413,37 +2409,31 @@
       // are standard descriptions of the scheme, not DigiBlu-specific claims.
       var BADGE_DETAILS = {
         '9001': {
-          cls: 'ab-9001',
           img: 'assets/badges/iso-9001.png',
           title: 'ISO 9001',
           desc: 'The international standard for quality management systems. It sets out the requirements for consistently delivering services that meet customer and regulatory expectations, with a structured focus on continual improvement.'
         },
         '14001': {
-          cls: 'ab-14001',
           img: 'assets/badges/iso-14001.png',
           title: 'ISO 14001',
           desc: 'The international standard for environmental management systems. It provides a framework for managing environmental responsibilities and reducing operational impact in a systematic, measurable way.'
         },
         '27001': {
-          cls: 'ab-27001',
           img: 'assets/badges/iso-27001.png',
           title: 'ISO 27001',
           desc: 'The international standard for information security management. It covers the policies, controls and risk management processes used to keep client and company data secure.'
         },
         '42001': {
-          cls: 'ab-42001',
           img: 'assets/badges/iso-42001.png',
           title: 'ISO 42001',
           desc: 'The first international standard for AI management systems. It sets requirements for developing and using artificial intelligence responsibly, covering governance, risk and impact across the AI lifecycle.'
         },
         cyber: {
-          cls: 'ab-cyber',
           img: 'assets/badges/cyber-essentials-plus.png',
           title: 'Cyber Essentials Plus',
           desc: 'A UK government-backed cyber security certification. Unlike the base-level scheme, Plus requires independent technical testing to verify that essential controls against common cyber attacks are properly in place.'
         },
         gcloud: {
-          cls: 'ab-gcloud',
           img: 'assets/badges/gcloud.png',
           // The only asset DigiBlu publishes is white line-art on transparency
           // (no colour of its own), so it needs the permanent dark plate — see
@@ -2463,14 +2453,6 @@
       var titleEl = document.getElementById('badgeModalTitle');
       var descEl = document.getElementById('badgeModalDesc');
 
-      // Reverse lookup from mask class (e.g. "ab-9001") back to the
-      // BADGE_DETAILS key, so a clicked element can be identified purely
-      // from its class regardless of which of the four DOM copies it is.
-      var CLASS_TO_KEY = {};
-      Object.keys(BADGE_DETAILS).forEach(function (k) {
-        CLASS_TO_KEY[BADGE_DETAILS[k].cls] = k;
-      });
-
       function populate(key) {
         var d = BADGE_DETAILS[key];
         if (!d) return false;
@@ -2482,47 +2464,20 @@
         return true;
       }
 
-      // Delegated on the track rather than bound per-element: the strip
-      // shows each mark four times (twice to fill the row, doubled again for
-      // the seamless scroll loop), but only the first copy is a real
-      // .accred-item-btn — the rest are plain aria-hidden spans that carry no
-      // accessible name of their own, by design (see the CLAUDE.md note on
-      // why not all 24 are real buttons). Binding clicks only to that one
-      // button meant the other three visually-identical copies did nothing
-      // when clicked, which read as random icons being broken. Delegation
-      // makes every visible copy open the same, correct popup, while the
-      // real buttons still carry the Tab-reachable accessible names and
-      // keyboard activation aria-hidden spans can't provide.
+      // Delegated on the track rather than bound per-chip: the strip shows
+      // each chip twice (the duplicate group drives the seamless loop), and
+      // because it auto-scrolls, whichever copy is under the cursor when a
+      // visitor clicks is arbitrary. Binding only the six real buttons would
+      // leave the other six looking identical but doing nothing.
       var track = document.querySelector('.accred-track');
-      if (track) {
-        track.addEventListener('click', function (e) {
-          // A real mouse click lands directly on the badge span (masks don't
-          // affect hit-testing, so the full box is clickable even where the
-          // mask paints it transparent) and closest() finds it by walking up.
-          // Keyboard activation (Enter/Space on the focused button) instead
-          // dispatches the click with the *button* as e.target — the badge
-          // is its child, not an ancestor, so closest() alone misses it.
-          // Resolving the wrapper first, then searching back down, covers
-          // both: a real click's target already satisfies the wrapper
-          // selector (an .accred-item-btn IS one, or an .accred-badge's own
-          // closest .accred-item is), and a keyboard click's button target
-          // does too.
-          var wrapper = e.target.closest('.accred-item, .accred-item-btn');
-          if (!wrapper) return;
-          var badgeEl = wrapper.querySelector('.accred-badge');
-          if (!badgeEl) return;
-          var key = null;
-          for (var i = 0; i < badgeEl.classList.length; i++) {
-            if (CLASS_TO_KEY[badgeEl.classList[i]]) { key = CLASS_TO_KEY[badgeEl.classList[i]]; break; }
-          }
-          if (!key || !populate(key)) return;
-          // Only the accessible copy is a real button worth restoring focus
-          // to; a click on a decorative span leaves the default (whatever
-          // was already focused) behaviour in createModalController.open().
-          var btn = badgeEl.closest('.accred-item-btn');
-          modal.open(btn || undefined);
-        });
-      }
+      if (!track) return;
+      track.addEventListener('click', function (e) {
+        var btn = e.target.closest('.accred-chip');
+        if (!btn || !populate(btn.dataset.badge)) return;
+        // Focus is only restored to the real, tab-reachable copy; clicking a
+        // duplicate leaves createModalController's default behaviour.
+        modal.open(btn.getAttribute('tabindex') === '-1' ? undefined : btn);
+      });
     })();
 
     (function () {

@@ -44,7 +44,19 @@ const LEGAL_DETAILS = evalBlock(
   'LEGAL_DETAILS'
 );
 
-console.log('Extracted', CASE_STUDIES.length, 'case studies,', Object.keys(BLOG_POSTS).length, 'blog posts,', Object.keys(LEGAL_DETAILS).length, 'legal docs');
+// Each post's art panel (gradient class + category icon) is authored in the
+// homepage's blog card markup, not in BLOG_POSTS, so it is lifted straight
+// from there rather than re-derived — the blog detail modal clones the same
+// node for the same reason, so card, modal and static page cannot disagree.
+const BLOG_ART = (function () {
+  const art = {};
+  const cardRe = /<a href="blog\/([^"]+)\.html" class="blog-card"[^>]*>\s*(<div class="blog-art[\s\S]*?<\/div>)/g;
+  let m;
+  while ((m = cardRe.exec(html))) art[m[1]] = m[2];
+  return art;
+})();
+
+console.log('Extracted', CASE_STUDIES.length, 'case studies,', Object.keys(BLOG_POSTS).length, 'blog posts,', Object.keys(LEGAL_DETAILS).length, 'legal docs,', Object.keys(BLOG_ART).length, 'blog art panels');
 
 // Real digiblu.com URL slugs for legal docs (from LEGAL_DETAILS[key].url),
 // nicer than the terse internal keys ('terms', 'privacy', etc.)
@@ -120,7 +132,7 @@ function pageHeader() {
   <a class="skip-link" href="#detail-content">Skip to content</a>
 
   <nav class="page-header">
-    <div class="logo">DigiBlu</div>
+    <a href="../index.html#hero-content" class="logo" aria-label="DigiBlu, home"><span class="logo-mark" aria-hidden="true"></span></a>
 
     <ul class="nav-center">
       <li><a href="../index.html#hero-content">Home</a></li>
@@ -169,13 +181,7 @@ function pageFooter() {
     <div class="footer-inner">
       <div class="footer-brand">
         <div class="footer-logo">
-          <span class="footer-logo-mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 16 10 10 14 14 20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M14 6h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-          <span class="footer-logo-text">DigiBlu</span>
+          <span class="logo-mark" role="img" aria-label="DigiBlu"></span>
         </div>
         <p class="footer-desc">Experienced practitioners with client, technology, and consultancy backgrounds, working as pragmatic, technology-agnostic partners focused on speed to value.</p>
         <p class="footer-address">Digiblu UK Ltd., Steeple House, Suite 3 First Floor, Church Lane, Chelmsford, Essex, CM1 1NH, United Kingdom.</p>
@@ -225,8 +231,6 @@ function pageFooter() {
     </div>
 
     <div class="footer-bottom">&copy; DigiBlu UK Limited 2026. All rights reserved.</div>
-
-    <div class="footer-wordmark" aria-hidden="true">DigiBlu</div>
   </footer>
 `;
 }
@@ -375,6 +379,7 @@ function renderBlogPost(key, p) {
   <main>
     <div class="detail-page" id="detail-content">
 ${backLink()}
+      <div class="blog-modal-art" aria-hidden="true">${BLOG_ART[key] || ''}</div>
       <span class="pill service-modal-eyebrow">${escapeHtml(p.tag)}</span>
       <h1>${escapeHtml(p.title)}</h1>
       <div class="blog-meta"><span>${escapeHtml(p.date)}</span><span class="dot"></span><span>${escapeHtml(p.read)}</span></div>
