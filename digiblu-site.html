@@ -1157,7 +1157,14 @@
     scrollbar-gutter: stable;
   }
 
-  .case-modal-eyebrow { margin-bottom: 18px; }
+  /* max-width is load-bearing, not cosmetic: this pill is display:inline-flex
+     with no width of its own, so without a cap it never wraps and can
+     overflow straight into .modal-close (32px circle, inset 18px) once the
+     panel gets narrow enough — at any viewport, not just the mobile
+     breakpoint below, since long sector/service strings differ in width by
+     device/font-rendering. See the mobile breakpoint for the extra type
+     shrink on small screens. */
+  .case-modal-eyebrow { margin-bottom: 18px; max-width: calc(100% - 30px); }
 
   .case-modal-body h2 {
     font-size: 26px;
@@ -2588,7 +2595,7 @@
     scrollbar-gutter: stable;
   }
 
-  .service-modal-eyebrow { margin-bottom: 18px; }
+  .service-modal-eyebrow { margin-bottom: 18px; max-width: calc(100% - 30px); }
 
   .service-modal-body h2 {
     font-size: 26px;
@@ -2728,16 +2735,12 @@
     .service-modal-body { padding: 32px 34px 28px 24px; }
 
     /* The eyebrow pill is the only content that reaches the panel's top-right
-       corner, where .modal-close sits (32px wide, inset 18px). The body's own
-       right padding stops ~16px short of clearing it, so at this width the
-       longest sector string ("Financial Services · Target Operating Model")
-       ran under the X. Smaller type buys some of that back; the max-width is
-       what actually guarantees it, since a long enough string would otherwise
-       still reach regardless of font size. Capping the width lets it wrap
-       instead of colliding. */
+       corner, where .modal-close sits (32px wide, inset 18px). The max-width
+       that keeps it clear of the X lives on the base rule now (applies at
+       every width, not just here) — this breakpoint just buys back some
+       density on small screens with smaller type once it wraps. */
     .case-modal-eyebrow,
     .service-modal-eyebrow {
-      max-width: calc(100% - 30px);
       font-size: 10.5px;
       padding: 5px 11px;
       letter-spacing: 1.1px;
@@ -4578,7 +4581,7 @@
           key: 'old-mutual',
           client: 'Old Mutual',
           sector: 'Financial Services',
-          service: 'Target Operating Model',
+          service: 'TOM',
           title: 'Designing, deploying and scaling an automation Centre of Excellence.',
           stats: [
             { v: '64', l: 'Processes automated' },
