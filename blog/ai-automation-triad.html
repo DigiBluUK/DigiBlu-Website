@@ -81,6 +81,21 @@
         <li><a href="../index.html#case-studies">Case Studies</a></li>
         <li><a href="../index.html#team">Our Experts</a></li>
       </ul>
+      <!-- Mirrors the homepage: below 900px the theme toggle and CTA move
+           out of the bar and into the menu. No id on this toggle —
+           #themeToggle must stay unique; the script binds by class. -->
+      <div class="mobile-menu-actions">
+        <button class="theme-toggle" aria-label="Switch to light mode">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <a class="btn-signup" href="../index.html#contact">Get in touch</a>
+      </div>
     </div>
   </nav>
 
@@ -204,9 +219,11 @@
   </footer>
   <script>
     (function () {
-      var btn = document.getElementById('themeToggle');
+      // Binds every .theme-toggle: below 900px the bar's copy is hidden and
+      // the one inside the mobile menu takes over, and both must stay in sync.
+      var btns = document.querySelectorAll('.theme-toggle');
       var meta = document.querySelector('meta[name="theme-color"]');
-      if (!btn) return;
+      if (!btns.length) return;
       function effective() {
         var attr = document.documentElement.getAttribute('data-theme');
         if (attr === 'light' || attr === 'dark') return attr;
@@ -214,14 +231,18 @@
       }
       function label() {
         var isLight = effective() === 'light';
-        btn.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
+        btns.forEach(function (b) {
+          b.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
+        });
         if (meta) meta.setAttribute('content', isLight ? '#ffffff' : '#000000');
       }
-      btn.addEventListener('click', function () {
-        var next = effective() === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', next);
-        try { localStorage.setItem('digiblu-theme', next); } catch (e) {}
-        label();
+      btns.forEach(function (b) {
+        b.addEventListener('click', function () {
+          var next = effective() === 'light' ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', next);
+          try { localStorage.setItem('digiblu-theme', next); } catch (e) {}
+          label();
+        });
       });
       window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', label);
       label();

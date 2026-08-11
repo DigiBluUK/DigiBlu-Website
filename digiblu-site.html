@@ -503,6 +503,23 @@
 
   .mobile-menu a:hover { background: rgba(var(--ink-rgb),0.06); }
 
+  /* Only rendered below 900px (see the breakpoint block) — holds the theme
+     toggle and CTA that are hidden from the bar itself at that width. */
+  .mobile-menu-actions {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(var(--ink-rgb),0.12);
+  }
+
+  .mobile-menu-actions .btn-signup {
+    flex: 1;
+    padding: 11px 14px;
+    font-size: 15px;
+  }
+
   /* ---------- Center content ---------- */
   .hero-center {
     flex: 1;
@@ -2615,6 +2632,26 @@
     nav { position: relative; }
     .faq-grid { grid-template-columns: 1fr; gap: 40px; }
     .faq-sub { max-width: 460px; }
+
+    /* Icon only, no wordmark, so the bar stays uncluttered next to the
+       hamburger. Done by cropping the existing single lockup mask rather
+       than shipping a second asset: `auto 100%` scales the mask by height
+       and lets it overflow the 32px box, which `left center` anchors to the
+       circular mark (the mark occupies the first 24.3% of the 313x76 mask,
+       = 30px once the mask is 30px tall). Re-derive the width if the mask
+       is ever regenerated. */
+    .logo-mark {
+      width: 32px;
+      -webkit-mask-size: auto 100%;
+      mask-size: auto 100%;
+    }
+
+    /* The bar keeps only the logo and the hamburger; these two move into
+       the menu panel (see .mobile-menu-actions). */
+    .nav-right .theme-toggle,
+    .nav-right .btn-signup { display: none; }
+
+    .mobile-menu-actions { display: flex; }
   }
 
   @media (max-width: 760px) {
@@ -2786,6 +2823,25 @@
           <li><a href="#case-studies">Case Studies</a></li>
           <li><a href="#team">Our Experts</a></li>
         </ul>
+        <!-- The theme toggle and CTA move in here below 900px, so the mobile
+             bar is just the icon and the hamburger. These are separate
+             elements from the ones in .nav-right rather than the same nodes
+             moved by CSS (you can't reparent with CSS), which is why the
+             theme toggle here carries no id — #themeToggle must stay unique.
+             The theme script binds every .theme-toggle, and .js-contact-open
+             is likewise bound by class, so both work with no extra wiring. -->
+        <div class="mobile-menu-actions">
+          <button class="theme-toggle" aria-label="Switch to light mode">
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            </svg>
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button class="btn-signup js-contact-open">Get in touch</button>
+        </div>
       </div>
     </nav>
     </div>
@@ -3798,9 +3854,13 @@
     })();
 
     (function () {
-      var btn = document.getElementById('themeToggle');
+      // Every .theme-toggle, not just #themeToggle: below 900px the nav's
+      // copy is hidden and a second one inside the mobile menu takes over,
+      // and both have to stay in sync (a stale aria-label would announce
+      // the wrong action).
+      var btns = document.querySelectorAll('.theme-toggle');
       var meta = document.querySelector('meta[name="theme-color"]');
-      if (!btn) return;
+      if (!btns.length) return;
 
       // With no explicit choice stamped yet, the effective theme is whatever
       // the OS preference resolves to.
@@ -3812,15 +3872,19 @@
 
       function label() {
         var isLight = effective() === 'light';
-        btn.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
+        btns.forEach(function (b) {
+          b.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
+        });
         if (meta) meta.setAttribute('content', isLight ? '#ffffff' : '#000000');
       }
 
-      btn.addEventListener('click', function () {
-        var next = effective() === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', next);
-        try { localStorage.setItem('digiblu-theme', next); } catch (e) {}
-        label();
+      btns.forEach(function (b) {
+        b.addEventListener('click', function () {
+          var next = effective() === 'light' ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', next);
+          try { localStorage.setItem('digiblu-theme', next); } catch (e) {}
+          label();
+        });
       });
 
       window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', label);
@@ -3843,7 +3907,11 @@
       });
 
       menu.addEventListener('click', function (e) {
-        if (e.target.tagName === 'A') setMenu(false);
+        // Nav links close the menu; so does the CTA, which would otherwise
+        // leave the panel sitting open behind the contact dialog. The theme
+        // toggle deliberately does not — you should be able to see the theme
+        // change without the menu shutting on you.
+        if (e.target.tagName === 'A' || e.target.closest('.js-contact-open')) setMenu(false);
       });
 
       document.addEventListener('click', function (e) {

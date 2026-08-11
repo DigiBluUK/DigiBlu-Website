@@ -501,6 +501,23 @@
 
   .mobile-menu a:hover { background: rgba(var(--ink-rgb),0.06); }
 
+  /* Only rendered below 900px (see the breakpoint block) — holds the theme
+     toggle and CTA that are hidden from the bar itself at that width. */
+  .mobile-menu-actions {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(var(--ink-rgb),0.12);
+  }
+
+  .mobile-menu-actions .btn-signup {
+    flex: 1;
+    padding: 11px 14px;
+    font-size: 15px;
+  }
+
   /* ---------- Center content ---------- */
   .hero-center {
     flex: 1;
@@ -2613,6 +2630,26 @@
     nav { position: relative; }
     .faq-grid { grid-template-columns: 1fr; gap: 40px; }
     .faq-sub { max-width: 460px; }
+
+    /* Icon only, no wordmark, so the bar stays uncluttered next to the
+       hamburger. Done by cropping the existing single lockup mask rather
+       than shipping a second asset: `auto 100%` scales the mask by height
+       and lets it overflow the 32px box, which `left center` anchors to the
+       circular mark (the mark occupies the first 24.3% of the 313x76 mask,
+       = 30px once the mask is 30px tall). Re-derive the width if the mask
+       is ever regenerated. */
+    .logo-mark {
+      width: 32px;
+      -webkit-mask-size: auto 100%;
+      mask-size: auto 100%;
+    }
+
+    /* The bar keeps only the logo and the hamburger; these two move into
+       the menu panel (see .mobile-menu-actions). */
+    .nav-right .theme-toggle,
+    .nav-right .btn-signup { display: none; }
+
+    .mobile-menu-actions { display: flex; }
   }
 
   @media (max-width: 760px) {
