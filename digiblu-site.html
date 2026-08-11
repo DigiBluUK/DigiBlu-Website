@@ -1634,6 +1634,33 @@
 
   .team-slice.active .team-slice-label { opacity: 1; transform: translateY(0); }
 
+  /* Without this there is nothing telling you a slice opens a profile — the
+     expanded panel looked like the end state, so a click on it appeared to
+     do nothing. Sits on the active slice only at desktop widths (a collapsed
+     56-80px slice has no room, and its first click expands rather than
+     opening the dialog anyway); on mobile every row shows it, because there
+     a tap goes straight to the profile. */
+  .team-slice-more {
+    position: absolute;
+    z-index: 1;
+    top: 18px;
+    right: 18px;
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.16);
+    opacity: 0;
+    transition: opacity 0.3s ease 0.15s, background 0.2s ease;
+  }
+
+  .team-slice-more svg { width: 15px; height: 15px; }
+
+  .team-slice.active .team-slice-more { opacity: 1; }
+  .team-slice.active:hover .team-slice-more { background: rgba(255, 255, 255, 0.3); }
+
   .team-slice-name {
     display: block;
     font-size: 19px;
@@ -1721,6 +1748,21 @@
 
     .team-slice-name { font-size: 16.5px; color: var(--text); }
     .team-slice-role { font-size: 13px; color: rgba(var(--ink-rgb), var(--ink-a-high)); }
+
+    /* Every row here, not just the active one: a tap opens the profile
+       directly at this width, so each row needs the affordance. Static
+       rather than absolute, pushed right by the label's auto margin, and
+       theme-aware since it now sits on the slice surface rather than on a
+       photo. */
+    .team-slice-label { flex: 1; }
+
+    .team-slice-more {
+      position: static;
+      opacity: 1;
+      flex-shrink: 0;
+      color: rgba(var(--ink-rgb), var(--ink-a-high));
+      background: rgba(var(--ink-rgb), 0.08);
+    }
   }
 
   /* ---------- FAQ ---------- */
@@ -2654,11 +2696,6 @@
 
   .team-modal-body .service-modal-intro { text-align: left; }
 
-  /* The published quote, where the member has one. Left-aligned against the
-     centred header so it reads as a pull quote rather than more heading. */
-  .team-modal-quote { margin-top: 22px; text-align: left; }
-  .team-modal-quote[hidden] { display: none; }
-
   .badge-modal-body .service-modal-eyebrow { display: block; }
   .badge-modal-body h2 { margin-bottom: 10px; }
   .badge-modal-body .service-modal-intro { margin-bottom: 0; text-align: left; }
@@ -3281,6 +3318,9 @@
           <span class="team-slice-name">Vic Gysin</span>
           <span class="team-slice-role">Chief Executive Officer</span>
         </span>
+        <span class="team-slice-more" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
       </button>
 
       <button type="button" class="team-slice" aria-pressed="false">
@@ -3288,6 +3328,9 @@
         <span class="team-slice-label">
           <span class="team-slice-name">David Williams</span>
           <span class="team-slice-role">Chief Strategy Officer</span>
+        </span>
+        <span class="team-slice-more" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </span>
       </button>
 
@@ -3297,6 +3340,9 @@
           <span class="team-slice-name">Karen Potgieter</span>
           <span class="team-slice-role">Chief Financial Officer</span>
         </span>
+        <span class="team-slice-more" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
       </button>
 
       <button type="button" class="team-slice" aria-pressed="false">
@@ -3304,6 +3350,9 @@
         <span class="team-slice-label">
           <span class="team-slice-name">Jon Hinder</span>
           <span class="team-slice-role">Chief Operating Officer</span>
+        </span>
+        <span class="team-slice-more" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </span>
       </button>
 
@@ -3313,6 +3362,9 @@
           <span class="team-slice-name">Martin McCloskey</span>
           <span class="team-slice-role">Company Secretary</span>
         </span>
+        <span class="team-slice-more" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
       </button>
 
       <button type="button" class="team-slice" aria-pressed="false">
@@ -3320,6 +3372,9 @@
         <span class="team-slice-label">
           <span class="team-slice-name">Dianne Harris</span>
           <span class="team-slice-role">Head of Process Improvement</span>
+        </span>
+        <span class="team-slice-more" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </span>
       </button>
 
@@ -3329,6 +3384,9 @@
           <span class="team-slice-name">Dave van der Westhuizen</span>
           <span class="team-slice-role">Lead Consultant</span>
         </span>
+        <span class="team-slice-more" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
       </button>
 
       <button type="button" class="team-slice" aria-pressed="false">
@@ -3336,6 +3394,9 @@
         <span class="team-slice-label">
           <span class="team-slice-name">Nick Bantick</span>
           <span class="team-slice-role">Head of Digital Solutions</span>
+        </span>
+        <span class="team-slice-more" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </span>
       </button>
     </div>
@@ -3818,11 +3879,9 @@
        as the accreditation chips opening #badgeModal. Reuses .service-panel
        and the badge modal's centred visual treatment.
 
-       The bio paragraph is intentionally omitted when a member has no bio
-       text: digiblu.com publishes only name and job title for these people,
-       so bios have to come from DigiBlu rather than be written here. The
-       quote, where present, is that person's own published words from the
-       case studies, not authored copy. -->
+       The bio paragraph is omitted entirely when a member has no bio text:
+       digiblu.com publishes only name and job title for these people, so
+       bios have to come from DigiBlu rather than be written here. -->
   <div class="modal-overlay" id="teamModal">
     <div class="modal-panel service-panel team-panel" role="dialog" aria-modal="true" aria-labelledby="teamModalName" tabindex="-1">
       <button class="modal-close" aria-label="Close">
@@ -3833,10 +3892,6 @@
         <h2 id="teamModalName"></h2>
         <p class="team-modal-role" id="teamModalRole"></p>
         <p class="service-modal-intro" id="teamModalBio" hidden></p>
-        <figure class="case-modal-quote team-modal-quote" id="teamModalQuote" hidden>
-          <p id="teamModalQuoteText"></p>
-          <cite id="teamModalQuoteCite"></cite>
-        </figure>
       </div>
     </div>
   </div>
@@ -3903,35 +3958,25 @@
       }
 
       // Name, role and photo are all real and published on
-      // digiblu.com/about-digiblu. `bio` is empty because that page publishes
-      // nothing beyond name and title — biographical copy has to come from
-      // DigiBlu rather than be invented here, and the popup simply omits the
-      // paragraph until it is supplied. `quote` is the person's own published
-      // words, lifted from the case study they are credited in.
+      // digiblu.com/about-digiblu. The bios are marked [Placeholder] because
+      // that page publishes nothing beyond name and title — real biographical
+      // copy has to come from DigiBlu rather than be invented here.
       var TEAM_MEMBERS = [
         { name: 'Vic Gysin', role: 'Chief Executive Officer', cls: 'tp-vic', bio: '[Placeholder] A short profile for Vic Gysin will sit here - background, focus areas, and the kind of work Vic leads at DigiBlu. To be replaced with copy supplied by DigiBlu.' },
         { name: 'David Williams', role: 'Chief Strategy Officer', cls: 'tp-david', bio: '[Placeholder] A short profile for David Williams will sit here - background, focus areas, and the kind of work David leads at DigiBlu. To be replaced with copy supplied by DigiBlu.' },
         { name: 'Karen Potgieter', role: 'Chief Financial Officer', cls: 'tp-karen', bio: '[Placeholder] A short profile for Karen Potgieter will sit here - background, focus areas, and the kind of work Karen leads at DigiBlu. To be replaced with copy supplied by DigiBlu.' },
         {
-          name: 'Jon Hinder', role: 'Chief Operating Officer', cls: 'tp-jon', bio: '[Placeholder] A short profile for Jon Hinder will sit here - background, focus areas, and the kind of work Jon leads at DigiBlu. To be replaced with copy supplied by DigiBlu.',
-          quote: 'An Automation Centre of Excellence accelerates growth by streamlining processes, reducing costs, and driving consistent, scalable automation - empowering your business to operate smarter and faster.',
-          quoteSource: 'Old Mutual case study'
+          name: 'Jon Hinder', role: 'Chief Operating Officer', cls: 'tp-jon', bio: '[Placeholder] A short profile for Jon Hinder will sit here - background, focus areas, and the kind of work Jon leads at DigiBlu. To be replaced with copy supplied by DigiBlu.'
         },
         { name: 'Martin McCloskey', role: 'Company Secretary', cls: 'tp-martin', bio: '[Placeholder] A short profile for Martin McCloskey will sit here - background, focus areas, and the kind of work Martin leads at DigiBlu. To be replaced with copy supplied by DigiBlu.' },
         {
-          name: 'Dianne Harris', role: 'Head of Process Improvement', cls: 'tp-dianne', bio: '[Placeholder] A short profile for Dianne Harris will sit here - background, focus areas, and the kind of work Dianne leads at DigiBlu. To be replaced with copy supplied by DigiBlu.',
-          quote: 'Empower your team for automation success by implementing best-practice processes, policies, and training programs - equipping them with the skills to excel.',
-          quoteSource: 'First National Bank case study'
+          name: 'Dianne Harris', role: 'Head of Process Improvement', cls: 'tp-dianne', bio: '[Placeholder] A short profile for Dianne Harris will sit here - background, focus areas, and the kind of work Dianne leads at DigiBlu. To be replaced with copy supplied by DigiBlu.'
         },
         {
-          name: 'Dave van der Westhuizen', role: 'Lead Consultant', cls: 'tp-dave', bio: '[Placeholder] A short profile for Dave van der Westhuizen will sit here - background, focus areas, and the kind of work Dave leads at DigiBlu. To be replaced with copy supplied by DigiBlu.',
-          quote: 'By integrating intelligent automation solutions, you can optimise processes end-to-end, delivering measurable benefits to your customers, operations, and bottom line.',
-          quoteSource: 'Global healthcare workforce provider case study'
+          name: 'Dave van der Westhuizen', role: 'Lead Consultant', cls: 'tp-dave', bio: '[Placeholder] A short profile for Dave van der Westhuizen will sit here - background, focus areas, and the kind of work Dave leads at DigiBlu. To be replaced with copy supplied by DigiBlu.'
         },
         {
-          name: 'Nick Bantick', role: 'Head of Digital Solutions', cls: 'tp-nick', bio: '[Placeholder] A short profile for Nick Bantick will sit here - background, focus areas, and the kind of work Nick leads at DigiBlu. To be replaced with copy supplied by DigiBlu.',
-          quote: 'Universities often struggle with cumbersome paper-based processes and data management challenges. By embracing digital tools to streamline data capture and automate workflows, institutions can alleviate these burdens and enhance the experiences of both students and staff.',
-          quoteSource: 'Northwest University case study'
+          name: 'Nick Bantick', role: 'Head of Digital Solutions', cls: 'tp-nick', bio: '[Placeholder] A short profile for Nick Bantick will sit here - background, focus areas, and the kind of work Nick leads at DigiBlu. To be replaced with copy supplied by DigiBlu.'
         }
       ];
 
@@ -3941,9 +3986,6 @@
       var nameEl = document.getElementById('teamModalName');
       var roleEl = document.getElementById('teamModalRole');
       var bioEl = document.getElementById('teamModalBio');
-      var quoteEl = document.getElementById('teamModalQuote');
-      var quoteTextEl = document.getElementById('teamModalQuoteText');
-      var quoteCiteEl = document.getElementById('teamModalQuoteCite');
 
       function openProfile(i, opener) {
         var m = TEAM_MEMBERS[i];
@@ -3958,13 +4000,6 @@
         if (m.bio) { bioEl.textContent = m.bio; bioEl.hidden = false; }
         else { bioEl.textContent = ''; bioEl.hidden = true; }
 
-        if (m.quote) {
-          quoteTextEl.textContent = '“' + m.quote + '”';
-          quoteCiteEl.textContent = m.quoteSource || '';
-          quoteEl.hidden = false;
-        } else {
-          quoteEl.hidden = true;
-        }
         modal.open(opener);
       }
 

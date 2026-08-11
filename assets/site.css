@@ -1632,6 +1632,33 @@
 
   .team-slice.active .team-slice-label { opacity: 1; transform: translateY(0); }
 
+  /* Without this there is nothing telling you a slice opens a profile — the
+     expanded panel looked like the end state, so a click on it appeared to
+     do nothing. Sits on the active slice only at desktop widths (a collapsed
+     56-80px slice has no room, and its first click expands rather than
+     opening the dialog anyway); on mobile every row shows it, because there
+     a tap goes straight to the profile. */
+  .team-slice-more {
+    position: absolute;
+    z-index: 1;
+    top: 18px;
+    right: 18px;
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.16);
+    opacity: 0;
+    transition: opacity 0.3s ease 0.15s, background 0.2s ease;
+  }
+
+  .team-slice-more svg { width: 15px; height: 15px; }
+
+  .team-slice.active .team-slice-more { opacity: 1; }
+  .team-slice.active:hover .team-slice-more { background: rgba(255, 255, 255, 0.3); }
+
   .team-slice-name {
     display: block;
     font-size: 19px;
@@ -1719,6 +1746,21 @@
 
     .team-slice-name { font-size: 16.5px; color: var(--text); }
     .team-slice-role { font-size: 13px; color: rgba(var(--ink-rgb), var(--ink-a-high)); }
+
+    /* Every row here, not just the active one: a tap opens the profile
+       directly at this width, so each row needs the affordance. Static
+       rather than absolute, pushed right by the label's auto margin, and
+       theme-aware since it now sits on the slice surface rather than on a
+       photo. */
+    .team-slice-label { flex: 1; }
+
+    .team-slice-more {
+      position: static;
+      opacity: 1;
+      flex-shrink: 0;
+      color: rgba(var(--ink-rgb), var(--ink-a-high));
+      background: rgba(var(--ink-rgb), 0.08);
+    }
   }
 
   /* ---------- FAQ ---------- */
@@ -2651,11 +2693,6 @@
   }
 
   .team-modal-body .service-modal-intro { text-align: left; }
-
-  /* The published quote, where the member has one. Left-aligned against the
-     centred header so it reads as a pull quote rather than more heading. */
-  .team-modal-quote { margin-top: 22px; text-align: left; }
-  .team-modal-quote[hidden] { display: none; }
 
   .badge-modal-body .service-modal-eyebrow { display: block; }
   .badge-modal-body h2 { margin-bottom: 10px; }
