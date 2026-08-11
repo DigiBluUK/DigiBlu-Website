@@ -114,7 +114,14 @@
     }
   })();
 </script>
-<link rel="stylesheet" href="assets/site.css">
+<!-- ?v= is a cache buster, not decoration. GitHub Pages (and most static
+     hosts) serve assets with long cache lifetimes, so a returning visitor can
+     get fresh HTML alongside a stale stylesheet — which renders as a
+     half-broken page rather than an obviously old one: the Clients carousel
+     collapses to a plain vertical list and the Team photos disappear, because
+     the cached CSS predates those rules. Bump this whenever site.css changes
+     materially. -->
+<link rel="stylesheet" href="assets/site.css?v=20260811">
 </head>
 <body>
   <a class="skip-link" href="#hero-content">Skip to content</a>
