@@ -183,6 +183,7 @@
         <li><a href="#services">Services</a></li>
         <li><a href="#case-studies">Case Studies</a></li>
         <li><a href="#team">Our Experts</a></li>
+        <li><a href="#faq">FAQ</a></li>
       </ul>
 
       <div class="nav-right">
@@ -213,14 +214,17 @@
           <li><a href="#services">Services</a></li>
           <li><a href="#case-studies">Case Studies</a></li>
           <li><a href="#team">Our Experts</a></li>
+          <li><a href="#faq">FAQ</a></li>
         </ul>
-        <!-- The theme toggle and CTA move in here below 900px, so the mobile
-             bar is just the icon and the hamburger. These are separate
-             elements from the ones in .nav-right rather than the same nodes
-             moved by CSS (you can't reparent with CSS), which is why the
-             theme toggle here carries no id — #themeToggle must stay unique.
-             The theme script binds every .theme-toggle, and .js-contact-open
-             is likewise bound by class, so both work with no extra wiring. -->
+        <!-- Only the theme toggle lives in here. The CTA sits in the bar at
+             every width — there is room for it beside the hamburger, and it
+             is the page's primary action so it shouldn't be a tap away.
+             This is a separate element from the one in .nav-right rather
+             than the same node moved by CSS (you can't reparent with CSS),
+             which is why it carries no id — #themeToggle must stay unique.
+             The theme script binds every .theme-toggle, so it needs no extra
+             wiring; it also sets the visible label, which must stay equal to
+             the aria-label (WCAG 2.5.3, label in name). -->
         <div class="mobile-menu-actions">
           <button class="theme-toggle" aria-label="Switch to light mode">
             <svg class="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -230,8 +234,8 @@
               <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7"/>
               <path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
             </svg>
+            <span class="theme-toggle-label">Switch to light mode</span>
           </button>
-          <button class="btn-signup js-contact-open">Get in touch</button>
         </div>
       </div>
     </nav>
@@ -1128,6 +1132,33 @@
     </div>
   </div>
 
+  <!-- Team member profile, opened from the Our Experts strip — same pattern
+       as the accreditation chips opening #badgeModal. Reuses .service-panel
+       and the badge modal's centred visual treatment.
+
+       The bio paragraph is intentionally omitted when a member has no bio
+       text: digiblu.com publishes only name and job title for these people,
+       so bios have to come from DigiBlu rather than be written here. The
+       quote, where present, is that person's own published words from the
+       case studies, not authored copy. -->
+  <div class="modal-overlay" id="teamModal">
+    <div class="modal-panel service-panel team-panel" role="dialog" aria-modal="true" aria-labelledby="teamModalName" tabindex="-1">
+      <button class="modal-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 5l14 14M19 5 5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <div class="service-modal-body team-modal-body">
+        <span class="team-modal-photo" id="teamModalPhoto" role="img" aria-label=""></span>
+        <h2 id="teamModalName"></h2>
+        <p class="team-modal-role" id="teamModalRole"></p>
+        <p class="service-modal-intro" id="teamModalBio" hidden></p>
+        <figure class="case-modal-quote team-modal-quote" id="teamModalQuote" hidden>
+          <p id="teamModalQuoteText"></p>
+          <cite id="teamModalQuoteCite"></cite>
+        </figure>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-overlay" id="legalModal">
     <div class="modal-panel service-panel" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle" tabindex="-1">
       <button class="modal-close" aria-label="Close">
@@ -1189,8 +1220,83 @@
         });
       }
 
+      // Name, role and photo are all real and published on
+      // digiblu.com/about-digiblu. `bio` is empty because that page publishes
+      // nothing beyond name and title — biographical copy has to come from
+      // DigiBlu rather than be invented here, and the popup simply omits the
+      // paragraph until it is supplied. `quote` is the person's own published
+      // words, lifted from the case study they are credited in.
+      var TEAM_MEMBERS = [
+        { name: 'Vic Gysin', role: 'Chief Executive Officer', cls: 'tp-vic', bio: '[Placeholder] A short profile for Vic Gysin will sit here - background, focus areas, and the kind of work Vic leads at DigiBlu. To be replaced with copy supplied by DigiBlu.' },
+        { name: 'David Williams', role: 'Chief Strategy Officer', cls: 'tp-david', bio: '[Placeholder] A short profile for David Williams will sit here - background, focus areas, and the kind of work David leads at DigiBlu. To be replaced with copy supplied by DigiBlu.' },
+        { name: 'Karen Potgieter', role: 'Chief Financial Officer', cls: 'tp-karen', bio: '[Placeholder] A short profile for Karen Potgieter will sit here - background, focus areas, and the kind of work Karen leads at DigiBlu. To be replaced with copy supplied by DigiBlu.' },
+        {
+          name: 'Jon Hinder', role: 'Chief Operating Officer', cls: 'tp-jon', bio: '[Placeholder] A short profile for Jon Hinder will sit here - background, focus areas, and the kind of work Jon leads at DigiBlu. To be replaced with copy supplied by DigiBlu.',
+          quote: 'An Automation Centre of Excellence accelerates growth by streamlining processes, reducing costs, and driving consistent, scalable automation - empowering your business to operate smarter and faster.',
+          quoteSource: 'Old Mutual case study'
+        },
+        { name: 'Martin McCloskey', role: 'Company Secretary', cls: 'tp-martin', bio: '[Placeholder] A short profile for Martin McCloskey will sit here - background, focus areas, and the kind of work Martin leads at DigiBlu. To be replaced with copy supplied by DigiBlu.' },
+        {
+          name: 'Dianne Harris', role: 'Head of Process Improvement', cls: 'tp-dianne', bio: '[Placeholder] A short profile for Dianne Harris will sit here - background, focus areas, and the kind of work Dianne leads at DigiBlu. To be replaced with copy supplied by DigiBlu.',
+          quote: 'Empower your team for automation success by implementing best-practice processes, policies, and training programs - equipping them with the skills to excel.',
+          quoteSource: 'First National Bank case study'
+        },
+        {
+          name: 'Dave van der Westhuizen', role: 'Lead Consultant', cls: 'tp-dave', bio: '[Placeholder] A short profile for Dave van der Westhuizen will sit here - background, focus areas, and the kind of work Dave leads at DigiBlu. To be replaced with copy supplied by DigiBlu.',
+          quote: 'By integrating intelligent automation solutions, you can optimise processes end-to-end, delivering measurable benefits to your customers, operations, and bottom line.',
+          quoteSource: 'Global healthcare workforce provider case study'
+        },
+        {
+          name: 'Nick Bantick', role: 'Head of Digital Solutions', cls: 'tp-nick', bio: '[Placeholder] A short profile for Nick Bantick will sit here - background, focus areas, and the kind of work Nick leads at DigiBlu. To be replaced with copy supplied by DigiBlu.',
+          quote: 'Universities often struggle with cumbersome paper-based processes and data management challenges. By embracing digital tools to streamline data capture and automate workflows, institutions can alleviate these burdens and enhance the experiences of both students and staff.',
+          quoteSource: 'Northwest University case study'
+        }
+      ];
+
+      var overlay = document.getElementById('teamModal');
+      var modal = overlay ? createModalController(overlay) : null;
+      var photoEl = document.getElementById('teamModalPhoto');
+      var nameEl = document.getElementById('teamModalName');
+      var roleEl = document.getElementById('teamModalRole');
+      var bioEl = document.getElementById('teamModalBio');
+      var quoteEl = document.getElementById('teamModalQuote');
+      var quoteTextEl = document.getElementById('teamModalQuoteText');
+      var quoteCiteEl = document.getElementById('teamModalQuoteCite');
+
+      function openProfile(i, opener) {
+        var m = TEAM_MEMBERS[i];
+        if (!m || !modal) return;
+        // The photo classes (.tp-*) already carry each headshot as a CSS
+        // background, so the modal reuses them rather than duplicating paths.
+        photoEl.className = 'team-modal-photo ' + m.cls;
+        photoEl.setAttribute('aria-label', m.name);
+        nameEl.textContent = m.name;
+        roleEl.textContent = m.role;
+
+        if (m.bio) { bioEl.textContent = m.bio; bioEl.hidden = false; }
+        else { bioEl.textContent = ''; bioEl.hidden = true; }
+
+        if (m.quote) {
+          quoteTextEl.textContent = '“' + m.quote + '”';
+          quoteCiteEl.textContent = m.quoteSource || '';
+          quoteEl.hidden = false;
+        } else {
+          quoteEl.hidden = true;
+        }
+        modal.open(opener);
+      }
+
+      // Below 760px the strip is a stacked list with every name already
+      // visible, so there is nothing to expand and a tap goes straight to the
+      // profile. Above it, a tap on a collapsed slice expands it first (its
+      // name isn't readable until it does) and a second tap opens the profile.
+      var stacked = window.matchMedia('(max-width: 760px)');
+
       slices.forEach(function (el, i) {
-        el.addEventListener('click', function () { setActive(i); });
+        el.addEventListener('click', function () {
+          if (stacked.matches || el.classList.contains('active')) openProfile(i, el);
+          else setActive(i);
+        });
       });
 
       if (prevBtn) prevBtn.addEventListener('click', function () {
@@ -1263,8 +1369,13 @@
 
       function label() {
         var isLight = effective() === 'light';
+        var text = isLight ? 'Switch to dark mode' : 'Switch to light mode';
         btns.forEach(function (b) {
-          b.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
+          b.setAttribute('aria-label', text);
+          // The menu copy carries a visible label; it must match the
+          // aria-label exactly (WCAG 2.5.3), so both are set from one string.
+          var vis = b.querySelector('.theme-toggle-label');
+          if (vis) vis.textContent = text;
         });
         if (meta) meta.setAttribute('content', isLight ? '#ffffff' : '#000000');
       }

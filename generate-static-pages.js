@@ -140,6 +140,7 @@ function pageHeader() {
       <li><a href="../index.html#services">Services</a></li>
       <li><a href="../index.html#case-studies">Case Studies</a></li>
       <li><a href="../index.html#team">Our Experts</a></li>
+      <li><a href="../index.html#faq">FAQ</a></li>
     </ul>
 
     <div class="nav-right">
@@ -170,10 +171,12 @@ function pageHeader() {
         <li><a href="../index.html#services">Services</a></li>
         <li><a href="../index.html#case-studies">Case Studies</a></li>
         <li><a href="../index.html#team">Our Experts</a></li>
+        <li><a href="../index.html#faq">FAQ</a></li>
       </ul>
-      <!-- Mirrors the homepage: below 900px the theme toggle and CTA move
-           out of the bar and into the menu. No id on this toggle —
-           #themeToggle must stay unique; the script binds by class. -->
+      <!-- Mirrors the homepage: below 900px only the theme toggle moves out
+           of the bar and into the menu (the CTA stays in the bar). No id on
+           this toggle — #themeToggle must stay unique; the script binds by
+           class, and sets the visible label to match the aria-label. -->
       <div class="mobile-menu-actions">
         <button class="theme-toggle" aria-label="Switch to light mode">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -183,8 +186,8 @@ function pageHeader() {
             <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7"/>
             <path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
           </svg>
+          <span class="theme-toggle-label">Switch to light mode</span>
         </button>
-        <a class="btn-signup" href="../index.html#contact">Get in touch</a>
       </div>
     </div>
   </nav>
@@ -265,8 +268,11 @@ function pageScripts() {
       }
       function label() {
         var isLight = effective() === 'light';
+        var text = isLight ? 'Switch to dark mode' : 'Switch to light mode';
         btns.forEach(function (b) {
-          b.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
+          b.setAttribute('aria-label', text);
+          var vis = b.querySelector('.theme-toggle-label');
+          if (vis) vis.textContent = text;
         });
         if (meta) meta.setAttribute('content', isLight ? '#ffffff' : '#000000');
       }

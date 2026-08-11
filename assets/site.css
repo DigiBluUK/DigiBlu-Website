@@ -502,21 +502,35 @@
   .mobile-menu a:hover { background: rgba(var(--ink-rgb),0.06); }
 
   /* Only rendered below 900px (see the breakpoint block) — holds the theme
-     toggle and CTA that are hidden from the bar itself at that width. */
+     toggle, which is the one control that moves out of the bar at that
+     width. The CTA stays in the bar at every size. */
   .mobile-menu-actions {
     display: none;
     align-items: center;
-    gap: 10px;
     margin-top: 10px;
-    padding-top: 12px;
+    padding-top: 10px;
     border-top: 1px solid rgba(var(--ink-rgb),0.12);
   }
 
-  .mobile-menu-actions .btn-signup {
-    flex: 1;
-    padding: 11px 14px;
+  /* Overrides the 38px circle from .theme-toggle: alone in a menu of text
+     rows, a bare icon button reads as cryptic, so this becomes a labelled
+     full-width row matching the nav links above it. */
+  .mobile-menu-actions .theme-toggle {
+    width: 100%;
+    height: auto;
+    justify-content: flex-start;
+    gap: 10px;
+    border: none;
+    border-radius: 9px;
+    background: none;
+    padding: 13px 14px;
+    font-family: 'DM Sans', sans-serif;
     font-size: 15px;
+    font-weight: 500;
+    color: rgba(var(--ink-rgb),0.92);
   }
+
+  .mobile-menu-actions .theme-toggle:hover { background: rgba(var(--ink-rgb),0.06); }
 
   /* ---------- Center content ---------- */
   .hero-center {
@@ -1101,6 +1115,28 @@
   @media (max-width: 820px) {
     .case-grid { grid-template-columns: 1fr; gap: 22px; }
     .case-meta { flex-direction: column; gap: 6px; }
+  }
+
+  /* The chips are sized for a desktop card. Once the grid is a single narrow
+     column they stop reading as small metadata and start competing with the
+     headline: at 375px the longest ("Under half the cost per transaction")
+     ran 213px, about two-thirds of the 327px content width, stacked under a
+     198px topic tag. Nothing overflowed — they were simply too heavy for the
+     space. Stepping down type, padding and gap keeps them subordinate. */
+  @media (max-width: 620px) {
+    .cases .blog-tag {
+      font-size: 10px;
+      padding: 4px 10px;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .case-tags { gap: 6px; margin-top: 16px; }
+
+    .case-tag {
+      font-size: 10.5px;
+      padding: 4px 9px;
+    }
   }
 
   /* ---------- Case study modals (index + detail) ----------
@@ -2584,6 +2620,43 @@
     padding: 18px 26px;
   }
 
+  /* ---------- Team member profile modal ----------
+     Opened from the Our Experts strip, same pattern as the accreditation
+     chips. Reuses .service-panel and the badge modal's centred layout; the
+     photo reuses the .tp-* background classes from the strip itself so the
+     headshot paths live in exactly one place. */
+  .team-panel { max-width: 460px; }
+
+  .team-modal-body { text-align: center; }
+
+  .team-modal-photo {
+    display: block;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background-size: 190%;
+    background-position: center center;
+    filter: grayscale(1);
+    box-shadow: 0 0 0 1px rgba(var(--ink-rgb), 0.16);
+  }
+
+  .team-modal-body h2 { margin-bottom: 4px; }
+
+  .team-modal-role {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+    margin-bottom: 18px;
+  }
+
+  .team-modal-body .service-modal-intro { text-align: left; }
+
+  /* The published quote, where the member has one. Left-aligned against the
+     centred header so it reads as a pull quote rather than more heading. */
+  .team-modal-quote { margin-top: 22px; text-align: left; }
+  .team-modal-quote[hidden] { display: none; }
+
   .badge-modal-body .service-modal-eyebrow { display: block; }
   .badge-modal-body h2 { margin-bottom: 10px; }
   .badge-modal-body .service-modal-intro { margin-bottom: 0; text-align: left; }
@@ -2644,10 +2717,10 @@
       mask-size: auto 100%;
     }
 
-    /* The bar keeps only the logo and the hamburger; these two move into
-       the menu panel (see .mobile-menu-actions). */
-    .nav-right .theme-toggle,
-    .nav-right .btn-signup { display: none; }
+    /* Only the theme toggle moves into the menu — the CTA stays in the bar
+       beside the hamburger, since there is room for it and it is the page's
+       primary action. */
+    .nav-right .theme-toggle { display: none; }
 
     .mobile-menu-actions { display: flex; }
   }
