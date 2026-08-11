@@ -2726,6 +2726,22 @@
     .modal-step .step-label { font-size: 11px; }
     .modal-field-row { grid-template-columns: 1fr; gap: 0; }
     .service-modal-body { padding: 32px 34px 28px 24px; }
+
+    /* The eyebrow pill is the only content that reaches the panel's top-right
+       corner, where .modal-close sits (32px wide, inset 18px). The body's own
+       right padding stops ~16px short of clearing it, so at this width the
+       longest sector string ("Financial Services · Target Operating Model")
+       ran under the X. Smaller type buys some of that back; the max-width is
+       what actually guarantees it, since a long enough string would otherwise
+       still reach regardless of font size. Capping the width lets it wrap
+       instead of colliding. */
+    .case-modal-eyebrow,
+    .service-modal-eyebrow {
+      max-width: calc(100% - 30px);
+      font-size: 10.5px;
+      padding: 5px 11px;
+      letter-spacing: 1.1px;
+    }
   }
 
   /* ---------- Breakpoints ---------- */
