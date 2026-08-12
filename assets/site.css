@@ -543,6 +543,19 @@
     padding: 60px var(--gutter) 40px;
   }
 
+  /* Mobile-only brand mark above the headline. Desktop has the nav's own
+     full-size logo doing that job in the same viewport as the headline, so
+     it stays hidden there; on mobile the nav crops to icon-only (see
+     .logo-mark's 900px override below) so this reinstates the full
+     icon+wordmark lockup where a plain "DigiBlu" text eyebrow used to sit
+     before it was removed for being redundant with the desktop nav. A
+     separate class from .logo-mark on purpose — that class gets cropped to
+     icon-only at this same breakpoint for the nav bar, which would fight
+     the full lockup wanted here. */
+  .hero-logo {
+    display: none;
+  }
+
   h1 {
     font-size: clamp(42px, 7.2vw, 92px);
     line-height: 1.06;
@@ -2779,6 +2792,25 @@
     .nav-right .theme-toggle { display: none; }
 
     .mobile-menu-actions { display: flex; }
+
+    /* Full icon+wordmark lockup, contain-fit rather than the nav's
+       left-anchored crop — this sits centred above the headline, not in a
+       fixed-height bar, so the whole mark should show. */
+    .hero-logo {
+      display: block;
+      width: 168px;
+      height: 40px;
+      margin: 0 auto 22px;
+      background-color: currentColor;
+      -webkit-mask-image: url('logo-mask.png');
+      mask-image: url('logo-mask.png');
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+    }
   }
 
   @media (max-width: 760px) {
