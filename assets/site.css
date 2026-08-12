@@ -1676,15 +1676,18 @@
      56-80px slice has no room, and its first click expands rather than
      opening the dialog anyway); on mobile every row shows it, because there
      a tap goes straight to the profile. */
-  /* Fixed dark-navy chip (the scrim's own tone, not a theme token) rather
-     than a white-on-translucent-white fill: this sits at the slice's top
-     right, above where the ::after scrim reaches (that gradient only
-     covers the bottom ~78%), and the headshots are transparent-background
-     cutouts — so at that corner it can be sitting directly on the plain
-     surface, not the photo. In light theme that surface is near-white,
-     which made a white icon on a white chip invisible (rgb(255,255,255) on
-     rgb(246,247,249), ~1:1 contrast). A tone tied to the photo scrim reads
-     the same regardless of theme or what part of the photo is beneath it. */
+  /* Brand blue, and deliberately the *same* fill at every width — the
+     mobile block below overrides only layout now, not colour, so this is
+     the single source of truth for how the affordance reads.
+
+     It has to be a fixed colour rather than a theme token: on desktop this
+     sits at the slice's top right, above where the ::after scrim reaches
+     (that gradient only covers the bottom ~78%), and the headshots are
+     transparent-background cutouts — so at that corner it can be sitting
+     on the plain surface rather than the photo. A theme-derived fill went
+     white-on-near-white there in light mode (~1:1). Solid blue separates
+     from both surfaces (4.20:1 light, 4.47:1 dark) and from the photos,
+     which are grayscale-filtered and so can never collide with it. */
   .team-slice-more {
     position: absolute;
     z-index: 1;
@@ -1696,8 +1699,7 @@
     place-items: center;
     border-radius: 50%;
     color: #ffffff;
-    background: rgba(4, 8, 26, 0.55);
-    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: var(--blue);
     opacity: 0;
     transition: opacity 0.3s ease 0.15s, background 0.2s ease;
   }
@@ -1705,7 +1707,12 @@
   .team-slice-more svg { width: 15px; height: 15px; }
 
   .team-slice.active .team-slice-more { opacity: 1; }
-  .team-slice.active:hover .team-slice-more { background: rgba(4, 8, 26, 0.7); }
+
+  /* No --blue-dark token exists (every other blue control in this file is
+     a flat var(--blue) with no hover shift), so this is a one-off literal:
+     var(--blue) at 88% brightness. Raises white-on-blue from 4.56:1 to
+     5.61:1, so the hover state is never the weaker of the two. */
+  .team-slice.active:hover .team-slice-more { background: #1a61d8; }
 
   .team-slice-name {
     display: block;
@@ -1797,17 +1804,15 @@
 
     /* Every row here, not just the active one: a tap opens the profile
        directly at this width, so each row needs the affordance. Static
-       rather than absolute, pushed right by the label's auto margin, and
-       theme-aware since it now sits on the slice surface rather than on a
-       photo. */
+       rather than absolute, pushed right by the label's auto margin.
+       Layout only — the blue fill and white glyph are inherited from the
+       base rule so the affordance is identical on mobile and desktop. */
     .team-slice-label { flex: 1; }
 
     .team-slice-more {
       position: static;
       opacity: 1;
       flex-shrink: 0;
-      color: rgba(var(--ink-rgb), var(--ink-a-high));
-      background: rgba(var(--ink-rgb), 0.08);
     }
   }
 
