@@ -122,7 +122,7 @@ function pageHead({ title, description, canonicalPath, ogType }) {
     }
   })();
 </script>
-<link rel="stylesheet" href="../assets/site.css?v=20260811">
+<link rel="stylesheet" href="../assets/site.css?v=20260812">
 </head>
 `;
 }

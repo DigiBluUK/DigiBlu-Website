@@ -1767,7 +1767,15 @@
 
     /* Same circular face crop as the inactive desktop slices, including the
        zoom — without it the whole bust shrinks into a 48px circle and the
-       face is unreadable. */
+       face is unreadable.
+
+       box-shadow is repeated here rather than left to the desktop rule that
+       defines it: that rule is .team-slice:not(.active) .team-slice-photo,
+       and the first slice keeps its .active class at this width (the strip
+       has no expand/collapse on mobile, so nothing ever clears it). It
+       therefore matched every row's ring except the first one's. Restating
+       it on the unqualified selector covers the active row too, so all
+       eight circles are identical here. */
     .team-slice-photo,
     .team-slice:not(.active) .team-slice-photo {
       position: static;
@@ -1780,6 +1788,7 @@
       height: 48px;
       border-radius: 50%;
       background-size: 190%;
+      box-shadow: 0 0 0 1px rgba(var(--ink-rgb), 0.16);
       opacity: 1;
     }
 
