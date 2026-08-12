@@ -584,6 +584,9 @@
 
   .btn-started {
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     background: #ffffff;
     color: #000000;
     border: none;
@@ -595,6 +598,10 @@
     cursor: pointer;
     white-space: nowrap;
   }
+
+  /* Sized to the text's own cap height rather than the 15px font-size, so
+     the arrow reads as part of the word rather than looming over it. */
+  .btn-started svg { width: 13px; height: 13px; flex-shrink: 0; }
 
   .hero-bottom p {
     font-size: 19px;
@@ -1206,12 +1213,18 @@
     margin-bottom: 28px;
   }
 
+  /* Brand blue rather than the neutral tint these used to carry. It is a
+     fixed-colour surface in both themes, so ink is pinned white locally -
+     the same pattern the hero and accent cards use (grep
+     `--ink-rgb: 255, 255, 255`), not a theme token that would flip. */
   .case-stat {
     flex: 1 1 140px;
     padding: 14px 16px;
-    background: rgba(var(--ink-rgb), 0.05);
-    border: 1px solid rgba(var(--ink-rgb), 0.12);
+    background: var(--blue);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 12px;
+    --ink-rgb: 255, 255, 255;
+    --text: #ffffff;
   }
 
   .case-stat b {
@@ -1223,10 +1236,15 @@
     margin-bottom: 2px;
   }
 
+  /* Full white, not the usual muted alpha. Brand blue leaves almost no
+     contrast headroom - pure white on #1d6ef5 measures 4.56:1, so the 0.6
+     alpha these labels carried elsewhere would land at 2.6:1 and fail AA
+     outright. The hierarchy against the number above comes from size and
+     weight (12px/400 vs 20px/700) instead of opacity. */
   .case-stat span {
     font-size: 12px;
     line-height: 1.4;
-    color: rgba(var(--ink-rgb), 0.6);
+    color: #ffffff;
   }
 
   .case-section { margin-bottom: 22px; }
@@ -2157,10 +2175,16 @@
      tinted band — a brand-navy footer and a deeper-neutral band were both
      tried and explicitly rejected. The single hairline is the *only*
      intended division from the FAQ section above; keep it. */
+  /* Matches .footer-bottom's own 0.1 rule below rather than --hairline
+     (0.28), so the two horizontal lines in the footer read as one weight
+     instead of the top one shouting over the one above the copyright.
+     Written as a literal rather than by changing --hairline, which is
+     shared with buttons, pills, the theme toggle and .footer-social - all
+     of which need the stronger edge to stay legible as controls. */
   footer {
     position: relative;
     background: var(--bg);
-    border-top: 1px solid var(--hairline);
+    border-top: 1px solid rgba(var(--ink-rgb), 0.1);
     overflow: hidden;
   }
 
@@ -2817,12 +2841,26 @@
        the variable from this element re-resolves it against .hero's pinned
        white, so it stays legible in both themes. The h1 above is fine for
        the same reason inverted: it declares color: var(--text) itself.
-       Width/height keep the mask's 4.118 aspect ratio. */
+
+       Size is exact-aspect on purpose. The mask has zero transparent
+       padding (ink runs 0,0-312,75, verified by decoding its alpha), so
+       this box IS the visual mark: any aspect drift would letterbox inside
+       it via mask-size: contain, and the measured gap below is the real
+       optical gap with no invisible margin padding it out. 28 x 4.1184 =
+       115.3. Deliberately smaller than the desktop nav lockup (124x30) so
+       the hero mark never outweighs the nav's. */
+    /* 15px is the *box* gap, not the optical one. The h1's cap-top sits
+       6.76px below its line box (half-leading + the font's ascender-to-cap
+       gap at 42px/1.06), so this renders as ~22px of real whitespace
+       between the mark's ink and the headline's caps - about 0.75x the
+       headline cap height, which reads as a deliberate lockup rather than
+       two stacked elements. Measure the cap offset again if the h1 type
+       scale changes; the box value alone is misleading. */
     .hero-logo {
       display: block;
-      width: 132px;
-      height: 32px;
-      margin: 0 auto 20px;
+      width: 115.3px;
+      height: 28px;
+      margin: 0 auto 15px;
       background-color: var(--text);
       -webkit-mask-image: url(data:image/png;base64,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);
       mask-image: url(data:image/png;base64,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);
@@ -3037,7 +3075,15 @@
     </div>
 
     <div class="hero-bottom">
-      <button class="btn-started js-contact-open">Get in touch &#8599;</button>
+      <!-- Arrow is an inline SVG, not the U+2197 character it used to be:
+           iOS/Android give that codepoint emoji presentation by default, so
+           the same markup rendered as a flat glyph on desktop and a colour
+           emoji on mobile. An SVG renders identically everywhere and matches
+           the arrows already used by .case-read-more / .service-learn-more. -->
+      <button class="btn-started js-contact-open">
+        Get in touch
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M7 17 17 7M8.5 7H17v8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <p>We pair experienced consulting practitioners with hands-on technical expertise, so AI and digital transformation deliver value fast and keep delivering it.</p>
     </div>
   </section>

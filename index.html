@@ -247,7 +247,15 @@
     </div>
 
     <div class="hero-bottom">
-      <button class="btn-started js-contact-open">Get in touch &#8599;</button>
+      <!-- Arrow is an inline SVG, not the U+2197 character it used to be:
+           iOS/Android give that codepoint emoji presentation by default, so
+           the same markup rendered as a flat glyph on desktop and a colour
+           emoji on mobile. An SVG renders identically everywhere and matches
+           the arrows already used by .case-read-more / .service-learn-more. -->
+      <button class="btn-started js-contact-open">
+        Get in touch
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M7 17 17 7M8.5 7H17v8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <p>We pair experienced consulting practitioners with hands-on technical expertise, so AI and digital transformation deliver value fast and keep delivering it.</p>
     </div>
   </section>

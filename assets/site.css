@@ -582,6 +582,9 @@
 
   .btn-started {
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     background: #ffffff;
     color: #000000;
     border: none;
@@ -593,6 +596,10 @@
     cursor: pointer;
     white-space: nowrap;
   }
+
+  /* Sized to the text's own cap height rather than the 15px font-size, so
+     the arrow reads as part of the word rather than looming over it. */
+  .btn-started svg { width: 13px; height: 13px; flex-shrink: 0; }
 
   .hero-bottom p {
     font-size: 19px;
@@ -1204,12 +1211,18 @@
     margin-bottom: 28px;
   }
 
+  /* Brand blue rather than the neutral tint these used to carry. It is a
+     fixed-colour surface in both themes, so ink is pinned white locally -
+     the same pattern the hero and accent cards use (grep
+     `--ink-rgb: 255, 255, 255`), not a theme token that would flip. */
   .case-stat {
     flex: 1 1 140px;
     padding: 14px 16px;
-    background: rgba(var(--ink-rgb), 0.05);
-    border: 1px solid rgba(var(--ink-rgb), 0.12);
+    background: var(--blue);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 12px;
+    --ink-rgb: 255, 255, 255;
+    --text: #ffffff;
   }
 
   .case-stat b {
@@ -1221,10 +1234,15 @@
     margin-bottom: 2px;
   }
 
+  /* Full white, not the usual muted alpha. Brand blue leaves almost no
+     contrast headroom - pure white on #1d6ef5 measures 4.56:1, so the 0.6
+     alpha these labels carried elsewhere would land at 2.6:1 and fail AA
+     outright. The hierarchy against the number above comes from size and
+     weight (12px/400 vs 20px/700) instead of opacity. */
   .case-stat span {
     font-size: 12px;
     line-height: 1.4;
-    color: rgba(var(--ink-rgb), 0.6);
+    color: #ffffff;
   }
 
   .case-section { margin-bottom: 22px; }
@@ -2155,10 +2173,16 @@
      tinted band — a brand-navy footer and a deeper-neutral band were both
      tried and explicitly rejected. The single hairline is the *only*
      intended division from the FAQ section above; keep it. */
+  /* Matches .footer-bottom's own 0.1 rule below rather than --hairline
+     (0.28), so the two horizontal lines in the footer read as one weight
+     instead of the top one shouting over the one above the copyright.
+     Written as a literal rather than by changing --hairline, which is
+     shared with buttons, pills, the theme toggle and .footer-social - all
+     of which need the stronger edge to stay legible as controls. */
   footer {
     position: relative;
     background: var(--bg);
-    border-top: 1px solid var(--hairline);
+    border-top: 1px solid rgba(var(--ink-rgb), 0.1);
     overflow: hidden;
   }
 
@@ -2815,12 +2839,26 @@
        the variable from this element re-resolves it against .hero's pinned
        white, so it stays legible in both themes. The h1 above is fine for
        the same reason inverted: it declares color: var(--text) itself.
-       Width/height keep the mask's 4.118 aspect ratio. */
+
+       Size is exact-aspect on purpose. The mask has zero transparent
+       padding (ink runs 0,0-312,75, verified by decoding its alpha), so
+       this box IS the visual mark: any aspect drift would letterbox inside
+       it via mask-size: contain, and the measured gap below is the real
+       optical gap with no invisible margin padding it out. 28 x 4.1184 =
+       115.3. Deliberately smaller than the desktop nav lockup (124x30) so
+       the hero mark never outweighs the nav's. */
+    /* 15px is the *box* gap, not the optical one. The h1's cap-top sits
+       6.76px below its line box (half-leading + the font's ascender-to-cap
+       gap at 42px/1.06), so this renders as ~22px of real whitespace
+       between the mark's ink and the headline's caps - about 0.75x the
+       headline cap height, which reads as a deliberate lockup rather than
+       two stacked elements. Measure the cap offset again if the h1 type
+       scale changes; the box value alone is misleading. */
     .hero-logo {
       display: block;
-      width: 132px;
-      height: 32px;
-      margin: 0 auto 20px;
+      width: 115.3px;
+      height: 28px;
+      margin: 0 auto 15px;
       background-color: var(--text);
       -webkit-mask-image: url('logo-mask.png');
       mask-image: url('logo-mask.png');
