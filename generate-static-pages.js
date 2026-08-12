@@ -83,8 +83,15 @@ function truncate(str, max) {
 
 const FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Cpath d='M7 21.5 13 14l4.5 5L25 9.5' stroke='%231d6ef5' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E";
 
-function pageHead({ title, description, canonicalPath, ogType }) {
+// ogImage lets a page override the site-wide share card. Case studies pass
+// their own per-engagement card (assets/og/case-studies/<key>.jpg, built from
+// the same hero art plus that engagement's client, title and headline stats);
+// everything else falls back to the generic one. Alt text follows the image,
+// or a card naming a different case study would be announced on every page.
+function pageHead({ title, description, canonicalPath, ogType, ogImage, ogImageAlt }) {
   const canonicalUrl = SITE_ORIGIN + '/' + canonicalPath;
+  const imageUrl = SITE_ORIGIN + '/' + (ogImage || 'assets/og-image.jpg');
+  const imageAlt = ogImageAlt || 'DigiBlu - AI and Digital Transformation Consultancy';
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -100,15 +107,16 @@ function pageHead({ title, description, canonicalPath, ogType }) {
 <meta property="og:title" content="${escapeHtml(title)}">
 <meta property="og:description" content="${escapeHtml(description)}">
 <meta property="og:url" content="${canonicalUrl}">
-<meta property="og:image" content="${SITE_ORIGIN}/assets/og-image.jpg">
+<meta property="og:image" content="${imageUrl}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/jpeg">
-<meta property="og:image:alt" content="DigiBlu - AI and Digital Transformation Consultancy">
+<meta property="og:image:alt" content="${escapeHtml(imageAlt)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${escapeHtml(title)}">
 <meta name="twitter:description" content="${escapeHtml(description)}">
-<meta name="twitter:image" content="${SITE_ORIGIN}/assets/og-image.jpg">
+<meta name="twitter:image" content="${imageUrl}">
+<meta name="twitter:image:alt" content="${escapeHtml(imageAlt)}">
 
 <link rel="icon" href="${FAVICON}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -358,7 +366,9 @@ function renderCaseStudy(c) {
     title: `${c.title} | DigiBlu Case Studies`,
     description: caseStudyDescription(c),
     canonicalPath: `case-studies/${c.key}.html`,
-    ogType: 'website'
+    ogType: 'website',
+    ogImage: `assets/og/case-studies/${c.key}.jpg`,
+    ogImageAlt: `${c.client} case study - ${c.title}`
   }) + `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>\n` + pageHeader() + `
   <main>
     <div class="detail-page" id="detail-content">
