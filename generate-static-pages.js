@@ -104,6 +104,7 @@ function pageHead({ title, description, canonicalPath, ogType }) {
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="DigiBlu - AI and Digital Transformation Consultancy">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${escapeHtml(title)}">
 <meta name="twitter:description" content="${escapeHtml(description)}">
