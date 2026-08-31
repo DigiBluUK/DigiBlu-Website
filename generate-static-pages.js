@@ -39,6 +39,13 @@ const CASE_STUDIES = evalBlock(
   extractBlock('var CASE_STUDIES = [', '\n      var byKey = {};'),
   'CASE_STUDIES'
 );
+// Per-service art panel for the case studies, authored in index.html next to
+// CASE_STUDIES so the detail modal and these pages cannot disagree about
+// which panel a given study gets.
+const CASE_ART = evalBlock(
+  extractBlock('var CASE_ART = {', '\n      // Real client engagements'),
+  'CASE_ART'
+);
 const BLOG_POSTS = evalBlock(
   extractBlock('var BLOG_POSTS = {', "\n      var overlay = document.getElementById('blogDetailModal');"),
   'BLOG_POSTS'
@@ -343,7 +350,7 @@ function caseStudyDescription(c) {
   return truncate(c.overview, 155);
 }
 
-function renderCaseStudy(c) {
+function renderCaseStudy(c, i) {
   const stats = c.stats.map(s => `          <div class="case-stat"><b>${escapeHtml(s.v)}</b><span>${escapeHtml(s.l)}</span></div>`).join('\n');
   const sections = [
     ['Overview', c.overview],
@@ -381,6 +388,7 @@ function renderCaseStudy(c) {
   <main>
     <div class="detail-page" id="detail-content">
 ${backLink()}
+      <div class="blog-modal-art" aria-hidden="true">${CASE_ART[c.service] ? `<div class="blog-art a${(i % 4) + 1}">${CASE_ART[c.service]}</div>` : ''}</div>
       <span class="pill case-modal-eyebrow">${escapeHtml(c.sector)} · ${escapeHtml(c.service)}</span>
       <h1>${escapeHtml(c.title)}</h1>
       <p class="case-modal-client">${escapeHtml(c.client)}</p>
@@ -489,8 +497,8 @@ const written = [];
 
 const caseDir = path.join(ROOT, 'case-studies');
 ensureDir(caseDir);
-CASE_STUDIES.forEach(c => {
-  const out = renderCaseStudy(c);
+CASE_STUDIES.forEach((c, i) => {
+  const out = renderCaseStudy(c, i);
   fs.writeFileSync(path.join(caseDir, c.key + '.html'), out, 'utf8');
   written.push('case-studies/' + c.key + '.html');
 });

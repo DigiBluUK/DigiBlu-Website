@@ -540,17 +540,33 @@
     padding: 60px var(--gutter) 40px;
   }
 
-  /* Mobile-only brand mark above the headline. Desktop has the nav's own
-     full-size logo doing that job in the same viewport as the headline, so
-     it stays hidden there; on mobile the nav crops to icon-only (see
-     .logo-mark's 900px override below) so this reinstates the full
-     icon+wordmark lockup where a plain "DigiBlu" text eyebrow used to sit
-     before it was removed for being redundant with the desktop nav. A
-     separate class from .logo-mark on purpose — that class gets cropped to
-     icon-only at this same breakpoint for the nav bar, which would fight
-     the full lockup wanted here. */
+  /* Full icon+wordmark lockup above the headline, at every width. It was
+     mobile-only at first (the nav shows the same lockup on desktop), then
+     brought back everywhere on request.
+
+     A separate class from .logo-mark on purpose: that one is cropped to
+     icon-only below 900px for the nav bar, which would fight the full
+     lockup wanted here.
+
+     Sized on the mask's exact 4.1184 aspect. The mask has zero transparent
+     padding (verified by decoding its alpha), so this box IS the visible
+     mark: any aspect drift letterboxes it inside the box via
+     mask-size: contain, and the margin below is real optical whitespace
+     rather than a value padded out by invisible pixels. 36 x 4.1184 = 148.3. */
   .hero-logo {
-    display: none;
+    display: block;
+    width: 148.3px;
+    height: 36px;
+    margin: 0 auto 22px;
+    background-color: var(--text);
+    -webkit-mask-image: url('logo-mask.png');
+    mask-image: url('logo-mask.png');
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
   }
 
   h1 {
@@ -1650,7 +1666,21 @@
     transition: flex-grow 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .team-slice.active { flex-grow: 1; }
+  /* Brand blue behind the selected member rather than the theme surface.
+     The headshots are chroma-keyed cutouts, so their semi-transparent edge
+     pixels composite against whatever sits behind them - on --surface that
+     is near-white in light theme and near-black in dark, so the same cutout
+     showed a pale halo in one and a dark fringe in the other. A fixed blue
+     gives every photo one constant backdrop, so the edges resolve the same
+     way in both themes, and it ties the expanded card to the brand.
+     Transitioned so the colour arrives with the expand rather than snapping
+     ahead of it. */
+  .team-slice { transition: flex-grow 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.4s ease; }
+
+  .team-slice.active {
+    flex-grow: 1;
+    background: var(--blue);
+  }
 
   /* Real headshots (chroma-keyed cutouts, see the Team section comment in
      index.html), not the old generic silhouette icon. Grayscale is the
@@ -2785,47 +2815,26 @@
 
     .mobile-menu-actions { display: flex; }
 
-    /* Full icon+wordmark lockup, contain-fit rather than the nav's
-       left-anchored crop — this sits centred above the headline, not in a
-       fixed-height bar, so the whole mark should show.
+    /* Steps the lockup down at mobile. Same exact-aspect rule as the base:
+       28 x 4.1184 = 115.3. The 15px here is the *box* gap, not the optical
+       one - the h1's cap-top sits 6.76px below its line box (half-leading
+       plus the font's ascender-to-cap gap at 42px/1.06), so it renders as
+       ~22px of real whitespace between the mark's ink and the headline's
+       caps, about 0.75x the cap height. Re-measure that offset if the h1
+       type scale changes; the box value alone is misleading.
 
        background-color must be var(--text), NOT currentColor: .hero pins
-       --text to white for everything on its photo, but `color` was computed
-       back on body from the *root's* --text (near-black in light theme) and
-       merely inherits down, so currentColor here resolved to near-black and
-       the mark vanished against the dark hero art in light mode. Referencing
+       --text to white for everything on its photo, but `color` is computed
+       on body from the *root's* --text (near-black in light theme) and
+       merely inherits down, so currentColor resolved to near-black and the
+       mark vanished against the dark hero art in light mode. Referencing
        the variable from this element re-resolves it against .hero's pinned
-       white, so it stays legible in both themes. The h1 above is fine for
-       the same reason inverted: it declares color: var(--text) itself.
-
-       Size is exact-aspect on purpose. The mask has zero transparent
-       padding (ink runs 0,0-312,75, verified by decoding its alpha), so
-       this box IS the visual mark: any aspect drift would letterbox inside
-       it via mask-size: contain, and the measured gap below is the real
-       optical gap with no invisible margin padding it out. 28 x 4.1184 =
-       115.3. Deliberately smaller than the desktop nav lockup (124x30) so
-       the hero mark never outweighs the nav's. */
-    /* 15px is the *box* gap, not the optical one. The h1's cap-top sits
-       6.76px below its line box (half-leading + the font's ascender-to-cap
-       gap at 42px/1.06), so this renders as ~22px of real whitespace
-       between the mark's ink and the headline's caps - about 0.75x the
-       headline cap height, which reads as a deliberate lockup rather than
-       two stacked elements. Measure the cap offset again if the h1 type
-       scale changes; the box value alone is misleading. */
+       white. (The base rule above carries the same var(--text) for this
+       reason - do not "simplify" either to currentColor.) */
     .hero-logo {
-      display: block;
       width: 115.3px;
       height: 28px;
-      margin: 0 auto 15px;
-      background-color: var(--text);
-      -webkit-mask-image: url('logo-mask.png');
-      mask-image: url('logo-mask.png');
-      -webkit-mask-repeat: no-repeat;
-      mask-repeat: no-repeat;
-      -webkit-mask-position: center;
-      mask-position: center;
-      -webkit-mask-size: contain;
-      mask-size: contain;
+      margin-bottom: 15px;
     }
   }
 

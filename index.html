@@ -816,7 +816,7 @@
           </div>
           <div class="modal-step" data-step-indicator="2">
             <span class="step-num">2</span>
-            <span class="step-label">Your business</span>
+            <span class="step-label">Your enquiry</span>
           </div>
           <div class="modal-step" data-step-indicator="3">
             <span class="step-num">3</span>
@@ -854,22 +854,20 @@
 
           <div class="form-step" data-step="2">
             <div class="modal-field">
-              <label for="cf-company">Company</label>
-              <input id="cf-company" type="text" autocomplete="organization" placeholder="Company name" required>
+              <label for="cf-company">Company <span class="modal-field-optional">(optional)</span></label>
+              <input id="cf-company" type="text" autocomplete="organization" placeholder="Company name">
             </div>
             <div class="modal-field">
-              <label for="cf-message">What can we help with?</label>
+              <label for="cf-message">What can we help with? <span class="modal-field-optional">(optional)</span></label>
               <textarea id="cf-message" rows="3" placeholder="Tell us about your project"></textarea>
             </div>
           </div>
 
           <div class="form-step" data-step="3">
             <div class="modal-field">
-              <label for="cf-time">Preferred time to talk</label>
+              <label for="cf-time">Preferred time to talk <span class="modal-field-optional" id="cf-tz">UK time</span></label>
               <select id="cf-time">
-                <option>Morning</option>
-                <option>Afternoon</option>
-                <option>Flexible</option>
+                <option value="flexible">Flexible - any time works</option>
               </select>
             </div>
             <div class="modal-field modal-consent">
@@ -945,6 +943,12 @@
         <!-- A duplicate "All case studies" link was trialled here at the top
              of the popup and rejected on review — it belongs only in the
              footer below. Don't re-add it. -->
+        <!-- Leads the case study the same way .blog-modal-art leads a post.
+             Reuses the blog art classes deliberately so the two panels are
+             literally the same object rather than two that have to be kept
+             looking alike; same accepted naming debt as the blog reusing
+             .case-viewall-btn and .service-modal-*. -->
+        <div class="blog-modal-art" id="caseDetailArt" aria-hidden="true"></div>
         <span class="pill case-modal-eyebrow" id="caseDetailSector">Case Study</span>
         <h2 id="caseDetailTitle"></h2>
         <p class="case-modal-client" id="caseDetailClient"></p>
@@ -1549,6 +1553,25 @@
     }
 
     (function () {
+      // Art panel that leads each case study, mirroring how the blog posts
+      // are set out. Keyed by service line rather than per engagement, so a
+      // new case study inherits the right icon automatically as long as its
+      // service matches one of the six. Same 24x24 line-icon language as the
+      // blog cards; the gradient is picked by position (see openDetail) so
+      // neighbouring entries in the index never share a panel.
+      //
+      // Extracted by generate-static-pages.js with the same marker slicing it
+      // uses for CASE_STUDIES, so the static pages and this modal cannot
+      // disagree about which panel a case study gets.
+      var CASE_ART = {
+        'Artificial Intelligence': '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C12 6.6 17.4 12 24 12C17.4 12 12 17.4 12 24C12 17.4 6.6 12 0 12C6.6 12 12 6.6 12 0Z"/></svg>',
+        'Digital Solutions': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="4" width="20" height="13" rx="1.6"/><path d="M8 21h8M12 17v4"/></svg>',
+        'Process Excellence': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="7" height="5" rx="1.5"/><rect x="15" y="16" width="7" height="5" rx="1.5"/><path d="M5.5 8v5.5a2 2 0 0 0 2 2H15"/></svg>',
+        'TOM': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>',
+        'Opportunity Discovery': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+        'Post-Implementation': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M6 2.5h9l4 4v14.5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1Z"/><path d="M15 2.5V7h4"/><path d="M8.3 14.2l2.3 2.3 5-5.2"/></svg>'
+      };
+
       // Real client engagements, condensed from the write-ups on
       // digiblu.com/case-studies. Figures and client quotes are as published.
       var CASE_STUDIES = [
@@ -1725,6 +1748,7 @@
       var detailModal = createModalController(detailOverlay);
 
       var listEl = document.getElementById('caseIndexList');
+      var artEl = document.getElementById('caseDetailArt');
       var sectorEl = document.getElementById('caseDetailSector');
       var titleEl = document.getElementById('caseDetailTitle');
       var clientEl = document.getElementById('caseDetailClient');
@@ -1786,6 +1810,17 @@
       function openDetail(key, fromIndex) {
         var c = byKey[key];
         if (!c) return;
+
+        // Gradient is chosen by position rather than stored per entry, so the
+        // four hues stay evenly spread as case studies are added and no two
+        // neighbours in the index share one. generate-static-pages.js derives
+        // it the same way from the same array order.
+        if (artEl) {
+          var icon = CASE_ART[c.service] || '';
+          artEl.innerHTML = icon
+            ? '<div class="blog-art a' + ((CASE_STUDIES.indexOf(c) % 4) + 1) + '">' + icon + '</div>'
+            : '';
+        }
 
         sectorEl.textContent = c.sector + ' · ' + c.service;
         titleEl.textContent = c.title;
@@ -2759,9 +2794,47 @@
         );
       }
 
+      // Real UK business-hours slots, 08:00 to 18:00, built at runtime rather
+      // than hardcoded so the label always names the zone actually in force.
+      // The UK is GMT in winter and BST (UTC+1) in summer, and the switchover
+      // dates move each year, so this asks Intl what Europe/London is called
+      // *today* instead of committing to one of the two. Falls back to the
+      // neutral "UK time" if the runtime has no timeZoneName support.
+      (function () {
+        var sel = document.getElementById('cf-time');
+        var tzEl = document.getElementById('cf-tz');
+        if (!sel) return;
+
+        var zone = '';
+        try {
+          var parts = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Europe/London', timeZoneName: 'short'
+          }).formatToParts(new Date());
+          for (var i = 0; i < parts.length; i++) {
+            if (parts[i].type === 'timeZoneName') zone = parts[i].value;
+          }
+        } catch (e) { zone = ''; }
+        if (tzEl) tzEl.textContent = zone ? 'UK time (' + zone + ')' : 'UK time';
+
+        // 08:00-09:00 through 17:00-18:00: ten one-hour slots ending at 6pm.
+        var frag = document.createDocumentFragment();
+        for (var hStart = 8; hStart < 18; hStart++) {
+          var label = String(hStart).padStart(2, '0') + ':00 - '
+                    + String(hStart + 1).padStart(2, '0') + ':00';
+          var opt = document.createElement('option');
+          opt.value = label;
+          opt.textContent = label;
+          frag.appendChild(opt);
+        }
+        // "Flexible" is authored in the markup and stays the default, so the
+        // field is never an implicit commitment to a slot the visitor did not
+        // pick; the real slots are inserted after it.
+        sel.appendChild(frag);
+      })();
+
       var STEP_COPY = {
         1: { title: 'Your details', sub: 'Let us know who we will be speaking with.' },
-        2: { title: 'Your business', sub: 'Tell us a little about what you need.' },
+        2: { title: 'Your enquiry', sub: 'Tell us a little about what you need.' },
         3: { title: 'Schedule a time', sub: 'Pick what works best and we will confirm by email.' }
       };
 

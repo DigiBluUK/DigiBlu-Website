@@ -542,17 +542,33 @@
     padding: 60px var(--gutter) 40px;
   }
 
-  /* Mobile-only brand mark above the headline. Desktop has the nav's own
-     full-size logo doing that job in the same viewport as the headline, so
-     it stays hidden there; on mobile the nav crops to icon-only (see
-     .logo-mark's 900px override below) so this reinstates the full
-     icon+wordmark lockup where a plain "DigiBlu" text eyebrow used to sit
-     before it was removed for being redundant with the desktop nav. A
-     separate class from .logo-mark on purpose — that class gets cropped to
-     icon-only at this same breakpoint for the nav bar, which would fight
-     the full lockup wanted here. */
+  /* Full icon+wordmark lockup above the headline, at every width. It was
+     mobile-only at first (the nav shows the same lockup on desktop), then
+     brought back everywhere on request.
+
+     A separate class from .logo-mark on purpose: that one is cropped to
+     icon-only below 900px for the nav bar, which would fight the full
+     lockup wanted here.
+
+     Sized on the mask's exact 4.1184 aspect. The mask has zero transparent
+     padding (verified by decoding its alpha), so this box IS the visible
+     mark: any aspect drift letterboxes it inside the box via
+     mask-size: contain, and the margin below is real optical whitespace
+     rather than a value padded out by invisible pixels. 36 x 4.1184 = 148.3. */
   .hero-logo {
-    display: none;
+    display: block;
+    width: 148.3px;
+    height: 36px;
+    margin: 0 auto 22px;
+    background-color: var(--text);
+    -webkit-mask-image: url(data:image/png;base64,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);
+    mask-image: url(data:image/png;base64,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);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
   }
 
   h1 {
@@ -1652,7 +1668,21 @@
     transition: flex-grow 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .team-slice.active { flex-grow: 1; }
+  /* Brand blue behind the selected member rather than the theme surface.
+     The headshots are chroma-keyed cutouts, so their semi-transparent edge
+     pixels composite against whatever sits behind them - on --surface that
+     is near-white in light theme and near-black in dark, so the same cutout
+     showed a pale halo in one and a dark fringe in the other. A fixed blue
+     gives every photo one constant backdrop, so the edges resolve the same
+     way in both themes, and it ties the expanded card to the brand.
+     Transitioned so the colour arrives with the expand rather than snapping
+     ahead of it. */
+  .team-slice { transition: flex-grow 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.4s ease; }
+
+  .team-slice.active {
+    flex-grow: 1;
+    background: var(--blue);
+  }
 
   /* Real headshots (chroma-keyed cutouts, see the Team section comment in
      index.html), not the old generic silhouette icon. Grayscale is the
@@ -2787,47 +2817,26 @@
 
     .mobile-menu-actions { display: flex; }
 
-    /* Full icon+wordmark lockup, contain-fit rather than the nav's
-       left-anchored crop — this sits centred above the headline, not in a
-       fixed-height bar, so the whole mark should show.
+    /* Steps the lockup down at mobile. Same exact-aspect rule as the base:
+       28 x 4.1184 = 115.3. The 15px here is the *box* gap, not the optical
+       one - the h1's cap-top sits 6.76px below its line box (half-leading
+       plus the font's ascender-to-cap gap at 42px/1.06), so it renders as
+       ~22px of real whitespace between the mark's ink and the headline's
+       caps, about 0.75x the cap height. Re-measure that offset if the h1
+       type scale changes; the box value alone is misleading.
 
        background-color must be var(--text), NOT currentColor: .hero pins
-       --text to white for everything on its photo, but `color` was computed
-       back on body from the *root's* --text (near-black in light theme) and
-       merely inherits down, so currentColor here resolved to near-black and
-       the mark vanished against the dark hero art in light mode. Referencing
+       --text to white for everything on its photo, but `color` is computed
+       on body from the *root's* --text (near-black in light theme) and
+       merely inherits down, so currentColor resolved to near-black and the
+       mark vanished against the dark hero art in light mode. Referencing
        the variable from this element re-resolves it against .hero's pinned
-       white, so it stays legible in both themes. The h1 above is fine for
-       the same reason inverted: it declares color: var(--text) itself.
-
-       Size is exact-aspect on purpose. The mask has zero transparent
-       padding (ink runs 0,0-312,75, verified by decoding its alpha), so
-       this box IS the visual mark: any aspect drift would letterbox inside
-       it via mask-size: contain, and the measured gap below is the real
-       optical gap with no invisible margin padding it out. 28 x 4.1184 =
-       115.3. Deliberately smaller than the desktop nav lockup (124x30) so
-       the hero mark never outweighs the nav's. */
-    /* 15px is the *box* gap, not the optical one. The h1's cap-top sits
-       6.76px below its line box (half-leading + the font's ascender-to-cap
-       gap at 42px/1.06), so this renders as ~22px of real whitespace
-       between the mark's ink and the headline's caps - about 0.75x the
-       headline cap height, which reads as a deliberate lockup rather than
-       two stacked elements. Measure the cap offset again if the h1 type
-       scale changes; the box value alone is misleading. */
+       white. (The base rule above carries the same var(--text) for this
+       reason - do not "simplify" either to currentColor.) */
     .hero-logo {
-      display: block;
       width: 115.3px;
       height: 28px;
-      margin: 0 auto 15px;
-      background-color: var(--text);
-      -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATkAAABMCAYAAAAWecA3AAAACXBIWXMAAAPoAAAD6AG1e1JrAAAI+klEQVR4nO2d643uKAyG858q0kk6oZG0kX5STPqY1bcKEuuFhIsNhryvhHRGZyY3yBMbjL0serR6bbub+9n0vjgIgqBUmRtg+7Is57Is193+Xtp1//55/+3vGIAfBEEqZDyo/TG33zHtbfFBEAQ11SYEtifg/c4JQRAkqj3RBZVq123dQRAEsWrrDDfADoIgEa2N3dISNxZzdhAEDemawqqDIEhsxVSz9RZrB0JPIAh60zqI9RZrv2uH+wpBkFrA+YHBpdcC0EEQpA5wsTi49XZDc68NoIMgSA3gUuLeHOwAOgiChgLcFrge623iD634AnQQBA0BuJ9l5q/oHok7HPYCVxgb/iHog8p1/zgbnTN7u5Yf2HydFUCFIOgDyrWGJK04m/g3Pui2gnNizysEfURrZ8D9ESsux2X23U6suEIQFFTv3Qy/85cC11beh39uCIImVKpr2MpVzXWbdwZYIy8dBE2s3jsaKGTOCje3FHIaVltNoH1Zrv6H9UKIXIOgoaw4H1SmwgKsnVdssQjh17m4Mre1HY1rXbgU9q5Ja81Mm+8/F+6U+C7LtWu1z/wI9D0dA7SfJbSR+2qxp9s/n8Q7dryNUw1W3O8aSlZID+bwlxYvMsfzvu57lR6gR6SPNKfNd4WPDPPH33Tod4mM15acowXk/PNJQI6OHZVW3FlwTbXBwLEm7Qpxf1QkYdcCcin9lmv5cry8GiDnvx9cfWy/BrlTIeTeBv0VABFnfJ+0NXcFEhDQurO0Hq19SUggVeNCEnKx7NLOZXPuJ4WLIXN1zlXh7kNJyJ0P/e3uKfRcOKYp7JcgpyEuLnd1lO6IiG37qm2Sc17Xw46NFG0P91xyvB6Qi20drE1w6ur7bsohdxQ+I47+tV+CXO/dDbEbPxMBJ1lnwiqG3Bso9gEgdyZY573VG3LLfU66MME917guE0NOi6v6RwZ4zCWzDZMInANA7uljtSuG3DFIjj8NkAtdB/dc47pMCjlNrip90CF4XQ9fN6k2CuRioFsVQm4bBHCaIEff1VqL134FcptSyMVi5GyHLCnbQJALge5UCLlroOQIgNzgkOOcj7u8yV66UpSaoty8WJgp7ix3457ED13/LtzZVhHk7GBprrRAjhoksOQSIXcK1l+gMglQfbMwazfgl7RjQMitzNYcJ+Rov2l1U7VBjnouWHhIhFytNRR7OV0MU0i2YrcD3brVwpo7B4RcqMM3BZDjhu9XICfx3GyHj03MYBGDXO7e0L+Xi3T7DSl4QvvUQqDzO+5prrBV+AjHS90TchujRcoFOTvQXJwmyHF+sD4FuZqV1ZKtVPTrcxZu6QqtxEnH+pkBIUfPcSmAHO3zEbKr9IbcLjR9Yr8AudKVVfqQcyyppxTluVu6aKdIuq/roJDjgooE5CQ3+s8COclYQgvIxeFiKsM4TCTOrSRZZggOElbdqJDbme6DC3Kxj5pmtdqg7ycfcKmYpAD3EyAX6QjLkLkktkJ6FMLzbGDVjQo5yzSXIwE57aEj2rKQcI8R22CMU8U4oMpdXZk762AKD3ExelTHxyG3MQ0sDsiZhpBzHznX1gkg5549V3C6BeTKVz97QM6/RjqgLYNVB8iNBzn/XJviObmSlFrIQiK0uhqDUwmIjkAncu1mCFl1te7rLJDbPjInNxLkSrMl144Z22CMU6kPIakpMJMDktr4PX8AGSbQjRpCom1Ojiuk5UuQ86+Dc8+v/QLkcmHiDxRuwP17QQJJA+h8TOmxJfTF1dVWcXIzQm6574Mrr5z9AuSWilz5Gmo7tAp7GXVbl8Y4ub3RjodZIRd6hvtAkLuEx3zQUziVWHI1BaVzQbV+CHK0nsBX9q7ODDl6jHNQyB3Cx79KgCKZ5qhFdpHSOcURUy1p3bvaKgvJ7JDjyEhiO0DuFPzART+gW4fVVan4OylrcbSkmbE+0pCFJPRySVhzs0OOA1C2A+Qkq75F8xSaDnFyJSmWes77LRPkk7uUDU7upJ5UgJxOyHEn/nwao/85do7rZgTcyr1RNpESmI5UyCZ2bA6ItKjxwDngZ4fcPqi7aoTm5Wh42P9KWu5MWUQ0u6r05bQTlSSkkiiwPFq1rtkhxxFvaDtAjjOsKeuYa0U4Rq3l5XeydFGdnFROLTqeG3KhBKJc4GhVd5XrwzIz5Ljyy9lOkAstENQWEk/6qOe4nvQgpYsQ9AWUzvCbu4IrnQqIC3KudsYl6AJKQc5E+sLt6SzVrJDjLDlpO0EuVlGu5Pw0OPrxPnIDcOlLGXrJcgDHHQAcOp8/OFOudVMMOXNfX+y5c89xSa6KmYcP5ZF5H+s9ls7JIBfbv1ozp2UDcDCFrUQhr8MmHm+NjJnX9yh3Piy0CT6l9CA1T1sUpNkzgdoiay2dVzlJOwLN/d/T8yr9KvaCXMoUgns+e6AdCc9EK+RC/U5b7L5q3TzL+H6VeD2x+ix+X1uv+X2dwqOgSubXYl+SjVyYu2DaKS0AR1/KlPO1KLDCfd+ppSG1Qk6iMJHLSGMmySfnv3fcJQn/GkOOK+bWWYBFy7siJ3nxp7kbdYt3JVbcwnTvV4FLpxlyTjkFyWMvXarrMwrkXF9L1Xj46wS5J/dT5ANWc+MOdmvh/II04FJXkVuVyaNJEn3L96k5q7jlRLF/ra2LQbu5R99dD7n19v5dI3jvm1C/u74PNam+Xsl91TTO0J/tpa93jn7gAJDzq+l8krTl9gS4lHOPUlwFgqAKtapML9XoxHvq/XAGo0IQpFzSxZqlrLeatOcjVHOHIIhRLebNuFpoQjZnYWOU8ngQBDGqdLW1teVmIjsAco4jlYYbgiDl0jQ/dyWsruSu3GIeDoKgpqALhQSkLAaUhKUAcBAENQddzurmWrBnFoCDIKgr6NaXjddvlcUBOAiCVIPOzblJBQ9LbF6HIGgyPaXG0dw4NjVDEPQhjRIwXJpAAIIgiD01DnerzbkFQRD0r6yieDoHN+n0QxAEfVC9YQfXFIKgJgrl2YflBkHQdIoVFuFySbmyv0IQBFXLrzCVUpDFd0HpvlWADYKgYWRui8+lPnb/diXSIAiCllz9A1EYdVgSptd6AAAAAElFTkSuQmCC);
-      mask-image: url(data:image/png;base64,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);
-      -webkit-mask-repeat: no-repeat;
-      mask-repeat: no-repeat;
-      -webkit-mask-position: center;
-      mask-position: center;
-      -webkit-mask-size: contain;
-      mask-size: contain;
+      margin-bottom: 15px;
     }
   }
 
@@ -3649,7 +3658,7 @@
           </div>
           <div class="modal-step" data-step-indicator="2">
             <span class="step-num">2</span>
-            <span class="step-label">Your business</span>
+            <span class="step-label">Your enquiry</span>
           </div>
           <div class="modal-step" data-step-indicator="3">
             <span class="step-num">3</span>
@@ -3687,22 +3696,20 @@
 
           <div class="form-step" data-step="2">
             <div class="modal-field">
-              <label for="cf-company">Company</label>
-              <input id="cf-company" type="text" autocomplete="organization" placeholder="Company name" required>
+              <label for="cf-company">Company <span class="modal-field-optional">(optional)</span></label>
+              <input id="cf-company" type="text" autocomplete="organization" placeholder="Company name">
             </div>
             <div class="modal-field">
-              <label for="cf-message">What can we help with?</label>
+              <label for="cf-message">What can we help with? <span class="modal-field-optional">(optional)</span></label>
               <textarea id="cf-message" rows="3" placeholder="Tell us about your project"></textarea>
             </div>
           </div>
 
           <div class="form-step" data-step="3">
             <div class="modal-field">
-              <label for="cf-time">Preferred time to talk</label>
+              <label for="cf-time">Preferred time to talk <span class="modal-field-optional" id="cf-tz">UK time</span></label>
               <select id="cf-time">
-                <option>Morning</option>
-                <option>Afternoon</option>
-                <option>Flexible</option>
+                <option value="flexible">Flexible - any time works</option>
               </select>
             </div>
             <div class="modal-field modal-consent">
@@ -3778,6 +3785,12 @@
         <!-- A duplicate "All case studies" link was trialled here at the top
              of the popup and rejected on review — it belongs only in the
              footer below. Don't re-add it. -->
+        <!-- Leads the case study the same way .blog-modal-art leads a post.
+             Reuses the blog art classes deliberately so the two panels are
+             literally the same object rather than two that have to be kept
+             looking alike; same accepted naming debt as the blog reusing
+             .case-viewall-btn and .service-modal-*. -->
+        <div class="blog-modal-art" id="caseDetailArt" aria-hidden="true"></div>
         <span class="pill case-modal-eyebrow" id="caseDetailSector">Case Study</span>
         <h2 id="caseDetailTitle"></h2>
         <p class="case-modal-client" id="caseDetailClient"></p>
@@ -4382,6 +4395,25 @@
     }
 
     (function () {
+      // Art panel that leads each case study, mirroring how the blog posts
+      // are set out. Keyed by service line rather than per engagement, so a
+      // new case study inherits the right icon automatically as long as its
+      // service matches one of the six. Same 24x24 line-icon language as the
+      // blog cards; the gradient is picked by position (see openDetail) so
+      // neighbouring entries in the index never share a panel.
+      //
+      // Extracted by generate-static-pages.js with the same marker slicing it
+      // uses for CASE_STUDIES, so the static pages and this modal cannot
+      // disagree about which panel a case study gets.
+      var CASE_ART = {
+        'Artificial Intelligence': '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C12 6.6 17.4 12 24 12C17.4 12 12 17.4 12 24C12 17.4 6.6 12 0 12C6.6 12 12 6.6 12 0Z"/></svg>',
+        'Digital Solutions': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="4" width="20" height="13" rx="1.6"/><path d="M8 21h8M12 17v4"/></svg>',
+        'Process Excellence': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="7" height="5" rx="1.5"/><rect x="15" y="16" width="7" height="5" rx="1.5"/><path d="M5.5 8v5.5a2 2 0 0 0 2 2H15"/></svg>',
+        'TOM': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>',
+        'Opportunity Discovery': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+        'Post-Implementation': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M6 2.5h9l4 4v14.5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1Z"/><path d="M15 2.5V7h4"/><path d="M8.3 14.2l2.3 2.3 5-5.2"/></svg>'
+      };
+
       // Real client engagements, condensed from the write-ups on
       // digiblu.com/case-studies. Figures and client quotes are as published.
       var CASE_STUDIES = [
@@ -4558,6 +4590,7 @@
       var detailModal = createModalController(detailOverlay);
 
       var listEl = document.getElementById('caseIndexList');
+      var artEl = document.getElementById('caseDetailArt');
       var sectorEl = document.getElementById('caseDetailSector');
       var titleEl = document.getElementById('caseDetailTitle');
       var clientEl = document.getElementById('caseDetailClient');
@@ -4619,6 +4652,17 @@
       function openDetail(key, fromIndex) {
         var c = byKey[key];
         if (!c) return;
+
+        // Gradient is chosen by position rather than stored per entry, so the
+        // four hues stay evenly spread as case studies are added and no two
+        // neighbours in the index share one. generate-static-pages.js derives
+        // it the same way from the same array order.
+        if (artEl) {
+          var icon = CASE_ART[c.service] || '';
+          artEl.innerHTML = icon
+            ? '<div class="blog-art a' + ((CASE_STUDIES.indexOf(c) % 4) + 1) + '">' + icon + '</div>'
+            : '';
+        }
 
         sectorEl.textContent = c.sector + ' · ' + c.service;
         titleEl.textContent = c.title;
@@ -5592,9 +5636,47 @@
         );
       }
 
+      // Real UK business-hours slots, 08:00 to 18:00, built at runtime rather
+      // than hardcoded so the label always names the zone actually in force.
+      // The UK is GMT in winter and BST (UTC+1) in summer, and the switchover
+      // dates move each year, so this asks Intl what Europe/London is called
+      // *today* instead of committing to one of the two. Falls back to the
+      // neutral "UK time" if the runtime has no timeZoneName support.
+      (function () {
+        var sel = document.getElementById('cf-time');
+        var tzEl = document.getElementById('cf-tz');
+        if (!sel) return;
+
+        var zone = '';
+        try {
+          var parts = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Europe/London', timeZoneName: 'short'
+          }).formatToParts(new Date());
+          for (var i = 0; i < parts.length; i++) {
+            if (parts[i].type === 'timeZoneName') zone = parts[i].value;
+          }
+        } catch (e) { zone = ''; }
+        if (tzEl) tzEl.textContent = zone ? 'UK time (' + zone + ')' : 'UK time';
+
+        // 08:00-09:00 through 17:00-18:00: ten one-hour slots ending at 6pm.
+        var frag = document.createDocumentFragment();
+        for (var hStart = 8; hStart < 18; hStart++) {
+          var label = String(hStart).padStart(2, '0') + ':00 - '
+                    + String(hStart + 1).padStart(2, '0') + ':00';
+          var opt = document.createElement('option');
+          opt.value = label;
+          opt.textContent = label;
+          frag.appendChild(opt);
+        }
+        // "Flexible" is authored in the markup and stays the default, so the
+        // field is never an implicit commitment to a slot the visitor did not
+        // pick; the real slots are inserted after it.
+        sel.appendChild(frag);
+      })();
+
       var STEP_COPY = {
         1: { title: 'Your details', sub: 'Let us know who we will be speaking with.' },
-        2: { title: 'Your business', sub: 'Tell us a little about what you need.' },
+        2: { title: 'Your enquiry', sub: 'Tell us a little about what you need.' },
         3: { title: 'Schedule a time', sub: 'Pick what works best and we will confirm by email.' }
       };
 
