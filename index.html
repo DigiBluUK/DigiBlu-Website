@@ -865,7 +865,7 @@
 
           <div class="form-step" data-step="3">
             <div class="modal-field">
-              <label for="cf-time">Preferred time to talk <span class="modal-field-optional" id="cf-tz">UK time</span></label>
+              <label for="cf-time">Preferred time to talk <span class="modal-field-optional">UK time</span></label>
               <select id="cf-time">
                 <option value="flexible">Flexible - any time works</option>
               </select>
@@ -873,7 +873,7 @@
             <div class="modal-field modal-consent">
               <label class="modal-checkbox">
                 <input type="checkbox" id="cf-consent" required>
-                <span>I agree to DigiBlu's <a href="legal/privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a> and consent to being contacted about my enquiry.</span>
+                <span>I agree to DigiBlu's <a href="legal/privacy-policy.html" data-legal="privacy" target="_blank" rel="noopener">Privacy Policy</a> and consent to being contacted about my enquiry.</span>
               </label>
             </div>
           </div>
@@ -1515,8 +1515,21 @@
 
       function close(skipRestore) {
         overlay.classList.remove('open');
-        document.body.style.overflow = '';
-        setBackgroundInert(false);
+        // A dialog can be opened from inside another one (the contact form's
+        // Privacy Policy link opens the legal dialog over it). Clearing inert
+        // and the scroll lock unconditionally would hand the page back to the
+        // keyboard while that first dialog is still on screen, so if anything
+        // is still open the lock is handed to it rather than released.
+        var stillOpen = document.querySelector('.modal-overlay.open');
+        if (stillOpen) {
+          [].forEach.call(document.body.children, function (el) {
+            if (el === stillOpen || el.tagName === 'SCRIPT') { el.removeAttribute('inert'); }
+            else { el.setAttribute('inert', ''); }
+          });
+        } else {
+          document.body.style.overflow = '';
+          setBackgroundInert(false);
+        }
         if (skipRestore === true) return;
         if (lastFocused && document.contains(lastFocused)) {
           lastFocused.focus();
@@ -2744,7 +2757,7 @@
         return true;
       }
 
-      document.querySelectorAll('.footer-col [data-legal]').forEach(function (btn) {
+      document.querySelectorAll('[data-legal]').forEach(function (btn) {
         btn.addEventListener('click', function (e) {
           if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
           e.preventDefault();
@@ -2794,29 +2807,15 @@
         );
       }
 
-      // Real UK business-hours slots, 08:00 to 18:00, built at runtime rather
-      // than hardcoded so the label always names the zone actually in force.
-      // The UK is GMT in winter and BST (UTC+1) in summer, and the switchover
-      // dates move each year, so this asks Intl what Europe/London is called
-      // *today* instead of committing to one of the two. Falls back to the
-      // neutral "UK time" if the runtime has no timeZoneName support.
+      // Real UK business-hours slots, 08:00 to 18:00. The label stays a plain
+      // "UK time" rather than naming GMT or BST: the UK switches between the
+      // two each year, so an abbreviation is only ever right for half of it,
+      // and "UK time" is unambiguous to the audience without needing to.
+      // The slot times themselves never move - they are UK *local* business
+      // hours, and only the UTC offset shifts with the clocks.
       (function () {
         var sel = document.getElementById('cf-time');
-        var tzEl = document.getElementById('cf-tz');
         if (!sel) return;
-
-        var zone = '';
-        try {
-          var parts = new Intl.DateTimeFormat('en-GB', {
-            timeZone: 'Europe/London', timeZoneName: 'short'
-          }).formatToParts(new Date());
-          for (var i = 0; i < parts.length; i++) {
-            if (parts[i].type === 'timeZoneName') zone = parts[i].value;
-          }
-        } catch (e) { zone = ''; }
-        if (tzEl) tzEl.textContent = zone ? 'UK time (' + zone + ')' : 'UK time';
-
-        // 08:00-09:00 through 17:00-18:00: ten one-hour slots ending at 6pm.
         var frag = document.createDocumentFragment();
         for (var hStart = 8; hStart < 18; hStart++) {
           var label = String(hStart).padStart(2, '0') + ':00 - '
@@ -2827,8 +2826,7 @@
           frag.appendChild(opt);
         }
         // "Flexible" is authored in the markup and stays the default, so the
-        // field is never an implicit commitment to a slot the visitor did not
-        // pick; the real slots are inserted after it.
+        // field is never an implicit commitment to a slot nobody picked.
         sel.appendChild(frag);
       })();
 
