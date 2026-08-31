@@ -93,8 +93,7 @@
   .modal-next,
   .modal-submit,
   .modal-done,
-  .modal-step.done .step-num,
-  .faq-item.open .faq-chev {
+  .modal-step.done .step-num {
     --ink-rgb: 255, 255, 255;
     --text: #ffffff;
   }
@@ -159,7 +158,6 @@
   .nav-toggle:focus-visible,
   .btn-signup:focus-visible,
   .btn-started:focus-visible,
-  .faq-question:focus-visible,
   .faq-cta-btn:focus-visible,
   .service-learn-more:focus-visible,
   .blog-card:focus-visible,
@@ -188,7 +186,6 @@
   @media (prefers-reduced-motion: reduce) {
     .team-slice { transition: none; }
     .team-slice-label { transition: none; }
-    .faq-answer-wrap { transition: none; }
     .modal-overlay,
     .modal-panel { transition: none; }
     .scroll-top-btn { transition: none; }
@@ -735,7 +732,6 @@
   .services h2,
   .cases h2,
   .team-head h2,
-  .faq h2,
   .blog h2,
   .clients h2 {
     font-size: clamp(34px, 4.6vw, 52px);
@@ -1175,6 +1171,55 @@
     scrollbar-gutter: stable;
   }
 
+  /* ---------- Modal scrollbars ----------
+     The default platform scrollbar is an opaque grey slab that reads as
+     chrome bolted onto the dialog - and it only appears on the machines
+     whose OS renders inline (non-overlay) scrollbars, so the popup looked
+     different depending on the device. These lists grow as case studies and
+     articles are added, so the bar is permanent furniture and worth styling
+     properly: a theme-aware ink-tinted pill on a transparent track.
+
+     `border: 3px solid transparent` + `background-clip: content-box` is what
+     insets the thumb inside the 10px gutter - painting the background only
+     into the content box leaves the transparent border as padding. Firefox
+     has no ::-webkit pseudo-elements and takes scrollbar-width/-color
+     instead, so both are declared. Everything is expressed through
+     --ink-rgb, so it follows light and dark without a second rule. */
+  .case-modal-body,
+  .service-modal-body,
+  .modal-panel {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--ink-rgb), 0.26) transparent;
+  }
+
+  .case-modal-body::-webkit-scrollbar,
+  .service-modal-body::-webkit-scrollbar,
+  .modal-panel::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .case-modal-body::-webkit-scrollbar-track,
+  .service-modal-body::-webkit-scrollbar-track,
+  .modal-panel::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .case-modal-body::-webkit-scrollbar-thumb,
+  .service-modal-body::-webkit-scrollbar-thumb,
+  .modal-panel::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--ink-rgb), 0.24);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+
+  .case-modal-body::-webkit-scrollbar-thumb:hover,
+  .service-modal-body::-webkit-scrollbar-thumb:hover,
+  .modal-panel::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(var(--ink-rgb), 0.42);
+    background-clip: content-box;
+  }
+
   /* max-width is load-bearing, not cosmetic: this pill is display:inline-flex
      with no width of its own, so without a cap it never wraps and can
      overflow straight into .modal-close (32px circle, inset 18px) once the
@@ -1319,25 +1364,59 @@
     flex-direction: column;
   }
 
+  /* The row bleeds 16px into the body's own padding (negative margin plus
+     matching padding) so the hover highlight has breathing room around the
+     text instead of stopping flush against the first and last character,
+     which read as a clipped band. `width: auto` is required with the
+     negative margins - the old `width: 100%` would add 32px of overflow. */
   .case-index-item {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 18px;
-    width: 100%;
+    width: auto;
     text-align: left;
-    padding: 18px 0;
-    background: none;
+    padding: 18px 16px;
+    margin: 0 -16px;
     border: none;
-    border-top: 1px solid rgba(var(--ink-rgb), 0.12);
+    border-radius: 12px;
+    background: none;
     font-family: 'DM Sans', sans-serif;
     color: inherit;
     text-decoration: none;
     cursor: pointer;
+    transition: background 0.18s ease;
   }
 
-  .case-index-item:last-child { border-bottom: 1px solid rgba(var(--ink-rgb), 0.12); }
-  .case-index-item:hover { background: rgba(var(--ink-rgb), 0.04); }
+  /* Dividers are pseudo-elements inset to the text column rather than a
+     border on the row itself. A border would inherit the bleed and the
+     border-radius above, so the rule would bow around the rounded corners
+     and run the full bleed width; this keeps the rules aligned to the text
+     while the highlight sits wider than them. */
+  .case-index-item::before,
+  .case-index-item:last-child::after {
+    content: '';
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    height: 1px;
+    background: rgba(var(--ink-rgb), 0.12);
+    transition: opacity 0.18s ease;
+  }
+
+  .case-index-item::before { top: 0; }
+  .case-index-item:last-child::after { bottom: 0; }
+
+  .case-index-item:hover { background: rgba(var(--ink-rgb), 0.06); }
+
+  /* Drop the rules that would otherwise cut across the highlighted row -
+     its own top rule, and the next row's top rule, which is the hovered
+     row's bottom edge. Without this the highlight reads as a band with
+     lines through it rather than a single selected row. */
+  .case-index-item:hover::before,
+  .case-index-item:hover + .case-index-item::before,
+  .case-index-item:last-child:hover::after { opacity: 0; }
 
   .case-index-client {
     font-size: 11px;
@@ -1825,52 +1904,10 @@
     }
   }
 
-  /* ---------- FAQ ---------- */
-  .faq {
-    max-width: var(--maxw);
-    margin: 0 auto;
-    padding: var(--section-y) var(--gutter);
-  }
-
-  .faq h2 { margin-bottom: var(--head-gap); }
-
-  .faq-grid {
-    display: grid;
-    grid-template-columns: minmax(260px, 360px) 1fr;
-    gap: 64px;
-    align-items: start;
-  }
-
-
-  .faq-sub {
-    max-width: 340px;
-    font-size: 14.5px;
-    line-height: 1.65;
-    color: rgba(var(--ink-rgb), var(--ink-a-high));
-  }
-
-  .faq-cta-card {
-    margin-top: 44px;
-    background: var(--surface);
-    border: 1px solid rgba(var(--ink-rgb),0.14);
-    border-radius: 16px;
-    padding: 26px;
-  }
-
-  .faq-cta-card h3 {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 10px;
-  }
-
-  .faq-cta-card p {
-    font-size: 13.5px;
-    line-height: 1.6;
-    color: rgba(var(--ink-rgb), var(--ink-a-high));
-    margin-bottom: 22px;
-  }
-
+  /* Named for the FAQ section it was built for. That section has been
+     removed, but this button is also the service-detail modal's footer CTA
+     and the blog modal's "Read full article" toggle, so the rule stays.
+     Known naming debt, same as .case-viewall-btn being reused by the blog. */
   .faq-cta-btn {
     display: inline-flex;
     align-items: center;
@@ -1896,97 +1933,6 @@
   }
 
   .faq-cta-btn svg { width: 14px; height: 14px; }
-
-  .faq-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  /* Brand-blue cards (white ink, gradient fill) were tried here on request
-     and reverted — keep these theme-aware. */
-  .faq-item {
-    background: var(--surface);
-    border: 1px solid rgba(var(--ink-rgb),0.14);
-    border-radius: 16px;
-    overflow: hidden;
-    transition: border-color 0.2s ease;
-  }
-
-  .faq-item:hover { border-color: rgba(var(--ink-rgb),0.26); }
-  .faq-item.open { border-color: rgba(29, 110, 245, 0.5); }
-
-  .faq-question {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 22px 26px;
-    background: none;
-    border: none;
-    text-align: left;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--text);
-    cursor: pointer;
-  }
-
-  .faq-question-text { flex: 1; }
-
-  .faq-chev {
-    flex-shrink: 0;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: 1px solid rgba(var(--ink-rgb),0.18);
-    display: grid;
-    place-items: center;
-    transition: background 0.2s ease, border-color 0.2s ease;
-  }
-
-  .faq-chev svg {
-    width: 15px;
-    height: 15px;
-    color: var(--text);
-    transition: transform 0.25s ease;
-  }
-
-  .faq-item.open .faq-chev {
-    background: var(--blue);
-    border-color: var(--blue);
-  }
-
-  .faq-item.open .faq-chev svg { transform: rotate(180deg); }
-
-  .faq-answer-wrap {
-    display: grid;
-    grid-template-rows: 0fr;
-    /* A 0fr row still leaves the text in the accessibility tree, so collapsed
-       answers must also be hidden from assistive tech, not just clipped. */
-    visibility: hidden;
-    transition: grid-template-rows 0.3s ease, visibility 0s linear 0.3s;
-  }
-
-  .faq-item.open .faq-answer-wrap {
-    grid-template-rows: 1fr;
-    visibility: visible;
-    transition: grid-template-rows 0.3s ease, visibility 0s linear 0s;
-  }
-
-  .faq-answer-inner { overflow: hidden; }
-
-  /* A "More on [Service]" link was trialled on each answer, opening that
-     service's popup — tried on request, then removed on request once the
-     questions themselves were changed to general engagement questions with
-     no service to link back to. Don't reintroduce a per-question service
-     link; see the comment above .faq-list in index.html. */
-  .faq-answer {
-    padding: 0 26px 24px;
-    font-size: 14.5px;
-    line-height: 1.65;
-    color: rgba(var(--ink-rgb),0.6);
-  }
 
   /* ---------- Blog ----------
      Plain themed background (white in light, black in dark) as specified.
@@ -2818,8 +2764,6 @@
     .nav-center { display: none; }
     .nav-toggle { display: flex; }
     nav { position: relative; }
-    .faq-grid { grid-template-columns: 1fr; gap: 40px; }
-    .faq-sub { max-width: 460px; }
 
     /* Icon only, no wordmark, so the bar stays uncluttered next to the
        hamburger. Done by cropping the existing single lockup mask rather

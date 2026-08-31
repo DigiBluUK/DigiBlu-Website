@@ -95,8 +95,7 @@
   .modal-next,
   .modal-submit,
   .modal-done,
-  .modal-step.done .step-num,
-  .faq-item.open .faq-chev {
+  .modal-step.done .step-num {
     --ink-rgb: 255, 255, 255;
     --text: #ffffff;
   }
@@ -161,7 +160,6 @@
   .nav-toggle:focus-visible,
   .btn-signup:focus-visible,
   .btn-started:focus-visible,
-  .faq-question:focus-visible,
   .faq-cta-btn:focus-visible,
   .service-learn-more:focus-visible,
   .blog-card:focus-visible,
@@ -190,7 +188,6 @@
   @media (prefers-reduced-motion: reduce) {
     .team-slice { transition: none; }
     .team-slice-label { transition: none; }
-    .faq-answer-wrap { transition: none; }
     .modal-overlay,
     .modal-panel { transition: none; }
     .scroll-top-btn { transition: none; }
@@ -737,7 +734,6 @@
   .services h2,
   .cases h2,
   .team-head h2,
-  .faq h2,
   .blog h2,
   .clients h2 {
     font-size: clamp(34px, 4.6vw, 52px);
@@ -1177,6 +1173,55 @@
     scrollbar-gutter: stable;
   }
 
+  /* ---------- Modal scrollbars ----------
+     The default platform scrollbar is an opaque grey slab that reads as
+     chrome bolted onto the dialog - and it only appears on the machines
+     whose OS renders inline (non-overlay) scrollbars, so the popup looked
+     different depending on the device. These lists grow as case studies and
+     articles are added, so the bar is permanent furniture and worth styling
+     properly: a theme-aware ink-tinted pill on a transparent track.
+
+     `border: 3px solid transparent` + `background-clip: content-box` is what
+     insets the thumb inside the 10px gutter - painting the background only
+     into the content box leaves the transparent border as padding. Firefox
+     has no ::-webkit pseudo-elements and takes scrollbar-width/-color
+     instead, so both are declared. Everything is expressed through
+     --ink-rgb, so it follows light and dark without a second rule. */
+  .case-modal-body,
+  .service-modal-body,
+  .modal-panel {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--ink-rgb), 0.26) transparent;
+  }
+
+  .case-modal-body::-webkit-scrollbar,
+  .service-modal-body::-webkit-scrollbar,
+  .modal-panel::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .case-modal-body::-webkit-scrollbar-track,
+  .service-modal-body::-webkit-scrollbar-track,
+  .modal-panel::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .case-modal-body::-webkit-scrollbar-thumb,
+  .service-modal-body::-webkit-scrollbar-thumb,
+  .modal-panel::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--ink-rgb), 0.24);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+
+  .case-modal-body::-webkit-scrollbar-thumb:hover,
+  .service-modal-body::-webkit-scrollbar-thumb:hover,
+  .modal-panel::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(var(--ink-rgb), 0.42);
+    background-clip: content-box;
+  }
+
   /* max-width is load-bearing, not cosmetic: this pill is display:inline-flex
      with no width of its own, so without a cap it never wraps and can
      overflow straight into .modal-close (32px circle, inset 18px) once the
@@ -1321,25 +1366,59 @@
     flex-direction: column;
   }
 
+  /* The row bleeds 16px into the body's own padding (negative margin plus
+     matching padding) so the hover highlight has breathing room around the
+     text instead of stopping flush against the first and last character,
+     which read as a clipped band. `width: auto` is required with the
+     negative margins - the old `width: 100%` would add 32px of overflow. */
   .case-index-item {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 18px;
-    width: 100%;
+    width: auto;
     text-align: left;
-    padding: 18px 0;
-    background: none;
+    padding: 18px 16px;
+    margin: 0 -16px;
     border: none;
-    border-top: 1px solid rgba(var(--ink-rgb), 0.12);
+    border-radius: 12px;
+    background: none;
     font-family: 'DM Sans', sans-serif;
     color: inherit;
     text-decoration: none;
     cursor: pointer;
+    transition: background 0.18s ease;
   }
 
-  .case-index-item:last-child { border-bottom: 1px solid rgba(var(--ink-rgb), 0.12); }
-  .case-index-item:hover { background: rgba(var(--ink-rgb), 0.04); }
+  /* Dividers are pseudo-elements inset to the text column rather than a
+     border on the row itself. A border would inherit the bleed and the
+     border-radius above, so the rule would bow around the rounded corners
+     and run the full bleed width; this keeps the rules aligned to the text
+     while the highlight sits wider than them. */
+  .case-index-item::before,
+  .case-index-item:last-child::after {
+    content: '';
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    height: 1px;
+    background: rgba(var(--ink-rgb), 0.12);
+    transition: opacity 0.18s ease;
+  }
+
+  .case-index-item::before { top: 0; }
+  .case-index-item:last-child::after { bottom: 0; }
+
+  .case-index-item:hover { background: rgba(var(--ink-rgb), 0.06); }
+
+  /* Drop the rules that would otherwise cut across the highlighted row -
+     its own top rule, and the next row's top rule, which is the hovered
+     row's bottom edge. Without this the highlight reads as a band with
+     lines through it rather than a single selected row. */
+  .case-index-item:hover::before,
+  .case-index-item:hover + .case-index-item::before,
+  .case-index-item:last-child:hover::after { opacity: 0; }
 
   .case-index-client {
     font-size: 11px;
@@ -1827,52 +1906,10 @@
     }
   }
 
-  /* ---------- FAQ ---------- */
-  .faq {
-    max-width: var(--maxw);
-    margin: 0 auto;
-    padding: var(--section-y) var(--gutter);
-  }
-
-  .faq h2 { margin-bottom: var(--head-gap); }
-
-  .faq-grid {
-    display: grid;
-    grid-template-columns: minmax(260px, 360px) 1fr;
-    gap: 64px;
-    align-items: start;
-  }
-
-
-  .faq-sub {
-    max-width: 340px;
-    font-size: 14.5px;
-    line-height: 1.65;
-    color: rgba(var(--ink-rgb), var(--ink-a-high));
-  }
-
-  .faq-cta-card {
-    margin-top: 44px;
-    background: var(--surface);
-    border: 1px solid rgba(var(--ink-rgb),0.14);
-    border-radius: 16px;
-    padding: 26px;
-  }
-
-  .faq-cta-card h3 {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 10px;
-  }
-
-  .faq-cta-card p {
-    font-size: 13.5px;
-    line-height: 1.6;
-    color: rgba(var(--ink-rgb), var(--ink-a-high));
-    margin-bottom: 22px;
-  }
-
+  /* Named for the FAQ section it was built for. That section has been
+     removed, but this button is also the service-detail modal's footer CTA
+     and the blog modal's "Read full article" toggle, so the rule stays.
+     Known naming debt, same as .case-viewall-btn being reused by the blog. */
   .faq-cta-btn {
     display: inline-flex;
     align-items: center;
@@ -1898,97 +1935,6 @@
   }
 
   .faq-cta-btn svg { width: 14px; height: 14px; }
-
-  .faq-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  /* Brand-blue cards (white ink, gradient fill) were tried here on request
-     and reverted — keep these theme-aware. */
-  .faq-item {
-    background: var(--surface);
-    border: 1px solid rgba(var(--ink-rgb),0.14);
-    border-radius: 16px;
-    overflow: hidden;
-    transition: border-color 0.2s ease;
-  }
-
-  .faq-item:hover { border-color: rgba(var(--ink-rgb),0.26); }
-  .faq-item.open { border-color: rgba(29, 110, 245, 0.5); }
-
-  .faq-question {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 22px 26px;
-    background: none;
-    border: none;
-    text-align: left;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--text);
-    cursor: pointer;
-  }
-
-  .faq-question-text { flex: 1; }
-
-  .faq-chev {
-    flex-shrink: 0;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: 1px solid rgba(var(--ink-rgb),0.18);
-    display: grid;
-    place-items: center;
-    transition: background 0.2s ease, border-color 0.2s ease;
-  }
-
-  .faq-chev svg {
-    width: 15px;
-    height: 15px;
-    color: var(--text);
-    transition: transform 0.25s ease;
-  }
-
-  .faq-item.open .faq-chev {
-    background: var(--blue);
-    border-color: var(--blue);
-  }
-
-  .faq-item.open .faq-chev svg { transform: rotate(180deg); }
-
-  .faq-answer-wrap {
-    display: grid;
-    grid-template-rows: 0fr;
-    /* A 0fr row still leaves the text in the accessibility tree, so collapsed
-       answers must also be hidden from assistive tech, not just clipped. */
-    visibility: hidden;
-    transition: grid-template-rows 0.3s ease, visibility 0s linear 0.3s;
-  }
-
-  .faq-item.open .faq-answer-wrap {
-    grid-template-rows: 1fr;
-    visibility: visible;
-    transition: grid-template-rows 0.3s ease, visibility 0s linear 0s;
-  }
-
-  .faq-answer-inner { overflow: hidden; }
-
-  /* A "More on [Service]" link was trialled on each answer, opening that
-     service's popup — tried on request, then removed on request once the
-     questions themselves were changed to general engagement questions with
-     no service to link back to. Don't reintroduce a per-question service
-     link; see the comment above .faq-list in index.html. */
-  .faq-answer {
-    padding: 0 26px 24px;
-    font-size: 14.5px;
-    line-height: 1.65;
-    color: rgba(var(--ink-rgb),0.6);
-  }
 
   /* ---------- Blog ----------
      Plain themed background (white in light, black in dark) as specified.
@@ -2820,8 +2766,6 @@
     .nav-center { display: none; }
     .nav-toggle { display: flex; }
     nav { position: relative; }
-    .faq-grid { grid-template-columns: 1fr; gap: 40px; }
-    .faq-sub { max-width: 460px; }
 
     /* Icon only, no wordmark, so the bar stays uncluttered next to the
        hamburger. Done by cropping the existing single lockup mask rather
@@ -3025,7 +2969,7 @@
         <li><a href="#services">Services</a></li>
         <li><a href="#case-studies">Case Studies</a></li>
         <li><a href="#team">Our Experts</a></li>
-        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#blog">Blogs</a></li>
       </ul>
 
       <div class="nav-right">
@@ -3056,7 +3000,7 @@
           <li><a href="#services">Services</a></li>
           <li><a href="#case-studies">Case Studies</a></li>
           <li><a href="#team">Our Experts</a></li>
-          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#blog">Blogs</a></li>
         </ul>
         <!-- Only the theme toggle lives in here. The CTA sits in the bar at
              every width — there is room for it beside the hamburger, and it
@@ -3535,8 +3479,8 @@
   </section>
 
   <section class="blog" id="blog">
-    <span class="pill">Blog</span>
-    <h2>Blog &amp; articles</h2>
+    <span class="pill">Blogs</span>
+    <h2>Blogs &amp; articles</h2>
 
     <!-- Real posts from digiblu.com/blog. Topic labels are mapped onto
          DigiBlu service lines (the source posts carry no categories of
@@ -3605,128 +3549,18 @@
     </div>
 
     <div class="cases-actions">
-      <button type="button" class="case-viewall-btn" id="blogViewMore">
-        View more articles
-        <span class="case-count" id="blogViewMoreCount"></span>
+      <!-- Opens the article index popup rather than expanding the grid in
+           place. Revealing every match inline grew the page without bound as
+           posts were added; the popup is a fixed-height, scrollable list, the
+           same mechanism the Case Studies section uses. -->
+      <button type="button" class="case-viewall-btn" id="blogViewAll">
+        View all articles
+        <span class="case-count" id="blogViewAllCount"></span>
       </button>
     </div>
 
     <p class="blog-empty" id="blogEmpty" hidden>No articles under this topic yet.</p>
   </section>
-  <section class="faq" id="faq">
-    <span class="pill">Questions &amp; Answers</span>
-    <h2>Clear answers, grounded in experience</h2>
-
-    <div class="faq-grid">
-      <div class="faq-intro">
-        <p class="faq-sub">The questions we hear most often from clients weighing up AI and digital transformation.</p>
-
-        <div class="faq-cta-card">
-          <h3>Still have questions?</h3>
-          <p>Every engagement starts differently. Get in touch and we will talk through what your business actually needs.</p>
-          <button class="faq-cta-btn js-contact-open">
-            <span class="arrow-badge">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-            Get in touch
-          </button>
-        </div>
-      </div>
-
-      <!-- Deliberately NOT the same territory as Services: those questions
-           ("How do we best make use of AI?" etc.) mapped 1:1 onto the six
-           service lines and were flagged as repetitive with the Services
-           section, twice — once as copy, then again once "More on [Service]"
-           links were added connecting each answer straight back to its
-           service popup. Both were removed on request. These five are
-           general engagement questions instead — about DigiBlu as a firm,
-           not about what any one service includes — so there is no service
-           this content could be confused with or link back to. Don't
-           reintroduce a per-question service link. -->
-      <div class="faq-list">
-        <div class="faq-item open">
-          <button class="faq-question" aria-expanded="true">
-            <span class="faq-question-text">What makes DigiBlu different from other consultancies?</span>
-            <span class="faq-chev">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-          </button>
-          <div class="faq-answer-wrap">
-            <div class="faq-answer-inner">
-              <p class="faq-answer">We pair consulting judgment with people who have actually built and run the technology, not just advised on it. That, plus staying technology-agnostic rather than pushing one platform, is what keeps us honest about what will and won't work for you.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false">
-            <span class="faq-question-text">What size of company do you typically work with?</span>
-            <span class="faq-chev">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-          </button>
-          <div class="faq-answer-wrap">
-            <div class="faq-answer-inner">
-              <p class="faq-answer">Everything from mid-sized businesses to large enterprises and public sector bodies, across financial services, energy, healthcare, education and government. What matters more than size is having a real problem worth solving.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false">
-            <span class="faq-question-text">How long does a typical engagement take?</span>
-            <span class="faq-chev">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-          </button>
-          <div class="faq-answer-wrap">
-            <div class="faq-answer-inner">
-              <p class="faq-answer">It depends on scope, but we structure engagements to reach a first measurable result in weeks rather than months, then build from there rather than asking you to commit to a long programme upfront.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false">
-            <span class="faq-question-text">Do we need to replace our existing systems and tools?</span>
-            <span class="faq-chev">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-          </button>
-          <div class="faq-answer-wrap">
-            <div class="faq-answer-inner">
-              <p class="faq-answer">Usually not. We're technology-agnostic, so we work with what you already have wherever it fits, and only recommend a change where there's a genuine case for it, not because it's our preferred platform.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false">
-            <span class="faq-question-text">Who will actually be working on our project?</span>
-            <span class="faq-chev">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-          </button>
-          <div class="faq-answer-wrap">
-            <div class="faq-answer-inner">
-              <p class="faq-answer">Practitioners with client-side, technology and consultancy backgrounds, not just advisors. The same people scoping the work are typically the ones delivering it, so nothing gets lost in handover.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   </main>
 
   <footer>
@@ -3768,9 +3602,8 @@
           <ul>
             <li><a href="#hero-content">Home</a></li>
             <li><a href="#about">About Us</a></li>
-            <li><a href="#blog">Blog</a></li>
+            <li><a href="#blog">Blogs</a></li>
             <li><a href="#case-studies">Case Studies</a></li>
-            <li><a href="#faq">FAQ</a></li>
             <li><button type="button" class="js-contact-open">Contact Us</button></li>
           </ul>
         </div>
@@ -3979,13 +3812,39 @@
         <div class="blog-meta" id="blogDetailMeta"></div>
         <div class="service-modal-list" id="blogDetailList"></div>
         <div class="blog-full-text" id="blogDetailFull" style="display: none"></div>
-        <div class="service-modal-footer">
+        <div class="service-modal-footer case-modal-footer">
           <button type="button" class="faq-cta-btn" id="blogDetailExpand">
             <span class="arrow-badge">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M7 17 17 7m0 0H9m8 0v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
             <span id="blogDetailExpandLabel">Read full article</span>
           </button>
+          <!-- Only rendered when this was opened from the article index, so
+               the trail back is offered exactly when there is somewhere to
+               go back to. Mirrors #caseDetailBack. -->
+          <button type="button" class="case-back-btn" id="blogDetailBack" hidden>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5m0 0 6-6m-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            All articles
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Article index. Same structure and classes as #caseIndexModal so the two
+       popups stay visually identical; the list is built from BLOG_POSTS and
+       respects whichever topic filter is active when it is opened. -->
+  <div class="modal-overlay" id="blogIndexModal">
+    <div class="modal-panel case-modal-panel" role="dialog" aria-modal="true" aria-labelledby="blogIndexTitle" tabindex="-1">
+      <button class="modal-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 5l14 14M19 5 5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <div class="case-modal-body">
+        <span class="pill case-modal-eyebrow">Blogs</span>
+        <h2 id="blogIndexTitle">All articles</h2>
+        <p class="case-modal-client" id="blogIndexSub">Insights and perspectives</p>
+        <div class="case-index-list" id="blogIndexList"></div>
+        <div class="case-modal-footer">
         </div>
       </div>
     </div>
@@ -4045,30 +3904,6 @@
   </div>
 
   <script>
-    (function () {
-      var items = document.querySelectorAll('.faq-item');
-      items.forEach(function (item, i) {
-        var btn = item.querySelector('.faq-question');
-        // Link each control to the region it expands.
-        var wrap = item.querySelector('.faq-answer-wrap');
-        var id = 'faq-answer-' + (i + 1);
-        wrap.id = id;
-        btn.setAttribute('aria-controls', id);
-
-        btn.addEventListener('click', function () {
-          var wasOpen = item.classList.contains('open');
-          items.forEach(function (other) {
-            other.classList.remove('open');
-            other.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
-          });
-          if (!wasOpen) {
-            item.classList.add('open');
-            btn.setAttribute('aria-expanded', 'true');
-          }
-        });
-      });
-    })();
-
     (function () {
       var slices = document.querySelectorAll('.team-slice');
       if (!slices.length) return;
@@ -4861,8 +4696,7 @@
       var grid = document.querySelector('.blog-grid');
       var emptyEl = document.getElementById('blogEmpty');
       var moreWrap = document.querySelector('.blog .cases-actions');
-      var moreBtn = document.getElementById('blogViewMore');
-      var moreCount = document.getElementById('blogViewMoreCount');
+      var moreCount = document.getElementById('blogViewAllCount');
       // Cap the initial view to exactly one row. The grid is 3/2/1 columns
       // across the breakpoints, so reading the live column count keeps the
       // first row full instead of leaving an orphan card at tablet widths.
@@ -4872,7 +4706,14 @@
         return cols.split(' ').filter(function (c) { return c.trim(); }).length;
       }
       var currentKey = 'all';
-      var expanded = false;
+
+      // The grid no longer expands in place - the overflow lives in the
+      // article index popup (see #blogIndexModal), so the row cap here is
+      // permanent and the count shows the filter's full total rather than a
+      // remainder. Exposed on window so the popup, which is built in the
+      // blog-detail IIFE below, can read the active filter without either
+      // one reaching into the other's scope.
+      window.__blogFilter = function () { return currentKey; };
 
       function apply(key) {
         currentKey = key;
@@ -4882,14 +4723,13 @@
 
         items.forEach(function (el) { el.hidden = true; });
 
-        var cap = expanded ? matches.length : columnCount();
+        var cap = columnCount();
         matches.slice(0, cap).forEach(function (el) { el.hidden = false; });
 
         if (emptyEl) emptyEl.hidden = matches.length !== 0;
 
-        var remaining = matches.length - cap;
-        if (moreWrap) moreWrap.hidden = remaining <= 0;
-        if (remaining > 0) moreCount.textContent = '(+' + remaining + ')';
+        if (moreWrap) moreWrap.hidden = matches.length <= cap;
+        if (moreCount) moreCount.textContent = '(' + matches.length + ')';
       }
 
       filters.forEach(function (btn) {
@@ -4897,24 +4737,14 @@
           filters.forEach(function (b) {
             b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
           });
-          expanded = false;
           apply(btn.getAttribute('data-filter'));
         });
       });
 
-      if (moreBtn) {
-        moreBtn.addEventListener('click', function () {
-          expanded = true;
-          apply(currentKey);
-        });
-      }
-
-      // Crossing a breakpoint changes the column count, so the one-row cap has
-      // to be recomputed. Skipped once expanded — re-hiding cards the visitor
-      // has already revealed would be hostile.
+      // Crossing a breakpoint changes the column count, so the one-row cap
+      // has to be recomputed.
       var resizeTimer = null;
       window.addEventListener('resize', function () {
-        if (expanded) return;
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function () { apply(currentKey); }, 150);
       });
@@ -5391,12 +5221,111 @@
         if (isExpanded) { showSummary(); } else { showFull(); }
       });
 
+      // ---------- Article index popup ----------
+      // Lives here rather than in the filter IIFE above because it needs
+      // populate()/modal to open a post, and BLOG_POSTS for the titles. It
+      // reads the active topic through window.__blogFilter() so the two
+      // don't otherwise depend on each other.
+      var indexOverlay = document.getElementById('blogIndexModal');
+      var indexModal = indexOverlay ? createModalController(indexOverlay) : null;
+      var indexListEl = document.getElementById('blogIndexList');
+      var indexSubEl = document.getElementById('blogIndexSub');
+      var backBtn = document.getElementById('blogDetailBack');
+
+      function openPost(key, fromIndex, opener) {
+        if (!populate(key)) return;
+        if (backBtn) backBtn.hidden = !fromIndex;
+        if (fromIndex && indexModal) {
+          // Hand the opener across so closing the post returns focus to the
+          // "View all articles" button rather than a row that is now hidden.
+          var origin = indexModal.lastFocusedRef();
+          indexModal.close(true);
+          modal.open(origin);
+        } else {
+          modal.open(opener);
+        }
+      }
+
+      function renderIndex() {
+        if (!indexListEl) return 0;
+        var key = typeof window.__blogFilter === 'function' ? window.__blogFilter() : 'all';
+        indexListEl.innerHTML = '';
+
+        // Driven off the cards, not Object.keys(BLOG_POSTS), so the popup
+        // lists posts in the same order the grid shows them and can read
+        // each one's topic straight off data-category.
+        var cards = [].filter.call(document.querySelectorAll('.blog-card'), function (card) {
+          return key === 'all' || card.getAttribute('data-category') === key;
+        });
+
+        cards.forEach(function (card) {
+          var postKey = card.getAttribute('data-post');
+          var post = BLOG_POSTS[postKey];
+          if (!post) return;
+
+          var row = document.createElement('a');
+          row.href = 'blog/' + postKey + '.html';
+          row.className = 'case-index-item';
+          row.setAttribute('data-post', postKey);
+
+          var text = document.createElement('span');
+          var meta = document.createElement('span');
+          meta.className = 'case-index-client';
+          meta.textContent = post.tag + ' · ' + post.date + ' · ' + post.read;
+          meta.style.display = 'block';
+          var title = document.createElement('span');
+          title.className = 'case-index-title';
+          title.textContent = post.title;
+          title.style.display = 'block';
+          text.appendChild(meta);
+          text.appendChild(title);
+
+          var go = document.createElement('span');
+          go.className = 'case-index-go';
+          go.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+          row.appendChild(text);
+          row.appendChild(go);
+          row.addEventListener('click', function (e) {
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
+            e.preventDefault();
+            openPost(postKey, true);
+          });
+          indexListEl.appendChild(row);
+        });
+
+        if (indexSubEl) {
+          var active = document.querySelector('.blog-filter[aria-pressed="true"]');
+          var label = active ? active.textContent.trim() : 'All';
+          indexSubEl.textContent = key === 'all'
+            ? cards.length + ' articles across every topic'
+            : cards.length + ' article' + (cards.length === 1 ? '' : 's') + ' on ' + label;
+        }
+        return cards.length;
+      }
+
+      if (backBtn && indexModal) {
+        backBtn.addEventListener('click', function () {
+          var origin = modal.lastFocusedRef();
+          modal.close(true);
+          renderIndex();
+          indexModal.open(origin);
+        });
+      }
+
+      var viewAllBtn = document.getElementById('blogViewAll');
+      if (viewAllBtn && indexModal) {
+        viewAllBtn.addEventListener('click', function () {
+          renderIndex();
+          indexModal.open(viewAllBtn);
+        });
+      }
+
       document.querySelectorAll('.blog-card').forEach(function (btn) {
         btn.addEventListener('click', function (e) {
           if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
           e.preventDefault();
-          if (!populate(btn.getAttribute('data-post'))) return;
-          modal.open(e.currentTarget);
+          openPost(btn.getAttribute('data-post'), false, e.currentTarget);
         });
       });
     })();

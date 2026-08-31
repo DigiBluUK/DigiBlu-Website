@@ -81,7 +81,11 @@ function truncate(str, max) {
   return str.slice(0, max - 1).trimEnd() + '…';
 }
 
-const FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Cpath d='M7 21.5 13 14l4.5 5L25 9.5' stroke='%231d6ef5' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E";
+// The real DigiBlu mark (the circular icon from assets/logo-mask.png,
+// white on the same rounded black plate the old placeholder used), not the
+// generic checkmark it replaced. Generated once by scratchpad tooling from
+// the mask's leading 76x76 square - see CLAUDE.md.
+const FAVICON = "../assets/favicon.png";
 
 // ogImage lets a page override the site-wide share card. Case studies pass
 // their own per-engagement card (assets/og/case-studies/<key>.jpg, built from
@@ -118,7 +122,8 @@ function pageHead({ title, description, canonicalPath, ogType, ogImage, ogImageA
 <meta name="twitter:image" content="${imageUrl}">
 <meta name="twitter:image:alt" content="${escapeHtml(imageAlt)}">
 
-<link rel="icon" href="${FAVICON}">
+<link rel="icon" type="image/png" href="${FAVICON}">
+<link rel="apple-touch-icon" href="${FAVICON}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -149,7 +154,7 @@ function pageHeader() {
       <li><a href="../index.html#services">Services</a></li>
       <li><a href="../index.html#case-studies">Case Studies</a></li>
       <li><a href="../index.html#team">Our Experts</a></li>
-      <li><a href="../index.html#faq">FAQ</a></li>
+      <li><a href="../index.html#blog">Blogs</a></li>
     </ul>
 
     <div class="nav-right">
@@ -180,7 +185,7 @@ function pageHeader() {
         <li><a href="../index.html#services">Services</a></li>
         <li><a href="../index.html#case-studies">Case Studies</a></li>
         <li><a href="../index.html#team">Our Experts</a></li>
-        <li><a href="../index.html#faq">FAQ</a></li>
+        <li><a href="../index.html#blog">Blogs</a></li>
       </ul>
       <!-- Mirrors the homepage: below 900px only the theme toggle moves out
            of the bar and into the menu (the CTA stays in the bar). No id on
@@ -237,9 +242,8 @@ function pageFooter() {
           <ul>
             <li><a href="../index.html#hero-content">Home</a></li>
             <li><a href="../index.html#about">About Us</a></li>
-            <li><a href="../index.html#blog">Blog</a></li>
             <li><a href="../index.html#case-studies">Case Studies</a></li>
-            <li><a href="../index.html#faq">FAQ</a></li>
+            <li><a href="../index.html#blog">Blogs</a></li>
             <li><a href="../index.html#contact">Contact Us</a></li>
           </ul>
         </div>
