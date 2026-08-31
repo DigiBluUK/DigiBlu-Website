@@ -900,33 +900,6 @@
     align-items: start;
   }
 
-  .about-statements {
-    display: flex;
-    flex-direction: column;
-    gap: 26px;
-  }
-
-  .statement {
-    border-top: 1px solid rgba(var(--ink-rgb), 0.22);
-    padding-top: 16px;
-  }
-
-  .statement h3 {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--text);
-    margin-bottom: 10px;
-  }
-
-  .statement p {
-    font-size: 14.5px;
-    line-height: 1.65;
-    color: rgba(var(--ink-rgb), 0.68);
-    max-width: 44ch;
-  }
-
   .about-lede {
     font-size: clamp(17px, 1.5vw, 21px);
     line-height: 1.55;
@@ -938,45 +911,72 @@
 
   .about-lede strong { font-weight: 500; }
 
-  /* Two real, concrete facts in place of the earlier decorative gradient
-     panel, which carried no information of its own. */
-  .about-stats {
-    margin-top: 34px;
-    display: flex;
-    gap: 14px;
-  }
-
-  .about-stat {
-    flex: 1;
-    padding: 22px 24px;
-    border-radius: 14px;
-    background: linear-gradient(150deg, #4a8dff 0%, #1b4fd6 45%, #0a1f6e 100%);
-  }
-
-  .about-stat-num {
+  /* Short accent rule under the heading, per the mockup. */
+  .about-rule {
     display: block;
-    font-size: 32px;
+    width: 48px;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--blue);
+    margin-bottom: 30px;
+  }
+
+  .about-values-title {
+    font-size: 12px;
     font-weight: 700;
-    letter-spacing: -0.5px;
-    color: #ffffff;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 22px;
   }
 
-  .about-stat-label {
-    display: block;
-    margin-top: 4px;
-    font-size: 12.5px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
+  .value-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Hairline between entries rather than around them, so the column reads
+     as one list. The first item has no rule above it. */
+  .value-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 22px 0;
+    border-top: 1px solid rgba(var(--ink-rgb), 0.12);
+  }
+
+  .value-item:first-child { border-top: none; padding-top: 0; }
+
+  /* Fixed width so the numbers form a column and the titles line up;
+     tabular-nums keeps 01 and 04 the same width. */
+  .value-num {
+    flex: 0 0 44px;
+    font-size: 17px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--blue);
+    line-height: 1.35;
+  }
+
+  .value-text h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .value-text p {
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: rgba(var(--ink-rgb), var(--ink-a-aa));
+    max-width: 46ch;
   }
 
   @media (max-width: 900px) {
     .about-top { grid-template-columns: 1fr; gap: 36px; }
   }
 
-  .statement p strong {
-    color: var(--text);
-    font-weight: 700;
-  }
 
   /* ---------- Case studies ---------- */
   /* Full-bleed band using the same artwork as the hero (frames left rather
@@ -3168,37 +3168,51 @@
     <span class="pill">About Us</span>
     <h2>Who we are.</h2>
 
+    <!-- Layout and copy follow the mockup attached to feedback #38: narrative
+         on the left, a numbered "Our values" list on the right. The Vision /
+         Values statement panels and the two stat cards it replaces are gone;
+         the vision now reads as the third paragraph rather than a labelled
+         block. -->
     <div class="about-top">
       <div class="about-head">
-        <!-- Vision only, no separate Mission: the two statements said much
-             the same thing in different words, and digiblu.com itself
-             publishes a Vision and no Mission, so this is the real one
-             (condensed from the About page) rather than an authored pair. -->
-        <div class="about-statements">
-          <div class="statement">
-            <h3>Vision</h3>
-            <p>To be one of the foremost independent AI-enabled digital transformation businesses in the UK, turning today's competitive, regulatory, cost and technology pressures into a lasting advantage through scalable, sustainable ways of working.</p>
-          </div>
-          <div class="statement">
-            <h3>Values</h3>
-            <p>Speed to value ahead of lengthy planning. Technology chosen on merit rather than allegiance. Partnership that leaves capability behind instead of dependency, evidenced by a consistent client NPS of <strong>+80</strong> across a wide range of industries.</p>
-          </div>
-        </div>
+        <span class="about-rule" aria-hidden="true"></span>
+        <p class="about-lede">DigiBlu brings together experienced practitioners with client-side, technology, and consultancy backgrounds. We act as <strong>pragmatic partners, focused on getting to value quickly</strong> rather than getting lost in process.</p>
+        <p class="about-lede">Although we have preferred technology solutions, we remain technology-agnostic, utilising leading AI and automation platforms based on the best fit for each client.</p>
+        <p class="about-lede">Our vision is to be one of the foremost independent AI-enabled digital transformation businesses in the UK, turning today's competitive, regulatory, cost and technology pressures into a lasting advantage.</p>
       </div>
 
-      <div class="about-right">
-        <p class="about-lede">DigiBlu brings together practitioners with client-side, technology, and consultancy backgrounds. We act as <strong>pragmatic partners, focused on getting to value quickly</strong> rather than getting lost in process.</p>
-        <p class="about-lede">We stay technology-agnostic, choosing from leading AI and automation platforms based on what genuinely fits each client.</p>
-        <div class="about-stats">
-          <div class="about-stat">
-            <span class="about-stat-num">2019</span>
-            <span class="about-stat-label">Founded</span>
-          </div>
-          <div class="about-stat">
-            <span class="about-stat-num">+80</span>
-            <span class="about-stat-label">Client NPS</span>
-          </div>
-        </div>
+      <div class="about-values">
+        <h3 class="about-values-title">Our values</h3>
+        <ol class="value-list">
+          <li class="value-item">
+            <span class="value-num">01</span>
+            <div class="value-text">
+              <h4>Equitable partnerships</h4>
+              <p>We build relationships based on trust, transparency and shared success.</p>
+            </div>
+          </li>
+          <li class="value-item">
+            <span class="value-num">02</span>
+            <div class="value-text">
+              <h4>Innovation with purpose</h4>
+              <p>We embrace new ideas and challenge convention to solve real problems and drive meaningful impact.</p>
+            </div>
+          </li>
+          <li class="value-item">
+            <span class="value-num">03</span>
+            <div class="value-text">
+              <h4>Technology on merit</h4>
+              <p>We choose the right technology for the problem, not preferred vendors.</p>
+            </div>
+          </li>
+          <li class="value-item">
+            <span class="value-num">04</span>
+            <div class="value-text">
+              <h4>Lasting capability</h4>
+              <p>We empower our clients with the skills, knowledge and ways of working to succeed long after we're gone.</p>
+            </div>
+          </li>
+        </ol>
       </div>
     </div>
 

@@ -898,33 +898,6 @@
     align-items: start;
   }
 
-  .about-statements {
-    display: flex;
-    flex-direction: column;
-    gap: 26px;
-  }
-
-  .statement {
-    border-top: 1px solid rgba(var(--ink-rgb), 0.22);
-    padding-top: 16px;
-  }
-
-  .statement h3 {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--text);
-    margin-bottom: 10px;
-  }
-
-  .statement p {
-    font-size: 14.5px;
-    line-height: 1.65;
-    color: rgba(var(--ink-rgb), 0.68);
-    max-width: 44ch;
-  }
-
   .about-lede {
     font-size: clamp(17px, 1.5vw, 21px);
     line-height: 1.55;
@@ -936,45 +909,72 @@
 
   .about-lede strong { font-weight: 500; }
 
-  /* Two real, concrete facts in place of the earlier decorative gradient
-     panel, which carried no information of its own. */
-  .about-stats {
-    margin-top: 34px;
-    display: flex;
-    gap: 14px;
-  }
-
-  .about-stat {
-    flex: 1;
-    padding: 22px 24px;
-    border-radius: 14px;
-    background: linear-gradient(150deg, #4a8dff 0%, #1b4fd6 45%, #0a1f6e 100%);
-  }
-
-  .about-stat-num {
+  /* Short accent rule under the heading, per the mockup. */
+  .about-rule {
     display: block;
-    font-size: 32px;
+    width: 48px;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--blue);
+    margin-bottom: 30px;
+  }
+
+  .about-values-title {
+    font-size: 12px;
     font-weight: 700;
-    letter-spacing: -0.5px;
-    color: #ffffff;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 22px;
   }
 
-  .about-stat-label {
-    display: block;
-    margin-top: 4px;
-    font-size: 12.5px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
+  .value-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Hairline between entries rather than around them, so the column reads
+     as one list. The first item has no rule above it. */
+  .value-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 22px 0;
+    border-top: 1px solid rgba(var(--ink-rgb), 0.12);
+  }
+
+  .value-item:first-child { border-top: none; padding-top: 0; }
+
+  /* Fixed width so the numbers form a column and the titles line up;
+     tabular-nums keeps 01 and 04 the same width. */
+  .value-num {
+    flex: 0 0 44px;
+    font-size: 17px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--blue);
+    line-height: 1.35;
+  }
+
+  .value-text h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .value-text p {
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: rgba(var(--ink-rgb), var(--ink-a-aa));
+    max-width: 46ch;
   }
 
   @media (max-width: 900px) {
     .about-top { grid-template-columns: 1fr; gap: 36px; }
   }
 
-  .statement p strong {
-    color: var(--text);
-    font-weight: 700;
-  }
 
   /* ---------- Case studies ---------- */
   /* Full-bleed band using the same artwork as the hero (frames left rather
