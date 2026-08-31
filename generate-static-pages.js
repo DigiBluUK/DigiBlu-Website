@@ -15,7 +15,11 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = __dirname;
-const SITE_ORIGIN = 'https://digiblu.com';
+// Where this copy is actually served from. GitHub Pages project sites live
+// under a /<repo> subpath, so the repo name is part of the origin - drop it
+// and every canonical, og:image and sitemap entry 404s. No trailing slash:
+// callers all append '/' themselves.
+const SITE_ORIGIN = 'https://buildwithmuj.github.io/DigiBlu';
 
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 
