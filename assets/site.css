@@ -2497,6 +2497,23 @@
     padding-right: 34px;
   }
 
+  /* The chevron above is a data URI, so its stroke is baked in and cannot
+     read --ink-rgb the way every other colour here does - it needs one rule
+     per theme. It was hardcoded white, which measured 5.93:1 on the dark
+     field but 1.06:1 on the light one: present in the markup, invisible on
+     screen, so the select read as having no dropdown affordance at all.
+     Both light paths are covered (explicit choice and OS preference), the
+     same three-state pattern the palette tokens use. */
+  :root[data-theme="light"] .modal-field select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%230d111788' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .modal-field select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%230d111788' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+  }
+
   .modal-field input::placeholder,
   .modal-field textarea::placeholder { color: rgba(var(--ink-rgb),0.32); }
 
