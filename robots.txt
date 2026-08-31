@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://buildwithmuj.github.io/DigiBlu/sitemap.xml
+Sitemap: https://digiblu.com/sitemap.xml

@@ -15,11 +15,22 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = __dirname;
-// Where this copy is actually served from. GitHub Pages project sites live
-// under a /<repo> subpath, so the repo name is part of the origin - drop it
-// and every canonical, og:image and sitemap entry 404s. No trailing slash:
-// callers all append '/' themselves.
-const SITE_ORIGIN = 'https://buildwithmuj.github.io/DigiBlu';
+// Where this copy is served from. Every canonical, og:image, JSON-LD self-URL
+// and sitemap entry is built from it, so it has to match the host actually
+// serving the files - point it elsewhere and crawlers are told a site you do
+// not control is the canonical one, and no share card resolves.
+//
+// The repo is deployed to two hosts, so this is overridable rather than
+// forked: digiblu.com is the default because that is the site's real home,
+// and the GitHub Pages copy regenerates with an override. Pages project sites
+// are served under a /<repo> subpath, so the repo name is part of that
+// origin - drop it and every generated URL 404s.
+//
+//   node generate-static-pages.js
+//   SITE_ORIGIN=https://buildwithmuj.github.io/DigiBlu node generate-static-pages.js
+//
+// No trailing slash: callers all append '/' themselves.
+const SITE_ORIGIN = (process.env.SITE_ORIGIN || 'https://digiblu.com').replace(/\/+$/, '');
 
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 
@@ -541,3 +552,35 @@ fs.writeFileSync(path.join(ROOT, 'robots.txt'), robots, 'utf8');
 console.log('Wrote', written.length, 'pages:');
 written.forEach(w => console.log(' -', w));
 console.log('Wrote sitemap.xml (' + allUrls.length + ' URLs) and robots.txt');
+
+// ---------- keep index.html's <head> on the same origin ----------
+// The homepage's canonical/og/JSON-LD URLs are hand-authored rather than
+// generated, so without this the origin would live in two places and the two
+// would drift - which is exactly how the homepage ended up claiming a
+// different canonical host from its own static pages.
+//
+// Scoped to <head> on purpose: the body carries www.digiblu.com links that
+// are provenance records for where the blog and legal copy was sourced, and
+// those must keep pointing at DigiBlu whatever host this is served from.
+(function syncHomepageOrigin() {
+  const file = path.join(ROOT, 'index.html');
+  const src = fs.readFileSync(file, 'utf8');
+  const headEnd = src.indexOf('</head>');
+  if (headEnd === -1) throw new Error('index.html: no </head> found');
+  const head = src.slice(0, headEnd);
+  const body = src.slice(headEnd);
+
+  // The canonical tag is the authority on what the file currently claims.
+  const m = head.match(/<link rel="canonical" href="([^"]+)"/);
+  if (!m) throw new Error('index.html: no canonical link to read the current origin from');
+  const current = m[1].replace(/\/+$/, '');
+  if (current === SITE_ORIGIN) {
+    console.log('index.html <head> already on ' + SITE_ORIGIN);
+    return;
+  }
+  const escaped = current.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const updated = head.replace(new RegExp(escaped, 'g'), SITE_ORIGIN);
+  const changed = (head.match(new RegExp(escaped, 'g')) || []).length;
+  fs.writeFileSync(file, updated + body, 'utf8');
+  console.log('index.html <head>: rewrote ' + changed + ' URL(s) ' + current + ' -> ' + SITE_ORIGIN);
+})();
