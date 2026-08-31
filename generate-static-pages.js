@@ -20,16 +20,20 @@ const ROOT = __dirname;
 // serving the files - point it elsewhere and crawlers are told a site you do
 // not control is the canonical one, and no share card resolves.
 //
-// Overridable rather than hardcoded so a staging or preview host can be
-// generated without forking the value in source. Note a GitHub Pages project
-// site is served under a /<repo> subpath, so the repo name is part of that
-// origin - drop it and every generated URL 404s.
+// The default is the GitHub Pages preview, because that is where the site is
+// actually being served today. A Pages *project* site lives under a /<repo>
+// subpath, so the repo name is part of the origin - drop it and every
+// generated URL 404s.
+//
+// Switch the default to https://digiblu.com when this moves to the real
+// domain; nothing else needs editing, the generator rewrites index.html's
+// <head> and every static page from this one value.
 //
 //   node generate-static-pages.js
-//   SITE_ORIGIN=https://staging.example.com node generate-static-pages.js
+//   SITE_ORIGIN=https://digiblu.com node generate-static-pages.js
 //
 // No trailing slash: callers all append '/' themselves.
-const SITE_ORIGIN = (process.env.SITE_ORIGIN || 'https://digiblu.com').replace(/\/+$/, '');
+const SITE_ORIGIN = (process.env.SITE_ORIGIN || 'https://digibluuk.github.io/DigiBlu-Website').replace(/\/+$/, '');
 
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 
