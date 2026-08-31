@@ -846,7 +846,11 @@
     font-weight: 400;
     letter-spacing: -0.5px;
     color: rgba(var(--ink-rgb),0.95);
-    margin-bottom: 46px;
+    /* 46px read as two unrelated blocks rather than a numbered heading. The
+       card is a flex column with .service-learn-more pinned by margin-top:
+       auto, so tightening this only closes the number/title gap - the slack
+       moves above the Learn more link and the card keeps its 260px min. */
+    margin-bottom: 20px;
   }
 
   .service-card h3 {
@@ -2764,7 +2768,6 @@
 
   .team-modal-body .service-modal-intro { text-align: left; }
 
-  .badge-modal-body .service-modal-eyebrow { display: block; }
   .badge-modal-body h2 { margin-bottom: 10px; }
   .badge-modal-body .service-modal-intro { margin-bottom: 0; text-align: left; }
 
@@ -3896,7 +3899,10 @@
         <div class="badge-modal-visual-wrap" id="badgeModalVisualWrap">
           <img id="badgeModalVisual" src="" alt="">
         </div>
-        <span class="pill service-modal-eyebrow" id="badgeModalEyebrow">Accreditation</span>
+        <!-- No eyebrow pill here. It read "Accreditation", which the badge
+             title below already says, and being forced to display:block in
+             this centred body it stretched full width and sat visibly
+             off-axis against the centred artwork and heading. -->
         <h2 id="badgeModalTitle"></h2>
         <p class="service-modal-intro" id="badgeModalDesc"></p>
       </div>
@@ -4256,11 +4262,28 @@
         );
       }
 
+      // The number comes off the card's own .service-num, not from this
+      // object's key order. Deriving it from key order is what put the wrong
+      // number on two services: the cards were reordered (Opportunity
+      // Discovery to 2, Process Excellence to 3) and the markup was updated,
+      // but SERVICES kept its original order, so the popup and the card
+      // disagreed. Reading the rendered value means they cannot diverge
+      // again. Footer links carry the same data-service key and resolve
+      // through the card too, so they need no special case.
+      function serviceNumber(key) {
+        var opener = document.querySelector('.service-card [data-service="' + key + '"]');
+        var card = opener && opener.closest('.service-card');
+        var numEl = card && card.querySelector('.service-num');
+        if (numEl && numEl.textContent.trim()) return numEl.textContent.trim();
+        // Only reached if a service has no card on the page.
+        var i = Object.keys(SERVICES).indexOf(key) + 1;
+        return (i < 10 ? '0' : '') + i;
+      }
+
       function populate(key) {
         var data = SERVICES[key];
         if (!data) return false;
-        var num = Object.keys(SERVICES).indexOf(key) + 1;
-        eyebrowEl.textContent = 'Service 0' + num;
+        eyebrowEl.textContent = 'Service ' + serviceNumber(key);
         titleEl.textContent = data.title;
         introEl.textContent = data.intro;
         listEl.innerHTML = '';

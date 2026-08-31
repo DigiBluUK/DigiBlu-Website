@@ -844,7 +844,11 @@
     font-weight: 400;
     letter-spacing: -0.5px;
     color: rgba(var(--ink-rgb),0.95);
-    margin-bottom: 46px;
+    /* 46px read as two unrelated blocks rather than a numbered heading. The
+       card is a flex column with .service-learn-more pinned by margin-top:
+       auto, so tightening this only closes the number/title gap - the slack
+       moves above the Learn more link and the card keeps its 260px min. */
+    margin-bottom: 20px;
   }
 
   .service-card h3 {
@@ -2762,7 +2766,6 @@
 
   .team-modal-body .service-modal-intro { text-align: left; }
 
-  .badge-modal-body .service-modal-eyebrow { display: block; }
   .badge-modal-body h2 { margin-bottom: 10px; }
   .badge-modal-body .service-modal-intro { margin-bottom: 0; text-align: left; }
 
