@@ -678,7 +678,11 @@
   .accred-track {
     display: flex;
     width: max-content;
-    animation: accred-scroll 64s linear infinite;
+    /* 64s put a full pass of the six certifications at ~25px/s, which meant
+       waiting the better part of a minute to see the last one. 44s is ~37px/s
+       - still an unhurried read, about a third less waiting. Hover still
+       pauses it, and reduced-motion still stops it entirely. */
+    animation: accred-scroll 44s linear infinite;
   }
 
   .accred-track:hover { animation-play-state: paused; }
@@ -1182,7 +1186,16 @@
      inline scrollbar (Windows) or an overlay one (macOS) — without it, the
      two behaved inconsistently: same rule as .service-modal-body below, so
      both popup families sit the same relative to their close button. */
+  /* flex: 1 fills the panel. .modal-panel is a flex row and this was the
+     default `0 1 auto`, so a popup whose content is narrower than the panel
+     - the case index, which is just a list of titles - shrank to its content
+     and left ~97px of bare panel to its right. The scrollbar rides that edge,
+     so it appeared well to the LEFT of the close button in that one popup
+     while sitting to its right everywhere else. min-width: 0 keeps a long
+     unbroken string from forcing the flex item wider than the panel. */
   .case-modal-body {
+    flex: 1 1 auto;
+    min-width: 0;
     padding: 44px 52px 40px;
     overflow-y: auto;
     scrollbar-gutter: stable;
@@ -2642,7 +2655,10 @@
   /* Same scrollbar-gutter/right-padding treatment as .case-modal-body above,
      so both popup families sit the same relative to .modal-close instead of
      drifting depending on which one happens to need a scrollbar. */
+  /* Same flex fill as .case-modal-body - see the note there. */
   .service-modal-body {
+    flex: 1 1 auto;
+    min-width: 0;
     padding: 44px 52px 40px;
     overflow-y: auto;
     scrollbar-gutter: stable;
@@ -2911,15 +2927,22 @@
     margin-bottom: 12px;
   }
 
+  /* `flex` rather than `inline-flex`, with the width shrunk to the label so
+     the link is still only as wide as its own text. As an inline box it sat
+     on the same line as the eyebrow pill that follows it, so the pill read
+     as a sibling of the back link rather than as the page's own category
+     label. Block-level puts the pill on its own line beneath, which is where
+     it belongs. */
   .detail-back {
-    display: inline-flex;
+    display: flex;
+    width: fit-content;
     align-items: center;
     gap: 6px;
     font-size: 13px;
     font-weight: 500;
     color: rgba(var(--ink-rgb), var(--ink-a-high));
     text-decoration: none;
-    margin-bottom: 28px;
+    margin-bottom: 18px;
   }
 
   .detail-back svg { width: 14px; height: 14px; }
