@@ -20,14 +20,13 @@ const ROOT = __dirname;
 // serving the files - point it elsewhere and crawlers are told a site you do
 // not control is the canonical one, and no share card resolves.
 //
-// The repo is deployed to two hosts, so this is overridable rather than
-// forked: digiblu.com is the default because that is the site's real home,
-// and the GitHub Pages copy regenerates with an override. Pages project sites
-// are served under a /<repo> subpath, so the repo name is part of that
+// Overridable rather than hardcoded so a staging or preview host can be
+// generated without forking the value in source. Note a GitHub Pages project
+// site is served under a /<repo> subpath, so the repo name is part of that
 // origin - drop it and every generated URL 404s.
 //
 //   node generate-static-pages.js
-//   SITE_ORIGIN=https://buildwithmuj.github.io/DigiBlu node generate-static-pages.js
+//   SITE_ORIGIN=https://staging.example.com node generate-static-pages.js
 //
 // No trailing slash: callers all append '/' themselves.
 const SITE_ORIGIN = (process.env.SITE_ORIGIN || 'https://digiblu.com').replace(/\/+$/, '');

@@ -47,36 +47,32 @@ Netlify serves `index.html` at `/` automatically, and the 20 static pages resolv
 
 **One deployment-time caveat:** `sitemap.xml` and `robots.txt` hardcode `https://digiblu.com/...`. On a `*.netlify.app` preview URL those point crawlers at the real domain instead of the preview. Harmless for a private preview; change `SITE_ORIGIN` at the top of `generate-static-pages.js` and re-run if you ever want them to match a different domain.
 
-## Two remotes, two branches
+## Serving from a different origin
 
-The repo is pushed to two GitHub remotes serving different hosts, and each
-has its own local branch so a bare `git push` can never cross them over:
-
-| Local branch | Remote | Serves | `SITE_ORIGIN` |
-|---|---|---|---|
-| `main` | `origin` -> `DigiBluUK/DigiBlu-Website` | the real site | `https://digiblu.com` |
-| `pages` | `buildwithmuj-digiblu` -> `buildwithmuj/DigiBlu` | GitHub Pages copy | `https://buildwithmuj.github.io/DigiBlu` |
-
-`SITE_ORIGIN` is **not** forked between them - `generate-static-pages.js` reads
-it from the environment and defaults to digiblu.com, and the Pages branch
-carries one commit that regenerates with an override. To sync work across:
+`SITE_ORIGIN` drives every canonical, `og:image`, JSON-LD self-URL, sitemap
+entry and `robots.txt` line. It defaults to `https://digiblu.com` and is
+**overridable from the environment**, so a staging host or preview deployment
+does not need the value forked in the source:
 
 ```bash
-git checkout pages && git merge main
-SITE_ORIGIN=https://buildwithmuj.github.io/DigiBlu node generate-static-pages.js
-git commit -am "Deploy config: point this copy at its GitHub Pages origin"
+node generate-static-pages.js                                  # digiblu.com
+SITE_ORIGIN=https://staging.example.com node generate-static-pages.js
 ```
 
-Expect a conflict confined to the generated files where the origins differ;
-resolve it by re-running the generator, which rewrites them wholesale.
+Point it at a host that is not actually serving the files and crawlers are
+told a site you do not control is the canonical one, and no social share card
+resolves. Note a GitHub Pages *project* site is served under a `/<repo>`
+subpath, so the repo name is part of the origin - omit it and every generated
+URL 404s.
 
 **The origin lives in two places and the generator syncs both.** The static
 pages are generated, but `index.html`'s own canonical/OG/JSON-LD URLs are
 hand-authored - which is how the homepage once ended up claiming a different
 canonical host from its own static pages. The generator now rewrites that
 `<head>` too, reading the current value from the canonical tag so it
-self-corrects. It is scoped to `<head>` deliberately: the ~15 www.digiblu.com
-links in the body are provenance records for where the blog and legal copy was
+self-corrects whatever state the file is in, and is a no-op when already
+correct. It is scoped to `<head>` deliberately: the ~15 www.digiblu.com links
+in the body are provenance records for where the blog and legal copy was
 sourced and must keep pointing at DigiBlu on every host.
 
 ## Shareable link
@@ -333,7 +329,6 @@ A full review was carried out and its findings fixed. The measured state afterwa
 
 ## Known follow-ups (not urgent, just flagged)
 
-- **`pages` branch has commits not yet pushed** to `buildwithmuj/DigiBlu`, deferred until the site is final. Pushing needs the credential switched to that account - Git Credential Manager caches one GitHub identity per host, so the two remotes fight over it. A per-repo credential setup is the outstanding cleanup.
 - **Team photo sources are mixed resolution.** The active slice is 783px wide but the headshots are 560x560, so they upscale ~1.4x. Tracing the originals back to DigiBlu's Wix CDN (request `https://static.wixstatic.com/media/<id>` with no `/v1/fill/` segment to get the upload) shows they range 425x525 to 2000x2000 - so several could gain real detail, but **Vic's original is 558x464, smaller than what ships**, and two others are also at or below it. Re-sourcing would also allow a clean re-key rather than repairing the existing alpha.
 
 - **SEO — remaining items** (see the SEO and Static pages sections above): every blog post/case study/legal doc now has its own pre-rendered URL with `Article`/`WebPage` JSON-LD (done — see Static pages), so what's left is mostly deployment-time: `robots.txt`/`sitemap.xml` exist (generated alongside the static pages) but are meaningless until this is on a real domain, not previewed as an Artifact; deploy the lightweight `index.html` + real cacheable asset files rather than the base64-inlined artifact build, and self-host Google Fonts there too (already true for the artifact build only, and for `assets/site.css` — the source `index.html`/generated pages still pull DM Sans from Google Fonts); author/`dateModified` schema on blog posts is low priority since digiblu.com doesn't publish author names for these.
