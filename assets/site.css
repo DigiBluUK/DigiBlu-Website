@@ -2983,6 +2983,43 @@
     .modal-field-row { grid-template-columns: 1fr; gap: 0; }
     .service-modal-body { padding: 32px 34px 28px 24px; }
 
+    /* The contact form goes full screen on a phone rather than sitting in a
+       card. Reported as clunky to scroll, with fields seeming to be missing
+       when they were not - which is what the card does: it is a short box
+       inside the viewport, the whole panel scrolls as one (see the rule
+       above), and the on-screen keyboard shrinks what is left until only a
+       field or two is visible with no sign there is more.
+
+       Two changes fix it. The panel fills the screen, so the scrollable area
+       is as tall as the device allows. And the panel itself stops scrolling -
+       .modal-main becomes the scroll container instead, so the header and its
+       step tracker stay put while the fields move under them, which is what
+       tells you where you are in the form.
+
+       min-height: 0 is required, not tidiness: a flex child defaults to
+       min-height: auto and will refuse to shrink below its content, so
+       .modal-main would grow the panel instead of scrolling inside it. */
+    #contactModal { padding: 0; }
+
+    #contactModal .modal-panel {
+      width: 100%;
+      max-width: none;
+      height: 100vh;
+      height: 100dvh;
+      max-height: 100dvh;
+      border: none;
+      border-radius: 0;
+      overflow: hidden;
+    }
+
+    #contactModal .modal-aside { flex: 0 0 auto; }
+
+    #contactModal .modal-main {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
     /* The eyebrow pill is the only content that reaches the panel's top-right
        corner, where .modal-close sits (32px wide, inset 18px). The max-width
        that keeps it clear of the X lives on the base rule now (applies at
