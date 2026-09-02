@@ -814,6 +814,22 @@
     transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
+  /* The DigiBlu mark, outlined inside the field. Deliberately faint: it is
+     meant to be noticed on a second look, not to read as a logo stamped on
+     top. No fill, so the dashes stay visible straight through it.
+
+     It is a <path> while everything animated is a <line>, which is what
+     keeps it out of both the sway keyframe and the cursor script without
+     either needing to know about it - the mark holds still while the field
+     moves around it. */
+  .geo-icon {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linejoin: round;
+    opacity: 0.42;
+  }
+
   @keyframes geo-sway {
     0%, 100% { rotate: -17deg; }
     50%      { rotate: 17deg; }
@@ -842,11 +858,19 @@
     .geo-flow line { animation: none; transition: none; }
   }
 
-  /* Nothing sits beside the text at this width, and stacking a large block of
-     pattern above or below the copy would push the section's actual content
-     down for no gain. It is decorative, so it goes. */
+  /* Below 900px the grid is one column, so the figure stacks under the
+     narrative rather than sitting beside it. It used to be hidden here
+     entirely; that was wrong - it is part of how the section reads, and its
+     absence made mobile look like a different design. Sized against the
+     viewport so it stays generous without crowding the values beneath.
+
+     The cursor response does not apply on touch (no hover to track) but the
+     idle sway still runs, so it is not a static image there. */
   @media (max-width: 900px) {
-    .geo-figure { display: none; }
+    .geo-figure {
+      width: min(68vw, 290px);
+      margin: 4px auto 8px;
+    }
   }
 
   /* ---------- Services ---------- */
@@ -1062,10 +1086,15 @@
   }
 
   /* ---------- Values ----------
-     Base case is the small-screen one: a plain stacked list with every value
-     shown in full. The accordion is layered on at 761px and up, the same way
-     the team strip scopes its expanded card, so the phone layout can never
-     inherit a rule that assumes horizontal room. */
+     One visual language at every width: a large numeral, muted until its value
+     is opened and full ink when it is, under a hairline rule. Only the axis
+     changes - a column on a phone, a row on desktop.
+
+     It used to differ. The small-screen case was a plain list with small blue
+     numerals and every value expanded, which read as a different component
+     rather than the same one laid out differently. The accordion behaviour is
+     in the JS and was never width-dependent, so bringing the styling down here
+     needed no script change. */
   .value-list {
     list-style: none;
     display: flex;
@@ -1075,7 +1104,7 @@
   .value-open {
     display: flex;
     align-items: baseline;
-    gap: 18px;
+    gap: 16px;
     width: 100%;
     padding: 16px 0 20px;
     background: none;
@@ -1084,16 +1113,34 @@
     font-family: 'DM Sans', sans-serif;
     text-align: left;
     cursor: pointer;
+    transition: border-color 0.25s ease;
   }
 
+  /* --ink-a-faint, not a flatter grey: the numeral is the only visible label
+     on a real button, so it has to stay legible when collapsed - 3.7:1 dark
+     and 5.0:1 light, against the open one at 21:1. */
   .value-num {
     flex: 0 0 auto;
-    font-size: 30px;
-    font-weight: 600;
+    font-size: clamp(34px, 9vw, 46px);
+    font-weight: 500;
     font-variant-numeric: tabular-nums;
     line-height: 1;
-    color: var(--blue);
+    color: rgba(var(--ink-rgb), var(--ink-a-faint));
+    transition: color 0.25s ease;
   }
+
+  .value-item.is-open .value-num { color: var(--text); }
+  .value-item.is-open .value-open { border-top-color: rgba(var(--ink-rgb), 0.55); }
+
+  .value-open:hover .value-num,
+  .value-open:focus-visible .value-num { color: var(--blue); }
+  .value-open:hover,
+  .value-open:focus-visible { border-top-color: var(--blue); }
+
+  /* display:none rather than a zero height: a collapsed item must not reserve
+     the space its copy would need. */
+  .value-text { display: none; padding-top: 4px; }
+  .value-item.is-open .value-text { display: block; }
 
   .value-title {
     display: block;
@@ -1110,10 +1157,13 @@
     color: rgba(var(--ink-rgb), var(--ink-a-aa));
   }
 
+  /* Desktop turns the column into a row. Only layout and scale here - the
+     collapsed/open/hover states are in the base block, so both axes share
+     them and cannot drift apart. Collapsed items are sized by their numeral
+     alone and the open one takes the rest of the row; only flex-grow is
+     transitioned, since animating width or the text would reflow the copy
+     mid-motion. */
   @media (min-width: 761px) {
-    /* The accordion. Collapsed items are sized by their numeral alone; the
-       open one takes the rest of the row. Only flex-grow is transitioned -
-       animating width or the text itself would reflow the copy mid-motion. */
     .value-list {
       flex-direction: row;
       align-items: stretch;
@@ -1134,37 +1184,11 @@
       gap: 26px;
       padding: 20px 0 34px;
       border-top-width: 2px;
-      transition: border-color 0.25s ease;
     }
 
-    /* Muted until opened, full ink when open, brand blue on hover - the three
-       states the reference shows across items 1/2, 3 and 4.
+    .value-num { font-size: clamp(44px, 5vw, 82px); }
 
-       The muted step is --ink-a-faint, not the flatter grey the reference
-       uses. These numerals are the only visible label on a real button, so
-       they have to stay legible: at 0.22 the collapsed ones measured 1.8:1,
-       which is decoration, not a control. The token gives 3.7:1 in dark and
-       5.1:1 in light - clear of the 3:1 bar for text this size - and still
-       reads as plainly receded next to the open one at 21:1. */
-    .value-num {
-      font-size: clamp(44px, 5vw, 82px);
-      font-weight: 500;
-      color: rgba(var(--ink-rgb), var(--ink-a-faint));
-      transition: color 0.25s ease;
-    }
-
-    .value-item.is-open .value-num { color: var(--text); }
-    .value-item.is-open .value-open { border-top-color: rgba(var(--ink-rgb), 0.55); }
-
-    .value-open:hover .value-num,
-    .value-open:focus-visible .value-num { color: var(--blue); }
-    .value-open:hover,
-    .value-open:focus-visible { border-top-color: var(--blue); }
-
-    /* display:none rather than a zero width: a collapsed item must not reserve
-       the space its copy would need, or the open one cannot grow into it. */
-    .value-text { display: none; max-width: 430px; padding-top: 6px; }
-    .value-item.is-open .value-text { display: block; }
+    .value-text { max-width: 430px; padding-top: 6px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
