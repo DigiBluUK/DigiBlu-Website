@@ -754,16 +754,53 @@
 
      Fill is currentColor, so one file serves both themes. Purely decorative,
      hence aria-hidden and no role. */
+  /* Three patterns share the box and cross-fade, one every three seconds.
+     The layers stack absolutely, so the figure needs its own height - hence
+     aspect-ratio rather than letting an svg size it. */
   .geo-figure {
+    position: relative;
     align-self: center;
     width: clamp(170px, 17vw, 250px);
+    aspect-ratio: 1 / 1;
     color: rgba(var(--ink-rgb), 0.85);
   }
 
-  .geo-figure svg {
+  .geo-layer {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    animation: geo-cycle 9s linear infinite;
+  }
+
+  /* Positive delays, not negative: with negative delays every layer is already
+     mid-cycle at load and two of them read as visible on the first frame. */
+  .geo-layer:nth-child(2) { animation-delay: 3s; }
+  .geo-layer:nth-child(3) { animation-delay: 6s; }
+
+  .geo-layer svg {
     display: block;
     width: 100%;
     height: auto;
+  }
+
+  /* 9s total, so each pattern holds for 3s. The fade is short and the layers
+     overlap through it, which reads as one pattern resolving into the next
+     rather than a blink - they are the same colour, so the crossfade is a
+     morph. Opacity only: it is compositor-driven and cannot reflow the copy
+     sitting beside it. */
+  @keyframes geo-cycle {
+    0%      { opacity: 0; }
+    3%      { opacity: 1; }
+    33.33%  { opacity: 1; }
+    36.33%  { opacity: 0; }
+    100%    { opacity: 0; }
+  }
+
+  /* Something that changes on its own every three seconds is exactly what this
+     preference is for. Reduced motion gets the first pattern, held. */
+  @media (prefers-reduced-motion: reduce) {
+    .geo-layer { animation: none; }
+    .geo-layer:first-child { opacity: 1; }
   }
 
   /* Nothing sits beside the text at this width, and stacking a large block of
