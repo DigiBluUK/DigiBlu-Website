@@ -78,7 +78,7 @@
      fourteen logos rendered as nothing - which reads as the carousel being
      broken rather than as an obviously old page. Deriving the value from the
      file contents means it changes exactly when the CSS does. -->
-<link rel="stylesheet" href="assets/site.css?v=f4b7c118e4">
+<link rel="stylesheet" href="assets/site.css?v=daee46eb5a">
 </head>
 <body>
   <a class="skip-link" href="#hero-content">Skip to content</a>
@@ -285,28 +285,28 @@
   </section>
 
   <section class="about" id="about">
-    <!-- Built to the reference layout supplied: a small label at the far left,
-         the lead statement set large to its right with the opening phrase at
-         full ink and the rest stepped back, and the values beneath as a row of
-         cards. The reference's cards carry invented headline figures; ours
-         carry the five real values instead, because the only verifiable number
-         DigiBlu publishes is the NPS and the site's rule is no fabricated
-         content.
+    <!-- Top block is the earlier stacked layout, restored on request: heading,
+         blue rule, then the narrative at full size. The label-left /
+         statement-right arrangement from the first reference is gone; the copy
+         it introduced ("At DigiBlu, we bring together...") is kept, since that
+         is the wording the scroll reveal was specified against.
 
-         The statement is the <h2>: the reference has no separate heading above
-         it, and leaving both would stack two competing headlines. -->
+         The narrative reads muted and fills to full ink word by word as the
+         block scrolls up the viewport - see the about IIFE. -->
+    <span class="pill">About Us</span>
+    <h2>Who we are.</h2>
+
     <div class="about-top">
-      <div class="about-label">
-        <span class="pill">About Us</span>
-      </div>
-
       <div class="about-head">
-        <h2 class="about-statement">At DigiBlu, <span class="about-statement-soft">we bring together experienced practitioners with client-side, technology, and consultancy backgrounds. We act as pragmatic partners, focused on getting to value quickly rather than getting lost in process.</span></h2>
+        <span class="about-rule" aria-hidden="true"></span>
+        <p class="about-lede">At DigiBlu, we bring together experienced practitioners with client-side, technology, and consultancy backgrounds. We act as pragmatic partners, focused on getting to value quickly rather than getting lost in process.</p>
         <p class="about-lede">Although we have preferred technology solutions, we remain technology-agnostic, utilising leading AI and automation platforms based on the best fit for each client.</p>
         <p class="about-lede">Our vision is to be one of the foremost independent AI-enabled digital transformation businesses in the UK, turning today's competitive, regulatory, cost and technology pressures into a lasting advantage.</p>
       </div>
     </div>
 
+    <div class="about-values">
+      <h3 class="about-values-title">Our values</h3>
     <!-- Values as a numeral accordion, per the second reference supplied: the
          open value shows its title and description beside a full-ink numeral,
          the rest collapse to a muted numeral under a hairline rule. Click to
@@ -362,6 +362,7 @@
           </button>
         </li>
     </ol>
+    </div>
   </section>
 
   <section class="services" id="services">
@@ -959,6 +960,75 @@
   </div>
 
   <script>
+    (function () {
+      // Scroll read-through on the "Who we are" narrative: the copy starts
+      // stepped back and fills to full ink a word at a time as the block
+      // travels up the viewport, so the colour follows roughly where the
+      // reader is. Skipped under prefers-reduced-motion, where the paragraphs
+      // are left at full ink instead.
+      var head = document.querySelector('.about-head');
+      if (!head || !window.matchMedia) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      var paras = head.querySelectorAll('.about-lede');
+      if (!paras.length) return;
+
+      // Wrap every word in its own span, walking the text nodes rather than
+      // rewriting innerHTML so any inline markup inside a paragraph survives
+      // instead of being flattened away.
+      var words = [];
+      [].forEach.call(paras, function (p) {
+        var walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null);
+        var nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+        nodes.forEach(function (node) {
+          var frag = document.createDocumentFragment();
+          node.nodeValue.split(/(\s+)/).forEach(function (part) {
+            if (!part) return;
+            if (!part.trim()) { frag.appendChild(document.createTextNode(part)); return; }
+            var span = document.createElement('span');
+            span.className = 'about-word';
+            span.textContent = part;
+            frag.appendChild(span);
+            words.push(span);
+          });
+          node.parentNode.replaceChild(frag, node);
+        });
+      });
+      if (!words.length) return;
+
+      // Only now does the CSS start muting anything, so a failure above this
+      // line leaves the copy at full ink rather than permanently dimmed.
+      head.classList.add('is-reading');
+
+      // Deliberately not rAF-throttled: the handler is one rect read plus a
+      // walk over only the words whose state actually changed, so it is cheap,
+      // and it stays correct where rAF is throttled to a stop rather than
+      // silently never running.
+      var lit = -1;
+      function update() {
+        var r = head.getBoundingClientRect();
+        var vh = window.innerHeight || document.documentElement.clientHeight;
+        // Fills from the block reaching the lower part of the viewport until
+        // it has cleared the upper third.
+        var travel = (vh * 0.85 - vh * 0.3) + r.height;
+        var p = (vh * 0.85 - r.top) / (travel || 1);
+        p = p < 0 ? 0 : (p > 1 ? 1 : p);
+        var n = Math.round(p * words.length);
+        if (n === lit) return;
+        var from = lit < 0 ? 0 : (lit < n ? lit : n);
+        var to = lit > n ? lit : n;
+        for (var i = from; i < to && i < words.length; i++) {
+          words[i].classList.toggle('is-read', i < n);
+        }
+        lit = n;
+      }
+
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
+
     (function () {
       // Values accordion. One open at a time, the first open on load, so the
       // section never reads as five bare numerals. Click rather than hover:

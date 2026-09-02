@@ -888,53 +888,65 @@
     margin-bottom: 18px;
   }
 
-  /* Label far left, statement set large to its right - the reference layout
-     supplied. The label column is a fixed width rather than fractional, so the
-     statement begins at the same place at every viewport. */
+  /* Single column: heading and narrative, with the values beneath. */
   .about-top {
     display: grid;
-    grid-template-columns: 190px minmax(0, 1fr);
-    gap: 40px;
+    grid-template-columns: 1fr;
+    gap: 52px;
     align-items: start;
-    margin-bottom: 64px;
+    margin-bottom: 52px;
   }
 
-  .about-label .pill { margin-bottom: 0; }
+  /* Without a cap the paragraphs would run the full 1500px content measure,
+     which is far past a comfortable line length. */
+  .about-head { max-width: 820px; }
 
-  /* Capped so the statement holds a readable measure instead of running the
-     full 1500px content width. */
-  .about-head { max-width: 900px; }
-
-  /* The statement IS the section's h2, so it needs type of its own: the shared
-     section-heading rule is scoped to `.about > h2` and this sits two levels
-     down, inside .about-head, so it would otherwise fall back to the UA
-     default. That trap has bitten this project before - see the note about
-     .detail-page h1 under Static pages. */
-  .about-statement {
-    font-size: clamp(25px, 2.7vw, 39px);
-    line-height: 1.32;
-    font-weight: 400;
-    letter-spacing: -0.6px;
-    color: var(--text);
-    margin-bottom: 26px;
-  }
-
-  /* Everything after the opening phrase steps back, as in the reference.
-     --ink-a-mid rather than a literal alpha: it rises in light theme, where
-     the same value over white would drop under AA. */
-  .about-statement-soft { color: rgba(var(--ink-rgb), var(--ink-a-mid)); }
-
-  /* Supporting detail, deliberately much smaller so the statement stays the
-     thing read first. The reference carries no body copy at all, but dropping
-     these would lose DigiBlu's published vision. */
   .about-lede {
-    font-size: 14.5px;
-    line-height: 1.7;
-    color: rgba(var(--ink-rgb), var(--ink-a-aa));
-    margin-bottom: 14px;
+    font-size: clamp(17px, 1.5vw, 21px);
+    line-height: 1.55;
+    color: var(--text);
+    margin-bottom: 18px;
   }
 
   .about-lede:last-of-type { margin-bottom: 0; }
+
+  /* Scroll read-through. The narrative starts stepped back and fills to full
+     ink word by word as the block travels up the viewport, so the colour
+     tracks roughly where the reader has got to.
+
+     The filled state is --text, not a literal white: white is only correct in
+     dark theme, and on the light background it would be invisible. The unread
+     state is a token too, so it rises in light theme where the same alpha over
+     white would drop under AA - it measures 5.3:1 dark and 5.9:1 light, so the
+     text is legible before it fills, not just after.
+
+     The muting only applies once the script has wrapped the words and added
+     .is-reading, so with JS off, or under prefers-reduced-motion, the copy
+     simply sits at full ink and nothing is lost but the effect. */
+  .about-head.is-reading .about-word { color: rgba(var(--ink-rgb), var(--ink-a-mid)); }
+  .about-head.is-reading .about-word.is-read { color: var(--text); }
+  .about-word { transition: color 0.35s ease; }
+
+  /* Short accent rule under the heading. */
+  .about-rule {
+    display: block;
+    width: 48px;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--blue);
+    margin-bottom: 30px;
+  }
+
+  /* Labels the accordion below as the values, which the numerals alone do
+     not - it is why the heading came back when the section was restacked. */
+  .about-values-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 26px;
+  }
 
   /* ---------- Values ----------
      Base case is the small-screen one: a plain stacked list with every value
@@ -1047,8 +1059,7 @@
   }
 
   @media (max-width: 900px) {
-    .about-top { grid-template-columns: 1fr; gap: 22px; margin-bottom: 44px; }
-    .about-head { max-width: none; }
+    .about-top { gap: 36px; margin-bottom: 40px; }
   }
 
   /* ---------- Case studies ---------- */

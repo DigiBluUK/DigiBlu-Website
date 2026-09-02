@@ -890,53 +890,65 @@
     margin-bottom: 18px;
   }
 
-  /* Label far left, statement set large to its right - the reference layout
-     supplied. The label column is a fixed width rather than fractional, so the
-     statement begins at the same place at every viewport. */
+  /* Single column: heading and narrative, with the values beneath. */
   .about-top {
     display: grid;
-    grid-template-columns: 190px minmax(0, 1fr);
-    gap: 40px;
+    grid-template-columns: 1fr;
+    gap: 52px;
     align-items: start;
-    margin-bottom: 64px;
+    margin-bottom: 52px;
   }
 
-  .about-label .pill { margin-bottom: 0; }
+  /* Without a cap the paragraphs would run the full 1500px content measure,
+     which is far past a comfortable line length. */
+  .about-head { max-width: 820px; }
 
-  /* Capped so the statement holds a readable measure instead of running the
-     full 1500px content width. */
-  .about-head { max-width: 900px; }
-
-  /* The statement IS the section's h2, so it needs type of its own: the shared
-     section-heading rule is scoped to `.about > h2` and this sits two levels
-     down, inside .about-head, so it would otherwise fall back to the UA
-     default. That trap has bitten this project before - see the note about
-     .detail-page h1 under Static pages. */
-  .about-statement {
-    font-size: clamp(25px, 2.7vw, 39px);
-    line-height: 1.32;
-    font-weight: 400;
-    letter-spacing: -0.6px;
-    color: var(--text);
-    margin-bottom: 26px;
-  }
-
-  /* Everything after the opening phrase steps back, as in the reference.
-     --ink-a-mid rather than a literal alpha: it rises in light theme, where
-     the same value over white would drop under AA. */
-  .about-statement-soft { color: rgba(var(--ink-rgb), var(--ink-a-mid)); }
-
-  /* Supporting detail, deliberately much smaller so the statement stays the
-     thing read first. The reference carries no body copy at all, but dropping
-     these would lose DigiBlu's published vision. */
   .about-lede {
-    font-size: 14.5px;
-    line-height: 1.7;
-    color: rgba(var(--ink-rgb), var(--ink-a-aa));
-    margin-bottom: 14px;
+    font-size: clamp(17px, 1.5vw, 21px);
+    line-height: 1.55;
+    color: var(--text);
+    margin-bottom: 18px;
   }
 
   .about-lede:last-of-type { margin-bottom: 0; }
+
+  /* Scroll read-through. The narrative starts stepped back and fills to full
+     ink word by word as the block travels up the viewport, so the colour
+     tracks roughly where the reader has got to.
+
+     The filled state is --text, not a literal white: white is only correct in
+     dark theme, and on the light background it would be invisible. The unread
+     state is a token too, so it rises in light theme where the same alpha over
+     white would drop under AA - it measures 5.3:1 dark and 5.9:1 light, so the
+     text is legible before it fills, not just after.
+
+     The muting only applies once the script has wrapped the words and added
+     .is-reading, so with JS off, or under prefers-reduced-motion, the copy
+     simply sits at full ink and nothing is lost but the effect. */
+  .about-head.is-reading .about-word { color: rgba(var(--ink-rgb), var(--ink-a-mid)); }
+  .about-head.is-reading .about-word.is-read { color: var(--text); }
+  .about-word { transition: color 0.35s ease; }
+
+  /* Short accent rule under the heading. */
+  .about-rule {
+    display: block;
+    width: 48px;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--blue);
+    margin-bottom: 30px;
+  }
+
+  /* Labels the accordion below as the values, which the numerals alone do
+     not - it is why the heading came back when the section was restacked. */
+  .about-values-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 26px;
+  }
 
   /* ---------- Values ----------
      Base case is the small-screen one: a plain stacked list with every value
@@ -1049,8 +1061,7 @@
   }
 
   @media (max-width: 900px) {
-    .about-top { grid-template-columns: 1fr; gap: 22px; margin-bottom: 44px; }
-    .about-head { max-width: none; }
+    .about-top { gap: 36px; margin-bottom: 40px; }
   }
 
   /* ---------- Case studies ---------- */
@@ -3331,28 +3342,28 @@
   </section>
 
   <section class="about" id="about">
-    <!-- Built to the reference layout supplied: a small label at the far left,
-         the lead statement set large to its right with the opening phrase at
-         full ink and the rest stepped back, and the values beneath as a row of
-         cards. The reference's cards carry invented headline figures; ours
-         carry the five real values instead, because the only verifiable number
-         DigiBlu publishes is the NPS and the site's rule is no fabricated
-         content.
+    <!-- Top block is the earlier stacked layout, restored on request: heading,
+         blue rule, then the narrative at full size. The label-left /
+         statement-right arrangement from the first reference is gone; the copy
+         it introduced ("At DigiBlu, we bring together...") is kept, since that
+         is the wording the scroll reveal was specified against.
 
-         The statement is the <h2>: the reference has no separate heading above
-         it, and leaving both would stack two competing headlines. -->
+         The narrative reads muted and fills to full ink word by word as the
+         block scrolls up the viewport - see the about IIFE. -->
+    <span class="pill">About Us</span>
+    <h2>Who we are.</h2>
+
     <div class="about-top">
-      <div class="about-label">
-        <span class="pill">About Us</span>
-      </div>
-
       <div class="about-head">
-        <h2 class="about-statement">At DigiBlu, <span class="about-statement-soft">we bring together experienced practitioners with client-side, technology, and consultancy backgrounds. We act as pragmatic partners, focused on getting to value quickly rather than getting lost in process.</span></h2>
+        <span class="about-rule" aria-hidden="true"></span>
+        <p class="about-lede">At DigiBlu, we bring together experienced practitioners with client-side, technology, and consultancy backgrounds. We act as pragmatic partners, focused on getting to value quickly rather than getting lost in process.</p>
         <p class="about-lede">Although we have preferred technology solutions, we remain technology-agnostic, utilising leading AI and automation platforms based on the best fit for each client.</p>
         <p class="about-lede">Our vision is to be one of the foremost independent AI-enabled digital transformation businesses in the UK, turning today's competitive, regulatory, cost and technology pressures into a lasting advantage.</p>
       </div>
     </div>
 
+    <div class="about-values">
+      <h3 class="about-values-title">Our values</h3>
     <!-- Values as a numeral accordion, per the second reference supplied: the
          open value shows its title and description beside a full-ink numeral,
          the rest collapse to a muted numeral under a hairline rule. Click to
@@ -3408,6 +3419,7 @@
           </button>
         </li>
     </ol>
+    </div>
   </section>
 
   <section class="services" id="services">
@@ -4005,6 +4017,75 @@
   </div>
 
   <script>
+    (function () {
+      // Scroll read-through on the "Who we are" narrative: the copy starts
+      // stepped back and fills to full ink a word at a time as the block
+      // travels up the viewport, so the colour follows roughly where the
+      // reader is. Skipped under prefers-reduced-motion, where the paragraphs
+      // are left at full ink instead.
+      var head = document.querySelector('.about-head');
+      if (!head || !window.matchMedia) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      var paras = head.querySelectorAll('.about-lede');
+      if (!paras.length) return;
+
+      // Wrap every word in its own span, walking the text nodes rather than
+      // rewriting innerHTML so any inline markup inside a paragraph survives
+      // instead of being flattened away.
+      var words = [];
+      [].forEach.call(paras, function (p) {
+        var walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null);
+        var nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+        nodes.forEach(function (node) {
+          var frag = document.createDocumentFragment();
+          node.nodeValue.split(/(\s+)/).forEach(function (part) {
+            if (!part) return;
+            if (!part.trim()) { frag.appendChild(document.createTextNode(part)); return; }
+            var span = document.createElement('span');
+            span.className = 'about-word';
+            span.textContent = part;
+            frag.appendChild(span);
+            words.push(span);
+          });
+          node.parentNode.replaceChild(frag, node);
+        });
+      });
+      if (!words.length) return;
+
+      // Only now does the CSS start muting anything, so a failure above this
+      // line leaves the copy at full ink rather than permanently dimmed.
+      head.classList.add('is-reading');
+
+      // Deliberately not rAF-throttled: the handler is one rect read plus a
+      // walk over only the words whose state actually changed, so it is cheap,
+      // and it stays correct where rAF is throttled to a stop rather than
+      // silently never running.
+      var lit = -1;
+      function update() {
+        var r = head.getBoundingClientRect();
+        var vh = window.innerHeight || document.documentElement.clientHeight;
+        // Fills from the block reaching the lower part of the viewport until
+        // it has cleared the upper third.
+        var travel = (vh * 0.85 - vh * 0.3) + r.height;
+        var p = (vh * 0.85 - r.top) / (travel || 1);
+        p = p < 0 ? 0 : (p > 1 ? 1 : p);
+        var n = Math.round(p * words.length);
+        if (n === lit) return;
+        var from = lit < 0 ? 0 : (lit < n ? lit : n);
+        var to = lit > n ? lit : n;
+        for (var i = from; i < to && i < words.length; i++) {
+          words[i].classList.toggle('is-read', i < n);
+        }
+        lit = n;
+      }
+
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
+
     (function () {
       // Values accordion. One open at a time, the first open on load, so the
       // section never reads as five bare numerals. Click rather than hover:
