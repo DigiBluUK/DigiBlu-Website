@@ -891,45 +891,27 @@
   /* One column: the narrative reads first and the values sit under it.
      They were side by side, which set them competing for the same first
      read rather than the values following from the story. */
-  /* Two columns: the narrative reads on the left, the values sit beside it as
-     a grid of cards. Built to the reference layout supplied, which reverses
-     the single-column stacking asked for earlier the same day. */
   .about-top {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-    gap: 72px;
+    grid-template-columns: 1fr;
+    gap: 52px;
     align-items: start;
   }
 
-  .about-head { max-width: 620px; }
+  /* Without a cap the paragraphs would run the full 1500px content measure,
+     which is far past a comfortable line length. */
+  .about-head { max-width: 820px; }
 
-  /* The lead statement, set large and split two-tone: the opening claim at
-     full ink, its continuation stepped back. That colour split is what
-     carries the emphasis now, which is why the <strong> that used to sit
-     inside this sentence is gone rather than competing with it. */
-  .about-statement {
-    font-size: clamp(24px, 2.5vw, 34px);
-    line-height: 1.28;
-    font-weight: 400;
-    letter-spacing: -0.5px;
-    color: var(--text);
-    margin-bottom: 26px;
-  }
-
-  /* --ink-a-mid, not a literal alpha: it steps up in light theme, where the
-     same value on white would otherwise fall under AA. */
-  .about-statement-soft { color: rgba(var(--ink-rgb), var(--ink-a-mid)); }
-
-  /* Supporting detail beneath the statement, deliberately much smaller so the
-     statement stays the thing read first. */
   .about-lede {
-    font-size: 14.5px;
-    line-height: 1.7;
-    color: rgba(var(--ink-rgb), var(--ink-a-aa));
-    margin-bottom: 14px;
+    font-size: clamp(17px, 1.5vw, 21px);
+    line-height: 1.55;
+    color: var(--text);
+    margin-bottom: 18px;
   }
 
   .about-lede:last-of-type { margin-bottom: 0; }
+
+  .about-lede strong { font-weight: 500; }
 
 
   /* Short accent rule under the heading, per the mockup. */
@@ -951,62 +933,51 @@
     margin-bottom: 22px;
   }
 
-  /* A grid of cards, two across, rather than one stacked column. Five values
-     means the last sits alone on the third row, which is fine - forcing an
-     even count would mean inventing or dropping a value. */
   .value-list {
     list-style: none;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 34px 30px;
+    display: flex;
+    flex-direction: column;
   }
 
-  /* Cards, not list rows: the numeral sits above the title where the
-     reference puts an icon, so the hairlines that made this read as a single
-     running list are gone. The numeral is kept as the marker rather than
-     copying the reference's glyph - it is the device this section already
-     uses, and repeating one generic icon five times says nothing. */
+  /* Hairline between entries rather than around them, so the column reads
+     as one list. The first item has no rule above it. */
   .value-item {
-    display: block;
-    padding: 0;
-    border-top: none;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 22px 0;
+    border-top: 1px solid rgba(var(--ink-rgb), 0.12);
   }
 
-  /* tabular-nums still matters: it keeps 01 and 05 the same width, so the
-     titles beneath them start on the same optical line across the grid. */
+  .value-item:first-child { border-top: none; padding-top: 0; }
+
+  /* Fixed width so the numbers form a column and the titles line up;
+     tabular-nums keeps 01 and 04 the same width. */
   .value-num {
-    display: block;
-    font-size: 20px;
+    flex: 0 0 44px;
+    font-size: 17px;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     color: var(--blue);
-    line-height: 1;
-    margin-bottom: 14px;
+    line-height: 1.35;
   }
 
   .value-text h4 {
-    font-size: 12.5px;
+    font-size: 16px;
     font-weight: 700;
-    letter-spacing: 1.3px;
-    text-transform: uppercase;
     color: var(--text);
-    margin-bottom: 9px;
+    margin-bottom: 6px;
   }
 
   .value-text p {
-    font-size: 13.5px;
-    line-height: 1.65;
+    font-size: 14.5px;
+    line-height: 1.6;
     color: rgba(var(--ink-rgb), var(--ink-a-aa));
+    max-width: 46ch;
   }
 
   @media (max-width: 900px) {
-    .about-top { grid-template-columns: 1fr; gap: 40px; }
-    .about-head { max-width: none; }
-  }
-
-  /* Two cards will not hold a readable measure on a phone. */
-  @media (max-width: 560px) {
-    .value-list { grid-template-columns: 1fr; gap: 28px; }
+    .about-top { gap: 36px; }
   }
 
 
