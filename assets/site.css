@@ -814,22 +814,6 @@
     transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  /* The DigiBlu mark, outlined inside the field. Deliberately faint: it is
-     meant to be noticed on a second look, not to read as a logo stamped on
-     top. No fill, so the dashes stay visible straight through it.
-
-     It is a <path> while everything animated is a <line>, which is what
-     keeps it out of both the sway keyframe and the cursor script without
-     either needing to know about it - the mark holds still while the field
-     moves around it. */
-  .geo-icon {
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2.2;
-    stroke-linejoin: round;
-    opacity: 0.42;
-  }
-
   @keyframes geo-sway {
     0%, 100% { rotate: -17deg; }
     50%      { rotate: 17deg; }
