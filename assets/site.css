@@ -754,53 +754,63 @@
 
      Fill is currentColor, so one file serves both themes. Purely decorative,
      hence aria-hidden and no role. */
-  /* Three patterns share the box and cross-fade, one every three seconds.
-     The layers stack absolutely, so the figure needs its own height - hence
-     aspect-ratio rather than letting an svg size it. */
+  /* A flow field of short dashes on a black plate, animating in place. The
+     panel is a FIXED black with white strokes rather than theme tokens, as
+     asked - so it reads the same in both themes, the way .hero and
+     .service-card.accent pin their own surface. */
   .geo-figure {
     position: relative;
     align-self: center;
     width: clamp(170px, 17vw, 250px);
     aspect-ratio: 1 / 1;
-    color: rgba(var(--ink-rgb), 0.85);
+    background: #000000;
+    border-radius: 16px;
+    overflow: hidden;
+    color: #ffffff;
   }
 
-  .geo-layer {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    animation: geo-cycle 9s linear infinite;
-  }
-
-  /* Positive delays, not negative: with negative delays every layer is already
-     mid-cycle at load and two of them read as visible on the first frame. */
-  .geo-layer:nth-child(2) { animation-delay: 3s; }
-  .geo-layer:nth-child(3) { animation-delay: 6s; }
-
-  .geo-layer svg {
+  .geo-flow {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
   }
 
-  /* 9s total, so each pattern holds for 3s. The fade is short and the layers
-     overlap through it, which reads as one pattern resolving into the next
-     rather than a blink - they are the same colour, so the crossfade is a
-     morph. Opacity only: it is compositor-driven and cannot reflow the copy
-     sitting beside it. */
-  @keyframes geo-cycle {
-    0%      { opacity: 0; }
-    3%      { opacity: 1; }
-    33.33%  { opacity: 1; }
-    36.33%  { opacity: 0; }
-    100%    { opacity: 0; }
+  /* Each dash is already drawn at its own angle, so the animation only has to
+     add a sway - it never composes with a base rotation, which SVG makes
+     awkward. transform-box: fill-box puts the origin at each dash's own
+     centre, so they pivot in place rather than swinging about the viewBox. */
+  .geo-flow line {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: geo-sway 6s ease-in-out infinite;
   }
 
-  /* Something that changes on its own every three seconds is exactly what this
-     preference is for. Reduced motion gets the first pattern, held. */
+  @keyframes geo-sway {
+    0%, 100% { rotate: -17deg; }
+    50%      { rotate: 17deg; }
+  }
+
+  /* Twelve delay buckets, assigned by position when the field is generated, so
+     the sway crosses the field as a wave instead of every dash moving in
+     lockstep. Buckets rather than a per-dash inline delay: 361 inline styles
+     per figure is a lot of markup for the same result. */
+  .geo-flow .d0 { animation-delay: 0.0s; }
+  .geo-flow .d1 { animation-delay: -0.5s; }
+  .geo-flow .d2 { animation-delay: -1.0s; }
+  .geo-flow .d3 { animation-delay: -1.5s; }
+  .geo-flow .d4 { animation-delay: -2.0s; }
+  .geo-flow .d5 { animation-delay: -2.5s; }
+  .geo-flow .d6 { animation-delay: -3.0s; }
+  .geo-flow .d7 { animation-delay: -3.5s; }
+  .geo-flow .d8 { animation-delay: -4.0s; }
+  .geo-flow .d9 { animation-delay: -4.5s; }
+  .geo-flow .d10 { animation-delay: -5.0s; }
+  .geo-flow .d11 { animation-delay: -5.5s; }
+
+  /* A field of several hundred dashes moving continuously is precisely what
+     this preference is about. Reduced motion gets the field, still. */
   @media (prefers-reduced-motion: reduce) {
-    .geo-layer { animation: none; }
-    .geo-layer:first-child { opacity: 1; }
+    .geo-flow line { animation: none; }
   }
 
   /* Nothing sits beside the text at this width, and stacking a large block of
