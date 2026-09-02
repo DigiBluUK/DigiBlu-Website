@@ -1665,11 +1665,14 @@
   .clients-track {
     display: flex;
     width: max-content;
-    /* 40s per full loop = 20s for every logo to pass once, halved from 78s
-       on request ("circle through more quickly"). The mobile block below
-       shortens it again: a fixed duration over a narrower track is a slower
-       pixel speed, so the same figure read slower there. */
-    animation: clients-scroll 40s linear infinite;
+    /* Paced to match the Accreditations strip, on request. Speed is what
+       matters here, not duration: the two rows are different widths, so equal
+       durations would read as different speeds. Accreditations runs 1623px in
+       20s = 81px/s, so this row (2232px) needs 27s, and the mobile block below
+       needs 21s for its narrower 1735px track. All three land within 2% of
+       each other. Re-derive these if logos are added or removed - the group
+       width changes with them and a stale duration silently changes the pace. */
+    animation: clients-scroll 27s linear infinite;
   }
 
   .clients-track:hover { animation-play-state: paused; }
@@ -1735,7 +1738,7 @@
 
   @media (max-width: 620px) {
     .clients-group { gap: 36px; padding-right: 36px; }
-    .clients-track { animation-duration: 30s; }
+    .clients-track { animation-duration: 21s; }
     /* Scale the whole row down together so the optical balance is preserved. */
     .cl-equiniti   { width: 45px;  height: 36px; }
     .cl-sunrise    { width: 90px;  height: 23px; }

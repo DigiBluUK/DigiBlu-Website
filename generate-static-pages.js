@@ -37,6 +37,19 @@ const SITE_ORIGIN = (process.env.SITE_ORIGIN || 'https://digibluuk.github.io/Dig
 
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 
+// The ?v= on the stylesheet is a cache buster, and it used to be a hand-typed
+// date. That failed exactly the way hand-maintained values do: the stylesheet
+// changed in six commits after the last bump, so a returning visitor got fresh
+// HTML against a stale cached stylesheet - the new client-logo classes had no
+// rules at all and ten of the fourteen logos rendered as nothing. Deriving it
+// from the file's own contents means it cannot go stale again: the value only
+// changes when the bytes do, and it changes every time they do.
+const CSS_VERSION = require('crypto')
+  .createHash('sha256')
+  .update(fs.readFileSync(path.join(ROOT, 'assets', 'site.css')))
+  .digest('hex')
+  .slice(0, 10);
+
 function extractBlock(startMarker, endMarker) {
   const s = html.indexOf(startMarker);
   if (s === -1) throw new Error('start marker not found: ' + startMarker);
@@ -145,7 +158,7 @@ function pageHead({ title, description, canonicalPath, ogType, ogImage, ogImageA
     }
   })();
 </script>
-<link rel="stylesheet" href="../assets/site.css?v=20260902">
+<link rel="stylesheet" href="../assets/site.css?v=${CSS_VERSION}">
 </head>
 `;
 }
@@ -494,6 +507,20 @@ console.log('Wrote sitemap.xml (' + allUrls.length + ' URLs) and robots.txt');
 // Scoped to <head> on purpose: the body carries www.digiblu.com links that
 // are provenance records for where the blog and legal copy was sourced, and
 // those must keep pointing at DigiBlu whatever host this is served from.
+(function syncHomepageCssVersion() {
+  const file = path.join(ROOT, 'index.html');
+  const src = fs.readFileSync(file, 'utf8');
+  const re = /(<link rel="stylesheet" href="assets\/site\.css\?v=)([^"]*)(">)/;
+  const m = src.match(re);
+  if (!m) throw new Error('index.html: no versioned stylesheet link found');
+  if (m[2] === CSS_VERSION) {
+    console.log('index.html stylesheet already at ?v=' + CSS_VERSION);
+    return;
+  }
+  fs.writeFileSync(file, src.replace(re, '$1' + CSS_VERSION + '$3'), 'utf8');
+  console.log('index.html stylesheet ?v=' + m[2] + ' -> ' + CSS_VERSION);
+})();
+
 (function syncHomepageOrigin() {
   const file = path.join(ROOT, 'index.html');
   const src = fs.readFileSync(file, 'utf8');

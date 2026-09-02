@@ -67,14 +67,18 @@
     }
   })();
 </script>
-<!-- ?v= is a cache buster, not decoration. GitHub Pages (and most static
-     hosts) serve assets with long cache lifetimes, so a returning visitor can
-     get fresh HTML alongside a stale stylesheet — which renders as a
-     half-broken page rather than an obviously old one: the Clients carousel
-     collapses to a plain vertical list and the Team photos disappear, because
-     the cached CSS predates those rules. Bump this whenever site.css changes
-     materially. -->
-<link rel="stylesheet" href="assets/site.css?v=20260902">
+<!-- ?v= is a cache buster, not decoration, and it is now GENERATED - it is
+     a hash of assets/site.css, stamped here by generate-static-pages.js. Do
+     not hand-edit it; run the generator instead.
+
+     It used to be a hand-typed date, and that failed the way hand-maintained
+     values do: the stylesheet changed in six commits after the last bump, so
+     returning visitors got fresh HTML against a stale cached stylesheet. The
+     newly renamed client-logo classes matched no rules at all, and ten of the
+     fourteen logos rendered as nothing - which reads as the carousel being
+     broken rather than as an obviously old page. Deriving the value from the
+     file contents means it changes exactly when the CSS does. -->
+<link rel="stylesheet" href="assets/site.css?v=fd291a3904">
 </head>
 <body>
   <a class="skip-link" href="#hero-content">Skip to content</a>
