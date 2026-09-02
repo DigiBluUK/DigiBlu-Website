@@ -1996,7 +1996,14 @@
     transition: opacity 0.3s ease 0.15s, background 0.2s ease;
   }
 
-  .team-slice-more svg { width: 15px; height: 15px; }
+  /* The glyph used to be a plus inside its own drawn ring, sitting in the
+     blue disc - two concentric circles, with the ring only 43% of the disc
+     and a lot of blue padding around it, which read as the plus not sitting
+     properly in the circle. The ring was redundant: the disc already is the
+     circle. This is a bare plus, sized so it fills the disc the way a + button
+     normally does. It measured perfectly centred before and after - the
+     complaint was proportion, not alignment. */
+  .team-slice-more svg { width: 18px; height: 18px; }
 
   .team-slice.active .team-slice-more { opacity: 1; }
 
