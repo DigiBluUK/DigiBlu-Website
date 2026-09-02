@@ -1592,7 +1592,11 @@
   .clients-track {
     display: flex;
     width: max-content;
-    animation: clients-scroll 78s linear infinite;
+    /* 40s per full loop = 20s for every logo to pass once, halved from 78s
+       on request ("circle through more quickly"). The mobile block below
+       shortens it again: a fixed duration over a narrower track is a slower
+       pixel speed, so the same figure read slower there. */
+    animation: clients-scroll 40s linear infinite;
   }
 
   .clients-track:hover { animation-play-state: paused; }
@@ -1658,6 +1662,7 @@
 
   @media (max-width: 620px) {
     .clients-group { gap: 36px; padding-right: 36px; }
+    .clients-track { animation-duration: 30s; }
     /* Scale the whole row down together so the optical balance is preserved. */
     .cl-acacium     { width: 98px;  height: 21px; }
     .cl-premex      { width: 77px;  height: 27px; }
