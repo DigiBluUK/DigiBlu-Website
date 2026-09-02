@@ -78,7 +78,7 @@
      fourteen logos rendered as nothing - which reads as the carousel being
      broken rather than as an obviously old page. Deriving the value from the
      file contents means it changes exactly when the CSS does. -->
-<link rel="stylesheet" href="assets/site.css?v=8e49bc4735">
+<link rel="stylesheet" href="assets/site.css?v=cb5a5583ae">
 </head>
 <body>
   <a class="skip-link" href="#hero-content">Skip to content</a>
@@ -1099,23 +1099,6 @@
           name: 'Nick Bantick', role: 'Head of Digital Solutions', cls: 'tp-nick', bio: 'Nick is a digital transformation specialist with experience spanning product ownership, programme delivery and technology-enabled change. He leads DigiBlu’s digital solutions capability, working with clients to translate complex business requirements into pragmatic, scalable solutions using AI, automation and digital technologies.'
         }
       ];
-
-      // The selected member's bio is shown inside the expanded slice, not
-      // only behind the profile dialog, so the member who is open by default
-      // (Vic) can be read without a click. Injected from TEAM_MEMBERS rather
-      // than authored into the markup so the strip and the dialog cannot
-      // drift apart - that array stays the single source for every bio. CSS
-      // hides it below 901px, where the expanded slice is too narrow to hold
-      // the full text inside the strip's 280px.
-      slices.forEach(function (el, i) {
-        var m = TEAM_MEMBERS[i];
-        var label = el.querySelector('.team-slice-label');
-        if (!m || !m.bio || !label) return;
-        var bio = document.createElement('span');
-        bio.className = 'team-slice-bio';
-        bio.textContent = m.bio;
-        label.appendChild(bio);
-      });
 
       var overlay = document.getElementById('teamModal');
       var modal = overlay ? createModalController(overlay) : null;
