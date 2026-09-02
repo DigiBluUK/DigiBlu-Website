@@ -811,7 +811,7 @@
     transform-box: fill-box;
     transform-origin: 50% 50%;
     animation: geo-pulse 6s ease-in-out infinite;
-    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), fill 0.55s ease;
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), fill 0.3s ease;
     fill-opacity: 0.34;
   }
 
@@ -836,23 +836,26 @@
     50%      { scale: 1.06; }
   }
 
-  /* The mark picks up brand blue: on a pointer device while the figure is
-     hovered, and on touch while it is the thing on screen (.is-lit, set by an
-     observer - see the geo IIFE). One colour rule serves both, so the two
-     paths cannot drift apart.
-
-     Hovering anywhere on the FIGURE lights it, not only the letterforms
-     themselves: the strokes are one dot wide, and asking someone to find them
-     with the cursor would read as the effect being broken rather than as
-     precision.
+  /* The mark phases into brand blue as the figure travels up the viewport,
+     rather than switching at a threshold: --mark-lit is a 0..1 value written
+     by the geo IIFE from the scroll position, so the colour tracks the gesture
+     - fully blue with the figure centred, easing back to ink as it leaves.
+     Hovering forces it to 1, and because the variable is set inline by script
+     that override is applied in the same place rather than as a CSS rule,
+     which an inline style would outrank.
 
      Only fill changes - the mark keeps its size, so the lattice never shifts.
-     The .mk dots override the svg's own fill="currentColor" presentation
-     attribute, which CSS outranks. */
-  .geo-figure.is-lit .geo-flow circle.mk { fill: var(--blue); }
+     The .mk rule overrides the svg's own fill="currentColor" presentation
+     attribute, which CSS outranks.
 
-  @media (hover: hover) and (pointer: fine) {
-    .geo-figure:hover .geo-flow circle.mk { fill: var(--blue); }
+     color-mix is behind @supports so a browser without it still gets a legible
+     mark in full ink rather than no fill at all. */
+  .geo-flow circle.mk { fill: var(--text); }
+
+  @supports (color: color-mix(in srgb, red 50%, blue)) {
+    .geo-flow circle.mk {
+      fill: color-mix(in srgb, var(--blue) calc(var(--mark-lit, 0) * 100%), var(--text));
+    }
   }
 
   /* Twelve delay buckets, assigned by position when the lattice is generated,

@@ -813,7 +813,7 @@
     transform-box: fill-box;
     transform-origin: 50% 50%;
     animation: geo-pulse 6s ease-in-out infinite;
-    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), fill 0.55s ease;
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), fill 0.3s ease;
     fill-opacity: 0.34;
   }
 
@@ -838,23 +838,26 @@
     50%      { scale: 1.06; }
   }
 
-  /* The mark picks up brand blue: on a pointer device while the figure is
-     hovered, and on touch while it is the thing on screen (.is-lit, set by an
-     observer - see the geo IIFE). One colour rule serves both, so the two
-     paths cannot drift apart.
-
-     Hovering anywhere on the FIGURE lights it, not only the letterforms
-     themselves: the strokes are one dot wide, and asking someone to find them
-     with the cursor would read as the effect being broken rather than as
-     precision.
+  /* The mark phases into brand blue as the figure travels up the viewport,
+     rather than switching at a threshold: --mark-lit is a 0..1 value written
+     by the geo IIFE from the scroll position, so the colour tracks the gesture
+     - fully blue with the figure centred, easing back to ink as it leaves.
+     Hovering forces it to 1, and because the variable is set inline by script
+     that override is applied in the same place rather than as a CSS rule,
+     which an inline style would outrank.
 
      Only fill changes - the mark keeps its size, so the lattice never shifts.
-     The .mk dots override the svg's own fill="currentColor" presentation
-     attribute, which CSS outranks. */
-  .geo-figure.is-lit .geo-flow circle.mk { fill: var(--blue); }
+     The .mk rule overrides the svg's own fill="currentColor" presentation
+     attribute, which CSS outranks.
 
-  @media (hover: hover) and (pointer: fine) {
-    .geo-figure:hover .geo-flow circle.mk { fill: var(--blue); }
+     color-mix is behind @supports so a browser without it still gets a legible
+     mark in full ink rather than no fill at all. */
+  .geo-flow circle.mk { fill: var(--text); }
+
+  @supports (color: color-mix(in srgb, red 50%, blue)) {
+    .geo-flow circle.mk {
+      fill: color-mix(in srgb, var(--blue) calc(var(--mark-lit, 0) * 100%), var(--text));
+    }
   }
 
   /* Twelve delay buckets, assigned by position when the lattice is generated,
@@ -4560,24 +4563,43 @@
     })();
 
     (function () {
-      // Touch has no hover, so the mark lights while the figure is the thing on
-      // screen instead - scrolling to it turns it blue, scrolling away returns
-      // it. Deliberately not one-shot: a second pass down the page should
-      // behave the same as the first, and a mark stuck blue from a previous
-      // visit reads as a colour choice rather than a response.
+      // How blue the mark is, as a 0..1 value the CSS mixes with. Driven by
+      // where the figure sits in the viewport, so the colour phases in with the
+      // scroll rather than switching at a threshold - fully blue with the
+      // figure centred, easing back to ink as it leaves. It runs on every
+      // device: scrolling is the trigger everywhere, and hovering (where there
+      // is a pointer) simply forces it to full.
       //
-      // Skipped entirely where hover works, because the CSS already handles
-      // that case and two mechanisms writing the same state would fight.
+      // Both are written through the same inline variable rather than one being
+      // a CSS rule, because an inline style outranks a stylesheet rule and the
+      // hover would never have won.
       var fig = document.querySelector('.geo-figure');
-      if (!fig || !window.matchMedia || !('IntersectionObserver' in window)) return;
-      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+      if (!fig) return;
 
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          fig.classList.toggle('is-lit', e.isIntersecting);
-        });
-      }, { threshold: 0.55 });
-      io.observe(fig);
+      var hovering = false;
+      var smooth = function (t) { return t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t); };
+
+      function update() {
+        var lit = 1;
+        if (!hovering) {
+          var r = fig.getBoundingClientRect();
+          var vh = window.innerHeight || document.documentElement.clientHeight;
+          var centre = r.top + r.height / 2;
+          lit = smooth(1 - Math.abs(centre - vh / 2) / (vh * 0.55));
+        }
+        fig.style.setProperty('--mark-lit', lit.toFixed(3));
+      }
+
+      // Not rAF-throttled: one rect read and one property write, and rAF is
+      // throttled to a stop in the preview environment.
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+
+      if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        fig.addEventListener('pointerenter', function () { hovering = true; update(); });
+        fig.addEventListener('pointerleave', function () { hovering = false; update(); });
+      }
+      update();
     })();
 
     (function () {
@@ -4607,12 +4629,16 @@
           el: c,
           x: parseFloat(c.getAttribute('cx')),
           y: parseFloat(c.getAttribute('cy')),
+          mk: c.classList.contains('mk'),
           set: false
         };
       });
 
-      var RADIUS = 118;   // viewBox units of influence
-      var MAX = 1.75;     // scale multiplier at the cursor itself
+      var RADIUS = 150;    // viewBox units of influence, out of 384
+      var MAX = 3.4;       // field dots, scale multiplier at the cursor
+      var PUSH = 9;        // viewBox units the field is parted by
+      var MARK_MAX = 1.5;  // the mark reacts, but far less
+      var MARK_PUSH = 2;   // and barely moves, so the db stays legible
       var px = 0, py = 0, active = false, queued = false;
 
       function apply() {
@@ -4629,9 +4655,14 @@
             if (d.set) { d.el.style.transform = ''; d.set = false; }
             continue;
           }
-          // Dots swell toward the cursor and settle back as it leaves. Eased
-          // rather than linear, so the bulge has a soft shoulder instead of a
-          // visible circular edge where the radius ends.
+          // Dots swell AND part around the cursor, so the field visibly opens
+          // as it passes rather than only brightening. Eased rather than
+          // linear, so the bulge has a soft shoulder instead of a visible
+          // circular edge where the radius ends.
+          //
+          // The mark reacts far less than the field and is barely displaced:
+          // the db is a drawing, and pushing its dots around would blur the
+          // letterforms exactly as the dashes used to.
           //
           // Written to the transform property while the idle pulse animates
           // the scale property: the two compose. Sharing one property would
@@ -4639,8 +4670,14 @@
           // style.
           var t = 1 - dist / RADIUS;
           var falloff = t * t * (3 - 2 * t);
-          var grow = 1 + (MAX - 1) * falloff;
-          d.el.style.transform = 'scale(' + grow.toFixed(3) + ')';
+          var maxS = d.mk ? MARK_MAX : MAX;
+          var push = (d.mk ? MARK_PUSH : PUSH) * falloff;
+          var grow = 1 + (maxS - 1) * falloff;
+          // Away from the cursor, along the line joining it. dist can be 0 when
+          // the pointer sits exactly on a dot, which would divide by zero.
+          var ux = dist > 0.001 ? dx / dist : 0;
+          var uy = dist > 0.001 ? dy / dist : 0;
+          d.el.style.transform = 'translate(' + (ux * push).toFixed(2) + 'px,' + (uy * push).toFixed(2) + 'px) scale(' + grow.toFixed(3) + ')';
           d.set = true;
         }
       }
