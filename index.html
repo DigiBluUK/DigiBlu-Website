@@ -844,6 +844,9 @@
       <aside class="reader-side" aria-label="All case studies">
         <p class="reader-side-count" id="caseReaderCount">All case studies</p>
         <div class="case-index-list reader-list" id="caseIndexList"></div>
+        <!-- Only rendered when there is more than one page - see PAGE_SIZE in
+             the case-study IIFE. Invisible at today's eight case studies. -->
+        <nav class="reader-pager" id="caseReaderPager" aria-label="Case study pages" hidden></nav>
       </aside>
       <div class="case-modal-body">
         <!-- A duplicate "All case studies" link was trialled here at the top
@@ -1666,6 +1669,7 @@
 
       var listEl = document.getElementById('caseIndexList');
       var countEl = document.getElementById('caseReaderCount');
+      var pagerEl = document.getElementById('caseReaderPager');
       var artEl = document.getElementById('caseDetailArt');
       var sectorEl = document.getElementById('caseDetailSector');
       var titleEl = document.getElementById('caseDetailTitle');
@@ -1690,47 +1694,115 @@
         return e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1;
       }
 
+      // The sidebar pages at 10 rows. Below that no pager is rendered at all -
+      // a lone "Page 1" is noise - so at today's eight case studies it is
+      // invisible, and it turns itself on when an eleventh is added rather
+      // than needing to be wired up again then.
+      var PAGE_SIZE = 10;
+      var currentPage = 1;
+
+      function pageCount() {
+        return Math.max(1, Math.ceil(CASE_STUDIES.length / PAGE_SIZE));
+      }
+
+      function pageOfKey(key) {
+        for (var i = 0; i < CASE_STUDIES.length; i++) {
+          if (CASE_STUDIES[i].key === key) return Math.floor(i / PAGE_SIZE) + 1;
+        }
+        return 1;
+      }
+
+      function buildRow(c) {
+        var row = document.createElement('a');
+        row.href = 'case-studies/' + c.key + '.html';
+        row.className = 'case-index-item';
+        row.setAttribute('data-case', c.key);
+
+        var text = document.createElement('span');
+        var client = document.createElement('span');
+        client.className = 'case-index-client';
+        client.textContent = c.client + ' · ' + c.service;
+        var title = document.createElement('span');
+        title.className = 'case-index-title';
+        title.textContent = c.title;
+        client.style.display = 'block';
+        title.style.display = 'block';
+        text.appendChild(client);
+        text.appendChild(title);
+
+        var go = document.createElement('span');
+        go.className = 'case-index-go';
+        go.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+        row.appendChild(text);
+        row.appendChild(go);
+        row.addEventListener('click', function (e) {
+          if (isModified(e)) return;
+          e.preventDefault();
+          select(c.key);
+          panel.classList.remove('show-list');
+        });
+        return row;
+      }
+
+      function pageButton(label, ariaLabel, targetPage, isCurrent, isDisabled) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'reader-page-btn';
+        b.innerHTML = label;
+        if (ariaLabel) b.setAttribute('aria-label', ariaLabel);
+        if (isCurrent) b.setAttribute('aria-current', 'page');
+        if (isDisabled) b.disabled = true;
+        else b.addEventListener('click', function () { goToPage(targetPage); });
+        return b;
+      }
+
+      function renderPager() {
+        if (!pagerEl) return;
+        var total = pageCount();
+        pagerEl.innerHTML = '';
+        // One page means no pager, rather than a pager that cannot go anywhere.
+        pagerEl.hidden = total < 2;
+        if (total < 2) return;
+
+        var prev = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        var next = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+        pagerEl.appendChild(pageButton(prev, 'Previous page', currentPage - 1, false, currentPage === 1));
+        for (var p = 1; p <= total; p++) {
+          pagerEl.appendChild(pageButton(String(p), 'Page ' + p, p, p === currentPage, false));
+        }
+        pagerEl.appendChild(pageButton(next, 'Next page', currentPage + 1, false, currentPage === total));
+      }
+
+      function goToPage(n) {
+        var total = pageCount();
+        currentPage = Math.min(Math.max(1, n), total);
+        renderIndex();
+        // Send the reader to the top of the new page rather than leaving it
+        // wherever the previous page happened to be scrolled to.
+        if (listEl) listEl.scrollTop = 0;
+      }
+
       function renderIndex() {
         listEl.innerHTML = '';
         if (countEl) countEl.textContent = 'All case studies · ' + CASE_STUDIES.length;
-        CASE_STUDIES.forEach(function (c) {
-          var row = document.createElement('a');
-          row.href = 'case-studies/' + c.key + '.html';
-          row.className = 'case-index-item';
-          row.setAttribute('data-case', c.key);
-
-          var text = document.createElement('span');
-          var client = document.createElement('span');
-          client.className = 'case-index-client';
-          client.textContent = c.client + ' · ' + c.service;
-          var title = document.createElement('span');
-          title.className = 'case-index-title';
-          title.textContent = c.title;
-          client.style.display = 'block';
-          title.style.display = 'block';
-          text.appendChild(client);
-          text.appendChild(title);
-
-          var go = document.createElement('span');
-          go.className = 'case-index-go';
-          go.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-
-          row.appendChild(text);
-          row.appendChild(go);
-          row.addEventListener('click', function (e) {
-            if (isModified(e)) return;
-            e.preventDefault();
-            select(c.key);
-            panel.classList.remove('show-list');
-          });
-          listEl.appendChild(row);
+        var start = (currentPage - 1) * PAGE_SIZE;
+        CASE_STUDIES.slice(start, start + PAGE_SIZE).forEach(function (c) {
+          listEl.appendChild(buildRow(c));
         });
+        renderPager();
+        // Rows are rebuilt from scratch, so the highlight has to be re-applied
+        // rather than surviving on the old nodes.
+        if (currentKey) highlight(currentKey);
       }
 
       // Highlights the row being read and, only if the list has scrolled it
       // out of view, brings it back - picking a row near the bottom of the
-      // list must not yank the list to the top.
-      function markActive(key) {
+      // list must not yank the list to the top. Silently does nothing when the
+      // entry is not on the page currently shown, which is what markActive
+      // below sorts out first.
+      function highlight(key) {
         var activeRow = null;
         [].forEach.call(listEl.querySelectorAll('.case-index-item'), function (row) {
           var on = row.getAttribute('data-case') === key;
@@ -1738,12 +1810,25 @@
           if (on) { row.setAttribute('aria-current', 'true'); activeRow = row; }
           else row.removeAttribute('aria-current');
         });
-        if (activeRow && sideEl) {
+        if (activeRow) {
           var top = activeRow.offsetTop;
           var bottom = top + activeRow.offsetHeight;
-          if (top < sideEl.scrollTop) sideEl.scrollTop = top - 16;
-          else if (bottom > sideEl.scrollTop + sideEl.clientHeight) sideEl.scrollTop = bottom - sideEl.clientHeight + 16;
+          if (top < listEl.scrollTop) listEl.scrollTop = top - 16;
+          else if (bottom > listEl.scrollTop + listEl.clientHeight) listEl.scrollTop = bottom - listEl.clientHeight + 16;
         }
+      }
+
+      // Opening a case study from a card can land on an entry that is not on
+      // the page the sidebar happens to be showing, so the page follows the
+      // selection rather than the reader silently highlighting nothing.
+      function markActive(key) {
+        var target = pageOfKey(key);
+        if (target !== currentPage) {
+          currentPage = target;
+          renderIndex();
+          return;
+        }
+        highlight(key);
       }
 
       function addSection(label, body) {

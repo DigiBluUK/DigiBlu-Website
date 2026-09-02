@@ -171,6 +171,7 @@
   .case-viewall-btn:focus-visible,
   .case-index-item:focus-visible,
   .case-back-btn:focus-visible,
+  .reader-page-btn:focus-visible,
   .accred-chip:focus-visible,
   .modal-close:focus-visible,
   .modal-next:focus-visible,
@@ -1508,9 +1509,62 @@
     padding: 44px 22px 32px 30px;
     border-right: 1px solid rgba(var(--ink-rgb), 0.12);
     background: rgba(var(--ink-rgb), 0.03);
+    overflow: hidden;
+  }
+
+  /* The list scrolls, not the aside. That is what lets the pager sit pinned at
+     the bottom of the column instead of being something you have to scroll
+     past ten rows to reach. */
+  .reader-list {
+    flex: 1 1 auto;
     overflow-y: auto;
     scrollbar-gutter: stable;
   }
+
+  /* Rendered only when there is more than one page - see PAGE_SIZE in the
+     case-study IIFE. At eight case studies it stays hidden and appears on its
+     own once an eleventh is added. */
+  .reader-pager {
+    flex: 0 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(var(--ink-rgb), 0.12);
+  }
+
+  .reader-page-btn {
+    min-width: 30px;
+    height: 30px;
+    padding: 0 7px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    border: 1px solid rgba(var(--ink-rgb), 0.16);
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .reader-page-btn:hover:not(:disabled) { border-color: rgba(var(--ink-rgb), 0.42); }
+
+  /* The page you are on, in the same brand blue the selected row uses. White
+     on that blue is 4.56:1, so the label stays full white rather than an
+     alpha step that would drop under AA. */
+  .reader-page-btn[aria-current="page"] {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #ffffff;
+  }
+
+  .reader-page-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .reader-page-btn svg { width: 12px; height: 12px; }
 
   .reader-side-count {
     font-size: 12px;
@@ -1557,6 +1611,11 @@
     }
     .reader-panel.show-list .case-modal-body,
     .reader-panel.show-list .service-modal-body { display: none; }
+
+    /* Bigger hit area for touch. 30px clears the 24px bar the rest of the
+       site is audited against, but these are small standalone targets and
+       the list they page through is full-width here, so there is room. */
+    .reader-page-btn { min-width: 38px; height: 38px; }
   }
 
   @media (max-width: 640px) {
