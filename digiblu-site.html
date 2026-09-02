@@ -781,7 +781,8 @@
   .geo-figure {
     position: relative;
     align-self: center;
-    width: clamp(170px, 17vw, 250px);
+    justify-self: center;
+    width: clamp(210px, 23vw, 350px);
     aspect-ratio: 1 / 1;
     background: var(--bg);
     border-radius: 16px;
@@ -799,10 +800,20 @@
      add a sway - it never composes with a base rotation, which SVG makes
      awkward. transform-box: fill-box puts the origin at each dash's own
      centre, so they pivot in place rather than swinging about the viewBox. */
+  /* Two transform channels on purpose. The idle sway animates the `rotate`
+     property; the pointer response writes the `transform` property. They
+     compose (translate/rotate/scale are applied before transform), so the two
+     add rather than fight - and an inline transform cannot be clobbered by the
+     running animation, which would happen if both used the same property.
+
+     The transition is what makes the pointer response smooth: each move
+     restarts it, so the dashes ease toward their new angle and ease back when
+     the cursor leaves rather than snapping. */
   .geo-flow line {
     transform-box: fill-box;
     transform-origin: 50% 50%;
     animation: geo-sway 6s ease-in-out infinite;
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
   @keyframes geo-sway {
@@ -830,7 +841,7 @@
   /* A field of several hundred dashes moving continuously is precisely what
      this preference is about. Reduced motion gets the field, still. */
   @media (prefers-reduced-motion: reduce) {
-    .geo-flow line { animation: none; }
+    .geo-flow line { animation: none; transition: none; }
   }
 
   /* Nothing sits beside the text at this width, and stacking a large block of
@@ -987,9 +998,12 @@
   /* The narrative sits left with the geometric figure beside it. The content
      arrangement is unchanged - the values still sit beneath, not alongside -
      the figure just occupies space the 820px measure was leaving empty. */
+  /* The figure column is a real track rather than `auto`, and the figure is
+     centred in it. With `auto` the column shrank to the figure's own width and
+     it sat hard against the right edge of the content area. */
   .about-top {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;    gap: 52px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 430px);    gap: 52px;
     align-items: start;
     margin-bottom: 52px;
   }
@@ -4259,6 +4273,94 @@
       });
       if (nextBtn) nextBtn.addEventListener('click', function () {
         setActive((currentIndex() + 1) % slices.length);
+      });
+    })();
+
+    (function () {
+      // Dashes curl around the cursor as it crosses the figure, then ease back.
+      //
+      // Written to the `transform` property, while the idle sway animates the
+      // `rotate` property. The two compose, so the pointer response adds to
+      // the sway instead of being overridden by it - a running CSS animation
+      // beats an inline style on the same property, so sharing one would have
+      // silently done nothing.
+      var fig = document.querySelector('.geo-figure');
+      if (!fig || !window.matchMedia) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      // Pointer-driven, so it is for pointer devices. On touch there is no
+      // hover to track and every dash would only move on a drag.
+      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+      var svg = fig.querySelector('svg');
+      var lines = [].slice.call(fig.querySelectorAll('line'));
+      if (!svg || !lines.length) return;
+
+      // Centre and resting angle of each dash, in viewBox units, measured once.
+      // Reading these back per frame would be hundreds of layout queries.
+      var VB = 384;
+      var dash = lines.map(function (l) {
+        var x1 = parseFloat(l.getAttribute('x1')), y1 = parseFloat(l.getAttribute('y1'));
+        var x2 = parseFloat(l.getAttribute('x2')), y2 = parseFloat(l.getAttribute('y2'));
+        return {
+          el: l,
+          x: (x1 + x2) / 2,
+          y: (y1 + y2) / 2,
+          a: Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI,
+          set: false
+        };
+      });
+
+      var RADIUS = 118;   // viewBox units of influence
+      var MAX = 52;       // degrees at the cursor itself
+      var px = 0, py = 0, active = false, queued = false;
+
+      function apply() {
+        queued = false;
+        for (var i = 0; i < dash.length; i++) {
+          var d = dash[i];
+          if (!active) {
+            if (d.set) { d.el.style.transform = ''; d.set = false; }
+            continue;
+          }
+          var dx = d.x - px, dy = d.y - py;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist > RADIUS) {
+            if (d.set) { d.el.style.transform = ''; d.set = false; }
+            continue;
+          }
+          // Turn each dash toward the tangent of a circle around the cursor,
+          // so the field curls rather than all leaning one way. A line reads
+          // the same at a and a+180, so the difference is folded into
+          // -90..90 - without that the far side of the cursor would spin the
+          // long way round.
+          var tangent = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+          var delta = ((tangent - d.a + 90) % 180 + 180) % 180 - 90;
+          var falloff = 1 - dist / RADIUS;
+          var turn = delta * falloff * (MAX / 90);
+          d.el.style.transform = 'rotate(' + turn.toFixed(1) + 'deg)';
+          d.set = true;
+        }
+      }
+
+      function schedule() {
+        if (queued) return;
+        queued = true;
+        if (window.requestAnimationFrame) requestAnimationFrame(apply);
+        else apply();
+      }
+
+      fig.addEventListener('pointermove', function (e) {
+        var r = svg.getBoundingClientRect();
+        if (!r.width || !r.height) return;
+        px = (e.clientX - r.left) / r.width * VB;
+        py = (e.clientY - r.top) / r.height * VB;
+        active = true;
+        schedule();
+      });
+
+      fig.addEventListener('pointerleave', function () {
+        active = false;
+        schedule();
       });
     })();
 

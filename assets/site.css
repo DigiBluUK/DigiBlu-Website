@@ -779,7 +779,8 @@
   .geo-figure {
     position: relative;
     align-self: center;
-    width: clamp(170px, 17vw, 250px);
+    justify-self: center;
+    width: clamp(210px, 23vw, 350px);
     aspect-ratio: 1 / 1;
     background: var(--bg);
     border-radius: 16px;
@@ -797,10 +798,20 @@
      add a sway - it never composes with a base rotation, which SVG makes
      awkward. transform-box: fill-box puts the origin at each dash's own
      centre, so they pivot in place rather than swinging about the viewBox. */
+  /* Two transform channels on purpose. The idle sway animates the `rotate`
+     property; the pointer response writes the `transform` property. They
+     compose (translate/rotate/scale are applied before transform), so the two
+     add rather than fight - and an inline transform cannot be clobbered by the
+     running animation, which would happen if both used the same property.
+
+     The transition is what makes the pointer response smooth: each move
+     restarts it, so the dashes ease toward their new angle and ease back when
+     the cursor leaves rather than snapping. */
   .geo-flow line {
     transform-box: fill-box;
     transform-origin: 50% 50%;
     animation: geo-sway 6s ease-in-out infinite;
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
   @keyframes geo-sway {
@@ -828,7 +839,7 @@
   /* A field of several hundred dashes moving continuously is precisely what
      this preference is about. Reduced motion gets the field, still. */
   @media (prefers-reduced-motion: reduce) {
-    .geo-flow line { animation: none; }
+    .geo-flow line { animation: none; transition: none; }
   }
 
   /* Nothing sits beside the text at this width, and stacking a large block of
@@ -985,9 +996,12 @@
   /* The narrative sits left with the geometric figure beside it. The content
      arrangement is unchanged - the values still sit beneath, not alongside -
      the figure just occupies space the 820px measure was leaving empty. */
+  /* The figure column is a real track rather than `auto`, and the figure is
+     centred in it. With `auto` the column shrank to the figure's own width and
+     it sat hard against the right edge of the content area. */
   .about-top {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;    gap: 52px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 430px);    gap: 52px;
     align-items: start;
     margin-bottom: 52px;
   }

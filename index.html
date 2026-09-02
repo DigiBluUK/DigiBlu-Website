@@ -78,7 +78,7 @@
      fourteen logos rendered as nothing - which reads as the carousel being
      broken rather than as an obviously old page. Deriving the value from the
      file contents means it changes exactly when the CSS does. -->
-<link rel="stylesheet" href="assets/site.css?v=8db609fa95">
+<link rel="stylesheet" href="assets/site.css?v=df79c3e6b5">
 </head>
 <body>
   <a class="skip-link" href="#hero-content">Skip to content</a>
@@ -1145,6 +1145,94 @@
       });
       if (nextBtn) nextBtn.addEventListener('click', function () {
         setActive((currentIndex() + 1) % slices.length);
+      });
+    })();
+
+    (function () {
+      // Dashes curl around the cursor as it crosses the figure, then ease back.
+      //
+      // Written to the `transform` property, while the idle sway animates the
+      // `rotate` property. The two compose, so the pointer response adds to
+      // the sway instead of being overridden by it - a running CSS animation
+      // beats an inline style on the same property, so sharing one would have
+      // silently done nothing.
+      var fig = document.querySelector('.geo-figure');
+      if (!fig || !window.matchMedia) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      // Pointer-driven, so it is for pointer devices. On touch there is no
+      // hover to track and every dash would only move on a drag.
+      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+      var svg = fig.querySelector('svg');
+      var lines = [].slice.call(fig.querySelectorAll('line'));
+      if (!svg || !lines.length) return;
+
+      // Centre and resting angle of each dash, in viewBox units, measured once.
+      // Reading these back per frame would be hundreds of layout queries.
+      var VB = 384;
+      var dash = lines.map(function (l) {
+        var x1 = parseFloat(l.getAttribute('x1')), y1 = parseFloat(l.getAttribute('y1'));
+        var x2 = parseFloat(l.getAttribute('x2')), y2 = parseFloat(l.getAttribute('y2'));
+        return {
+          el: l,
+          x: (x1 + x2) / 2,
+          y: (y1 + y2) / 2,
+          a: Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI,
+          set: false
+        };
+      });
+
+      var RADIUS = 118;   // viewBox units of influence
+      var MAX = 52;       // degrees at the cursor itself
+      var px = 0, py = 0, active = false, queued = false;
+
+      function apply() {
+        queued = false;
+        for (var i = 0; i < dash.length; i++) {
+          var d = dash[i];
+          if (!active) {
+            if (d.set) { d.el.style.transform = ''; d.set = false; }
+            continue;
+          }
+          var dx = d.x - px, dy = d.y - py;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist > RADIUS) {
+            if (d.set) { d.el.style.transform = ''; d.set = false; }
+            continue;
+          }
+          // Turn each dash toward the tangent of a circle around the cursor,
+          // so the field curls rather than all leaning one way. A line reads
+          // the same at a and a+180, so the difference is folded into
+          // -90..90 - without that the far side of the cursor would spin the
+          // long way round.
+          var tangent = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+          var delta = ((tangent - d.a + 90) % 180 + 180) % 180 - 90;
+          var falloff = 1 - dist / RADIUS;
+          var turn = delta * falloff * (MAX / 90);
+          d.el.style.transform = 'rotate(' + turn.toFixed(1) + 'deg)';
+          d.set = true;
+        }
+      }
+
+      function schedule() {
+        if (queued) return;
+        queued = true;
+        if (window.requestAnimationFrame) requestAnimationFrame(apply);
+        else apply();
+      }
+
+      fig.addEventListener('pointermove', function (e) {
+        var r = svg.getBoundingClientRect();
+        if (!r.width || !r.height) return;
+        px = (e.clientX - r.left) / r.width * VB;
+        py = (e.clientY - r.top) / r.height * VB;
+        active = true;
+        schedule();
+      });
+
+      fig.addEventListener('pointerleave', function () {
+        active = false;
+        schedule();
       });
     })();
 
