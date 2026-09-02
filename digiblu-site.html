@@ -169,8 +169,6 @@
   .btn-started:focus-visible,
   .faq-cta-btn:focus-visible,
   .service-learn-more:focus-visible,
-  .blog-card:focus-visible,
-  .blog-filter:focus-visible,
   .case-read-more:focus-visible,
   .case-viewall-btn:focus-visible,
   .case-index-item:focus-visible,
@@ -761,7 +759,6 @@
   .services h2,
   .cases h2,
   .team-head h2,
-  .blog h2,
   .clients h2 {
     font-size: clamp(34px, 4.6vw, 52px);
     line-height: 1.12;
@@ -1998,7 +1995,14 @@
     transition: opacity 0.3s ease 0.15s, background 0.2s ease;
   }
 
-  .team-slice-more svg { width: 15px; height: 15px; }
+  /* The glyph used to be a plus inside its own drawn ring, sitting in the
+     blue disc - two concentric circles, with the ring only 43% of the disc
+     and a lot of blue padding around it, which read as the plus not sitting
+     properly in the circle. The ring was redundant: the disc already is the
+     circle. This is a bare plus, sized so it fills the disc the way a + button
+     normally does. It measured perfectly centred before and after - the
+     complaint was proportion, not alignment. */
+  .team-slice-more svg { width: 18px; height: 18px; }
 
   .team-slice.active .team-slice-more { opacity: 1; }
 
@@ -2157,48 +2161,11 @@
 
   .faq-cta-btn svg { width: 14px; height: 14px; }
 
-  /* ---------- Blog ----------
-     Plain themed background (white in light, black in dark) as specified.
-     Post artwork is a generated gradient panel rather than photography — there
-     is no rights-cleared imagery for these posts, and the gradient reuses the
-     same treatment as the Services accent cards. */
-  .blog {
-    max-width: var(--maxw);
-    margin: 0 auto;
-    background: var(--bg);
-    padding: var(--section-y) var(--gutter);
-  }
-
-  .blog h2 { margin-bottom: var(--head-gap); }
-
-  .blog-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 9px;
-    margin-bottom: var(--head-gap);
-  }
-
-  .blog-filter {
-    padding: 11px 16px;
-    border: 1px solid rgba(var(--ink-rgb), 0.2);
-    border-radius: 999px;
-    background: transparent;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: rgba(var(--ink-rgb), 0.72);
-    cursor: pointer;
-    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
-  }
-
-  .blog-filter:hover { border-color: rgba(var(--ink-rgb), 0.45); }
-
-  .blog-filter[aria-pressed="true"] {
-    background: var(--text);
-    border-color: var(--text);
-    color: var(--bg);
-  }
-
+  /* ---------- Art panels ----------
+     Named for the blog, which is gone; the case studies reuse these for the
+     panel above each engagement's title, so they stay. Generated gradient
+     plus a service icon rather than photography - there is no rights-cleared
+     imagery, and the gradient reuses the Services accent-card treatment. */
   .blog-art {
     position: relative;
     border-radius: 16px;
@@ -2228,124 +2195,6 @@
   .blog-modal-art:empty { display: none; }
   .blog-modal-art .blog-art { aspect-ratio: 16 / 6; border-radius: 14px; }
   .blog-modal-art .blog-art svg { width: 22%; max-width: 68px; }
-
-  .blog-tag {
-    display: inline-block;
-    margin-bottom: 14px;
-    padding: 5px 12px;
-    border-radius: 999px;
-    background: rgba(var(--ink-rgb), 0.07);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: rgba(var(--ink-rgb), 0.65);
-  }
-
-  .blog-excerpt {
-    font-size: 15px;
-    line-height: 1.65;
-    color: rgba(var(--ink-rgb), 0.66);
-    margin-bottom: 18px;
-  }
-
-  .blog-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 22px;
-    font-size: 12.5px;
-    color: rgba(var(--ink-rgb), var(--ink-a-mid));
-  }
-
-  .blog-meta .dot {
-    width: 3px;
-    height: 3px;
-    border-radius: 50%;
-    background: rgba(var(--ink-rgb), 0.35);
-  }
-
-  /* Full-article view inside the blog popup: a plain reading flow (not the
-     boxed .service-modal-item cards the condensed points use), toggled
-     against #blogDetailList by the "Read full article" button. */
-  .blog-full-text h3 {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text);
-    margin: 22px 0 8px;
-  }
-
-  .blog-full-text h3:first-child { margin-top: 0; }
-
-  .blog-full-text p {
-    font-size: 14.5px;
-    line-height: 1.65;
-    color: rgba(var(--ink-rgb), var(--ink-a-high));
-    margin-bottom: 12px;
-  }
-
-  .blog-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px 26px;
-  }
-
-  .blog-card {
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
-    /* Real <a href> pointing at the generated blog/<slug>.html page (crawlers
-       and ctrl/cmd/middle-click get a genuine page), but a plain click opens
-       the quick-view popup instead of navigating — see the click handler.
-       Was briefly a <button> earlier this session before the static pages
-       existed to link to; this reset still applies either way. */
-    background: none;
-    border: none;
-    padding: 0;
-    width: 100%;
-    text-align: left;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-  }
-
-  .blog-card .blog-art { margin-bottom: 15px; }
-
-  .blog-card h4 {
-    font-size: 16.5px;
-    line-height: 1.35;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 8px;
-  }
-
-  .blog-card .blog-excerpt {
-    font-size: 14px;
-    line-height: 1.6;
-    margin-bottom: 12px;
-  }
-
-  .blog-card .blog-meta { margin-bottom: 0; }
-
-  .blog-card:hover h4 { text-decoration: underline; text-underline-offset: 3px; }
-  .blog-card:hover .blog-art svg { transform: scale(1.06); }
-  .blog-art svg { transition: transform 0.25s ease; }
-
-  /* The `hidden` attribute alone loses to the flex display rule above. */
-  .blog-card[hidden] { display: none; }
-
-  .blog-empty {
-    padding: 30px 0;
-    font-size: 14.5px;
-    color: rgba(var(--ink-rgb), var(--ink-a-high));
-  }
-
-  @media (max-width: 1000px) {
-    .blog-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  @media (max-width: 620px) {
-    .blog-grid { grid-template-columns: 1fr; }
-  }
 
   /* ---------- Footer ---------- */
   /* A plain themed surface tone (not the artwork treatment tried and
@@ -3195,7 +3044,6 @@
         <li><a href="#services">Services</a></li>
         <li><a href="#case-studies">Case Studies</a></li>
         <li><a href="#team">Our Experts</a></li>
-        <li><a href="#blog">Blogs</a></li>
       </ul>
 
       <div class="nav-right">
@@ -3226,8 +3074,7 @@
           <li><a href="#services">Services</a></li>
           <li><a href="#case-studies">Case Studies</a></li>
           <li><a href="#team">Our Experts</a></li>
-          <li><a href="#blog">Blogs</a></li>
-        </ul>
+          </ul>
         <!-- Only the theme toggle lives in here. The CTA sits in the bar at
              every width — there is room for it beside the hamburger, and it
              is the page's primary action so it shouldn't be a tap away.
@@ -3630,7 +3477,7 @@
           <span class="team-slice-role">Chief Executive Officer</span>
         </span>
         <span class="team-slice-more" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </span>
       </button>
 
@@ -3641,7 +3488,7 @@
           <span class="team-slice-role">Chief Strategy Officer</span>
         </span>
         <span class="team-slice-more" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </span>
       </button>
 
@@ -3652,7 +3499,7 @@
           <span class="team-slice-role">Chief Financial Officer</span>
         </span>
         <span class="team-slice-more" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </span>
       </button>
 
@@ -3663,7 +3510,7 @@
           <span class="team-slice-role">Chief Operating Officer</span>
         </span>
         <span class="team-slice-more" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </span>
       </button>
 
@@ -3674,7 +3521,7 @@
           <span class="team-slice-role">Commercial Director &amp; Company Secretary</span>
         </span>
         <span class="team-slice-more" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </span>
       </button>
 
@@ -3685,7 +3532,7 @@
           <span class="team-slice-role">Senior Engagement Lead</span>
         </span>
         <span class="team-slice-more" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </span>
       </button>
 
@@ -3696,7 +3543,7 @@
           <span class="team-slice-role">Senior Engagement Lead</span>
         </span>
         <span class="team-slice-more" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </span>
       </button>
 
@@ -3707,95 +3554,12 @@
           <span class="team-slice-role">Head of Digital Solutions</span>
         </span>
         <span class="team-slice-more" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </span>
       </button>
     </div>
   </section>
 
-  <section class="blog" id="blog">
-    <span class="pill">Blogs</span>
-    <h2>Blogs &amp; articles</h2>
-
-    <!-- Real posts from digiblu.com/blog. Topic labels are mapped onto
-         DigiBlu service lines (the source posts carry no categories of
-         their own) and each card links out to the live article, since the
-         full article bodies are not reproduced here. -->
-
-    <div class="blog-filters" role="group" aria-label="Filter articles by topic">
-      <button type="button" class="blog-filter" data-filter="all" aria-pressed="true">All</button>
-      <button type="button" class="blog-filter" data-filter="ai" aria-pressed="false">Artificial Intelligence</button>
-      <button type="button" class="blog-filter" data-filter="process" aria-pressed="false">Process Excellence</button>
-      <button type="button" class="blog-filter" data-filter="tom" aria-pressed="false">Operating Model</button>
-      <button type="button" class="blog-filter" data-filter="digital" aria-pressed="false">Digital Solutions</button>
-      <button type="button" class="blog-filter" data-filter="post" aria-pressed="false">Post-Implementation</button>
-    </div>
-
-    <div class="blog-grid">
-      <a href="blog/ai-2026-impact.html" class="blog-card" data-category="ai" data-post="ai-2026-impact">
-        <div class="blog-art a1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C12 6.6 17.4 12 24 12C17.4 12 12 17.4 12 24C12 17.4 6.6 12 0 12C6.6 12 12 6.6 12 0Z"/></svg></div>
-        <span class="blog-tag">Artificial Intelligence</span>
-        <h4>What 2025 Taught Us About Turning AI Into Real Impact</h4>
-        <p class="blog-excerpt">We have been reviewing how our client needs evolved through 2025, and reflecting on what it really takes to turn AI ambition into real-world impact in 2026 and beyond.</p>
-        <div class="blog-meta"><span>22 January 2026</span><span class="dot"></span><span>2 min read</span></div>
-      </a>
-      <a href="blog/process-mapping.html" class="blog-card" data-category="process" data-post="process-mapping">
-        <div class="blog-art a2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="7" height="5" rx="1.5"/><rect x="15" y="16" width="7" height="5" rx="1.5"/><path d="M5.5 8v5.5a2 2 0 0 0 2 2H15"/></svg></div>
-        <span class="blog-tag">Process Excellence</span>
-        <h4>From Mapping to Mastery: Why Process Mapping is the Secret Weapon of Digital Transformation</h4>
-        <p class="blog-excerpt">Every organisation wants to transform. Few know where to start. The challenge is rarely a lack of ambition - it is a lack of clarity.</p>
-        <div class="blog-meta"><span>11 December 2025</span><span class="dot"></span><span>4 min read</span></div>
-      </a>
-      <a href="blog/ai-automation-triad.html" class="blog-card" data-category="ai" data-post="ai-automation-triad">
-        <div class="blog-art a3" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 4 3.5 19h17L12 4Z"/><circle cx="12" cy="4" r="1.6" fill="currentColor" stroke="none"/><circle cx="3.5" cy="19" r="1.6" fill="currentColor" stroke="none"/><circle cx="20.5" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg></div>
-        <span class="blog-tag">Artificial Intelligence</span>
-        <h4>AI, Automation &amp; Process Excellence: The Triad That Powers Sustainable Transformation</h4>
-        <p class="blog-excerpt">Transformation does not happen by accident. It is rarely the result of one big idea, or a single piece of technology.</p>
-        <div class="blog-meta"><span>14 November 2025</span><span class="dot"></span><span>4 min read</span></div>
-      </a>
-      <a href="blog/human-digital-future.html" class="blog-card" data-category="tom" data-post="human-digital-future">
-        <div class="blog-art a4" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="7" cy="7" r="3"/><path d="M2 20c0-3.6 2.2-6.2 5-6.2s5 2.6 5 6.2"/><rect x="13.5" y="6.5" width="9" height="6.5" rx="1"/><path d="M18 13v3M15.3 16h5.4"/></svg></div>
-        <span class="blog-tag">Operating Model</span>
-        <h4>The Future is Human &amp; Digital: How Operating Models Should Evolve</h4>
-        <p class="blog-excerpt">The most resilient organisations of tomorrow will not be defined by whether they prioritise people or technology, but by how effectively they bring the two together.</p>
-        <div class="blog-meta"><span>17 September 2025</span><span class="dot"></span><span>2 min read</span></div>
-      </a>
-      <a href="blog/human-side.html" class="blog-card" data-category="tom" data-post="human-side">
-        <div class="blog-art a1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="8.5" cy="7.5" r="3"/><circle cx="17" cy="8.5" r="2.4"/><path d="M2.5 20.5c0-3.7 2.6-6.3 6-6.3s6 2.6 6 6.3"/><path d="M15.2 14.6c2.7.3 4.8 2.6 4.8 5.5"/></svg></div>
-        <span class="blog-tag">Operating Model</span>
-        <h4>The Human Side of Digital Transformation</h4>
-        <p class="blog-excerpt">Digital transformation has become one of the most used, and misused, phrases in business today - often shorthand for ambitious tech programmes.</p>
-        <div class="blog-meta"><span>23 July 2025</span><span class="dot"></span><span>3 min read</span></div>
-      </a>
-      <a href="blog/pir-cfo.html" class="blog-card" data-category="post" data-post="pir-cfo">
-        <div class="blog-art a2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M6 2.5h9l4 4v14.5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1Z"/><path d="M15 2.5V7h4"/><path d="M8.3 14.2l2.3 2.3 5-5.2"/></svg></div>
-        <span class="blog-tag">Post-Implementation</span>
-        <h4>Post-Implementation Reviews: The CFO’s Reality Check</h4>
-        <p class="blog-excerpt">Just because the system went live does not mean the value did. Post-implementation reviews are how you find out which one actually happened.</p>
-        <div class="blog-meta"><span>9 July 2025</span><span class="dot"></span><span>3 min read</span></div>
-      </a>
-      <a href="blog/no-code-low-code.html" class="blog-card" data-category="digital" data-post="no-code-low-code">
-        <div class="blog-art a3" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="m8 6-6 6 6 6"/><path d="m16 6 6 6-6 6"/></svg></div>
-        <span class="blog-tag">Digital Solutions</span>
-        <h4>No-Code vs. Low-Code vs. Custom Coding: Choosing the Right Solution for Your Business</h4>
-        <p class="blog-excerpt">Businesses are spoilt for choice when it comes to new technology. We are asked every other week to recommend solutions across the no-code, low-code and custom-code spectrum.</p>
-        <div class="blog-meta"><span>4 April 2025</span><span class="dot"></span><span>3 min read</span></div>
-      </a>
-    </div>
-
-    <div class="cases-actions">
-      <!-- Opens the article index popup rather than expanding the grid in
-           place. Revealing every match inline grew the page without bound as
-           posts were added; the popup is a fixed-height, scrollable list, the
-           same mechanism the Case Studies section uses. -->
-      <button type="button" class="case-viewall-btn" id="blogViewAll">
-        View all articles
-        <span class="case-count" id="blogViewAllCount"></span>
-      </button>
-    </div>
-
-    <p class="blog-empty" id="blogEmpty" hidden>No articles under this topic yet.</p>
-  </section>
   </main>
 
   <footer>
@@ -3838,8 +3602,7 @@
             <li><a href="#hero-content">Home</a></li>
             <li><a href="#about">About Us</a></li>
             <li><a href="#case-studies">Case Studies</a></li>
-            <li><a href="#blog">Blogs</a></li>
-            <li><button type="button" class="js-contact-open">Contact Us</button></li>
+                <li><button type="button" class="js-contact-open">Contact Us</button></li>
           </ul>
         </div>
 
@@ -3874,7 +3637,7 @@
       <div class="modal-aside">
         <div>
           <h2 id="modalTitle">Get in touch</h2>
-          <p class="modal-sub">Complete these quick steps and we will find a time that works for you.</p>
+          <p class="modal-sub">Complete these quick steps and a member of our team will be in touch.</p>
         </div>
 
         <div class="modal-steps">
@@ -3885,10 +3648,6 @@
           <div class="modal-step" data-step-indicator="2">
             <span class="step-num">2</span>
             <span class="step-label">Your enquiry</span>
-          </div>
-          <div class="modal-step" data-step-indicator="3">
-            <span class="step-num">3</span>
-            <span class="step-label">Schedule a time</span>
           </div>
         </div>
       </div>
@@ -3929,15 +3688,10 @@
               <label for="cf-message">What can we help with? <span class="modal-field-optional">(optional)</span></label>
               <textarea id="cf-message" rows="3" placeholder="Tell us about your project"></textarea>
             </div>
-          </div>
-
-          <div class="form-step" data-step="3">
-            <div class="modal-field">
-              <label for="cf-time">Preferred time to talk <span class="modal-field-optional">UK time</span></label>
-              <select id="cf-time">
-                <option value="flexible">Flexible - any time works</option>
-              </select>
-            </div>
+            <!-- Consent moved here when the "Schedule a time" step was removed.
+                 It is a legal gate rather than a data field, so it has to live on
+                 whichever step is last: currentStepIsValid() is what blocks
+                 submission on it, and it only checks the step being left. -->
             <div class="modal-field modal-consent">
               <label class="modal-checkbox">
                 <input type="checkbox" id="cf-consent" required>
@@ -3957,7 +3711,7 @@
         <div class="modal-success" role="status">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.6"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <h2>Request sent</h2>
-          <p>Thanks for reaching out. A member of the DigiBlu team will be in touch shortly to confirm a time.</p>
+          <p>Thanks for reaching out. A member of the DigiBlu team will be in touch shortly.</p>
           <button type="button" class="modal-done">Done</button>
         </div>
       </div>
@@ -4024,46 +3778,6 @@
           <button type="button" class="case-back-btn reader-toggle" id="caseDetailBack">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5m0 0 6-6m-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             All case studies
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="blogDetailModal">
-    <div class="modal-panel service-panel reader-panel" role="dialog" aria-modal="true" aria-labelledby="blogDetailTitle" tabindex="-1">
-      <button class="modal-close" aria-label="Close">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 5l14 14M19 5 5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      </button>
-      <!-- Reader sidebar, mirroring #caseDetailModal's: every article, the
-           one being read highlighted. Replaced the separate article index
-           popup. -->
-      <aside class="reader-side" aria-label="All articles">
-        <p class="reader-side-count" id="blogReaderCount">All articles</p>
-        <div class="case-index-list reader-list" id="blogIndexList"></div>
-      </aside>
-      <div class="service-modal-body">
-        <!-- Cloned from the clicked card's own .blog-art so it can never
-             drift from the grid, and placed above the heading so it leads
-             both the key-points view and the expanded article. -->
-        <div class="blog-modal-art" id="blogDetailArt" aria-hidden="true"></div>
-        <span class="pill service-modal-eyebrow" id="blogDetailTag">Artificial Intelligence</span>
-        <h2 id="blogDetailTitle"></h2>
-        <div class="blog-meta" id="blogDetailMeta"></div>
-        <div class="service-modal-list" id="blogDetailList"></div>
-        <div class="blog-full-text" id="blogDetailFull" style="display: none"></div>
-        <div class="service-modal-footer case-modal-footer">
-          <button type="button" class="faq-cta-btn" id="blogDetailExpand">
-            <span class="arrow-badge">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M7 17 17 7m0 0H9m8 0v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-            <span id="blogDetailExpandLabel">Read full article</span>
-          </button>
-          <!-- Mobile only (see .reader-toggle): swaps the reading pane for
-               the sidebar list. Mirrors #caseDetailBack. -->
-          <button type="button" class="case-back-btn reader-toggle" id="blogDetailBack">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5m0 0 6-6m-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            All articles
           </button>
         </div>
       </div>
@@ -5044,662 +4758,6 @@
     })();
 
     (function () {
-      var filters = document.querySelectorAll('.blog-filter');
-      if (!filters.length) return;
-      var items = document.querySelectorAll('.blog-card');
-      var grid = document.querySelector('.blog-grid');
-      var emptyEl = document.getElementById('blogEmpty');
-      var moreWrap = document.querySelector('.blog .cases-actions');
-      var moreCount = document.getElementById('blogViewAllCount');
-      // Cap the initial view to exactly one row. The grid is 3/2/1 columns
-      // across the breakpoints, so reading the live column count keeps the
-      // first row full instead of leaving an orphan card at tablet widths.
-      function columnCount() {
-        var cols = getComputedStyle(grid).gridTemplateColumns;
-        if (!cols || cols === 'none') return 3;
-        return cols.split(' ').filter(function (c) { return c.trim(); }).length;
-      }
-      var currentKey = 'all';
-
-      // The grid no longer expands in place - the rest of the library lives
-      // in the reader dialog's sidebar (see #blogDetailModal), so the row cap
-      // here is permanent. The count on the "View all" button is the whole
-      // library rather than the filter's total, because that is what the
-      // sidebar lists.
-
-      function apply(key) {
-        currentKey = key;
-        var matches = [].filter.call(items, function (el) {
-          return key === 'all' || el.getAttribute('data-category') === key;
-        });
-
-        items.forEach(function (el) { el.hidden = true; });
-
-        var cap = columnCount();
-        matches.slice(0, cap).forEach(function (el) { el.hidden = false; });
-
-        if (emptyEl) emptyEl.hidden = matches.length !== 0;
-
-        if (moreWrap) moreWrap.hidden = matches.length <= cap;
-        if (moreCount) moreCount.textContent = '(' + items.length + ')';
-      }
-
-      filters.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          filters.forEach(function (b) {
-            b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
-          });
-          apply(btn.getAttribute('data-filter'));
-        });
-      });
-
-      // Crossing a breakpoint changes the column count, so the one-row cap
-      // has to be recomputed.
-      var resizeTimer = null;
-      window.addEventListener('resize', function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () { apply(currentKey); }, 150);
-      });
-
-      apply(currentKey);
-    })();
-
-    (function () {
-      // Condensed from the full articles on digiblu.com/blog — paraphrased
-      // takeaways, not verbatim reproduction. Each links out to the source
-      // for the complete piece.
-      var BLOG_POSTS = {
-        'ai-2026-impact': {
-          tag: 'Artificial Intelligence',
-          title: 'What 2025 Taught Us About Turning AI Into Real Impact',
-          date: '22 January 2026', read: '2 min read',
-          url: 'https://www.digiblu.com/post/what-2025-taught-us-about-turning-ai-into-real-impact',
-          full: [
-            { type: 'p', text: 'We\'ve been reviewing how our client needs have evolved in 2025, and been reflecting on what it really takes to turn AI ambition into real-world impact in 2026 and beyond. We are steering our clients away from hype, and from pilots that never leave go live or gain universal internal approval. We are focusing on systems that go live, earn trust, and meaningfully change how work gets done.' },
-            { type: 'p', text: 'Last year was a defining one for DigiBlu.' },
-            { type: 'p', text: 'Across all the industries our clients represent, the conversation definitely shifted. Leaders moved beyond "should we use AI?", and began asking "how do we operationalise it responsibly, effectively, and at scale?" That shift fundamentally changed the nature of our work - and sharpened our role as a trusted advisor and delivery partner.' },
-            { type: 'p', text: 'It was reflected in our growth. In 2025, we increased our client base by 30% and expanded our managed services footprint by 25%. It signalled a clear market need for partners like DigiBlu who can help organisations operate, govern, and continuously improve AI in real production environments.' },
-            { type: 'p', text: 'To meet that responsibility, we invested heavily in our technical delivery capability - across architecture, integration, monitoring, and support. Building AI systems at scale demands deep, hands-on expertise, and strengthening this capability ensured we could move faster with clients while maintaining the reliability and accountability that production AI requires.' },
-            { type: 'p', text: 'One of our most important milestones this year was taking our Agentic AI solution "DigiBlu AgentOps" AI solution live. Moving from concept to production forced us to confront the hardest challenges - autonomy, guardrails, and trust. It reinforced a lesson we believe will define the next phase of AI adoption: that the real challenge isn\'t enabling AI to act, but ensuring it acts in ways that are aligned, auditable, and genuinely useful. Seeing DigiBlu AgentOps support complex workflows in production marked a significant step forward for us and our clients.' },
-            { type: 'p', text: 'We also operationalised "DigiBlu Engage", our AI-enabled email triage and response solution. This has been built to address high-volume email channels common across many organisations. It has delivered measurable efficiency gains, faster handling times, and better prioritisation - proving once again that AI delivers the most value when it\'s embedded into everyday operations, not bolted on as a novelty.' },
-            { type: 'p', text: 'Across our broader client work, we helped organisations move decisively from experimentation to execution. Proofs of concept became production systems. Copilots were embedded into daily workflows, automation replaced fragile manual processes and we have built AI enabled process documentation and retrieval solutions. Every time the success of the project in hand came down not to the choice of model or vendor, but to alignment between business objectives, data readiness, and change management.' },
-            { type: 'p', text: 'In 2026 it goes without saying that AI is moving closer to the core of how organisations operate. The winners won\'t be those who experiment the most, but those who integrate AI thoughtfully, securely, and sustainably.' }
-          ],
-          points: [
-            { h: 'The conversation has shifted', p: 'Clients have moved past debating whether to adopt AI and are now focused on how to deploy it responsibly and at scale, rather than exploring theoretical possibilities.' },
-            { h: 'Moving beyond pilots', p: 'The real value comes from AI that reaches production, earns user trust and changes how work gets done - not from proof-of-concept cycles that never go live.' },
-            { h: 'Scale demands infrastructure', p: 'Running AI systems reliably requires real investment in architecture, integration, monitoring and support, not just the model itself.' },
-            { h: 'Guardrails matter more than capability', p: 'The hard part is not making AI act autonomously - it is keeping it within appropriate bounds, with alignment and auditability built in from the start.' },
-            { h: 'Embedding beats bolting on', p: 'AI delivers measurable value when it is built into daily operations, not added on as a separate tool - integration into existing workflows is what produces genuine efficiency gains.' }
-          ]
-        },
-        'process-mapping': {
-          tag: 'Process Excellence',
-          title: 'From Mapping to Mastery: Why Process Mapping is the Secret Weapon of Digital Transformation',
-          date: '11 December 2025', read: '4 min read',
-          url: 'https://www.digiblu.com/post/from-mapping-to-mastery-why-process-mapping-is-the-secret-weapon-of-digital-transformation',
-          full: [
-            { type: 'p', text: 'Every organisation wants to transform. Few know where to start. The challenge isn\'t usually a lack of ambition - it\'s a lack of clarity. Digital transformation promises efficiency, resilience, and better customer experiences, but without a clear view of the processes that underpin the business, change often feels like throwing darts in the dark.' },
-            { type: 'p', text: 'This is why process mapping is the secret weapon of transformation. It shines a light on how work really gets done, not how we think it gets done. And with that visibility, organisations can make smarter decisions about where to digitise, automate, or rethink entirely.' },
-            { type: 'h', text: 'Why Clarity Comes Before Change' },
-            { type: 'p', text: 'Transformation projects fail when they\'re built on shaky foundations. Implementing automation or AI into a process that hasn\'t been properly understood is a recipe for frustration. You risk:' },
-            { type: 'p', text: 'Automating inefficiency instead of eliminating it.' },
-            { type: 'p', text: 'Missing opportunities for simplification before digitisation.' },
-            { type: 'p', text: 'Delivering solutions that don\'t align with business goals or customer needs.' },
-            { type: 'p', text: 'Process mapping creates the clarity needed to avoid these pitfalls. It captures the flow of work step by step, revealing bottlenecks, unnecessary handoffs, and risks. This isn\'t about creating pretty diagrams for the boardroom; it\'s about building a reliable map to guide transformation efforts in the right direction.' },
-            { type: 'h', text: 'Seeing What\'s Really Happening' },
-            { type: 'p', text: 'Ask three different people in the same department how a process works, and you\'ll often get three different answers. That\'s because undocumented processes live in silos, shaped by habit, workarounds, and individual interpretation.' },
-            { type: 'p', text: 'Process mapping cuts through this ambiguity. It forces organisations to ask:' },
-            { type: 'p', text: 'Who owns each step?' },
-            { type: 'p', text: 'Where does information get delayed or lost?' },
-            { type: 'p', text: 'Which activities add value for the customer, and which don\'t?' },
-            { type: 'p', text: 'This shared visibility doesn\'t just support transformation - it creates alignment. Teams finally see the same picture and can collaborate on redesigning it.' },
-            { type: 'h', text: 'Process Mapping as a Bridge Between People and Technology' },
-            { type: 'p', text: 'Too often, digital transformation is treated as a technology initiative. But the real lever for change is how people and technology work together. Process mapping is the bridge.' },
-            { type: 'p', text: 'For leaders, it highlights where investment will deliver the biggest impact.' },
-            { type: 'p', text: 'For employees, it validates lived experience and surfaces pain points that leaders may not see.' },
-            { type: 'p', text: 'For technologists, it provides the context needed to design solutions that truly fit.' },
-            { type: 'p', text: 'In this way, process mapping democratises transformation. It turns abstract goals like "improving efficiency" or "reducing costs" into specific, actionable opportunities everyone can align on.' },
-            { type: 'h', text: 'From Map to Mastery: The Business Outcomes' },
-            { type: 'p', text: 'The value of process mapping doesn\'t end with a neat diagram. When done well, it unlocks outcomes that matter to every business leader:' },
-            { type: 'h', text: '1. Efficiency Gains' },
-            { type: 'p', text: 'By exposing bottlenecks and redundancies, mapping highlights the quick wins - like removing duplicate approvals or reordering tasks. These small changes add up to significant time and cost savings.' },
-            { type: 'h', text: '2. Resilience' },
-            { type: 'p', text: 'Mapped processes reveal dependencies and risks. Who is the single point of failure? Where does a manual step make the process vulnerable? Addressing these issues strengthens operational resilience and continuity.' },
-            { type: 'h', text: '3. Improved Customer Experience' },
-            { type: 'p', text: 'Mapping makes it clear how internal inefficiencies ripple outward. A delay in one approval step might translate into days of waiting for a customer. By smoothing these processes, organisations create experiences that feel seamless and reliable.' },
-            { type: 'h', text: '4. Cost Reduction' },
-            { type: 'p', text: 'Inefficient processes are expensive. Mapping pinpoints wasted effort and resource drain, allowing leaders to reduce costs without compromising quality or service levels.' },
-            { type: 'h', text: 'Elevating Transformation with Automation and AI' },
-            { type: 'p', text: 'Once you know your processes inside out, technology becomes far more powerful. Process mapping shows where automation will make a difference - and where it won\'t. For example:' },
-            { type: 'p', text: 'Automation can handle repetitive, rules-based steps once they\'re clearly defined.' },
-            { type: 'p', text: 'AI can augment decision-making where data patterns are complex.' },
-            { type: 'p', text: 'Process excellence ensures the overall flow is designed to maximise value.' },
-            { type: 'p', text: 'Together, these create an ecosystem where transformation is targeted, scalable, and sustainable. Without the foundation of process mapping, you risk building impressive solutions in the wrong places.' },
-            { type: 'h', text: 'Avoiding the "One and Done" Trap' },
-            { type: 'p', text: 'Process mapping isn\'t just a one-off exercise to kick off a transformation project. It\'s a discipline that supports continuous improvement. Markets shift, regulations change, and customer expectations evolve - and processes need to adapt with them.' },
-            { type: 'p', text: 'By treating process mapping as an ongoing practice, organisations can:' },
-            { type: 'p', text: 'Monitor whether improvements stick.' },
-            { type: 'p', text: 'Identify new opportunities for optimisation.' },
-            { type: 'p', text: 'Build a culture where change is seen as natural, not disruptive.' },
-            { type: 'p', text: 'This is how transformation becomes not just a project, but a way of operating.' },
-            { type: 'h', text: 'A Real-World Example' },
-            { type: 'p', text: 'Consider a financial services organisation struggling with loan approvals. Applications took weeks, with frustrated customers and high operational costs. Leadership assumed technology alone would solve the problem.' },
-            { type: 'p', text: 'A process mapping exercise told a different story:' },
-            { type: 'p', text: 'Multiple approval layers added little value.' },
-            { type: 'p', text: 'Manual data entry created errors and rework.' },
-            { type: 'p', text: 'Ownership was unclear, leading to delays at handoffs.' },
-            { type: 'p', text: 'By redesigning the process before digitisation, the organisation was able to streamline approvals, automate key checks, and introduce AI for fraud detection. The result: loan approvals in days, not weeks, improved customer satisfaction, and significant cost reduction.' },
-            { type: 'p', text: 'The technology didn\'t drive the success. The map did.' },
-            { type: 'h', text: 'Looking Ahead: Mapping the Future' },
-            { type: 'p', text: 'As digital transformation accelerates, the organisations that win will be those that don\'t just adopt technology - they master their processes first. Process mapping is the discipline that transforms ambition into execution, and execution into measurable results.' },
-            { type: 'p', text: 'At DigiBlu, we\'ve seen first-hand how mapping creates the foundation for sustainable change. It\'s not just about diagrams; it\'s about clarity, alignment, and outcomes that matter.' },
-            { type: 'p', text: 'If your organisation is ready to move from mapping to mastery - and unlock the full potential of transformation - let\'s start the conversation.' }
-          ],
-          points: [
-            { h: 'Clarity comes before change', p: 'Transformation often fails because organisations lack visibility into how work actually happens. Mapping reveals the real workflow before technology gets layered on top of it.' },
-            { h: 'Alignment across departments', p: 'Undocumented processes live as individual interpretations inside silos. Mapping forces teams to agree on a single version of how work actually flows.' },
-            { h: 'Technology is secondary', p: 'Digital solutions only work when built on a thoroughly understood process - mapping is what points investment at the right opportunities.' },
-            { h: 'Measurable business outcomes', p: 'Removing bottlenecks cuts operational time, surfacing dependencies builds resilience, and reducing waste lowers cost.' },
-            { h: 'A continuous practice', p: 'Organisations that treat mapping as an ongoing discipline, not a one-off kickoff exercise, build transformation capability that keeps adapting.' }
-          ]
-        },
-        'ai-automation-triad': {
-          tag: 'Artificial Intelligence',
-          title: 'AI, Automation & Process Excellence: The Triad That Powers Sustainable Transformation',
-          date: '14 November 2025', read: '4 min read',
-          url: 'https://www.digiblu.com/post/ai-automation-process-excellence-the-triad-that-powers-sustainable-transformation',
-          full: [
-            { type: 'p', text: 'Transformation doesn\'t happen by accident. It\'s rarely the result of one big idea or a single piece of technology. Instead, it\'s the product of a carefully balanced combination: the intelligence of AI, the efficiency of automation, and the discipline of process excellence.' },
-            { type: 'p', text: 'Together, this triad creates sustainable change - the kind that drives measurable outcomes like cost savings, improved customer experience, and long-term resilience.' },
-            { type: 'p', text: 'Too often, organisations chase after the "next big thing" in technology without thinking about how it fits into their business fabric. The result? Initiatives that look promising in the pilot phase but fail to scale or deliver lasting value. The companies that break through this pattern are those that understand: transformation is not about technology alone - it\'s about bringing people, processes, and tools into alignment.' },
-            { type: 'h', text: 'Why Transformation Needs More Than Technology' },
-            { type: 'p', text: 'Investing in AI tools or robotic process automation (RPA) on their own won\'t guarantee results. Without a foundation of process clarity, these solutions risk automating inefficiency or layering complexity on top of already fractured workflows.' },
-            { type: 'p', text: 'Process excellence provides the discipline to identify what really matters: which processes create value, where friction slows things down, and where change will have the biggest impact.' },
-            { type: 'p', text: 'When done right, it answers the questions every business leader asks:' },
-            { type: 'p', text: 'Where are we wasting time and money?' },
-            { type: 'p', text: 'How can we deliver faster, and more consistently?' },
-            { type: 'p', text: 'What will make our customers\' experience feel seamless?' },
-            { type: 'p', text: 'From this foundation, AI and automation become boosters. They don\'t replace the human workforce - they empower it.' },
-            { type: 'h', text: 'The Role of AI: Smarter Decisions at Speed' },
-            { type: 'p', text: 'AI is often overhyped, but its real power is simple: turning data into insight. From predictive analytics that forecast demand, to natural language models that enhance customer support, AI helps organisations make faster, smarter decisions.' },
-            { type: 'p', text: 'Customer experience: AI can anticipate customer needs and personalise interactions, making services feel proactive rather than reactive.' },
-            { type: 'p', text: 'Operational resilience: Machine learning models can detect anomalies or risks before they escalate, strengthening business continuity.' },
-            { type: 'p', text: 'Efficiency gains: By analysing patterns across vast datasets, AI identifies bottlenecks and opportunities for optimisation that humans alone would struggle to see.' },
-            { type: 'p', text: 'When embedded thoughtfully into processes, AI doesn\'t just improve outcomes - it raises the standard for what\'s possible.' },
-            { type: 'h', text: 'The Role of Automation: Scaling Consistency and Efficiency' },
-            { type: 'p', text: 'If AI is about intelligence, automation is about execution.' },
-            { type: 'p', text: 'It ensures that once decisions are made, they can be implemented with speed, accuracy, and consistency.' },
-            { type: 'p', text: 'Cost reduction: Automating repetitive, rule-based tasks cuts down manual effort and frees people to focus on higher-value work.' },
-            { type: 'p', text: 'Scalability: Processes that once depended on limited human capacity can now run around the clock, at scale, without burnout or errors.' },
-            { type: 'p', text: 'Employee engagement: When the "robotic" work is offloaded to actual robots, employees have space to apply creativity and judgment - the areas where humans thrive.' },
-            { type: 'p', text: 'The result isn\'t just efficiency, it\'s the creation of a business model where growth isn\'t constrained by headcount or geography.' },
-            { type: 'h', text: 'The Role of Process Excellence: The Anchor of Sustainable Change' },
-            { type: 'p', text: 'Without process excellence, even the most advanced technologies struggle to gain traction. It provides the anchor for transformation by:' },
-            { type: 'p', text: 'Defining the "why": Establishing the business objectives that matter most (customer satisfaction, cost savings, risk reduction, etc.).' },
-            { type: 'p', text: 'Prioritising change: Not every process should be automated. Process excellence identifies where interventions will deliver the biggest return.' },
-            { type: 'p', text: 'Sustaining impact: Continuous monitoring and improvement ensure that today\'s efficiencies don\'t become tomorrow\'s bottlenecks.' },
-            { type: 'p', text: 'This is what prevents transformation from being a one-off initiative. It embeds agility into the organisation, making it possible to adapt as new challenges and technologies emerge.' },
-            { type: 'h', text: 'When the Triad Works Together' },
-            { type: 'p', text: 'The real magic happens when AI, automation, and process excellence work as a connected ecosystem rather than separate initiatives.' },
-            { type: 'p', text: 'Consider a few examples:' },
-            { type: 'p', text: 'Customer service transformation: AI analyses customer sentiment to predict needs, automation handles high-volume inquiries instantly, and process excellence ensures workflows are designed to escalate only the complex cases to human agents. The outcome: faster resolution times, lower cost-to-serve, and happier customers.' },
-            { type: 'p', text: 'Finance operations: Process excellence identifies inefficiencies in invoice processing. Automation executes routine matching and approvals. AI provides fraud detection and cash flow forecasting. The outcome: reduced operational risk and improved working capital.' },
-            { type: 'p', text: 'Supply chain resilience: AI predicts disruptions, automation adjusts ordering and logistics in real-time, and process excellence ensures the whole system runs seamlessly. The outcome: continuity even in volatile conditions.' },
-            { type: 'p', text: 'In each case, it\'s not one tool but the triad in action that creates transformative results.' },
-            { type: 'h', text: 'The Outcomes That Matter' },
-            { type: 'p', text: 'When businesses get this balance right, the outcomes are tangible:' },
-            { type: 'p', text: 'Efficiency: Faster processes with fewer errors.' },
-            { type: 'p', text: 'Cost reduction: Lower overheads by removing waste and optimising resources.' },
-            { type: 'p', text: 'Customer experience: More personalised, seamless, and responsive services.' },
-            { type: 'p', text: 'Resilience: The ability to adapt quickly to market shocks and disruptions.' },
-            { type: 'p', text: 'These outcomes aren\'t just operational wins - they create competitive advantage. In a world where customer expectations are rising and disruption is constant, the ability to transform sustainably becomes a differentiator.' },
-            { type: 'h', text: 'Looking Ahead: Building Transformation That Lasts' },
-            { type: 'p', text: 'Technology will keep evolving - new AI models, new automation tools, new ways of working. But the principle of sustainable transformation won\'t change: it requires a thoughtful blend of intelligence, execution, and discipline.' },
-            { type: 'p', text: 'At DigiBlu, we\'ve seen how organisations can thrive when these three elements come together. It\'s not about chasing shiny tools - it\'s about creating an operating model that\'s smarter, faster, and built to last.' },
-            { type: 'p', text: 'If your organisation is ready to move beyond experimentation and start building transformation that delivers measurable results, let\'s start the conversation.' }
-          ],
-          points: [
-            { h: 'Technology alone is not enough', p: 'Promising pilots stall when process and people are not aligned around the investment - tools alone rarely scale.' },
-            { h: 'AI brings intelligence and speed', p: 'Its value lies in turning raw data into decisions worth acting on, from predictive analytics to personalised interactions.' },
-            { h: 'Automation brings consistency', p: 'Once a decision is made, automation executes it precisely and at scale, freeing people from repetitive work.' },
-            { h: 'Process excellence anchors it all', p: 'Clear objectives and a focus on high-impact areas stop transformation from becoming a one-off project.' },
-            { h: 'The combination is what works', p: 'AI, automation and process excellence deliver real results only when run as one connected system rather than three separate initiatives.' }
-          ]
-        },
-        'human-digital-future': {
-          tag: 'Operating Model',
-          title: 'The Future is Human & Digital: How Operating Models Should Evolve',
-          date: '17 September 2025', read: '2 min read',
-          url: 'https://www.digiblu.com/post/the-future-is-human-digital-how-operating-models-should-evolve',
-          full: [
-            { type: 'p', text: 'The most resilient organisations of tomorrow won\'t be defined by whether they prioritise people or technology - but by how effectively they bring the two together. Success lies in creating operating models where human ingenuity and digital capability work in harmony, delivering outcomes that are smarter, faster, and more sustainable.' },
-            { type: 'h', text: 'Moving Beyond Traditional Models' },
-            { type: 'p', text: 'For decades, operating models have been built around silos - people, processes, and technology sitting apart from one another. That made sense when transformation was largely about digitising paperwork or consolidating operations.' },
-            { type: 'p', text: 'But in an era of automation, AI, and advanced analytics, this separation limits progress. Future-ready operating models need to integrate:' },
-            { type: 'p', text: 'Processes designed for clarity, scalability, and resilience.' },
-            { type: 'p', text: 'Technology deployed as an enabler of outcomes, not a box-ticking exercise.' },
-            { type: 'p', text: 'People freed to focus on judgement, creativity, and relationships.' },
-            { type: 'p', text: 'Structures that flex with demand - whether through shared services, Centres of Excellence, or agile operating hubs.' },
-            { type: 'p', text: 'This isn\'t about chasing the latest buzzwords. It\'s about reshaping work so that humans and digital workers achieve more together than either could alone.' },
-            { type: 'h', text: 'Building the Hybrid Workforce' },
-            { type: 'p', text: 'In Human & Digital organisations, roles evolve:' },
-            { type: 'p', text: 'Digital workers take on repetitive, rules-based tasks.' },
-            { type: 'p', text: 'Human workers focus on problem-solving, customer care, and continuous improvement.' },
-            { type: 'p', text: 'Support roles in governance, monitoring, and optimisation ensure both human and digital contributions remain aligned to business goals.' },
-            { type: 'p', text: 'This model reduces errors, improves speed, and strengthens customer outcomes - while also making work more rewarding for people.' },
-            { type: 'h', text: 'The Skills We\'ll Need' },
-            { type: 'p', text: 'Transformation isn\'t just about new tools; it\'s also about new skills. The workforce of the future will need:' },
-            { type: 'p', text: 'Confidence working alongside digital co-workers.' },
-            { type: 'p', text: 'The ability to interpret insights and shape processes.' },
-            { type: 'p', text: 'A mindset of collaboration, agility, and continuous learning.' },
-            { type: 'p', text: 'By nurturing these skills, organisations can build resilience and unlock the full potential of transformation.' },
-            { type: 'h', text: 'Why This Matters Now' },
-            { type: 'p', text: 'Across industries, organisations are under pressure to do more with less - reducing cost-to-serve, improving customer journeys, and addressing workforce shortages. The Human & Digital model doesn\'t just drive efficiency. It builds adaptability, scalability, and long-term relevance in a changing world.' },
-            { type: 'h', text: 'Looking Ahead' },
-            { type: 'p', text: 'Operating models should no longer be static frameworks. They must evolve as technologies mature and customer expectations rise. Those who embrace the Human & Digital blend early - and design their structures, roles, and skills accordingly - will be best placed to lead.' },
-            { type: 'p', text: 'At DigiBlu, we\'ve seen this first-hand. From early RPA adoption to sophisticated digital workforces, we\'ve helped organisations redesign their operating models to capture both human creativity and digital precision. When you\'re ready to explore how Human & Digital could reshape your business, the right partner can make the difference.' },
-            { type: 'p', text: 'Let\'s start the conversation.' }
-          ],
-          points: [
-            { h: 'Integration over silos', p: 'Traditional operating models keep people, process and technology apart. Resilient organisations connect all three instead.' },
-            { h: 'Redefining workforce roles', p: 'Digital workers handle routine, rules-based activity, freeing people for strategic thinking, relationships and problem-solving.' },
-            { h: 'New skills for the workforce', p: 'Comfort working alongside automation, interpreting data, and a habit of continuous learning matter as much as technical knowledge now.' },
-            { h: 'Answering real business pressure', p: 'A human-digital model tackles rising costs, customer expectations and talent shortages at the same time, rather than trading one off against another.' },
-            { h: 'Models must stay dynamic', p: 'Operating models need to keep evolving as technology and customer expectations shift, rather than being fixed once and left alone.' }
-          ]
-        },
-        'human-side': {
-          tag: 'Operating Model',
-          title: 'The Human Side of Digital Transformation',
-          date: '23 July 2025', read: '3 min read',
-          url: 'https://www.digiblu.com/post/the-human-side-of-digital-transformation',
-          full: [
-            { type: 'p', text: 'Digital transformation has become one of the most used (and misused) phrases in business today. It\'s often shorthand for ambitious tech programmes: AI deployments, automation rollouts, cloud migrations. But beneath the surface of all these initiatives lies a deeper truth that\'s easy to overlook: transformation doesn\'t begin with technology. It begins with people.' },
-            { type: 'p', text: 'The most effective digital transformations aren\'t defined by the tools they introduce, but by the culture they shift. They\'re driven by empathy for the end user, designed to enable rather than disrupt, and sustained by the confidence and capability of the people who bring them to life.' },
-            { type: 'h', text: 'Why Technology Alone Isn\'t Enough' },
-            { type: 'p', text: 'Walk into any boardroom right now and you\'ll likely hear excitement about AI, data platforms, and digital operating models. But in many cases, this excitement quickly gives way to frustration. Projects overrun. Adoption stalls. ROI proves elusive.' },
-            { type: 'p', text: 'One reason for this is that technology is often positioned as the answer, without first asking the right questions. What\'s the problem we\'re trying to solve? Who will this change affect? How do we bring them with us?' },
-            { type: 'p', text: 'True transformation isn\'t about deploying new tools - it\'s about reimagining how work gets done. And that starts by aligning people behind a clear vision and shared outcomes.' },
-            { type: 'h', text: 'People First, Then Process, Then Tech' },
-            { type: 'p', text: 'Organisations that lead successful transformations tend to follow a consistent pattern:' },
-            { type: 'p', text: 'Start with people: Understand how teams work today, what they value, and where the pain points are.' },
-            { type: 'p', text: 'Clarify the process: Before digitising anything, simplify it. Remove what\'s unnecessary. Make it make sense.' },
-            { type: 'p', text: 'Introduce technology intentionally: Use digital tools to support and elevate, not to control or confuse.' },
-            { type: 'p', text: 'These steps may sound simple but they require trust, communication, and a willingness to challenge the status quo.' },
-            { type: 'h', text: 'Co-Creating the Future of Work' },
-            { type: 'p', text: 'One of the most powerful (yet underused) techniques in transformation is co-creation. When teams can visualise what "better" might look like and help design the systems or journeys that support it, they\'re far more likely to embrace change.' },
-            { type: 'p', text: 'Approaches like Service Design and Lean aren\'t just about efficiency. They\'re about understanding how people experience work and services and creating space for those voices in the design process.' },
-            { type: 'p', text: 'Sometimes transformation means simplifying something that\'s become too complex over time. Other times, it involves building something entirely new. In both cases, the solutions that stick are the ones built with real people, for real needs.' },
-            { type: 'h', text: 'AI: Powerful, But Not a Panacea' },
-            { type: 'p', text: 'It\'s impossible to talk about digital transformation in 2025 without touching on AI. From generative models to predictive analytics, the potential is immense. But so is the risk of misapplication.' },
-            { type: 'p', text: 'The most successful uses of AI are grounded in purpose. They solve specific problems. They\'re governed well. And they\'re introduced in ways that build trust, not fear. Whether it\'s embedding AI into customer journeys or streamlining back-office tasks, the question shouldn\'t just be "can we?" but "should we?"' },
-            { type: 'h', text: 'What Happens After "Go-Live"' },
-            { type: 'p', text: 'One of the biggest misconceptions in digital programmes is that transformation ends when the technology goes live. In reality, that\'s just the beginning.' },
-            { type: 'p', text: 'True transformation is a transition - it unfolds over time. It involves iteration, feedback, and ongoing support. Processes evolve. Needs shift. Teams grow into new ways of working. And maintaining momentum takes care and attention.' },
-            { type: 'p', text: 'The organisations that thrive in the long term are the ones that treat digital transformation not as a finite project, but as a continuous journey.' },
-            { type: 'h', text: 'Making Digital More Human' },
-            { type: 'p', text: 'Digital transformation isn\'t about replacing people with technology. It\'s about rethinking how people and technology can work better together.' },
-            { type: 'p', text: 'It\'s about making work more meaningful, not more mechanical. Making services more responsive, not more rigid. And ensuring that every tool, system, or platform introduced genuinely improves the lives of the people it touches.' },
-            { type: 'p', text: 'Because at the heart of every successful transformation is a simple principle: put people first, and the technology will follow.' }
-          ],
-          points: [
-            { h: 'The right foundation first', p: 'Digital initiatives often fail because tools get deployed before the underlying problem, and the people affected by it, are properly understood.' },
-            { h: 'People, then process, then technology', p: 'The most effective roadmap starts with today’s workflows and pain points, simplifies the process, and only then introduces the digital layer.' },
-            { h: 'Involve teams in the design', p: 'Employees who help design the systems they will use become champions of the change rather than resisting it.' },
-            { h: 'AI needs purpose, not just power', p: 'The question is not whether AI can be deployed, but whether it should be - with clear governance and trust built in.' },
-            { h: 'Transformation continues after launch', p: 'Real change happens gradually through iteration and feedback after go-live, not at the moment of launch itself.' }
-          ]
-        },
-        'pir-cfo': {
-          tag: 'Post-Implementation',
-          title: 'Post-Implementation Reviews: The CFO’s Reality Check',
-          date: '9 July 2025', read: '3 min read',
-          url: 'https://www.digiblu.com/post/post-implementation-reviews-the-cfo-s-reality-check',
-          full: [
-            { type: 'p', text: '"Just because the system went live doesn\'t mean the value did." - Every CFO, after month-end close with a new ERP' },
-            { type: 'p', text: 'Post-Implementation Reviews (PIRs) of system rollouts are not just important, they\'re hotter than a finance team in year-end close with broken Excel links. For CFOs navigating the wild world of digital transformation, PIRs are becoming the secret weapon to separate shiny PowerPoint decks from actual shareholder value.' },
-            { type: 'h', text: 'Why CFOs Are All Ears When It Comes to PIRs' },
-            { type: 'h', text: '1. Show Me the ROI (or at least don\'t hide it in a pivot table)' },
-            { type: 'p', text: 'You signed off a seven-figure digital transformation and someone promised it would "unlock value." Now it\'s time to check:' },
-            { type: 'p', text: 'Did we actually unlock value (e.g., automation, accuracy, reduced cost, real-time reporting) or just unlock new monthly subscription fees?' },
-            { type: 'p', text: 'Did someone bother baselining benefits pre-implementation? Or are we now comparing apples to… wishful thinking?' },
-            { type: 'p', text: 'Are the business case benefits real, or just "assumed savings" buried in a spreadsheet no one understands?' },
-            { type: 'h', text: '2. Risk, Controls, and the Sleep Test' },
-            { type: 'p', text: 'Nothing keeps a CFO up at night like an ERP that forgot to talk to the General Ledger.' },
-            { type: 'p', text: 'PIRs are where you find out if your shiny new system improved compliance (e.g. data integrity, audit readiness, and IFRS compliance) or introduced a few new audit risks "for flavour."' },
-            { type: 'p', text: 'Think of it as a financial version of CSI: Post-Go-Live.' },
-            { type: 'h', text: '3. Because "Go-Live" Is Not the Same as "Mission Accomplished"' },
-            { type: 'p', text: 'Sure, the system\'s live, but are people using it correctly, or still updating the old manual tracker "just in case"?' },
-            { type: 'p', text: 'PIRs help identify adoption gaps, training flops, and where that "streamlined workflow" is just a slower Excel with prettier buttons. All aiding in building that maturity roadmap.' },
-            { type: 'h', text: '4. For the Love of Governance' },
-            { type: 'p', text: 'Boards and audit committees want to know: "Where did our money go, and did it do what the PowerPoint said it would?"' },
-            { type: 'p', text: 'PIRs, help you show that finance is not only funding digital initiatives but also keeping them honest.' },
-            { type: 'p', text: 'It\'s the CFO\'s way of saying, "Trust, but verify, with charts."' },
-            { type: 'h', text: '5. CFOs Know Tech Is Easy, People Are Hard' },
-            { type: 'p', text: 'Spoiler alert: your system isn\'t the problem. Steve in Accounts Payable who still prints every invoice is.' },
-            { type: 'p', text: 'PIRs shine a light on people, process, and culture, because even the best tech can\'t help if your team is stuck in 1999.' },
-            { type: 'p', text: 'So, what questions do we think CFOs should be answering with PIRs' },
-            { type: 'p', text: 'ROI tracking - Let\'s see the money. And no funny business with \'intangible benefits\'.' },
-            { type: 'p', text: 'Control validation - Can I sleep through the next audit now?' },
-            { type: 'p', text: 'Reporting quality - Are numbers real-time or still brought to me by carrier pigeon?' },
-            { type: 'p', text: 'Process improvement - Are we saving time or just clicking more buttons?' },
-            { type: 'p', text: 'User adoption - Please tell me someone other than the project team is using this thing.' },
-            { type: 'p', text: 'Lessons learned - Great, now let\'s not step in the same hole twice?' },
-            { type: 'p', text: 'Often, when DigiBlu are called in to support PIRs, things have already gone south and need our help to get back on track. Some main culprits that contribute to the chaos?' },
-            { type: 'p', text: 'A lack of accurately baselining the current state metrics, leaving nothing solid to compare against.' },
-            { type: 'p', text: 'Insufficient consultation and testing with end-users.' },
-            { type: 'p', text: 'Technology-led implementation instead of business-led transformation.' },
-            { type: 'p', text: 'Ambiguous business requirements and scope creep.' },
-            { type: 'p', text: 'Weak collaboration with the vendor\'s implementation team.' },
-            { type: 'p', text: 'And most often, an old-school lift-and-shift mentality, where the new system\'s modern functionality is ignored in favour of force-fitting the old as-is process.' },
-            { type: 'p', text: 'The result? An expensive, all-singing, all-dancing system that\'s been knitted together by a watered-down implementation team and a flimsy plan. Cue the disappointing ROI and a finance function wondering what exactly just happened. This is where we roll up our sleeves…' },
-            { type: 'p', text: 'In summary, PIRs are no longer just operational hygiene, but where the rubber meets the balance sheet. They help CFOs figure out whether the transformation delivered transformation or just some well-documented chaos.' }
-          ],
-          points: [
-            { h: 'Validating the return', p: 'Success is not the go-live date. CFOs need to verify that the promised automation gains and cost reductions actually materialised.' },
-            { h: 'Strengthening controls and compliance', p: 'A proper review confirms the new system genuinely improves data integrity and audit readiness, rather than introducing fresh risk alongside the upgrade.' },
-            { h: 'Spotting adoption gaps', p: 'The technical launch is only half the job - reviews expose whether teams are actually using the new process or quietly reverting to the old one.' },
-            { h: 'Board-level accountability', p: 'A post-implementation review shows the board that spend is being monitored for value delivered, not just approved and forgotten.' },
-            { h: 'People and process still matter', p: 'Even good technology fails where culture and working practices have not moved with it - that gap is exactly what these reviews are built to catch.' }
-          ]
-        },
-        'no-code-low-code': {
-          tag: 'Digital Solutions',
-          title: 'No-Code vs. Low-Code vs. Custom Coding: Choosing the Right Solution for Your Business',
-          date: '4 April 2025', read: '3 min read',
-          url: 'https://www.digiblu.com/post/no-code-vs-low-code-vs-custom-coding-choosing-the-right-solution-for-your-business',
-          full: [
-            { type: 'p', text: 'Businesses nowadays are spoilt for choice when it comes to innovative new technologies. We\'re asked every other week to recommend software solutions on the no-code, low-code, and custom code spectrum – each offering unique advantages depending on your specific business needs.' },
-            { type: 'p', text: 'This blog explores the benefits and limitations of no-code, low-code, and custom coding, outlining when each is most appropriate and helping you to navigate this difficult decision.' },
-            { type: 'h', text: 'At a glance' },
-            { type: 'p', text: 'No-Code - Users: Business & Non-Technical. Coding requirements: None. Application complexity: Low. Customisation: Low. Main benefit: Ease of use & time to deploy. Time to deploy: Days.' },
-            { type: 'p', text: 'Low-Code - Users: Developers & tech-savvy. Coding requirements: Reduced (full code is usually possible). Application complexity: High. Customisation: High. Main benefit: Increased productivity. Time to deploy: Weeks.' },
-            { type: 'p', text: 'Custom Code - Users: Trained developers. Coding requirements: High. Application complexity: Very high. Customisation: Very high. Main benefit: Full control. Time to deploy: Weeks/months.' },
-            { type: 'h', text: 'No-Code: Speed and Simplicity' },
-            { type: 'h', text: 'What is No-Code?' },
-            { type: 'p', text: 'No-code platforms allow non-technical users to create applications using drag-and-drop interfaces without writing any code. They provide pre-built templates and an easy-to-use interface, enabling rapid development.' },
-            { type: 'h', text: 'Benefits of No-Code:' },
-            { type: 'p', text: 'Rapid Deployment: Launch apps in days, not months, with pre-built templates and functionality.' },
-            { type: 'p', text: 'Cost Savings: Skip hiring expensive developers and leverage in-house teams to build software.' },
-            { type: 'p', text: 'Empowerment: Business teams can innovate independently of IT, fostering a culture of agility.' },
-            { type: 'h', text: 'Drawbacks of No-Code:' },
-            { type: 'p', text: 'Limited Customisation: No-code platforms can be restrictive, making it difficult to meet complex needs.' },
-            { type: 'p', text: 'Scalability Challenges: These solutions are best suited for simple applications and may struggle with larger user bases.' },
-            { type: 'p', text: 'Vendor Lock-In: No-code platforms may tie you to their ecosystem, making future migrations difficult.' },
-            { type: 'h', text: 'Best Use Cases for No-Code:' },
-            { type: 'p', text: 'Internal tools like HR systems, basic customer service portals or task management apps.' },
-            { type: 'p', text: 'MVPs (Minimum Viable Products) to quickly test new business ideas.' },
-            { type: 'p', text: 'Example: Capturing project data on Monday.com to collaborate with your team.' },
-            { type: 'h', text: 'Low-Code: Agility with Flexibility' },
-            { type: 'h', text: 'What is Low-Code?' },
-            { type: 'p', text: 'Low-code platforms combine visual development with manual coding, allowing for faster development while retaining customisation options.' },
-            { type: 'h', text: 'Benefits of Low-Code:' },
-            { type: 'p', text: 'Faster Development: Pre-built components allow for quick development, while manual coding enables customisation.' },
-            { type: 'p', text: 'Cost-Effective: Low-code reduces the need for large development teams, offering more flexibility than no-code.' },
-            { type: 'p', text: 'Better Integration: Low-code platforms often provide stronger integration capabilities, allowing businesses to connect with legacy systems or third-party apps.' },
-            { type: 'h', text: 'Drawbacks of Low-Code:' },
-            { type: 'p', text: 'Limited for Complex Solutions: Low-code platforms can handle more complexity than no-code but may still fall short for mission-critical applications.' },
-            { type: 'p', text: 'Requires Technical Knowledge: While less technical than custom coding, some coding knowledge is still required.' },
-            { type: 'h', text: 'Best Use Cases for Low-Code:' },
-            { type: 'p', text: 'Automating workflows with custom logic.' },
-            { type: 'p', text: 'Developing customer-facing apps with moderate complexity.' },
-            { type: 'p', text: 'Example: Using an AI Agent software to automate customer interactions, using low-code integration capabilities to look up and update data in other systems.' },
-            { type: 'h', text: 'Custom Coding: Full Control for Complex Needs' },
-            { type: 'h', text: 'What is Custom Coding?' },
-            { type: 'p', text: 'Custom coding involves building software from scratch using programming languages like Python, Java, or JavaScript, offering complete control and customisation.' },
-            { type: 'h', text: 'Benefits of Custom Coding:' },
-            { type: 'p', text: 'Unlimited Customisation: Custom coding allows for the creation of highly specialised solutions tailored to specific needs.' },
-            { type: 'p', text: 'Scalability: It\'s ideal for large-scale applications that require high performance and flexibility.' },
-            { type: 'p', text: 'Data Security: Businesses have full control over data security and privacy with custom-built solutions.' },
-            { type: 'h', text: 'Drawbacks of Custom Coding:' },
-            { type: 'p', text: 'Time-Intensive: Custom development takes longer, delaying the time to market.' },
-            { type: 'p', text: 'High Cost: Hiring skilled developers and maintaining custom software is expensive.' },
-            { type: 'p', text: 'Technical Debt: Over time, maintaining and updating custom code can become challenging if not managed properly.' },
-            { type: 'h', text: 'Best Use Cases for Custom Coding:' },
-            { type: 'p', text: 'Large, complex systems that are central to business operations, such as e-commerce platforms or data analytics systems.' },
-            { type: 'p', text: 'High-security applications in industries like finance or healthcare.' },
-            { type: 'p', text: 'Example: Building a custom portal to provide multiple stakeholders with bespoke views and functionality.' },
-            { type: 'h', text: 'Making the Right Choice for Your Business' },
-            { type: 'p', text: 'Each approach - no-code, low-code, and custom coding - serves a unique purpose depending on your goals, resources, and the complexity of your requirements.' },
-            { type: 'p', text: 'If speed and simplicity are top priorities, no-code solutions are perfect for quick wins and small-scale internal tools.' },
-            { type: 'p', text: 'If you need moderate complexity with flexibility, low-code strikes a balance, offering fast development with room for customisation.' },
-            { type: 'p', text: 'For businesses with intricate, mission-critical needs, custom coding offers unparalleled control and scalability.' },
-            { type: 'p', text: 'In many cases, the best solution may be a combination of these tools. For example, using Jotform to build forms that capture data, and adding an automation wrapper (Function App) to extend the solution functionality.' },
-            { type: 'p', text: 'At DigiBlu, we specialise in guiding companies through the digital transformation process, ensuring that the technology aligns with your business objectives. Whether you\'re looking to build a simple internal tool, a customer-facing app, or a complex enterprise solution, we\'re here to help you choose the right path.' },
-            { type: 'p', text: 'Get in touch with us today to explore how we can support your software development journey, ensuring a seamless and strategic transition to the digital age.' }
-          ],
-          points: [
-            { h: 'No-code: speed over control', p: 'Drag-and-drop platforms get simple internal tools live within days, but that speed trades away customisation for complex needs.' },
-            { h: 'Low-code: the middle ground', p: 'Visual builders paired with some manual coding let teams move fast while still customising for moderate complexity.' },
-            { h: 'Custom code: for what matters most', p: 'Mission-critical systems needing scale, security or deep functionality still call for full custom development - at a real cost in time and skill.' },
-            { h: 'Watch for vendor lock-in', p: 'No-code platforms can make future migration difficult or expensive - worth weighing against the short-term speed.' },
-            { h: 'Hybrid is often the answer', p: 'Combining a no-code form builder with an automation layer, for example, is frequently the most pragmatic path to both speed and flexibility.' }
-          ]
-        }
-      };
-
-      var overlay = document.getElementById('blogDetailModal');
-      if (!overlay) return;
-      var modal = createModalController(overlay);
-
-      var artEl = document.getElementById('blogDetailArt');
-      var tagEl = document.getElementById('blogDetailTag');
-      var titleEl = document.getElementById('blogDetailTitle');
-      var metaEl = document.getElementById('blogDetailMeta');
-      var listEl = document.getElementById('blogDetailList');
-      var fullEl = document.getElementById('blogDetailFull');
-      var expandBtn = document.getElementById('blogDetailExpand');
-      var expandLabel = document.getElementById('blogDetailExpandLabel');
-
-      // Every post opens on the condensed key-point summary; the button
-      // swaps in the full article in place, so switching posts must always
-      // reset back here.
-      // Toggling via .style.display rather than the `hidden` attribute:
-      // .service-modal-list has its own `display: flex` rule, which — at
-      // equal specificity to the UA stylesheet's `[hidden] { display: none }`
-      // and cascading after it — wins, so `listEl.hidden = true` set the DOM
-      // property but left the summary visibly flex-displayed underneath the
-      // expanded article. Inline style always beats a class rule, so this
-      // sidesteps the specificity tie entirely. Tracked with an explicit
-      // flag rather than re-reading style.display back, since an empty
-      // string (the "unset" state) is falsy and indistinguishable from a
-      // deliberate "not none" without one.
-      var isExpanded = false;
-
-      function showSummary() {
-        listEl.style.display = '';
-        fullEl.style.display = 'none';
-        expandLabel.textContent = 'Read full article';
-        isExpanded = false;
-      }
-
-      function showFull() {
-        listEl.style.display = 'none';
-        fullEl.style.display = '';
-        expandLabel.textContent = 'Show key points';
-        isExpanded = true;
-      }
-
-      function populate(key) {
-        var post = BLOG_POSTS[key];
-        if (!post) return false;
-
-        // Reuse the grid card's own art panel rather than re-deriving which
-        // gradient/icon this post uses, so the two can never disagree.
-        artEl.innerHTML = '';
-        var cardArt = document.querySelector('.blog-card[data-post="' + key + '"] .blog-art');
-        if (cardArt) artEl.appendChild(cardArt.cloneNode(true));
-
-        tagEl.textContent = post.tag;
-        titleEl.textContent = post.title;
-
-        metaEl.innerHTML = '';
-        var dateSpan = document.createElement('span');
-        dateSpan.textContent = post.date;
-        var dot = document.createElement('span');
-        dot.className = 'dot';
-        var readSpan = document.createElement('span');
-        readSpan.textContent = post.read;
-        metaEl.appendChild(dateSpan);
-        metaEl.appendChild(dot);
-        metaEl.appendChild(readSpan);
-
-        listEl.innerHTML = '';
-        post.points.forEach(function (item) {
-          var row = document.createElement('div');
-          row.className = 'service-modal-item';
-          var h = document.createElement('h3');
-          h.textContent = item.h;
-          var p = document.createElement('p');
-          p.textContent = item.p;
-          row.appendChild(h);
-          row.appendChild(p);
-          listEl.appendChild(row);
-        });
-
-        fullEl.innerHTML = '';
-        (post.full || []).forEach(function (block) {
-          var el = document.createElement(block.type === 'h' ? 'h3' : 'p');
-          el.textContent = block.text;
-          fullEl.appendChild(el);
-        });
-
-        showSummary();
-        return true;
-      }
-
-      expandBtn.addEventListener('click', function () {
-        if (isExpanded) { showSummary(); } else { showFull(); }
-      });
-
-      // ---------- Reader sidebar ----------
-      // Every article is listed down the left of the dialog and the selected
-      // one reads on the right (see the matching note in the case-study
-      // IIFE); the separate index popup this replaced is gone. Lives here
-      // because it needs populate() and the modal above. The list is driven
-      // off the cards, not Object.keys(BLOG_POSTS), so it follows grid
-      // order, and it lists every post regardless of the topic filter: the
-      // sidebar is the whole library, and filtering it would leave a post
-      // that a card just opened missing from its own list.
-      var panel = overlay.querySelector('.modal-panel');
-      var sideEl = overlay.querySelector('.reader-side');
-      var bodyEl = overlay.querySelector('.service-modal-body');
-      var indexListEl = document.getElementById('blogIndexList');
-      var countEl = document.getElementById('blogReaderCount');
-      var backBtn = document.getElementById('blogDetailBack');
-      var currentKey = null;
-
-      function isModified(e) {
-        return e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1;
-      }
-
-      // Same scroll-only-if-hidden rule as the case-study sidebar.
-      function markActive(key) {
-        if (!indexListEl) return;
-        var activeRow = null;
-        [].forEach.call(indexListEl.querySelectorAll('.case-index-item'), function (row) {
-          var on = row.getAttribute('data-post') === key;
-          row.classList.toggle('is-active', on);
-          if (on) { row.setAttribute('aria-current', 'true'); activeRow = row; }
-          else row.removeAttribute('aria-current');
-        });
-        if (activeRow && sideEl) {
-          var top = activeRow.offsetTop;
-          var bottom = top + activeRow.offsetHeight;
-          if (top < sideEl.scrollTop) sideEl.scrollTop = top - 16;
-          else if (bottom > sideEl.scrollTop + sideEl.clientHeight) sideEl.scrollTop = bottom - sideEl.clientHeight + 16;
-        }
-      }
-
-      function select(key) {
-        if (!populate(key)) return false;
-        currentKey = key;
-        markActive(key);
-        if (bodyEl) bodyEl.scrollTop = 0;
-        return true;
-      }
-
-      function openPost(key, opener, listFirst) {
-        if (!select(key)) return;
-        panel.classList.toggle('show-list', !!listFirst);
-        modal.open(opener);
-      }
-
-      function renderIndex() {
-        if (!indexListEl) return;
-        indexListEl.innerHTML = '';
-        var cards = document.querySelectorAll('.blog-card');
-        if (countEl) countEl.textContent = 'All articles · ' + cards.length;
-
-        [].forEach.call(cards, function (card) {
-          var postKey = card.getAttribute('data-post');
-          var post = BLOG_POSTS[postKey];
-          if (!post) return;
-
-          var row = document.createElement('a');
-          row.href = 'blog/' + postKey + '.html';
-          row.className = 'case-index-item';
-          row.setAttribute('data-post', postKey);
-
-          var text = document.createElement('span');
-          var meta = document.createElement('span');
-          meta.className = 'case-index-client';
-          meta.textContent = post.tag + ' · ' + post.date + ' · ' + post.read;
-          meta.style.display = 'block';
-          var title = document.createElement('span');
-          title.className = 'case-index-title';
-          title.textContent = post.title;
-          title.style.display = 'block';
-          text.appendChild(meta);
-          text.appendChild(title);
-
-          var go = document.createElement('span');
-          go.className = 'case-index-go';
-          go.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-
-          row.appendChild(text);
-          row.appendChild(go);
-          row.addEventListener('click', function (e) {
-            if (isModified(e)) return;
-            e.preventDefault();
-            select(postKey);
-            panel.classList.remove('show-list');
-          });
-          indexListEl.appendChild(row);
-        });
-      }
-
-      if (backBtn) {
-        backBtn.addEventListener('click', function () {
-          panel.classList.add('show-list');
-          var row = indexListEl.querySelector('.case-index-item.is-active') || indexListEl.querySelector('.case-index-item');
-          if (row) row.focus();
-        });
-      }
-
-      // "View all" opens the reader on whichever post was last read (the
-      // first card, before any has been), with the list up front on mobile.
-      var viewAllBtn = document.getElementById('blogViewAll');
-      if (viewAllBtn) {
-        viewAllBtn.addEventListener('click', function () {
-          var first = document.querySelector('.blog-card');
-          openPost(currentKey || (first && first.getAttribute('data-post')), viewAllBtn, true);
-        });
-      }
-
-      document.querySelectorAll('.blog-card').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
-          if (isModified(e)) return;
-          e.preventDefault();
-          openPost(btn.getAttribute('data-post'), e.currentTarget, false);
-        });
-      });
-
-      renderIndex();
-    })();
-
-    (function () {
       // What each mark means, in general terms — DigiBlu holding the
       // certification is the claim already made by the strip itself; these
       // are standard descriptions of the scheme, not DigiBlu-specific claims.
@@ -5961,33 +5019,12 @@
         );
       }
 
-      // Real UK business-hours slots, 08:00 to 18:00. The label stays a plain
-      // "UK time" rather than naming GMT or BST: the UK switches between the
-      // two each year, so an abbreviation is only ever right for half of it,
-      // and "UK time" is unambiguous to the audience without needing to.
-      // The slot times themselves never move - they are UK *local* business
-      // hours, and only the UTC offset shifts with the clocks.
-      (function () {
-        var sel = document.getElementById('cf-time');
-        if (!sel) return;
-        var frag = document.createDocumentFragment();
-        for (var hStart = 8; hStart < 18; hStart++) {
-          var label = String(hStart).padStart(2, '0') + ':00 - '
-                    + String(hStart + 1).padStart(2, '0') + ':00';
-          var opt = document.createElement('option');
-          opt.value = label;
-          opt.textContent = label;
-          frag.appendChild(opt);
-        }
-        // "Flexible" is authored in the markup and stays the default, so the
-        // field is never an implicit commitment to a slot nobody picked.
-        sel.appendChild(frag);
-      })();
-
+      // Two steps. "Schedule a time" was removed on request, and its consent
+      // checkbox moved onto step 2. totalSteps reads .form-step off the DOM,
+      // so nothing here hardcodes the count.
       var STEP_COPY = {
         1: { title: 'Your details', sub: 'Let us know who we will be speaking with.' },
-        2: { title: 'Your enquiry', sub: 'Tell us a little about what you need.' },
-        3: { title: 'Schedule a time', sub: 'Pick what works best and we will confirm by email.' }
+        2: { title: 'Your enquiry', sub: 'Tell us a little about what you need.' }
       };
 
       function showStep(n) {

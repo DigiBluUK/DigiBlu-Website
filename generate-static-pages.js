@@ -1,8 +1,8 @@
-// Generates real, pre-rendered static pages for every case study, blog post
+// Generates real, pre-rendered static pages for every case study
 // and legal document, plus sitemap.xml/robots.txt. See CLAUDE.md ("Static
 // pages" section) for why this exists: the homepage only ever renders this
 // content into modals on click, which caps how well any of it can be
-// individually indexed. Re-run this whenever CASE_STUDIES/BLOG_POSTS/
+// individually indexed. Re-run this whenever CASE_STUDIES/
 // LEGAL_DETAILS change in index.html, or the generated pages drift out of
 // sync with the modals.
 //
@@ -60,28 +60,12 @@ const CASE_ART = evalBlock(
   extractBlock('var CASE_ART = {', '\n      // Real client engagements'),
   'CASE_ART'
 );
-const BLOG_POSTS = evalBlock(
-  extractBlock('var BLOG_POSTS = {', "\n      var overlay = document.getElementById('blogDetailModal');"),
-  'BLOG_POSTS'
-);
 const LEGAL_DETAILS = evalBlock(
   extractBlock('var LEGAL_DETAILS = {', "\n      var overlay = document.getElementById('legalModal');"),
   'LEGAL_DETAILS'
 );
 
-// Each post's art panel (gradient class + category icon) is authored in the
-// homepage's blog card markup, not in BLOG_POSTS, so it is lifted straight
-// from there rather than re-derived — the blog detail modal clones the same
-// node for the same reason, so card, modal and static page cannot disagree.
-const BLOG_ART = (function () {
-  const art = {};
-  const cardRe = /<a href="blog\/([^"]+)\.html" class="blog-card"[^>]*>\s*(<div class="blog-art[\s\S]*?<\/div>)/g;
-  let m;
-  while ((m = cardRe.exec(html))) art[m[1]] = m[2];
-  return art;
-})();
-
-console.log('Extracted', CASE_STUDIES.length, 'case studies,', Object.keys(BLOG_POSTS).length, 'blog posts,', Object.keys(LEGAL_DETAILS).length, 'legal docs,', Object.keys(BLOG_ART).length, 'blog art panels');
+console.log('Extracted', CASE_STUDIES.length, 'case studies,', Object.keys(LEGAL_DETAILS).length, 'legal docs');
 
 // Real digiblu.com URL slugs for legal docs (from LEGAL_DETAILS[key].url),
 // nicer than the terse internal keys ('terms', 'privacy', etc.)
@@ -179,7 +163,6 @@ function pageHeader() {
       <li><a href="../index.html#services">Services</a></li>
       <li><a href="../index.html#case-studies">Case Studies</a></li>
       <li><a href="../index.html#team">Our Experts</a></li>
-      <li><a href="../index.html#blog">Blogs</a></li>
     </ul>
 
     <div class="nav-right">
@@ -210,8 +193,7 @@ function pageHeader() {
         <li><a href="../index.html#services">Services</a></li>
         <li><a href="../index.html#case-studies">Case Studies</a></li>
         <li><a href="../index.html#team">Our Experts</a></li>
-        <li><a href="../index.html#blog">Blogs</a></li>
-      </ul>
+        </ul>
       <!-- Mirrors the homepage: below 900px only the theme toggle moves out
            of the bar and into the menu (the CTA stays in the bar). No id on
            this toggle — #themeToggle must stay unique; the script binds by
@@ -268,8 +250,7 @@ function pageFooter() {
             <li><a href="../index.html#hero-content">Home</a></li>
             <li><a href="../index.html#about">About Us</a></li>
             <li><a href="../index.html#case-studies">Case Studies</a></li>
-            <li><a href="../index.html#blog">Blogs</a></li>
-            <li><a href="../index.html#contact">Contact Us</a></li>
+                  <li><a href="../index.html#contact">Contact Us</a></li>
           </ul>
         </div>
 
@@ -415,50 +396,6 @@ ${quote}    </div>
 ` + pageFooter() + pageScripts();
 }
 
-// ---------- Blog posts ----------
-
-function blogDescription(p) {
-  const firstPoint = p.points && p.points[0] ? p.points[0].p : '';
-  return truncate(firstPoint, 155);
-}
-
-function renderBlogPost(key, p) {
-  const fullBlocks = (p.full || []).map(b =>
-    b.type === 'h' ? `      <h3>${escapeHtml(b.text)}</h3>` : `      <p>${escapeHtml(b.text)}</p>`
-  ).join('\n');
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: p.title,
-    description: blogDescription(p),
-    datePublished: p.date,
-    url: `${SITE_ORIGIN}/blog/${key}.html`,
-    publisher: { '@type': 'Organization', name: 'DigiBlu', logo: { '@type': 'ImageObject', url: `${SITE_ORIGIN}/assets/logo.png` } },
-    mainEntityOfPage: `${SITE_ORIGIN}/blog/${key}.html`
-  };
-
-  return pageHead({
-    title: `${p.title} | DigiBlu Blog`,
-    description: blogDescription(p),
-    canonicalPath: `blog/${key}.html`,
-    ogType: 'article'
-  }) + `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>\n` + pageHeader() + `
-  <main>
-    <div class="detail-page" id="detail-content">
-${backLink()}
-      <div class="blog-modal-art" aria-hidden="true">${BLOG_ART[key] || ''}</div>
-      <span class="pill service-modal-eyebrow">${escapeHtml(p.tag)}</span>
-      <h1>${escapeHtml(p.title)}</h1>
-      <div class="blog-meta"><span>${escapeHtml(p.date)}</span><span class="dot"></span><span>${escapeHtml(p.read)}</span></div>
-      <div class="blog-full-text">
-${fullBlocks}
-      </div>
-    </div>
-  </main>
-` + pageFooter() + pageScripts();
-}
-
 // ---------- Legal docs ----------
 
 function legalDescription(d) {
@@ -515,14 +452,6 @@ CASE_STUDIES.forEach((c, i) => {
   const out = renderCaseStudy(c, i);
   fs.writeFileSync(path.join(caseDir, c.key + '.html'), out, 'utf8');
   written.push('case-studies/' + c.key + '.html');
-});
-
-const blogDir = path.join(ROOT, 'blog');
-ensureDir(blogDir);
-Object.keys(BLOG_POSTS).forEach(key => {
-  const out = renderBlogPost(key, BLOG_POSTS[key]);
-  fs.writeFileSync(path.join(blogDir, key + '.html'), out, 'utf8');
-  written.push('blog/' + key + '.html');
 });
 
 const legalDir = path.join(ROOT, 'legal');
