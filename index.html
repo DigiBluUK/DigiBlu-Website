@@ -78,7 +78,7 @@
      fourteen logos rendered as nothing - which reads as the carousel being
      broken rather than as an obviously old page. Deriving the value from the
      file contents means it changes exactly when the CSS does. -->
-<link rel="stylesheet" href="assets/site.css?v=fd291a3904">
+<link rel="stylesheet" href="assets/site.css?v=f4b7c118e4">
 </head>
 <body>
   <a class="skip-link" href="#hero-content">Skip to content</a>
@@ -285,64 +285,83 @@
   </section>
 
   <section class="about" id="about">
-    <span class="pill">About Us</span>
-    <h2>Who we are.</h2>
+    <!-- Built to the reference layout supplied: a small label at the far left,
+         the lead statement set large to its right with the opening phrase at
+         full ink and the rest stepped back, and the values beneath as a row of
+         cards. The reference's cards carry invented headline figures; ours
+         carry the five real values instead, because the only verifiable number
+         DigiBlu publishes is the NPS and the site's rule is no fabricated
+         content.
 
-    <!-- Layout and copy follow the mockup attached to feedback #38: narrative
-         on the left, a numbered "Our values" list on the right. The Vision /
-         Values statement panels and the two stat cards it replaces are gone;
-         the vision now reads as the third paragraph rather than a labelled
-         block. -->
+         The statement is the <h2>: the reference has no separate heading above
+         it, and leaving both would stack two competing headlines. -->
     <div class="about-top">
+      <div class="about-label">
+        <span class="pill">About Us</span>
+      </div>
+
       <div class="about-head">
-        <span class="about-rule" aria-hidden="true"></span>
-        <p class="about-lede">DigiBlu brings together experienced practitioners with client-side, technology, and consultancy backgrounds. We act as <strong>pragmatic partners, focused on getting to value quickly</strong> rather than getting lost in process.</p>
+        <h2 class="about-statement">At DigiBlu, <span class="about-statement-soft">we bring together experienced practitioners with client-side, technology, and consultancy backgrounds. We act as pragmatic partners, focused on getting to value quickly rather than getting lost in process.</span></h2>
         <p class="about-lede">Although we have preferred technology solutions, we remain technology-agnostic, utilising leading AI and automation platforms based on the best fit for each client.</p>
         <p class="about-lede">Our vision is to be one of the foremost independent AI-enabled digital transformation businesses in the UK, turning today's competitive, regulatory, cost and technology pressures into a lasting advantage.</p>
       </div>
-
-      <div class="about-values">
-        <h3 class="about-values-title">Our values</h3>
-        <ol class="value-list">
-          <li class="value-item">
-            <span class="value-num">01</span>
-            <div class="value-text">
-              <h4>Equitable partnerships</h4>
-              <p>We engage commercially with our clients transparently and on the basis of shared success.</p>
-            </div>
-          </li>
-          <li class="value-item">
-            <span class="value-num">02</span>
-            <div class="value-text">
-              <h4>Innovation with purpose</h4>
-              <p>We embrace new ideas and challenge convention to solve real problems and drive meaningful impact.</p>
-            </div>
-          </li>
-          <li class="value-item">
-            <span class="value-num">03</span>
-            <div class="value-text">
-              <h4>Technology on merit</h4>
-              <p>We choose the right technology for the problem, not preferred vendors.</p>
-            </div>
-          </li>
-          <li class="value-item">
-            <span class="value-num">04</span>
-            <div class="value-text">
-              <h4>Lasting capability</h4>
-              <p>We empower our clients with the skills, knowledge and ways of working to succeed long after we're gone.</p>
-            </div>
-          </li>
-          <li class="value-item">
-            <span class="value-num">05</span>
-            <div class="value-text">
-              <h4>Trust and Likeability</h4>
-              <p>Our client NPS is +85: our clients like and trust us.</p>
-            </div>
-          </li>
-        </ol>
-      </div>
     </div>
 
+    <!-- Values as a numeral accordion, per the second reference supplied: the
+         open value shows its title and description beside a full-ink numeral,
+         the rest collapse to a muted numeral under a hairline rule. Click to
+         open rather than hover, so it works on touch and from the keyboard;
+         hover only tints, which is the state the reference shows on item 4.
+         Below 761px it is not an accordion at all - every value is shown in
+         full, because a horizontal accordion has nowhere to expand on a
+         phone. -->
+    <ol class="value-list">
+        <li class="value-item is-open">
+          <button type="button" class="value-open" aria-expanded="true">
+            <span class="value-num">01</span>
+            <span class="value-text">
+              <span class="value-title">Equitable partnerships</span>
+              <span class="value-desc">We engage commercially with our clients transparently and on the basis of shared success.</span>
+            </span>
+          </button>
+        </li>
+        <li class="value-item">
+          <button type="button" class="value-open" aria-expanded="false">
+            <span class="value-num">02</span>
+            <span class="value-text">
+              <span class="value-title">Innovation with purpose</span>
+              <span class="value-desc">We embrace new ideas and challenge convention to solve real problems and drive meaningful impact.</span>
+            </span>
+          </button>
+        </li>
+        <li class="value-item">
+          <button type="button" class="value-open" aria-expanded="false">
+            <span class="value-num">03</span>
+            <span class="value-text">
+              <span class="value-title">Technology on merit</span>
+              <span class="value-desc">We choose the right technology for the problem, not preferred vendors.</span>
+            </span>
+          </button>
+        </li>
+        <li class="value-item">
+          <button type="button" class="value-open" aria-expanded="false">
+            <span class="value-num">04</span>
+            <span class="value-text">
+              <span class="value-title">Lasting capability</span>
+              <span class="value-desc">We empower our clients with the skills, knowledge and ways of working to succeed long after we're gone.</span>
+            </span>
+          </button>
+        </li>
+        <li class="value-item">
+          <button type="button" class="value-open" aria-expanded="false">
+            <span class="value-num">05</span>
+            <span class="value-text">
+              <span class="value-title">Trust and Likeability</span>
+              <span class="value-desc">Our client NPS is +85: our clients like and trust us.</span>
+            </span>
+          </button>
+        </li>
+    </ol>
   </section>
 
   <section class="services" id="services">
@@ -940,6 +959,32 @@
   </div>
 
   <script>
+    (function () {
+      // Values accordion. One open at a time, the first open on load, so the
+      // section never reads as five bare numerals. Click rather than hover:
+      // hover-to-open has no touch equivalent and cannot be reached from the
+      // keyboard, so hover is left as a tint only (see the CSS).
+      var items = document.querySelectorAll('.value-item');
+      if (!items.length) return;
+
+      items.forEach(function (item) {
+        var btn = item.querySelector('.value-open');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          // Clicking the open one is a no-op rather than a collapse: with
+          // nothing open the row loses all its copy, which is worse than
+          // simply staying put.
+          if (item.classList.contains('is-open')) return;
+          items.forEach(function (other) {
+            var on = other === item;
+            other.classList.toggle('is-open', on);
+            var b = other.querySelector('.value-open');
+            if (b) b.setAttribute('aria-expanded', String(on));
+          });
+        });
+      });
+    })();
+
     (function () {
       var slices = document.querySelectorAll('.team-slice');
       if (!slices.length) return;
