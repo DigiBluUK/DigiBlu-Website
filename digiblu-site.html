@@ -813,7 +813,7 @@
     transform-box: fill-box;
     transform-origin: 50% 50%;
     animation: geo-pulse 6s ease-in-out infinite;
-    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), fill 0.55s ease;
     fill-opacity: 0.34;
   }
 
@@ -836,6 +836,25 @@
   @keyframes geo-pulse-mark {
     0%, 100% { scale: 0.95; }
     50%      { scale: 1.06; }
+  }
+
+  /* The mark picks up brand blue: on a pointer device while the figure is
+     hovered, and on touch while it is the thing on screen (.is-lit, set by an
+     observer - see the geo IIFE). One colour rule serves both, so the two
+     paths cannot drift apart.
+
+     Hovering anywhere on the FIGURE lights it, not only the letterforms
+     themselves: the strokes are one dot wide, and asking someone to find them
+     with the cursor would read as the effect being broken rather than as
+     precision.
+
+     Only fill changes - the mark keeps its size, so the lattice never shifts.
+     The .mk dots override the svg's own fill="currentColor" presentation
+     attribute, which CSS outranks. */
+  .geo-figure.is-lit .geo-flow circle.mk { fill: var(--blue); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .geo-figure:hover .geo-flow circle.mk { fill: var(--blue); }
   }
 
   /* Twelve delay buckets, assigned by position when the lattice is generated,
@@ -4541,12 +4560,33 @@
     })();
 
     (function () {
-      // Dashes curl around the cursor as it crosses the figure, then ease back.
+      // Touch has no hover, so the mark lights while the figure is the thing on
+      // screen instead - scrolling to it turns it blue, scrolling away returns
+      // it. Deliberately not one-shot: a second pass down the page should
+      // behave the same as the first, and a mark stuck blue from a previous
+      // visit reads as a colour choice rather than a response.
       //
-      // Written to the `transform` property, while the idle sway animates the
-      // `rotate` property. The two compose, so the pointer response adds to
-      // the sway instead of being overridden by it - a running CSS animation
-      // beats an inline style on the same property, so sharing one would have
+      // Skipped entirely where hover works, because the CSS already handles
+      // that case and two mechanisms writing the same state would fight.
+      var fig = document.querySelector('.geo-figure');
+      if (!fig || !window.matchMedia || !('IntersectionObserver' in window)) return;
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          fig.classList.toggle('is-lit', e.isIntersecting);
+        });
+      }, { threshold: 0.55 });
+      io.observe(fig);
+    })();
+
+    (function () {
+      // Dots swell around the cursor as it crosses the figure, then ease back.
+      //
+      // Written to the `transform` property, while the idle pulse animates the
+      // `scale` property. The two compose, so the pointer response adds to the
+      // pulse instead of being overridden by it - a running CSS animation beats
+      // an inline style on the same property, so sharing one would have
       // silently done nothing.
       var fig = document.querySelector('.geo-figure');
       if (!fig || !window.matchMedia) return;

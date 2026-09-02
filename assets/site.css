@@ -811,7 +811,7 @@
     transform-box: fill-box;
     transform-origin: 50% 50%;
     animation: geo-pulse 6s ease-in-out infinite;
-    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), fill 0.55s ease;
     fill-opacity: 0.34;
   }
 
@@ -834,6 +834,25 @@
   @keyframes geo-pulse-mark {
     0%, 100% { scale: 0.95; }
     50%      { scale: 1.06; }
+  }
+
+  /* The mark picks up brand blue: on a pointer device while the figure is
+     hovered, and on touch while it is the thing on screen (.is-lit, set by an
+     observer - see the geo IIFE). One colour rule serves both, so the two
+     paths cannot drift apart.
+
+     Hovering anywhere on the FIGURE lights it, not only the letterforms
+     themselves: the strokes are one dot wide, and asking someone to find them
+     with the cursor would read as the effect being broken rather than as
+     precision.
+
+     Only fill changes - the mark keeps its size, so the lattice never shifts.
+     The .mk dots override the svg's own fill="currentColor" presentation
+     attribute, which CSS outranks. */
+  .geo-figure.is-lit .geo-flow circle.mk { fill: var(--blue); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .geo-figure:hover .geo-flow circle.mk { fill: var(--blue); }
   }
 
   /* Twelve delay buckets, assigned by position when the lattice is generated,
