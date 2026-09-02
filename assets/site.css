@@ -744,9 +744,10 @@
     .accred-viewport { -webkit-mask-image: none; mask-image: none; }
   }
 
-  /* ---------- How we work ----------
-     Eyebrow, a large statement, then the stages in a row joined by arrows,
-     per the reference supplied. */
+  /* ---------- About Us, alternative arrangement ----------
+     Eyebrow, a large statement, then the values in a numbered row, per the
+     reference supplied. Carries the same content as #about above; both are on
+     the page while the arrangement is being chosen. */
   .process {
     max-width: var(--maxw);
     margin: 0 auto;
@@ -764,8 +765,20 @@
     font-weight: 400;
     letter-spacing: -0.5px;
     color: var(--text);
-    margin-bottom: 58px;
+    margin-bottom: 22px;
   }
+
+  /* The two supporting paragraphs from the original section, kept so the two
+     arrangements are judged on identical copy rather than on length. */
+  .process-sub {
+    max-width: 820px;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: rgba(var(--ink-rgb), var(--ink-a-aa));
+    margin-bottom: 14px;
+  }
+
+  .process-sub:last-of-type { margin-bottom: 58px; }
 
   /* Steps size to their content and the arrows take up the slack, so the row
      spreads evenly however long the labels are. */
@@ -787,10 +800,14 @@
     margin-bottom: 18px;
   }
 
+  /* Capped so a two-word value title wraps to a second line instead of
+     forcing the whole row wider than the content column. */
   .process-label {
     display: block;
+    max-width: 150px;
     font-size: 14.5px;
     font-weight: 500;
+    line-height: 1.4;
     color: rgba(var(--ink-rgb), var(--ink-a-aa));
   }
 
@@ -820,13 +837,13 @@
   }
 
   @media (max-width: 900px) {
-    .process-statement { margin-bottom: 44px; }
+    .process-sub:last-of-type { margin-bottom: 44px; }
     .process-arrow { margin: 26px 14px 0; }
   }
 
-  /* Four stages will not hold a readable label across a phone, and a
+  /* Five labels will not hold a readable width across a phone, and a
      horizontal arrow between stacked items points nowhere, so the row becomes
-     a two-by-two grid and the arrows go. */
+     a two-column grid and the arrows go. */
   @media (max-width: 760px) {
     .process-steps {
       display: grid;

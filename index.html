@@ -78,7 +78,7 @@
      fourteen logos rendered as nothing - which reads as the carousel being
      broken rather than as an obviously old page. Deriving the value from the
      file contents means it changes exactly when the CSS does. -->
-<link rel="stylesheet" href="assets/site.css?v=e013120f0b">
+<link rel="stylesheet" href="assets/site.css?v=521b083d0a">
 </head>
 <body>
   <a class="skip-link" href="#hero-content">Skip to content</a>
@@ -365,44 +365,53 @@
     </div>
   </section>
 
-  <!-- "How we work", built to the reference supplied: eyebrow, a large
-       statement, then a numbered row of stages joined by arrows.
+  <!-- SECOND About Us block, built to a supplied reference: eyebrow, a large
+       statement, then the values as a numbered row.
 
-       The four stages are DigiBlu's own service lines in delivery order, not
-       invented process names - the site's rule is no fabricated content, and a
-       claim about how a real firm works is exactly the kind of thing that
-       cannot be made up. The statement paraphrases those four services' own
-       published descriptions.
+       This exists to be compared against the section above, which carries the
+       same content in the stacked layout. Both are live on the page on purpose
+       while the arrangement is being chosen - **one of them should be deleted
+       once that decision is made**, since a page with two About Us sections is
+       not a finished state.
 
-       Sits between About and Services deliberately: it reads as the bridge
-       from who DigiBlu is to what they actually do. Not added to the nav,
-       which is deliberately five items. -->
-  <section class="process" id="approach">
-    <span class="pill">How we work</span>
-    <h2 class="process-statement">We work end to end. Every engagement moves through the same four stages, from assessing where you stand today to keeping what we build sharp long after it goes live.</h2>
+       Content is the same as the original: the lead paragraph becomes the
+       statement, the other two sit beneath it, and the five values run along
+       the bottom. The scroll read-through is deliberately NOT applied here, so
+       the two blocks differ only in arrangement. -->
+  <section class="process" id="about-alt">
+    <span class="pill">About Us</span>
+    <h2 class="process-statement">At DigiBlu, we bring together experienced practitioners with client-side, technology, and consultancy backgrounds. We act as pragmatic partners, focused on getting to value quickly rather than getting lost in process.</h2>
+    <p class="process-sub">Although we have preferred technology solutions, we remain technology-agnostic, utilising leading AI and automation platforms based on the best fit for each client.</p>
+    <p class="process-sub">Our vision is to be one of the foremost independent AI-enabled digital transformation businesses in the UK, turning today's competitive, regulatory, cost and technology pressures into a lasting advantage.</p>
 
-    <!-- A visual flow rather than a list: the arrows are the relationship, and
-         they are decorative, so they carry aria-hidden and the numbers and
-         labels still read in order for a screen reader. -->
+    <!-- The arrows are the reference's visual language and are kept so the
+         comparison is fair, but note they imply a sequence that values do not
+         have. Drop them if this arrangement is the one chosen. They are
+         aria-hidden either way, so the numbers and titles read in order. -->
     <div class="process-steps">
       <div class="process-step">
         <span class="process-num">01</span>
-        <span class="process-label">Opportunity Discovery</span>
+        <span class="process-label">Equitable partnerships</span>
       </div>
       <span class="process-arrow" aria-hidden="true"></span>
       <div class="process-step">
         <span class="process-num">02</span>
-        <span class="process-label">Process Excellence</span>
+        <span class="process-label">Innovation with purpose</span>
       </div>
       <span class="process-arrow" aria-hidden="true"></span>
       <div class="process-step">
         <span class="process-num">03</span>
-        <span class="process-label">Digital Solutions</span>
+        <span class="process-label">Technology on merit</span>
       </div>
       <span class="process-arrow" aria-hidden="true"></span>
       <div class="process-step">
         <span class="process-num">04</span>
-        <span class="process-label">Post-Implementation</span>
+        <span class="process-label">Lasting capability</span>
+      </div>
+      <span class="process-arrow" aria-hidden="true"></span>
+      <div class="process-step">
+        <span class="process-num">05</span>
+        <span class="process-label">Trust and Likeability</span>
       </div>
     </div>
   </section>
