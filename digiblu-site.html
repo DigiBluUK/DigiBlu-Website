@@ -1516,11 +1516,21 @@
 
   /* The list scrolls, not the aside. That is what lets the pager sit pinned at
      the bottom of the column instead of being something you have to scroll
-     past ten rows to reach. */
+     past ten rows to reach.
+
+     The horizontal padding here is load-bearing, not spacing. Rows carry
+     margin: 0 -14px so their hover/selected fill bleeds past the text column,
+     and a scroll container clips whatever overflows it - so once this element
+     became the scroller, that bleed was cut off and the selected blue row
+     appeared cropped down its left edge. Matching padding (with the negative
+     margin putting the text column back where it was) gives the bleed room
+     inside the scroller instead of outside it. */
   .reader-list {
     flex: 1 1 auto;
     overflow-y: auto;
     scrollbar-gutter: stable;
+    padding: 0 14px;
+    margin: 0 -14px;
   }
 
   /* Rendered only when there is more than one page - see PAGE_SIZE in the
