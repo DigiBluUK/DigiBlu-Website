@@ -856,6 +856,120 @@
     .process-arrow { display: none; }
   }
 
+  /* ---------- About Us, split-panel arrangement ----------
+     A light panel carrying the heading and narrative beside a dark panel
+     listing the values, per the reference supplied. Same content as #about
+     and #about-alt; all three are live while the arrangement is chosen.
+
+     Both panels pin their own ink on a FIXED colour rather than using theme
+     tokens. The reference's entire idea is the contrast between the two
+     halves - theme-aware panels would flatten that in dark theme and invert
+     it in light. Same pattern as .hero, .service-card.accent and .case-stat. */
+  .principles {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: var(--section-y) var(--gutter);
+  }
+
+  .principles-panels {
+    display: grid;
+    grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .principles-intro {
+    background: #f4f5f7;
+    --ink-rgb: 13, 17, 23;
+    --text: #0d1117;
+    color: var(--text);
+    padding: 64px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* Its own rule: the shared section-heading selector names specific sections,
+     so an h2 in here would fall back to the UA default. */
+  .principles-intro h2 {
+    font-size: clamp(30px, 3.2vw, 44px);
+    line-height: 1.12;
+    font-weight: 400;
+    letter-spacing: -0.8px;
+    color: var(--text);
+    margin-bottom: 22px;
+  }
+
+  .principles-intro p {
+    font-size: 14px;
+    line-height: 1.65;
+    color: rgba(var(--ink-rgb), 0.72);
+    margin-bottom: 12px;
+  }
+
+  .principles-intro p:last-child { margin-bottom: 0; }
+
+  .principles-list {
+    background: #0a0e1a;
+    --ink-rgb: 255, 255, 255;
+    --text: #ffffff;
+    color: var(--text);
+    padding: 40px 48px 44px;
+  }
+
+  .principle-rows {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Numeral in a fixed column so the statements all start on one left edge,
+     with a hairline between rows as in the reference. */
+  .principle {
+    display: grid;
+    grid-template-columns: 78px minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+    padding: 20px 0;
+    border-top: 1px solid rgba(var(--ink-rgb), 0.22);
+  }
+
+  .principle-num {
+    font-size: 31px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .principle-title {
+    display: block;
+    font-size: 17px;
+    line-height: 1.3;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 5px;
+  }
+
+  .principle-desc {
+    display: block;
+    font-size: 13px;
+    line-height: 1.55;
+    color: rgba(var(--ink-rgb), 0.7);
+  }
+
+  @media (max-width: 900px) {
+    .principles-panels { grid-template-columns: 1fr; }
+    .principles-intro { padding: 40px 28px; }
+    .principles-list { padding: 28px 28px 32px; }
+  }
+
+  @media (max-width: 560px) {
+    .principle { grid-template-columns: 54px minmax(0, 1fr); gap: 14px; }
+    .principle-num { font-size: 25px; }
+  }
+
   /* ---------- Services ---------- */
   .services {
     max-width: var(--maxw);
@@ -3579,6 +3693,73 @@
       <div class="process-step">
         <span class="process-num">05</span>
         <span class="process-label">Trust and Likeability</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- THIRD About Us arrangement, built to a supplied reference: a light panel
+       carrying the heading and narrative beside a dark panel listing the
+       values as numbered rows.
+
+       Same content as #about and #about-alt. All three are on the page at once
+       purely so the arrangements can be compared - **two of the three must be
+       deleted once one is chosen.**
+
+       Both panels are FIXED colours with ink pinned locally, not theme
+       tokens. The reference's whole idea is the light/dark contrast between
+       the two halves, and a theme-aware version would collapse that in one
+       theme or invert it in the other. This is the same pattern the hero,
+       the accent service cards and .case-stat already use - grep
+       `--ink-rgb: 255, 255, 255`. -->
+  <section class="principles" id="about-alt2">
+    <span class="pill">About Us</span>
+
+    <div class="principles-panels">
+      <div class="principles-intro">
+        <h2>Who we are.</h2>
+        <p>At DigiBlu, we bring together experienced practitioners with client-side, technology, and consultancy backgrounds. We act as pragmatic partners, focused on getting to value quickly rather than getting lost in process.</p>
+        <p>Although we have preferred technology solutions, we remain technology-agnostic, utilising leading AI and automation platforms based on the best fit for each client.</p>
+        <p>Our vision is to be one of the foremost independent AI-enabled digital transformation businesses in the UK, turning today's competitive, regulatory, cost and technology pressures into a lasting advantage.</p>
+      </div>
+
+      <div class="principles-list">
+        <ol class="principle-rows">
+          <li class="principle">
+            <span class="principle-num">01</span>
+            <span class="principle-body">
+              <span class="principle-title">Equitable partnerships</span>
+              <span class="principle-desc">We engage commercially with our clients transparently and on the basis of shared success.</span>
+            </span>
+          </li>
+          <li class="principle">
+            <span class="principle-num">02</span>
+            <span class="principle-body">
+              <span class="principle-title">Innovation with purpose</span>
+              <span class="principle-desc">We embrace new ideas and challenge convention to solve real problems and drive meaningful impact.</span>
+            </span>
+          </li>
+          <li class="principle">
+            <span class="principle-num">03</span>
+            <span class="principle-body">
+              <span class="principle-title">Technology on merit</span>
+              <span class="principle-desc">We choose the right technology for the problem, not preferred vendors.</span>
+            </span>
+          </li>
+          <li class="principle">
+            <span class="principle-num">04</span>
+            <span class="principle-body">
+              <span class="principle-title">Lasting capability</span>
+              <span class="principle-desc">We empower our clients with the skills, knowledge and ways of working to succeed long after we're gone.</span>
+            </span>
+          </li>
+          <li class="principle">
+            <span class="principle-num">05</span>
+            <span class="principle-body">
+              <span class="principle-title">Trust and Likeability</span>
+              <span class="principle-desc">Our client NPS is +85: our clients like and trust us.</span>
+            </span>
+          </li>
+        </ol>
       </div>
     </div>
   </section>

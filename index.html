@@ -78,7 +78,7 @@
      fourteen logos rendered as nothing - which reads as the carousel being
      broken rather than as an obviously old page. Deriving the value from the
      file contents means it changes exactly when the CSS does. -->
-<link rel="stylesheet" href="assets/site.css?v=521b083d0a">
+<link rel="stylesheet" href="assets/site.css?v=9ce5468abc">
 </head>
 <body>
   <a class="skip-link" href="#hero-content">Skip to content</a>
@@ -412,6 +412,73 @@
       <div class="process-step">
         <span class="process-num">05</span>
         <span class="process-label">Trust and Likeability</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- THIRD About Us arrangement, built to a supplied reference: a light panel
+       carrying the heading and narrative beside a dark panel listing the
+       values as numbered rows.
+
+       Same content as #about and #about-alt. All three are on the page at once
+       purely so the arrangements can be compared - **two of the three must be
+       deleted once one is chosen.**
+
+       Both panels are FIXED colours with ink pinned locally, not theme
+       tokens. The reference's whole idea is the light/dark contrast between
+       the two halves, and a theme-aware version would collapse that in one
+       theme or invert it in the other. This is the same pattern the hero,
+       the accent service cards and .case-stat already use - grep
+       `--ink-rgb: 255, 255, 255`. -->
+  <section class="principles" id="about-alt2">
+    <span class="pill">About Us</span>
+
+    <div class="principles-panels">
+      <div class="principles-intro">
+        <h2>Who we are.</h2>
+        <p>At DigiBlu, we bring together experienced practitioners with client-side, technology, and consultancy backgrounds. We act as pragmatic partners, focused on getting to value quickly rather than getting lost in process.</p>
+        <p>Although we have preferred technology solutions, we remain technology-agnostic, utilising leading AI and automation platforms based on the best fit for each client.</p>
+        <p>Our vision is to be one of the foremost independent AI-enabled digital transformation businesses in the UK, turning today's competitive, regulatory, cost and technology pressures into a lasting advantage.</p>
+      </div>
+
+      <div class="principles-list">
+        <ol class="principle-rows">
+          <li class="principle">
+            <span class="principle-num">01</span>
+            <span class="principle-body">
+              <span class="principle-title">Equitable partnerships</span>
+              <span class="principle-desc">We engage commercially with our clients transparently and on the basis of shared success.</span>
+            </span>
+          </li>
+          <li class="principle">
+            <span class="principle-num">02</span>
+            <span class="principle-body">
+              <span class="principle-title">Innovation with purpose</span>
+              <span class="principle-desc">We embrace new ideas and challenge convention to solve real problems and drive meaningful impact.</span>
+            </span>
+          </li>
+          <li class="principle">
+            <span class="principle-num">03</span>
+            <span class="principle-body">
+              <span class="principle-title">Technology on merit</span>
+              <span class="principle-desc">We choose the right technology for the problem, not preferred vendors.</span>
+            </span>
+          </li>
+          <li class="principle">
+            <span class="principle-num">04</span>
+            <span class="principle-body">
+              <span class="principle-title">Lasting capability</span>
+              <span class="principle-desc">We empower our clients with the skills, knowledge and ways of working to succeed long after we're gone.</span>
+            </span>
+          </li>
+          <li class="principle">
+            <span class="principle-num">05</span>
+            <span class="principle-body">
+              <span class="principle-title">Trust and Likeability</span>
+              <span class="principle-desc">Our client NPS is +85: our clients like and trust us.</span>
+            </span>
+          </li>
+        </ol>
       </div>
     </div>
   </section>
