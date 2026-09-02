@@ -820,112 +820,6 @@
     .geo-figure { display: none; }
   }
 
-  /* Statement and figure share a row; the stages run full width beneath. */
-  .process-top {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 48px;
-    align-items: center;
-  }
-
-  /* ---------- About Us, alternative arrangement ----------
-     Eyebrow, a large statement, then the values in a numbered row, per the
-     reference supplied. Carries the same content as #about above; both are on
-     the page while the arrangement is being chosen. */
-  .process {
-    max-width: var(--maxw);
-    margin: 0 auto;
-    padding: var(--section-y) var(--gutter);
-  }
-
-  /* Its own type rule: the shared section-heading selector lists specific
-     sections, and an h2 that matched nothing would fall back to the UA
-     default. Set below those headings deliberately - this is a statement,
-     not a page title. */
-  .process-statement {
-    max-width: 940px;
-    font-size: clamp(23px, 2.4vw, 33px);
-    line-height: 1.34;
-    font-weight: 400;
-    letter-spacing: -0.5px;
-    color: var(--text);
-    margin-bottom: 58px;
-  }
-
-  /* Steps size to their content and the arrows take up the slack, so the row
-     spreads evenly however long the labels are. */
-  .process-steps {
-    display: flex;
-    align-items: flex-start;
-  }
-
-  .process-step { flex: 0 0 auto; }
-
-  .process-num {
-    display: block;
-    font-size: clamp(38px, 3.6vw, 56px);
-    font-weight: 300;
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
-    letter-spacing: -1px;
-    color: var(--text);
-    margin-bottom: 18px;
-  }
-
-  /* Capped so a two-word value title wraps to a second line instead of
-     forcing the whole row wider than the content column. */
-  .process-label {
-    display: block;
-    max-width: 150px;
-    font-size: 14.5px;
-    font-weight: 500;
-    line-height: 1.4;
-    color: rgba(var(--ink-rgb), var(--ink-a-aa));
-  }
-
-  /* Drawn in CSS rather than as a background data URI: the stroke of a data
-     URI is baked in and cannot follow --ink-rgb, which is what left the form
-     select's chevron invisible in light theme. A flexible rule plus a rotated
-     corner keeps it theme-aware and lets the line stretch. */
-  .process-arrow {
-    flex: 1 1 auto;
-    position: relative;
-    height: 1px;
-    min-width: 28px;
-    margin: 30px 20px 0;
-    background: rgba(var(--ink-rgb), var(--ink-a-mid));
-  }
-
-  .process-arrow::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 50%;
-    width: 7px;
-    height: 7px;
-    border-top: 1px solid rgba(var(--ink-rgb), var(--ink-a-mid));
-    border-right: 1px solid rgba(var(--ink-rgb), var(--ink-a-mid));
-    transform: translateY(-50%) rotate(45deg);
-  }
-
-  @media (max-width: 900px) {
-    .process-statement { margin-bottom: 44px; }
-    .process-arrow { margin: 26px 14px 0; }
-  }
-
-  /* Five labels will not hold a readable width across a phone, and a
-     horizontal arrow between stacked items points nowhere, so the row becomes
-     a two-column grid and the arrows go. */
-  @media (max-width: 760px) {
-    .process-steps {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 30px 18px;
-    }
-
-    .process-arrow { display: none; }
-  }
-
   /* ---------- Services ---------- */
   .services {
     max-width: var(--maxw);
@@ -1247,7 +1141,6 @@
 
   @media (max-width: 900px) {
     .about-top { grid-template-columns: 1fr; gap: 36px; margin-bottom: 40px; }
-    .process-top { grid-template-columns: 1fr; gap: 0; }
   }
 
   /* ---------- Case studies ---------- */
