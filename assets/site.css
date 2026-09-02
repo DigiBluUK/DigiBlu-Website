@@ -1712,20 +1712,20 @@
      extreme-aspect wordmarks (AssuranceSD, GatenbySanderson) are stepped
      down further so their width doesn't dominate, same call already made
      for G-Cloud in the Accreditations strip. */
-  .cl-acacium     { width: 115px; height: 24px; -webkit-mask-image: url('clients/acacium.png');                     mask-image: url('clients/acacium.png'); }
-  .cl-premex      { width: 90px;  height: 32px; -webkit-mask-image: url('clients/premex.png');                      mask-image: url('clients/premex.png'); }
-  .cl-sunrise     { width: 106px; height: 27px; -webkit-mask-image: url('clients/sunrise-medical.png');             mask-image: url('clients/sunrise-medical.png'); }
-  .cl-equiniti    { width: 53px;  height: 42px; -webkit-mask-image: url('clients/equiniti.png');                    mask-image: url('clients/equiniti.png'); }
-  .cl-ovo         { width: 84px;  height: 34px; -webkit-mask-image: url('clients/ovo-energy.png');                  mask-image: url('clients/ovo-energy.png'); }
-  .cl-peopleplus  { width: 113px; height: 26px; -webkit-mask-image: url('clients/peopleplus.png');                  mask-image: url('clients/peopleplus.png'); }
-  .cl-benchmark   { width: 99px;  height: 34px; -webkit-mask-image: url('clients/benchmark-capital.png');           mask-image: url('clients/benchmark-capital.png'); }
-  .cl-assurancesd { width: 140px; height: 16px; -webkit-mask-image: url('clients/assurancesd.png');                 mask-image: url('clients/assurancesd.png'); }
-  .cl-eversheds   { width: 108px; height: 27px; -webkit-mask-image: url('clients/eversheds-sutherland.png');        mask-image: url('clients/eversheds-sutherland.png'); }
-  .cl-bodybrave   { width: 47px;  height: 44px; -webkit-mask-image: url('clients/body-brave.png');                  mask-image: url('clients/body-brave.png'); }
-  .cl-gatenby     { width: 140px; height: 18px; -webkit-mask-image: url('clients/gatenbysanderson.png');            mask-image: url('clients/gatenbysanderson.png'); }
-  .cl-soc         { width: 122px; height: 24px; -webkit-mask-image: url('clients/special-olympics-canada.png');     mask-image: url('clients/special-olympics-canada.png'); }
-  .cl-nychealth   { width: 82px;  height: 40px; -webkit-mask-image: url('clients/nyc-health-hospitals.png');        mask-image: url('clients/nyc-health-hospitals.png'); }
-  .cl-innovative  { width: 85px;  height: 32px; -webkit-mask-image: url('clients/innovative-business-concepts.png'); mask-image: url('clients/innovative-business-concepts.png'); }
+  .cl-equiniti   { width: 53px;  height: 42px; -webkit-mask-image: url('clients/equiniti.png');               mask-image: url('clients/equiniti.png'); }
+  .cl-sunrise    { width: 106px; height: 27px; -webkit-mask-image: url('clients/sunrise-medical.png');        mask-image: url('clients/sunrise-medical.png'); }
+  .cl-nsm        { width: 98px;  height: 35px; -webkit-mask-image: url('clients/nsm.png');                    mask-image: url('clients/nsm.png'); }
+  .cl-acacium    { width: 115px; height: 24px; -webkit-mask-image: url('clients/acacium.png');                mask-image: url('clients/acacium.png'); }
+  .cl-medinet    { width: 97px;  height: 29px; -webkit-mask-image: url('clients/medinet.png');                mask-image: url('clients/medinet.png'); }
+  .cl-edmundson  { width: 126px; height: 21px; -webkit-mask-image: url('clients/edmundson-electrical.png');   mask-image: url('clients/edmundson-electrical.png'); }
+  .cl-tpx        { width: 85px;  height: 33px; -webkit-mask-image: url('clients/tpx.png');                    mask-image: url('clients/tpx.png'); }
+  .cl-spamedica  { width: 115px; height: 24px; -webkit-mask-image: url('clients/spamedica.png');              mask-image: url('clients/spamedica.png'); }
+  .cl-ppl        { width: 94px;  height: 34px; -webkit-mask-image: url('clients/ppl.png');                    mask-image: url('clients/ppl.png'); }
+  .cl-agria      { width: 90px;  height: 36px; -webkit-mask-image: url('clients/agria.png');                  mask-image: url('clients/agria.png'); }
+  .cl-soc        { width: 122px; height: 24px; -webkit-mask-image: url('clients/special-olympics-canada.png'); mask-image: url('clients/special-olympics-canada.png'); }
+  .cl-oneadvanced{ width: 133px; height: 17px; -webkit-mask-image: url('clients/oneadvanced.png');            mask-image: url('clients/oneadvanced.png'); }
+  .cl-ema        { width: 122px; height: 24px; -webkit-mask-image: url('clients/ema.png');                    mask-image: url('clients/ema.png'); }
+  .cl-safari     { width: 92px;  height: 37px; -webkit-mask-image: url('clients/safari-destinations.png');    mask-image: url('clients/safari-destinations.png'); }
 
   @media (max-width: 760px) {
     .clients-group { gap: 44px; padding-right: 44px; }
@@ -1735,20 +1735,20 @@
     .clients-group { gap: 36px; padding-right: 36px; }
     .clients-track { animation-duration: 30s; }
     /* Scale the whole row down together so the optical balance is preserved. */
-    .cl-acacium     { width: 98px;  height: 21px; }
-    .cl-premex      { width: 77px;  height: 27px; }
-    .cl-sunrise     { width: 90px;  height: 23px; }
-    .cl-equiniti    { width: 45px;  height: 36px; }
-    .cl-ovo         { width: 71px;  height: 29px; }
-    .cl-peopleplus  { width: 96px;  height: 22px; }
-    .cl-benchmark   { width: 84px;  height: 29px; }
-    .cl-assurancesd { width: 119px; height: 14px; }
-    .cl-eversheds   { width: 92px;  height: 23px; }
-    .cl-bodybrave   { width: 40px;  height: 37px; }
-    .cl-gatenby     { width: 119px; height: 15px; }
-    .cl-soc         { width: 104px; height: 20px; }
-    .cl-nychealth   { width: 70px;  height: 34px; }
-    .cl-innovative  { width: 72px;  height: 27px; }
+    .cl-equiniti   { width: 45px;  height: 36px; }
+    .cl-sunrise    { width: 90px;  height: 23px; }
+    .cl-nsm        { width: 83px;  height: 30px; }
+    .cl-acacium    { width: 98px;  height: 21px; }
+    .cl-medinet    { width: 82px;  height: 24px; }
+    .cl-edmundson  { width: 107px; height: 18px; }
+    .cl-tpx        { width: 72px;  height: 28px; }
+    .cl-spamedica  { width: 98px;  height: 21px; }
+    .cl-ppl        { width: 80px;  height: 29px; }
+    .cl-agria      { width: 77px;  height: 31px; }
+    .cl-soc        { width: 104px; height: 20px; }
+    .cl-oneadvanced{ width: 113px; height: 14px; }
+    .cl-ema        { width: 104px; height: 20px; }
+    .cl-safari     { width: 78px;  height: 31px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
