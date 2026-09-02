@@ -1371,8 +1371,8 @@
     flex-wrap: wrap;
   }
 
-  /* Only rendered when the detail was opened from the index popup, so the
-     trail back is offered exactly when there is somewhere to go back to. */
+  /* The reader dialogs' mobile-only "All case studies" / "All articles"
+     toggle (see .reader-toggle below). */
   .case-back-btn {
     display: inline-flex;
     align-items: center;
@@ -1478,6 +1478,84 @@
   }
 
   .case-index-item .case-index-go svg { width: 13px; height: 13px; }
+
+  /* ---------- Reader layout ----------
+     The case-study and blog dialogs list every entry down the left and read
+     the selected one on the right, so moving between entries is one click
+     instead of close, View all, pick, back. Both dialogs share these rules;
+     the rows are the same .case-index-item the old index popups used, with
+     .is-active marking the entry being read.
+
+     .modal-panel is already a flex row, so the aside and the reading pane
+     sit side by side and each scrolls on its own inside the panel's
+     max-height. Below 900px there is no room for two columns: the aside is
+     hidden and .show-list swaps it in for the reading pane, driven by the
+     footer's .reader-toggle button, which only shows at that width.
+
+     Doubled selector on the panel: .case-modal-panel and .service-panel set
+     their own max-width at the same specificity and cascade later, so a bare
+     .reader-panel would lose to both. */
+  .modal-panel.reader-panel { max-width: 1140px; }
+
+  .reader-side {
+    position: relative;
+    flex: 0 0 330px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 44px 22px 32px 30px;
+    border-right: 1px solid rgba(var(--ink-rgb), 0.12);
+    background: rgba(var(--ink-rgb), 0.03);
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+
+  .reader-side-count {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+    margin-bottom: 10px;
+  }
+
+  .reader-list .case-index-item { padding: 14px 14px; margin: 0 -14px; gap: 12px; }
+  .reader-list .case-index-item::before,
+  .reader-list .case-index-item:last-child::after { left: 14px; right: 14px; }
+  .reader-list .case-index-title { font-size: 14.5px; }
+  .reader-list .case-index-client { font-size: 10.5px; }
+
+  /* Brand blue for the entry being read - the same fixed-colour selection
+     the team strip uses, ink pinned white the way every blue surface on the
+     site does it. Both labels go to full white: white itself is only 4.56:1
+     on the blue, so any alpha step below it would fail AA. The dividers
+     around the row drop out the same way they do on hover. */
+  .reader-list .case-index-item.is-active,
+  .reader-list .case-index-item.is-active:hover {
+    background: var(--blue);
+    --ink-rgb: 255, 255, 255;
+    --text: #ffffff;
+  }
+  .reader-list .case-index-item.is-active::before,
+  .reader-list .case-index-item.is-active + .case-index-item::before,
+  .reader-list .case-index-item.is-active:last-child::after { opacity: 0; }
+  .reader-list .case-index-item.is-active .case-index-client { color: #ffffff; }
+  .reader-list .case-index-item.is-active .case-index-go { background: rgba(255, 255, 255, 0.18); }
+
+  .reader-toggle { display: none; }
+
+  @media (max-width: 900px) {
+    .reader-side { display: none; }
+    .reader-toggle { display: inline-flex; }
+    .reader-panel.show-list .reader-side {
+      display: flex;
+      flex: 1 1 auto;
+      border-right: none;
+      background: none;
+    }
+    .reader-panel.show-list .case-modal-body,
+    .reader-panel.show-list .service-modal-body { display: none; }
+  }
 
   @media (max-width: 640px) {
     .case-modal-body { padding: 32px 34px 28px 24px; }
@@ -1887,6 +1965,14 @@
       padding: 16px 18px;
       cursor: default;
     }
+
+    /* The tap that opens a profile also moves the highlight here (see the
+       click handler), so the blue row is whichever member was last opened.
+       Ink pinned white, as on the desktop active slice; the role label goes
+       to full white because white itself is only 4.56:1 on the blue, so the
+       muted alpha the other rows use would fail AA. */
+    .team-slice.active { --ink-rgb: 255, 255, 255; --text: #ffffff; }
+    .team-slice.active .team-slice-role { color: #ffffff; }
 
     /* Same circular face crop as the inactive desktop slices, including the
        zoom — without it the whole bust shrinks into a 48px circle and the
@@ -3809,27 +3895,19 @@
     </div>
   </div>
 
-  <div class="modal-overlay" id="caseIndexModal">
-    <div class="modal-panel case-modal-panel" role="dialog" aria-modal="true" aria-labelledby="caseIndexTitle" tabindex="-1">
-      <button class="modal-close" aria-label="Close">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 5l14 14M19 5 5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      </button>
-      <div class="case-modal-body">
-        <span class="pill case-modal-eyebrow">Case Studies</span>
-        <h2 id="caseIndexTitle">All case studies</h2>
-        <p class="case-modal-client">Real client engagements</p>
-        <div class="case-index-list" id="caseIndexList"></div>
-        <div class="case-modal-footer">
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="modal-overlay" id="caseDetailModal">
-    <div class="modal-panel case-modal-panel" role="dialog" aria-modal="true" aria-labelledby="caseDetailTitle" tabindex="-1">
+    <div class="modal-panel case-modal-panel reader-panel" role="dialog" aria-modal="true" aria-labelledby="caseDetailTitle" tabindex="-1">
       <button class="modal-close" aria-label="Close">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 5l14 14M19 5 5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
+      <!-- Reader sidebar: every engagement, with the one being read
+           highlighted (.is-active). Replaced the separate "All case studies"
+           index popup. Below 900px it is hidden until the panel gets
+           .show-list from the footer's "All case studies" button. -->
+      <aside class="reader-side" aria-label="All case studies">
+        <p class="reader-side-count" id="caseReaderCount">All case studies</p>
+        <div class="case-index-list reader-list" id="caseIndexList"></div>
+      </aside>
       <div class="case-modal-body">
         <!-- A duplicate "All case studies" link was trialled here at the top
              of the popup and rejected on review — it belongs only in the
@@ -3850,7 +3928,9 @@
           <cite id="caseDetailQuoteCite"></cite>
         </figure>
         <div class="case-modal-footer">
-          <button type="button" class="case-back-btn" id="caseDetailBack" hidden>
+          <!-- Mobile only (see .reader-toggle): swaps the reading pane for
+               the sidebar list, which has no room beside it at that width. -->
+          <button type="button" class="case-back-btn reader-toggle" id="caseDetailBack">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5m0 0 6-6m-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             All case studies
           </button>
@@ -3860,10 +3940,17 @@
   </div>
 
   <div class="modal-overlay" id="blogDetailModal">
-    <div class="modal-panel service-panel" role="dialog" aria-modal="true" aria-labelledby="blogDetailTitle" tabindex="-1">
+    <div class="modal-panel service-panel reader-panel" role="dialog" aria-modal="true" aria-labelledby="blogDetailTitle" tabindex="-1">
       <button class="modal-close" aria-label="Close">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 5l14 14M19 5 5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
+      <!-- Reader sidebar, mirroring #caseDetailModal's: every article, the
+           one being read highlighted. Replaced the separate article index
+           popup. -->
+      <aside class="reader-side" aria-label="All articles">
+        <p class="reader-side-count" id="blogReaderCount">All articles</p>
+        <div class="case-index-list reader-list" id="blogIndexList"></div>
+      </aside>
       <div class="service-modal-body">
         <!-- Cloned from the clicked card's own .blog-art so it can never
              drift from the grid, and placed above the heading so it leads
@@ -3881,32 +3968,12 @@
             </span>
             <span id="blogDetailExpandLabel">Read full article</span>
           </button>
-          <!-- Only rendered when this was opened from the article index, so
-               the trail back is offered exactly when there is somewhere to
-               go back to. Mirrors #caseDetailBack. -->
-          <button type="button" class="case-back-btn" id="blogDetailBack" hidden>
+          <!-- Mobile only (see .reader-toggle): swaps the reading pane for
+               the sidebar list. Mirrors #caseDetailBack. -->
+          <button type="button" class="case-back-btn reader-toggle" id="blogDetailBack">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5m0 0 6-6m-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             All articles
           </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Article index. Same structure and classes as #caseIndexModal so the two
-       popups stay visually identical; the list is built from BLOG_POSTS and
-       respects whichever topic filter is active when it is opened. -->
-  <div class="modal-overlay" id="blogIndexModal">
-    <div class="modal-panel case-modal-panel" role="dialog" aria-modal="true" aria-labelledby="blogIndexTitle" tabindex="-1">
-      <button class="modal-close" aria-label="Close">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 5l14 14M19 5 5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      </button>
-      <div class="case-modal-body">
-        <span class="pill case-modal-eyebrow">Blogs</span>
-        <h2 id="blogIndexTitle">All articles</h2>
-        <p class="case-modal-client" id="blogIndexSub">Insights and perspectives</p>
-        <div class="case-index-list" id="blogIndexList"></div>
-        <div class="case-modal-footer">
         </div>
       </div>
     </div>
@@ -4038,13 +4105,17 @@
 
       // Below 760px the strip is a stacked list with every name already
       // visible, so there is nothing to expand and a tap goes straight to the
-      // profile. Above it, a tap on a collapsed slice expands it first (its
-      // name isn't readable until it does) and a second tap opens the profile.
+      // profile - but it still moves the highlight, so the blue row follows
+      // the member being viewed rather than staying on the first slice for
+      // the whole session. Above it, a tap on a collapsed slice expands it
+      // first (its name isn't readable until it does) and a second tap opens
+      // the profile.
       var stacked = window.matchMedia('(max-width: 760px)');
 
       slices.forEach(function (el, i) {
         el.addEventListener('click', function () {
-          if (stacked.matches || el.classList.contains('active')) openProfile(i, el);
+          if (stacked.matches) { setActive(i); openProfile(i, el); }
+          else if (el.classList.contains('active')) openProfile(i, el);
           else setActive(i);
         });
       });
@@ -4672,14 +4743,15 @@
       var byKey = {};
       CASE_STUDIES.forEach(function (c) { byKey[c.key] = c; });
 
-      var indexOverlay = document.getElementById('caseIndexModal');
-      var detailOverlay = document.getElementById('caseDetailModal');
-      if (!indexOverlay || !detailOverlay) return;
-
-      var indexModal = createModalController(indexOverlay);
-      var detailModal = createModalController(detailOverlay);
+      var overlay = document.getElementById('caseDetailModal');
+      if (!overlay) return;
+      var panel = overlay.querySelector('.modal-panel');
+      var sideEl = overlay.querySelector('.reader-side');
+      var bodyEl = overlay.querySelector('.case-modal-body');
+      var modal = createModalController(overlay);
 
       var listEl = document.getElementById('caseIndexList');
+      var countEl = document.getElementById('caseReaderCount');
       var artEl = document.getElementById('caseDetailArt');
       var sectorEl = document.getElementById('caseDetailSector');
       var titleEl = document.getElementById('caseDetailTitle');
@@ -4690,15 +4762,28 @@
       var quoteTextEl = document.getElementById('caseDetailQuoteText');
       var quoteCiteEl = document.getElementById('caseDetailQuoteCite');
       var backBtn = document.getElementById('caseDetailBack');
+      var currentKey = null;
 
+      // Reader layout: every engagement is listed down the left of the
+      // dialog and the selected one reads on the right, so moving between
+      // case studies is one click rather than close, View all, pick, back.
+      // Below 900px the two columns cannot fit, so the panel shows one at a
+      // time - .show-list swaps the reading pane for the list, toggled by
+      // the footer's "All case studies" button, which only renders at that
+      // width. Rows are real links (case-studies/<key>.html) so crawlers
+      // and ctrl/cmd/middle-click still get the standalone page.
+      function isModified(e) {
+        return e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1;
+      }
 
       function renderIndex() {
         listEl.innerHTML = '';
+        if (countEl) countEl.textContent = 'All case studies · ' + CASE_STUDIES.length;
         CASE_STUDIES.forEach(function (c) {
-          var btn = document.createElement('a');
-          btn.href = 'case-studies/' + c.key + '.html';
-          btn.className = 'case-index-item';
-          btn.setAttribute('data-case', c.key);
+          var row = document.createElement('a');
+          row.href = 'case-studies/' + c.key + '.html';
+          row.className = 'case-index-item';
+          row.setAttribute('data-case', c.key);
 
           var text = document.createElement('span');
           var client = document.createElement('span');
@@ -4716,15 +4801,35 @@
           go.className = 'case-index-go';
           go.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-          btn.appendChild(text);
-          btn.appendChild(go);
-          btn.addEventListener('click', function (e) {
-            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
+          row.appendChild(text);
+          row.appendChild(go);
+          row.addEventListener('click', function (e) {
+            if (isModified(e)) return;
             e.preventDefault();
-            openDetail(c.key, true);
+            select(c.key);
+            panel.classList.remove('show-list');
           });
-          listEl.appendChild(btn);
+          listEl.appendChild(row);
         });
+      }
+
+      // Highlights the row being read and, only if the list has scrolled it
+      // out of view, brings it back - picking a row near the bottom of the
+      // list must not yank the list to the top.
+      function markActive(key) {
+        var activeRow = null;
+        [].forEach.call(listEl.querySelectorAll('.case-index-item'), function (row) {
+          var on = row.getAttribute('data-case') === key;
+          row.classList.toggle('is-active', on);
+          if (on) { row.setAttribute('aria-current', 'true'); activeRow = row; }
+          else row.removeAttribute('aria-current');
+        });
+        if (activeRow && sideEl) {
+          var top = activeRow.offsetTop;
+          var bottom = top + activeRow.offsetHeight;
+          if (top < sideEl.scrollTop) sideEl.scrollTop = top - 16;
+          else if (bottom > sideEl.scrollTop + sideEl.clientHeight) sideEl.scrollTop = bottom - sideEl.clientHeight + 16;
+        }
       }
 
       function addSection(label, body) {
@@ -4739,13 +4844,15 @@
         sectionsEl.appendChild(wrap);
       }
 
-      function openDetail(key, fromIndex) {
+      // Fills the reading pane. Works whether or not the dialog is open, so
+      // the sidebar rows and the section's own openers share it.
+      function select(key) {
         var c = byKey[key];
-        if (!c) return;
+        if (!c) return false;
 
         // Gradient is chosen by position rather than stored per entry, so the
         // four hues stay evenly spread as case studies are added and no two
-        // neighbours in the index share one. generate-static-pages.js derives
+        // neighbours in the list share one. generate-static-pages.js derives
         // it the same way from the same array order.
         if (artEl) {
           var icon = CASE_ART[c.service] || '';
@@ -4785,39 +4892,44 @@
           quoteEl.hidden = true;
         }
 
-        backBtn.hidden = !fromIndex;
-
-        if (fromIndex) {
-          // Hand the opener reference across so closing the detail returns
-          // focus to the "View all" button rather than a now-hidden list row.
-          var origin = indexModal.lastFocusedRef();
-          indexModal.close(true);
-          detailModal.open(origin);
-        } else {
-          detailModal.open();
-        }
+        currentKey = key;
+        markActive(key);
+        if (bodyEl) bodyEl.scrollTop = 0;
+        return true;
       }
 
-      backBtn.addEventListener('click', function () {
-        var origin = detailModal.lastFocusedRef();
-        detailModal.close(true);
-        indexModal.open(origin);
-      });
+      function openDetail(key, opener, listFirst) {
+        if (!select(key)) return;
+        panel.classList.toggle('show-list', !!listFirst);
+        modal.open(opener);
+      }
+
+      if (backBtn) {
+        backBtn.addEventListener('click', function () {
+          panel.classList.add('show-list');
+          var row = listEl.querySelector('.case-index-item.is-active') || listEl.querySelector('.case-index-item');
+          if (row) row.focus();
+        });
+      }
 
       // Real hrefs (case-studies/<key>.html) give crawlers and ctrl/cmd/middle
       // click a genuine page to land on; a plain left-click still opens the
-      // quick-view modal instead of navigating there.
+      // reader instead of navigating there.
       document.querySelectorAll('.case-read-more').forEach(function (btn) {
         btn.addEventListener('click', function (e) {
-          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
+          if (isModified(e)) return;
           e.preventDefault();
-          openDetail(btn.getAttribute('data-case'), false);
+          openDetail(btn.getAttribute('data-case'), btn, false);
         });
       });
 
+      // "View all" opens the reader on whichever case study was last read
+      // (the first, before any has been), with the list up front on mobile.
       var viewAllBtn = document.getElementById('caseViewAll');
       if (viewAllBtn) {
-        viewAllBtn.addEventListener('click', function () { indexModal.open(); });
+        viewAllBtn.addEventListener('click', function () {
+          openDetail(currentKey || CASE_STUDIES[0].key, viewAllBtn, true);
+        });
       }
 
       renderIndex();
@@ -4841,13 +4953,11 @@
       }
       var currentKey = 'all';
 
-      // The grid no longer expands in place - the overflow lives in the
-      // article index popup (see #blogIndexModal), so the row cap here is
-      // permanent and the count shows the filter's full total rather than a
-      // remainder. Exposed on window so the popup, which is built in the
-      // blog-detail IIFE below, can read the active filter without either
-      // one reaching into the other's scope.
-      window.__blogFilter = function () { return currentKey; };
+      // The grid no longer expands in place - the rest of the library lives
+      // in the reader dialog's sidebar (see #blogDetailModal), so the row cap
+      // here is permanent. The count on the "View all" button is the whole
+      // library rather than the filter's total, because that is what the
+      // sidebar lists.
 
       function apply(key) {
         currentKey = key;
@@ -4863,7 +4973,7 @@
         if (emptyEl) emptyEl.hidden = matches.length !== 0;
 
         if (moreWrap) moreWrap.hidden = matches.length <= cap;
-        if (moreCount) moreCount.textContent = '(' + matches.length + ')';
+        if (moreCount) moreCount.textContent = '(' + items.length + ')';
       }
 
       filters.forEach(function (btn) {
@@ -5355,44 +5465,66 @@
         if (isExpanded) { showSummary(); } else { showFull(); }
       });
 
-      // ---------- Article index popup ----------
-      // Lives here rather than in the filter IIFE above because it needs
-      // populate()/modal to open a post, and BLOG_POSTS for the titles. It
-      // reads the active topic through window.__blogFilter() so the two
-      // don't otherwise depend on each other.
-      var indexOverlay = document.getElementById('blogIndexModal');
-      var indexModal = indexOverlay ? createModalController(indexOverlay) : null;
+      // ---------- Reader sidebar ----------
+      // Every article is listed down the left of the dialog and the selected
+      // one reads on the right (see the matching note in the case-study
+      // IIFE); the separate index popup this replaced is gone. Lives here
+      // because it needs populate() and the modal above. The list is driven
+      // off the cards, not Object.keys(BLOG_POSTS), so it follows grid
+      // order, and it lists every post regardless of the topic filter: the
+      // sidebar is the whole library, and filtering it would leave a post
+      // that a card just opened missing from its own list.
+      var panel = overlay.querySelector('.modal-panel');
+      var sideEl = overlay.querySelector('.reader-side');
+      var bodyEl = overlay.querySelector('.service-modal-body');
       var indexListEl = document.getElementById('blogIndexList');
-      var indexSubEl = document.getElementById('blogIndexSub');
+      var countEl = document.getElementById('blogReaderCount');
       var backBtn = document.getElementById('blogDetailBack');
+      var currentKey = null;
 
-      function openPost(key, fromIndex, opener) {
-        if (!populate(key)) return;
-        if (backBtn) backBtn.hidden = !fromIndex;
-        if (fromIndex && indexModal) {
-          // Hand the opener across so closing the post returns focus to the
-          // "View all articles" button rather than a row that is now hidden.
-          var origin = indexModal.lastFocusedRef();
-          indexModal.close(true);
-          modal.open(origin);
-        } else {
-          modal.open(opener);
+      function isModified(e) {
+        return e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1;
+      }
+
+      // Same scroll-only-if-hidden rule as the case-study sidebar.
+      function markActive(key) {
+        if (!indexListEl) return;
+        var activeRow = null;
+        [].forEach.call(indexListEl.querySelectorAll('.case-index-item'), function (row) {
+          var on = row.getAttribute('data-post') === key;
+          row.classList.toggle('is-active', on);
+          if (on) { row.setAttribute('aria-current', 'true'); activeRow = row; }
+          else row.removeAttribute('aria-current');
+        });
+        if (activeRow && sideEl) {
+          var top = activeRow.offsetTop;
+          var bottom = top + activeRow.offsetHeight;
+          if (top < sideEl.scrollTop) sideEl.scrollTop = top - 16;
+          else if (bottom > sideEl.scrollTop + sideEl.clientHeight) sideEl.scrollTop = bottom - sideEl.clientHeight + 16;
         }
       }
 
+      function select(key) {
+        if (!populate(key)) return false;
+        currentKey = key;
+        markActive(key);
+        if (bodyEl) bodyEl.scrollTop = 0;
+        return true;
+      }
+
+      function openPost(key, opener, listFirst) {
+        if (!select(key)) return;
+        panel.classList.toggle('show-list', !!listFirst);
+        modal.open(opener);
+      }
+
       function renderIndex() {
-        if (!indexListEl) return 0;
-        var key = typeof window.__blogFilter === 'function' ? window.__blogFilter() : 'all';
+        if (!indexListEl) return;
         indexListEl.innerHTML = '';
+        var cards = document.querySelectorAll('.blog-card');
+        if (countEl) countEl.textContent = 'All articles · ' + cards.length;
 
-        // Driven off the cards, not Object.keys(BLOG_POSTS), so the popup
-        // lists posts in the same order the grid shows them and can read
-        // each one's topic straight off data-category.
-        var cards = [].filter.call(document.querySelectorAll('.blog-card'), function (card) {
-          return key === 'all' || card.getAttribute('data-category') === key;
-        });
-
-        cards.forEach(function (card) {
+        [].forEach.call(cards, function (card) {
           var postKey = card.getAttribute('data-post');
           var post = BLOG_POSTS[postKey];
           if (!post) return;
@@ -5421,47 +5553,42 @@
           row.appendChild(text);
           row.appendChild(go);
           row.addEventListener('click', function (e) {
-            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
+            if (isModified(e)) return;
             e.preventDefault();
-            openPost(postKey, true);
+            select(postKey);
+            panel.classList.remove('show-list');
           });
           indexListEl.appendChild(row);
         });
-
-        if (indexSubEl) {
-          var active = document.querySelector('.blog-filter[aria-pressed="true"]');
-          var label = active ? active.textContent.trim() : 'All';
-          indexSubEl.textContent = key === 'all'
-            ? cards.length + ' articles across every topic'
-            : cards.length + ' article' + (cards.length === 1 ? '' : 's') + ' on ' + label;
-        }
-        return cards.length;
       }
 
-      if (backBtn && indexModal) {
+      if (backBtn) {
         backBtn.addEventListener('click', function () {
-          var origin = modal.lastFocusedRef();
-          modal.close(true);
-          renderIndex();
-          indexModal.open(origin);
+          panel.classList.add('show-list');
+          var row = indexListEl.querySelector('.case-index-item.is-active') || indexListEl.querySelector('.case-index-item');
+          if (row) row.focus();
         });
       }
 
+      // "View all" opens the reader on whichever post was last read (the
+      // first card, before any has been), with the list up front on mobile.
       var viewAllBtn = document.getElementById('blogViewAll');
-      if (viewAllBtn && indexModal) {
+      if (viewAllBtn) {
         viewAllBtn.addEventListener('click', function () {
-          renderIndex();
-          indexModal.open(viewAllBtn);
+          var first = document.querySelector('.blog-card');
+          openPost(currentKey || (first && first.getAttribute('data-post')), viewAllBtn, true);
         });
       }
 
       document.querySelectorAll('.blog-card').forEach(function (btn) {
         btn.addEventListener('click', function (e) {
-          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
+          if (isModified(e)) return;
           e.preventDefault();
-          openPost(btn.getAttribute('data-post'), false, e.currentTarget);
+          openPost(btn.getAttribute('data-post'), e.currentTarget, false);
         });
       });
+
+      renderIndex();
     })();
 
     (function () {

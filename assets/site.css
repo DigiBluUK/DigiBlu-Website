@@ -1369,8 +1369,8 @@
     flex-wrap: wrap;
   }
 
-  /* Only rendered when the detail was opened from the index popup, so the
-     trail back is offered exactly when there is somewhere to go back to. */
+  /* The reader dialogs' mobile-only "All case studies" / "All articles"
+     toggle (see .reader-toggle below). */
   .case-back-btn {
     display: inline-flex;
     align-items: center;
@@ -1476,6 +1476,84 @@
   }
 
   .case-index-item .case-index-go svg { width: 13px; height: 13px; }
+
+  /* ---------- Reader layout ----------
+     The case-study and blog dialogs list every entry down the left and read
+     the selected one on the right, so moving between entries is one click
+     instead of close, View all, pick, back. Both dialogs share these rules;
+     the rows are the same .case-index-item the old index popups used, with
+     .is-active marking the entry being read.
+
+     .modal-panel is already a flex row, so the aside and the reading pane
+     sit side by side and each scrolls on its own inside the panel's
+     max-height. Below 900px there is no room for two columns: the aside is
+     hidden and .show-list swaps it in for the reading pane, driven by the
+     footer's .reader-toggle button, which only shows at that width.
+
+     Doubled selector on the panel: .case-modal-panel and .service-panel set
+     their own max-width at the same specificity and cascade later, so a bare
+     .reader-panel would lose to both. */
+  .modal-panel.reader-panel { max-width: 1140px; }
+
+  .reader-side {
+    position: relative;
+    flex: 0 0 330px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 44px 22px 32px 30px;
+    border-right: 1px solid rgba(var(--ink-rgb), 0.12);
+    background: rgba(var(--ink-rgb), 0.03);
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+
+  .reader-side-count {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+    margin-bottom: 10px;
+  }
+
+  .reader-list .case-index-item { padding: 14px 14px; margin: 0 -14px; gap: 12px; }
+  .reader-list .case-index-item::before,
+  .reader-list .case-index-item:last-child::after { left: 14px; right: 14px; }
+  .reader-list .case-index-title { font-size: 14.5px; }
+  .reader-list .case-index-client { font-size: 10.5px; }
+
+  /* Brand blue for the entry being read - the same fixed-colour selection
+     the team strip uses, ink pinned white the way every blue surface on the
+     site does it. Both labels go to full white: white itself is only 4.56:1
+     on the blue, so any alpha step below it would fail AA. The dividers
+     around the row drop out the same way they do on hover. */
+  .reader-list .case-index-item.is-active,
+  .reader-list .case-index-item.is-active:hover {
+    background: var(--blue);
+    --ink-rgb: 255, 255, 255;
+    --text: #ffffff;
+  }
+  .reader-list .case-index-item.is-active::before,
+  .reader-list .case-index-item.is-active + .case-index-item::before,
+  .reader-list .case-index-item.is-active:last-child::after { opacity: 0; }
+  .reader-list .case-index-item.is-active .case-index-client { color: #ffffff; }
+  .reader-list .case-index-item.is-active .case-index-go { background: rgba(255, 255, 255, 0.18); }
+
+  .reader-toggle { display: none; }
+
+  @media (max-width: 900px) {
+    .reader-side { display: none; }
+    .reader-toggle { display: inline-flex; }
+    .reader-panel.show-list .reader-side {
+      display: flex;
+      flex: 1 1 auto;
+      border-right: none;
+      background: none;
+    }
+    .reader-panel.show-list .case-modal-body,
+    .reader-panel.show-list .service-modal-body { display: none; }
+  }
 
   @media (max-width: 640px) {
     .case-modal-body { padding: 32px 34px 28px 24px; }
@@ -1885,6 +1963,14 @@
       padding: 16px 18px;
       cursor: default;
     }
+
+    /* The tap that opens a profile also moves the highlight here (see the
+       click handler), so the blue row is whichever member was last opened.
+       Ink pinned white, as on the desktop active slice; the role label goes
+       to full white because white itself is only 4.56:1 on the blue, so the
+       muted alpha the other rows use would fail AA. */
+    .team-slice.active { --ink-rgb: 255, 255, 255; --text: #ffffff; }
+    .team-slice.active .team-slice-role { color: #ffffff; }
 
     /* Same circular face crop as the inactive desktop slices, including the
        zoom — without it the whole bust shrinks into a 48px circle and the
