@@ -678,11 +678,11 @@
   .accred-track {
     display: flex;
     width: max-content;
-    /* 64s put a full pass of the six certifications at ~25px/s, which meant
-       waiting the better part of a minute to see the last one. 44s is ~37px/s
-       - still an unhurried read, about a third less waiting. Hover still
-       pauses it, and reduced-motion still stops it entirely. */
-    animation: accred-scroll 44s linear infinite;
+    /* The track is two identical groups animating to -50%, so ONE group width
+       (all six certifications) passes in HALF the duration. 20s here = every
+       chip seen within 10s, per feedback; it was 44s (22s per set) before that,
+       and 64s originally. Hover still pauses, reduced-motion still stops it. */
+    animation: accred-scroll 20s linear infinite;
   }
 
   .accred-track:hover { animation-play-state: paused; }

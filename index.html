@@ -605,7 +605,7 @@
         <span class="team-slice-photo tp-martin" aria-hidden="true"></span>
         <span class="team-slice-label">
           <span class="team-slice-name">Martin McCloskey</span>
-          <span class="team-slice-role">Company Secretary</span>
+          <span class="team-slice-role">Commercial Director &amp; Company Secretary</span>
         </span>
         <span class="team-slice-more" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -616,7 +616,7 @@
         <span class="team-slice-photo tp-dianne" aria-hidden="true"></span>
         <span class="team-slice-label">
           <span class="team-slice-name">Dianne Harris</span>
-          <span class="team-slice-role">Head of Process Improvement</span>
+          <span class="team-slice-role">Senior Engagement Lead</span>
         </span>
         <span class="team-slice-more" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -627,7 +627,7 @@
         <span class="team-slice-photo tp-dave" aria-hidden="true"></span>
         <span class="team-slice-label">
           <span class="team-slice-name">Dave van der Westhuizen</span>
-          <span class="team-slice-role">Lead Consultant</span>
+          <span class="team-slice-role">Senior Engagement Lead</span>
         </span>
         <span class="team-slice-more" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -1101,25 +1101,26 @@
       }
 
       // Name, role and photo are all real and published on
-      // digiblu.com/about-digiblu. The bios are marked [Placeholder] because
-      // that page publishes nothing beyond name and title — real biographical
-      // copy has to come from DigiBlu rather than be invented here.
+      // digiblu.com/about-digiblu. That page carries nothing beyond name and
+      // title, so the bios were placeholders until DigiBlu supplied this copy
+      // (feedback #11) - it is theirs verbatim, not written here. Three role
+      // titles changed with it and the strip labels were updated to match.
       var TEAM_MEMBERS = [
-        { name: 'Vic Gysin', role: 'Chief Executive Officer', cls: 'tp-vic', bio: '[Placeholder] A short profile for Vic Gysin will sit here - background, focus areas, and the kind of work Vic leads at DigiBlu. To be replaced with copy supplied by DigiBlu.' },
-        { name: 'David Williams', role: 'Chief Strategy Officer', cls: 'tp-david', bio: '[Placeholder] A short profile for David Williams will sit here - background, focus areas, and the kind of work David leads at DigiBlu. To be replaced with copy supplied by DigiBlu.' },
-        { name: 'Karen Potgieter', role: 'Chief Financial Officer', cls: 'tp-karen', bio: '[Placeholder] A short profile for Karen Potgieter will sit here - background, focus areas, and the kind of work Karen leads at DigiBlu. To be replaced with copy supplied by DigiBlu.' },
+        { name: 'Vic Gysin', role: 'Chief Executive Officer', cls: 'tp-vic', bio: 'Vic is a business transformation leader with extensive executive experience, including as COO and Board member of the UK’s largest BPO provider. He leads DigiBlu’s business development and provides strategic direction across the business and its client engagements.' },
+        { name: 'David Williams', role: 'Chief Strategy Officer', cls: 'tp-david', bio: 'David is a customer engagement and transformation specialist with over 20 years’ experience across major blue-chip organisations and fast-growing businesses. He has led large-scale customer experience and operational transformation programmes and leads DigiBlu’s AI strategy and advisory capability.' },
+        { name: 'Karen Potgieter', role: 'Chief Financial Officer', cls: 'tp-karen', bio: 'Karen is a Chartered Accountant with over 25 years’ experience spanning finance, technology, management consulting and transformation. She leads DigiBlu’s finance transformation capability and works with clients to deliver complex transformation programmes across a range of sectors.' },
         {
-          name: 'Jon Hinder', role: 'Chief Operating Officer', cls: 'tp-jon', bio: '[Placeholder] A short profile for Jon Hinder will sit here - background, focus areas, and the kind of work Jon leads at DigiBlu. To be replaced with copy supplied by DigiBlu.'
+          name: 'Jon Hinder', role: 'Chief Operating Officer', cls: 'tp-jon', bio: 'Jon is a business process improvement and technology delivery specialist with over 20 years’ experience, primarily within financial services. He leads DigiBlu’s solution delivery capability, overseeing the design and implementation of AI, automation and digital solutions across client engagements.'
         },
-        { name: 'Martin McCloskey', role: 'Company Secretary', cls: 'tp-martin', bio: '[Placeholder] A short profile for Martin McCloskey will sit here - background, focus areas, and the kind of work Martin leads at DigiBlu. To be replaced with copy supplied by DigiBlu.' },
+        { name: 'Martin McCloskey', role: 'Commercial Director & Company Secretary', cls: 'tp-martin', bio: 'Martin has extensive experience spanning software development, sales, commercial management and corporate law, including as Group Legal Counsel for a FTSE 100 business. He leads DigiBlu’s commercial and contractual activities and has served as Company Secretary since the company was founded.' },
         {
-          name: 'Dianne Harris', role: 'Head of Process Improvement', cls: 'tp-dianne', bio: '[Placeholder] A short profile for Dianne Harris will sit here - background, focus areas, and the kind of work Dianne leads at DigiBlu. To be replaced with copy supplied by DigiBlu.'
-        },
-        {
-          name: 'Dave van der Westhuizen', role: 'Lead Consultant', cls: 'tp-dave', bio: '[Placeholder] A short profile for Dave van der Westhuizen will sit here - background, focus areas, and the kind of work Dave leads at DigiBlu. To be replaced with copy supplied by DigiBlu.'
+          name: 'Dianne Harris', role: 'Senior Engagement Lead', cls: 'tp-dianne', bio: 'Dianne has over 25 years’ experience in financial services, spanning operational management, resource planning, project delivery and major fund launches. She leads DigiBlu’s Process Excellence capability, applying Lean Six Sigma methodologies to help clients simplify processes, improve performance and deliver sustainable change.'
         },
         {
-          name: 'Nick Bantick', role: 'Head of Digital Solutions', cls: 'tp-nick', bio: '[Placeholder] A short profile for Nick Bantick will sit here - background, focus areas, and the kind of work Nick leads at DigiBlu. To be replaced with copy supplied by DigiBlu.'
+          name: 'Dave van der Westhuizen', role: 'Senior Engagement Lead', cls: 'tp-dave', bio: 'Dave has over 25 years’ experience in management consulting, transformation and programme delivery. He has led complex change programmes across banking, insurance, healthcare, telecommunications and mining, helping organisations translate strategic objectives into practical, deliverable transformation programmes.'
+        },
+        {
+          name: 'Nick Bantick', role: 'Head of Digital Solutions', cls: 'tp-nick', bio: 'Nick is a digital transformation specialist with experience spanning product ownership, programme delivery and technology-enabled change. He leads DigiBlu’s digital solutions capability, working with clients to translate complex business requirements into pragmatic, scalable solutions using AI, automation and digital technologies.'
         }
       ];
 
@@ -1529,6 +1530,13 @@
         overlay.classList.add('open');
         document.body.style.overflow = 'hidden';
         setBackgroundInert(true);
+        // If another dialog opened first (the contact form, whose own inert
+        // sweep marks every sibling - this overlay included), this one was
+        // inert before it was ever shown. Inert elements are excluded from
+        // hit-testing, so the close button did nothing and the body could
+        // not be scrolled. Lift it explicitly: being the topmost dialog is
+        // what should decide interactivity, not who opened first.
+        overlay.removeAttribute('inert');
         panel.scrollTop = 0;
         var body = overlay.querySelector('.case-modal-body');
         if (body) body.scrollTop = 0;
