@@ -807,38 +807,38 @@
      The transition is what makes the pointer response smooth: each move
      restarts it, so the dashes ease toward their new angle and ease back when
      the cursor leaves rather than snapping. */
-  .geo-flow line {
+  .geo-flow circle {
     transform-box: fill-box;
     transform-origin: 50% 50%;
-    animation: geo-sway 6s ease-in-out infinite;
+    animation: geo-pulse 6s ease-in-out infinite;
     transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    fill-opacity: 0.34;
   }
 
-  @keyframes geo-sway {
-    0%, 100% { rotate: -17deg; }
-    50%      { rotate: 17deg; }
+  /* A breath, not a swing. The lattice is exact, so the motion has to stay
+     small enough that it never reads as the grid wobbling - the dots pulse in
+     place and the geometry holds. */
+  @keyframes geo-pulse {
+    0%, 100% { scale: 0.82; }
+    50%      { scale: 1.14; }
   }
 
-  /* The field is texture and can swing widely. The mark is a drawing: at the
-     field's 17deg its strokes pull apart and the db stops reading, so it
-     gets its own much gentler keyframe. It also sits at full ink while the
-     field falls back, which is what makes the icon read clearly inside the
-     pattern rather than merging into it. */
-  .geo-flow line { stroke-opacity: 0.4; }
-
-  .geo-flow line.mk {
-    stroke-opacity: 1;
-    animation-name: geo-sway-mark;
+  /* The letterform dots sit at full ink against the field's 0.34, which is
+     what makes the db read. They also pulse less: at the field's amplitude
+     the mark's edge would visibly crawl. */
+  .geo-flow circle.mk {
+    fill-opacity: 1;
+    animation-name: geo-pulse-mark;
   }
 
-  @keyframes geo-sway-mark {
-    0%, 100% { rotate: -4deg; }
-    50%      { rotate: 4deg; }
+  @keyframes geo-pulse-mark {
+    0%, 100% { scale: 0.95; }
+    50%      { scale: 1.06; }
   }
 
-  /* Twelve delay buckets, assigned by position when the field is generated, so
-     the sway crosses the field as a wave instead of every dash moving in
-     lockstep. Buckets rather than a per-dash inline delay: 361 inline styles
+  /* Twelve delay buckets, assigned by position when the lattice is generated,
+     so the pulse crosses it as a wave instead of every dot breathing in
+     lockstep. Buckets rather than a per-dot inline delay: 900 inline styles
      per figure is a lot of markup for the same result. */
   .geo-flow .d0 { animation-delay: 0.0s; }
   .geo-flow .d1 { animation-delay: -0.5s; }
@@ -856,7 +856,7 @@
   /* A field of several hundred dashes moving continuously is precisely what
      this preference is about. Reduced motion gets the field, still. */
   @media (prefers-reduced-motion: reduce) {
-    .geo-flow line { animation: none; transition: none; }
+    .geo-flow circle { animation: none; transition: none; }
   }
 
   /* Below 900px the grid is one column, so the figure stacks under the
@@ -2516,9 +2516,6 @@
     background: linear-gradient(135deg, rgba(10, 31, 110, 0.70) 0%, rgba(29, 110, 245, 0.38) 52%, rgba(5, 11, 40, 0.78) 100%);
   }
 
-  /* The icon is not positioned, so without this it would paint in the flow
-     layer - beneath both absolutely positioned siblings - and disappear. */
-  .blog-art svg { position: relative; }
 
   /* The art panel leading the blog detail modal and the standalone blog
      pages. Shorter than the 16/10 grid card so it introduces the article
