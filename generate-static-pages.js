@@ -396,7 +396,7 @@ function renderCaseStudy(c, i) {
   <main>
     <div class="detail-page" id="detail-content">
 ${backLink()}
-      <div class="blog-modal-art" aria-hidden="true">${CASE_ART[c.service] ? `<div class="blog-art a${(i % 4) + 1}">${CASE_ART[c.service]}</div>` : ''}</div>
+      <div class="blog-modal-art" aria-hidden="true"><div class="blog-art a${(i % 4) + 1}"><img class="case-art-photo" src="../assets/case-studies/${c.key}.jpg" alt="" decoding="async"><span class="case-art-scrim"></span>${CASE_ART[c.service] || ''}</div></div>
       <span class="pill case-modal-eyebrow">${escapeHtml(c.sector)} · ${escapeHtml(c.service)}</span>
       <h1>${escapeHtml(c.title)}</h1>
       <p class="case-modal-client">${escapeHtml(c.client)}</p>

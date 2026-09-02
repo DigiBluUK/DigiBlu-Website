@@ -819,6 +819,23 @@
     50%      { rotate: 17deg; }
   }
 
+  /* The field is texture and can swing widely. The mark is a drawing: at the
+     field's 17deg its strokes pull apart and the db stops reading, so it
+     gets its own much gentler keyframe. It also sits at full ink while the
+     field falls back, which is what makes the icon read clearly inside the
+     pattern rather than merging into it. */
+  .geo-flow line { stroke-opacity: 0.4; }
+
+  .geo-flow line.mk {
+    stroke-opacity: 1;
+    animation-name: geo-sway-mark;
+  }
+
+  @keyframes geo-sway-mark {
+    0%, 100% { rotate: -4deg; }
+    50%      { rotate: 4deg; }
+  }
+
   /* Twelve delay buckets, assigned by position when the field is generated, so
      the sway crosses the field as a wave instead of every dash moving in
      lockstep. Buckets rather than a per-dash inline delay: 361 inline styles
@@ -887,6 +904,35 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
   }
+
+  /* Services' entrance. .reveal-ready is added by script, so nothing is hidden
+     unless something is guaranteed to reveal it again.
+
+     Only opacity and transform are animated - both compositor properties, so
+     six cards settling at once costs no layout work. The stagger is by
+     nth-child rather than per-element inline delays. */
+  .services.reveal-ready > .pill,
+  .services.reveal-ready > h2,
+  .services.reveal-ready .service-card {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .services.reveal-in > .pill,
+  .services.reveal-in > h2,
+  .services.reveal-in .service-card {
+    opacity: 1;
+    transform: none;
+  }
+
+  .services.reveal-ready > h2 { transition-delay: 0.08s; }
+  .services.reveal-ready .service-card:nth-child(1) { transition-delay: 0.16s; }
+  .services.reveal-ready .service-card:nth-child(2) { transition-delay: 0.22s; }
+  .services.reveal-ready .service-card:nth-child(3) { transition-delay: 0.28s; }
+  .services.reveal-ready .service-card:nth-child(4) { transition-delay: 0.34s; }
+  .services.reveal-ready .service-card:nth-child(5) { transition-delay: 0.40s; }
+  .services.reveal-ready .service-card:nth-child(6) { transition-delay: 0.46s; }
 
   .service-card {
     position: relative;
@@ -2445,6 +2491,34 @@
     height: auto;
     color: rgba(255, 255, 255, 0.9);
   }
+
+  /* Case-study photography. Each engagement leads with a real photograph of
+     its sector rather than the gradient panel alone - but under a brand scrim
+     and partly desaturated, so eight photographs from eight different sources
+     still read as one set and as part of this site. It also means a warm
+     source (the sunset pylon) and a cold one (the green hospital corridor)
+     land in the same key instead of fighting each other.
+
+     The .aN gradient underneath is deliberately kept: it is what shows if a
+     photo ever fails to load, so the panel degrades to what it used to be. */
+  .case-art-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.55) contrast(1.05);
+  }
+
+  .case-art-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(10, 31, 110, 0.70) 0%, rgba(29, 110, 245, 0.38) 52%, rgba(5, 11, 40, 0.78) 100%);
+  }
+
+  /* The icon is not positioned, so without this it would paint in the flow
+     layer - beneath both absolutely positioned siblings - and disappear. */
+  .blog-art svg { position: relative; }
 
   /* The art panel leading the blog detail modal and the standalone blog
      pages. Shorter than the 16/10 grid card so it introduces the article
