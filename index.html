@@ -78,7 +78,7 @@
      fourteen logos rendered as nothing - which reads as the carousel being
      broken rather than as an obviously old page. Deriving the value from the
      file contents means it changes exactly when the CSS does. -->
-<link rel="stylesheet" href="assets/site.css?v=18d53b69e4">
+<link rel="stylesheet" href="assets/site.css?v=c252b7ef95">
 </head>
 <body>
   <a class="skip-link" href="#hero-content">Skip to content</a>
@@ -293,6 +293,14 @@
 
          The narrative reads muted and fills to full ink word by word as the
          block scrolls up the viewport - see the about IIFE. -->
+    <!-- .about-inner is what sticks while the values run 01 to 05: the whole
+         composition holds, not the list alone, so the hold reads as the page
+         pausing on About rather than a bare list floating in an empty screen.
+         .about-pin-space below is the scroll that hold consumes - a sticky
+         element is constrained by its parent's CONTENT box, so extra padding
+         on .about could not have supplied it. Both are inert below 901px or
+         on a short viewport (see the CSS). -->
+    <div class="about-inner">
     <span class="pill">About Us</span>
     <h2>Who we are.</h2>
 
@@ -364,6 +372,8 @@
         </li>
     </ol>
     </div>
+    </div>
+    <div class="about-pin-space" aria-hidden="true"></div>
   </section>
 
   <section class="services" id="services">
@@ -1014,6 +1024,20 @@
         // it has cleared the upper third.
         var travel = (vh * 0.85 - vh * 0.3) + r.height;
         var p = (vh * 0.85 - r.top) / (travel || 1);
+        // The pin holds this block still, so its own travel stops around 80%
+        // and the last ten words would never light - they sat muted for the
+        // whole hold. While the pin is live the rest of the fill rides the
+        // pin's progress instead, finishing just before the second value
+        // opens, so the sentence completes and then the counting starts.
+        //
+        // Read off window each tick rather than captured once: this IIFE runs
+        // BEFORE the one that defines it, so a captured reference would be
+        // undefined forever and the fill would silently keep freezing.
+        var pinP = window.__aboutPinProgress;
+        if (pinP && pinP.live()) {
+          var q = pinP() / 0.18;
+          if (q > p) p = q;
+        }
         p = p < 0 ? 0 : (p > 1 ? 1 : p);
         var n = Math.round(p * words.length);
         if (n === lit) return;
@@ -1028,6 +1052,42 @@
       window.addEventListener('scroll', update, { passive: true });
       window.addEventListener('resize', update);
       update();
+    })();
+
+    (function () {
+      // How far the About pin has run, 0 at the moment the composition sticks
+      // and 1 as it releases. Shared, because the narrative fill and the
+      // values both need it and measuring it twice invites the two to drift.
+      //
+      // Sticky does not move an element in flow, so the spacer's top edge
+      // keeps travelling at scroll speed even while the composition looks
+      // frozen - which is exactly the ruler this needs. At the moment the pin
+      // engages that edge sits at (sticky offset + composition height); one
+      // spacer-height later the pin releases.
+      //
+      // Whether the pin exists at all is the CSS's call (width and viewport
+      // height), and .live() just reads whether the spacer has any height, so
+      // the script never restates those media queries.
+      var pin = document.querySelector('.about-pin-space');
+      var inner = document.querySelector('.about-inner');
+      var offset = 0;
+
+      // Cached rather than read per scroll event: it only moves when --nav-h
+      // does, and getComputedStyle in a scroll handler forces style resolution
+      // on every tick.
+      function measure() {
+        offset = inner ? (parseFloat(getComputedStyle(inner).top) || 0) : 0;
+      }
+
+      function pinProgress() {
+        if (!pin || !inner || !pin.offsetHeight) return 0;
+        return ((offset + inner.offsetHeight) - pin.getBoundingClientRect().top) / pin.offsetHeight;
+      }
+      pinProgress.live = function () { return !!(pin && inner && pin.offsetHeight); };
+
+      if (pinProgress.live()) measure();
+      window.addEventListener('resize', measure);
+      window.__aboutPinProgress = pinProgress;
     })();
 
     (function () {
@@ -1079,17 +1139,29 @@
         return;
       }
 
+      // Two ways of measuring how far through the values the scroll is, chosen
+      // by whether the pin is live - which the CSS decides, on width and on
+      // viewport height, so the script reads the spacer's own height rather
+      // than re-testing those media queries and risking the two disagreeing.
+      function progress() {
+        var vh = window.innerHeight || document.documentElement.clientHeight;
+        var pinned = window.__aboutPinProgress && window.__aboutPinProgress.live();
+        if (pinned) return window.__aboutPinProgress();
+
+        // Unpinned: measured from the list's own box, so the short desktop row
+        // and the much taller phone column both complete inside the section.
+        // The band ends with the list's BOTTOM at 55% of the viewport - mapped
+        // off the top instead, 05 on a phone would land only once Services
+        // already filled the screen. Each value's turn then comes as it rises
+        // through the lower half.
+        var r = list.getBoundingClientRect();
+        var travel = (vh * 0.82 - vh * 0.55) + r.height;
+        return (vh * 0.82 - r.top) / (travel || 1);
+      }
+
       var last = -1;
       function onScroll() {
-        var r = list.getBoundingClientRect();
-        var vh = window.innerHeight || document.documentElement.clientHeight;
-        // Measured from the list's own box, so the short desktop row and the
-        // much taller phone column both complete inside the section. The band
-        // ends with the list's bottom at 55% of the viewport, which is what
-        // keeps 05 from landing only once Services already fills the screen.
-        // Each value's own turn then comes as it rises through the lower half.
-        var travel = (vh * 0.82 - vh * 0.55) + r.height;
-        var p = (vh * 0.82 - r.top) / (travel || 1);
+        var p = progress();
         var n = Math.floor((p < 0 ? 0 : p > 1 ? 1 : p) * items.length);
         if (n > items.length - 1) n = items.length - 1;
         if (n === last) return;

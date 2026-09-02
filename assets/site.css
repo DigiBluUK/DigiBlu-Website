@@ -867,7 +867,7 @@
 
   /* One treatment for every section title, so they cannot drift apart. Only
      the trailing margin varies, set on each section below. */
-  .about > h2,
+  .about h2,
   .services h2,
   .cases h2,
   .team-head h2,
@@ -879,7 +879,7 @@
     color: var(--text);
   }
 
-  .about > h2,
+  .about h2,
   .services h2 { margin-bottom: var(--head-gap); }
 
   .services-grid {
@@ -985,6 +985,38 @@
     max-width: var(--maxw);
     margin: 0 auto;
     padding: var(--section-y) var(--gutter);
+  }
+
+  /* The section holds still while the values run 01 to 05, then releases and
+     the page carries on into Services. Sticky content plus a spacer that the
+     hold consumes - no scroll hijacking, no preventDefault, so a flick, a
+     scrollbar drag and a keyboard PageDown all behave normally and the user is
+     never actually trapped.
+
+     Gated on viewport HEIGHT as much as width: a sticky element taller than
+     the viewport pins its top and puts its own bottom permanently out of
+     reach. The composition measures ~734px, so below 860px of viewport the
+     pin is dropped entirely and the values simply advance as the section
+     passes, which is also what every width under 901px gets. */
+  .about-pin-space { display: none; }
+
+  @media (min-width: 901px) and (min-height: 860px) {
+    .about-inner {
+      position: sticky;
+      top: calc(var(--nav-h, 75px) + 18px);
+    }
+
+    /* 5 values across 130vh - each gets ~26vh, and the last 20% holds on 05
+       so the section does not release the instant it arrives. */
+    .about-pin-space { display: block; height: 130vh; }
+  }
+
+  /* Holding the page still for 130vh only makes sense while something is
+     changing. Under reduced motion the values are all revealed at once, so the
+     hold would be a long stretch of nothing happening. */
+  @media (prefers-reduced-motion: reduce) {
+    .about-inner { position: static; }
+    .about-pin-space { display: none; }
   }
 
   .pill {
