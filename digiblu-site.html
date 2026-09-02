@@ -1123,10 +1123,26 @@
   .value-open:hover,
   .value-open:focus-visible { border-top-color: var(--blue); }
 
-  /* display:none rather than a zero height: a collapsed item must not reserve
-     the space its copy would need. */
-  .value-text { display: none; padding-top: 4px; }
-  .value-item.is-open .value-text { display: block; }
+  /* Small screens reveal cumulatively as the section scrolls: every value is
+     laid out from the start and fades in as its turn comes, so the section
+     ends with all five readable and nothing behind a tap.
+
+     Faded rather than collapsed, deliberately. Collapsing would grow the list
+     as each value appeared, and the list's own box is what the scroll position
+     is measured against - the reveal would then be moving its own trigger.
+     Holding the height constant keeps that loop closed. */
+  .value-text {
+    padding-top: 4px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .value-item.is-revealed .value-text,
+  .value-item.is-open .value-text { opacity: 1; transform: none; }
+
+  .value-item.is-revealed .value-num { color: var(--text); }
+  .value-item.is-revealed .value-open { border-top-color: rgba(var(--ink-rgb), 0.55); }
 
   .value-title {
     display: block;
@@ -1174,7 +1190,24 @@
 
     .value-num { font-size: clamp(44px, 5vw, 82px); }
 
-    .value-text { max-width: 430px; padding-top: 6px; }
+    /* Desktop is a horizontal accordion, so only one value can be open at a
+       time - a collapsed item has to surrender its width for the open one to
+       grow into, which the fade the small-screen case uses cannot do. The
+       cumulative reveal is therefore small-screen only, and .is-revealed is
+       reduced back to marking how far the scroll has travelled. */
+    .value-text {
+      display: none;
+      max-width: 430px;
+      padding-top: 6px;
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .value-item.is-open .value-text { display: block; }
+    .value-item.is-revealed:not(.is-open) .value-text { display: none; }
+    .value-item.is-revealed:not(.is-open) .value-num { color: rgba(var(--ink-rgb), var(--ink-a-faint)); }
+    .value-item.is-revealed:not(.is-open) .value-open { border-top-color: rgba(var(--ink-rgb), 0.14); }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -4167,14 +4200,31 @@
     })();
 
     (function () {
-      // Values accordion. One open at a time, the first open on load, so the
-      // section never reads as five bare numerals. Click rather than hover:
-      // hover-to-open has no touch equivalent and cannot be reached from the
-      // keyboard, so hover is left as a tint only (see the CSS).
+      // Values. Scrolling drives which value is open, so the list runs 01 to
+      // 05 by itself as the section passes and has finished before Services
+      // arrives. Click still works and simply sets the open one; the next
+      // scroll takes over again. Hover is a tint only (see the CSS): it has no
+      // touch equivalent and cannot be reached from the keyboard.
       var items = document.querySelectorAll('.value-item');
       if (!items.length) return;
+      var list = document.querySelector('.value-list');
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      items.forEach(function (item) {
+      function setOpen(n) {
+        items.forEach(function (item, i) {
+          var on = i === n;
+          item.classList.toggle('is-open', on);
+          // Cumulative, so a phone leaves the section with all five values
+          // readable rather than one open and four behind a tap. Desktop has
+          // room for a single open value, so the CSS there keeps .is-revealed
+          // to nothing more than a marker.
+          item.classList.toggle('is-revealed', i <= n);
+          var b = item.querySelector('.value-open');
+          if (b) b.setAttribute('aria-expanded', String(on));
+        });
+      }
+
+      items.forEach(function (item, i) {
         var btn = item.querySelector('.value-open');
         if (!btn) return;
         btn.addEventListener('click', function () {
@@ -4182,14 +4232,45 @@
           // nothing open the row loses all its copy, which is worse than
           // simply staying put.
           if (item.classList.contains('is-open')) return;
-          items.forEach(function (other) {
-            var on = other === item;
-            other.classList.toggle('is-open', on);
-            var b = other.querySelector('.value-open');
-            if (b) b.setAttribute('aria-expanded', String(on));
-          });
+          setOpen(i);
+          // Keep the scroll memo honest, or the next scroll inside this same
+          // band would compare against a stale value, short-circuit, and leave
+          // the clicked value stuck until a band boundary was crossed.
+          last = i;
         });
       });
+
+      if (reduce || !list) {
+        // Nothing may be reachable only through a gesture that never happens,
+        // so reveal the lot and open the first.
+        items.forEach(function (item) { item.classList.add('is-revealed'); });
+        setOpen(0);
+        return;
+      }
+
+      var last = -1;
+      function onScroll() {
+        var r = list.getBoundingClientRect();
+        var vh = window.innerHeight || document.documentElement.clientHeight;
+        // Measured from the list's own box, so the short desktop row and the
+        // much taller phone column both complete inside the section. The band
+        // ends with the list's bottom at 55% of the viewport, which is what
+        // keeps 05 from landing only once Services already fills the screen.
+        // Each value's own turn then comes as it rises through the lower half.
+        var travel = (vh * 0.82 - vh * 0.55) + r.height;
+        var p = (vh * 0.82 - r.top) / (travel || 1);
+        var n = Math.floor((p < 0 ? 0 : p > 1 ? 1 : p) * items.length);
+        if (n > items.length - 1) n = items.length - 1;
+        if (n === last) return;
+        last = n;
+        setOpen(n);
+      }
+
+      // Not rAF-throttled: one rect read plus a class toggle on five nodes,
+      // and rAF is throttled to a stop in the preview environment.
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      onScroll();
     })();
 
     (function () {

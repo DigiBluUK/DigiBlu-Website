@@ -1121,10 +1121,26 @@
   .value-open:hover,
   .value-open:focus-visible { border-top-color: var(--blue); }
 
-  /* display:none rather than a zero height: a collapsed item must not reserve
-     the space its copy would need. */
-  .value-text { display: none; padding-top: 4px; }
-  .value-item.is-open .value-text { display: block; }
+  /* Small screens reveal cumulatively as the section scrolls: every value is
+     laid out from the start and fades in as its turn comes, so the section
+     ends with all five readable and nothing behind a tap.
+
+     Faded rather than collapsed, deliberately. Collapsing would grow the list
+     as each value appeared, and the list's own box is what the scroll position
+     is measured against - the reveal would then be moving its own trigger.
+     Holding the height constant keeps that loop closed. */
+  .value-text {
+    padding-top: 4px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .value-item.is-revealed .value-text,
+  .value-item.is-open .value-text { opacity: 1; transform: none; }
+
+  .value-item.is-revealed .value-num { color: var(--text); }
+  .value-item.is-revealed .value-open { border-top-color: rgba(var(--ink-rgb), 0.55); }
 
   .value-title {
     display: block;
@@ -1172,7 +1188,24 @@
 
     .value-num { font-size: clamp(44px, 5vw, 82px); }
 
-    .value-text { max-width: 430px; padding-top: 6px; }
+    /* Desktop is a horizontal accordion, so only one value can be open at a
+       time - a collapsed item has to surrender its width for the open one to
+       grow into, which the fade the small-screen case uses cannot do. The
+       cumulative reveal is therefore small-screen only, and .is-revealed is
+       reduced back to marking how far the scroll has travelled. */
+    .value-text {
+      display: none;
+      max-width: 430px;
+      padding-top: 6px;
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .value-item.is-open .value-text { display: block; }
+    .value-item.is-revealed:not(.is-open) .value-text { display: none; }
+    .value-item.is-revealed:not(.is-open) .value-num { color: rgba(var(--ink-rgb), var(--ink-a-faint)); }
+    .value-item.is-revealed:not(.is-open) .value-open { border-top-color: rgba(var(--ink-rgb), 0.14); }
   }
 
   @media (prefers-reduced-motion: reduce) {
