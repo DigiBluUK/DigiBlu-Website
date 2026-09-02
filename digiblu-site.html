@@ -892,13 +892,19 @@
     margin-bottom: 18px;
   }
 
-  /* Heading and statements sit left; the lede and visual sit right. */
+  /* One column: the narrative reads first and the values sit under it.
+     They were side by side, which set them competing for the same first
+     read rather than the values following from the story. */
   .about-top {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-    gap: 72px;
+    grid-template-columns: 1fr;
+    gap: 52px;
     align-items: start;
   }
+
+  /* Without a cap the paragraphs would run the full 1500px content measure,
+     which is far past a comfortable line length. */
+  .about-head { max-width: 820px; }
 
   .about-lede {
     font-size: clamp(17px, 1.5vw, 21px);
@@ -910,6 +916,7 @@
   .about-lede:last-of-type { margin-bottom: 0; }
 
   .about-lede strong { font-weight: 500; }
+
 
   /* Short accent rule under the heading, per the mockup. */
   .about-rule {
@@ -974,7 +981,7 @@
   }
 
   @media (max-width: 900px) {
-    .about-top { grid-template-columns: 1fr; gap: 36px; }
+    .about-top { gap: 36px; }
   }
 
 
@@ -1877,6 +1884,85 @@
   }
 
   .team-slice.active .team-slice-label { opacity: 1; transform: translateY(0); }
+
+  /* ---------- Expanded card (desktop) ----------
+     The selected member's card is two columns: headshot left, text right,
+     a hairline divider between them. It previously laid the name, role and
+     bio directly over the photo, which read as text written on top of the
+     person; splitting them means neither has to give way to the other.
+
+     Scoped to min-width 761px deliberately. The mobile block further down
+     (max-width 760px) restyles .team-slice-photo through a bare, one-class
+     selector, so an unscoped .team-slice.active .team-slice-photo rule here
+     would outrank it and blow the first row's 48px circle back up into a
+     column - the same class of bug as the box-shadow note in that block. */
+  @media (min-width: 761px) {
+    .team-slice.active { display: flex; align-items: stretch; }
+
+    .team-slice.active .team-slice-photo {
+      position: relative;
+      inset: auto;
+      flex: 0 0 40%;
+      align-self: stretch;
+    }
+
+    /* The text column carries its own slightly deeper tint rather than
+       leaning on the photo scrim: white on plain --blue is 4.56:1, barely
+       over AA, and the bio is small text. Over this it measures 7.2:1. The
+       left border is the divider; the wide right padding clears the +
+       button that sits at the card's top right corner. */
+    .team-slice.active .team-slice-label {
+      position: relative;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 24px 52px 24px 26px;
+      background: rgba(4, 8, 26, 0.28);
+      border-left: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    /* Collapsed slices keep nowrap so their hidden labels cannot reflow
+       mid-expand, but the open card's column is narrower than the slice and
+       "Dave van der Westhuizen" has to be allowed to wrap inside it. */
+    .team-slice.active .team-slice-name,
+    .team-slice.active .team-slice-role { white-space: normal; }
+
+    /* Nothing sits over the photo now, so the scrim that existed to keep the
+       label legible would only be dimming the headshot. */
+    .team-slice.active::after { opacity: 0; }
+  }
+
+  /* The selected member's bio, in the card rather than only behind the
+     profile dialog, so the member open by default (Vic) reads without a
+     click. Injected from TEAM_MEMBERS - see the team IIFE.
+
+     The floor is measured, not picked: the strip is a fixed 280px, so the
+     question is whether the longest bio still fits the text column. A bio
+     clipped mid-sentence reads worse than none, so below this width it
+     stays in the dialog behind the + button, which is also what every
+     width below the desktop breakpoint does.
+
+     Worst-case spare height in the text column across all eight members:
+     65px at 1440, 46px at 1280, 7px at 1200 (under one line), and negative
+     by 1024. 1280 is the floor with real margin. Re-measure if a bio is
+     lengthened - Vic's is the shortest of the eight, so checking only the
+     default member would clear a threshold the other seven overflow. */
+  .team-slice-bio { display: none; }
+
+  @media (min-width: 1280px) {
+    .team-slice.active .team-slice-bio {
+      display: block;
+      margin-top: 10px;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #ffffff;
+    }
+  }
 
   /* Without this there is nothing telling you a slice opens a profile — the
      expanded panel looked like the end state, so a click on it appeared to
@@ -4084,6 +4170,23 @@
           name: 'Nick Bantick', role: 'Head of Digital Solutions', cls: 'tp-nick', bio: 'Nick is a digital transformation specialist with experience spanning product ownership, programme delivery and technology-enabled change. He leads DigiBlu’s digital solutions capability, working with clients to translate complex business requirements into pragmatic, scalable solutions using AI, automation and digital technologies.'
         }
       ];
+
+      // The selected member's bio is shown inside the expanded slice, not
+      // only behind the profile dialog, so the member who is open by default
+      // (Vic) can be read without a click. Injected from TEAM_MEMBERS rather
+      // than authored into the markup so the strip and the dialog cannot
+      // drift apart - that array stays the single source for every bio. CSS
+      // hides it below 901px, where the expanded slice is too narrow to hold
+      // the full text inside the strip's 280px.
+      slices.forEach(function (el, i) {
+        var m = TEAM_MEMBERS[i];
+        var label = el.querySelector('.team-slice-label');
+        if (!m || !m.bio || !label) return;
+        var bio = document.createElement('span');
+        bio.className = 'team-slice-bio';
+        bio.textContent = m.bio;
+        label.appendChild(bio);
+      });
 
       var overlay = document.getElementById('teamModal');
       var modal = overlay ? createModalController(overlay) : null;
