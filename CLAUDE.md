@@ -242,7 +242,7 @@ CSS custom properties on `:root`, redefined under `:root[data-theme="light"]` an
 - **The angle field is a sum of point vortices**, each contributing a velocity perpendicular to the line joining it and falling off with distance. **Crossed sinusoids were tried first and rejected** - they gave a uniform diagonal hatch with no swirl centres, which is the whole character of the reference. A softening term keeps the centres from blowing up.
 - **Each dash is drawn already at its own angle**, so the animation only adds a sway and never composes with a base rotation, which SVG makes awkward. `transform-box: fill-box` pivots each dash about its own centre.
 - **Twelve delay buckets, assigned by position at generation time**, so the sway crosses the field as a wave rather than every dash moving in lockstep. Buckets rather than per-dash inline delays: 361 inline styles is a lot of markup for the same result.
-- **The plate is a fixed black with white strokes**, so it reads identically in both themes - the pinned-surface pattern `.hero` and `.service-card.accent` use.
+- **Theme-aware, not a pinned plate.** It was fixed black with white strokes at first, which left a black square on the white page in light theme. Strokes now follow `--text` and the plate `--bg`: white on black in dark, black on white in light, with the plate invisible against the page either way (measured 21:1 and 18.9:1).
 - **361 animated dashes.** It was 722 while two arrangements were live. Disabled under `prefers-reduced-motion`, which holds the field still.
 - Earlier versions kept in the scratchpad: filled dissolve blocks (`gen.cjs`) and three cross-fading line figures on a 9s cycle (`genlines.cjs`). Both were replaced on request, not abandoned.
 

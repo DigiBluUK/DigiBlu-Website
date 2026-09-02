@@ -78,7 +78,7 @@
      fourteen logos rendered as nothing - which reads as the carousel being
      broken rather than as an obviously old page. Deriving the value from the
      file contents means it changes exactly when the CSS does. -->
-<link rel="stylesheet" href="assets/site.css?v=2b81023664">
+<link rel="stylesheet" href="assets/site.css?v=8db609fa95">
 </head>
 <body>
   <a class="skip-link" href="#hero-content">Skip to content</a>
@@ -792,7 +792,7 @@
             </div>
             <div class="modal-field">
               <label for="cf-phone">Phone Number <span class="modal-field-optional">(optional)</span></label>
-              <input id="cf-phone" type="tel" autocomplete="tel" placeholder="e.g. 07123 456789">
+              <input id="cf-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. 07123 456789">
             </div>
           </div>
 
@@ -1145,6 +1145,35 @@
       });
       if (nextBtn) nextBtn.addEventListener('click', function () {
         setActive((currentIndex() + 1) % slices.length);
+      });
+    })();
+
+    (function () {
+      // Phone field takes numbers only - letters and stray punctuation are
+      // stripped as they are typed or pasted.
+      //
+      // "Numbers only" here means no letters, not digits alone: + ( ) - and
+      // spaces are kept, because stripping them would mangle every
+      // international number (+44 ...) and DigiBlu's clients are not all in
+      // the UK. Ask before tightening this to digits alone.
+      var phone = document.getElementById('cf-phone');
+      if (!phone) return;
+
+      var DISALLOWED = /[^0-9+()\-\s]/g;
+
+      phone.addEventListener('input', function () {
+        var before = phone.value;
+        var after = before.replace(DISALLOWED, '');
+        if (after === before) return;
+
+        // Rewriting .value drops the caret to the end of the field, which
+        // makes editing mid-number impossible. Count how many characters were
+        // removed ahead of the caret and put it back where it was.
+        var caret = phone.selectionStart;
+        var removedBeforeCaret = before.slice(0, caret).replace(/[0-9+()\-\s]/g, '').length;
+        phone.value = after;
+        var pos = caret - removedBeforeCaret;
+        try { phone.setSelectionRange(pos, pos); } catch (e) {}
       });
     })();
 

@@ -204,9 +204,24 @@
      reduced-motion. */
   html {
     scroll-behavior: smooth;
-    /* --nav-h is the bar's own height; the +26px covers the 12px top margin
-       the glass panel gains once scrolled, plus a little breathing room. */
-    scroll-padding-top: calc(var(--nav-h) + 26px);
+    /* Anchored jumps land the section's first visible element just under the
+       nav, not the section's top edge. --nav-h is the bar's own height and
+       the +26px covers the 12px top margin the glass panel gains once
+       scrolled, plus breathing room.
+
+       --section-y is SUBTRACTED, and the sign is the whole point.
+       scroll-padding-top is how far from the top of the viewport the target
+       is placed, so a larger value lands it LOWER. Adding the section's own
+       top padding pushed the heading further down - the opposite of the fix.
+       Subtracting it scrolls that empty padding up behind the bar, leaving
+       the heading just below the nav.
+
+       Both terms are variables on purpose: --section-y drops to 56px at
+       900px and --nav-h is measured from the live nav by script, so one rule
+       stays right at every width.
+
+       Anchored jumps only - ordinary scrolling is untouched. */
+    scroll-padding-top: calc(var(--nav-h) + 26px - var(--section-y));
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -754,19 +769,22 @@
 
      Fill is currentColor, so one file serves both themes. Purely decorative,
      hence aria-hidden and no role. */
-  /* A flow field of short dashes on a black plate, animating in place. The
-     panel is a FIXED black with white strokes rather than theme tokens, as
-     asked - so it reads the same in both themes, the way .hero and
-     .service-card.accent pin their own surface. */
+  /* A flow field of short dashes animating in place.
+
+     Theme-aware, not a pinned black plate. It was fixed black with white
+     strokes at first, which left a black square sitting on the white page in
+     light theme; the strokes now follow --text and the plate follows --bg, so
+     the field is white on black in dark theme and black on white in light,
+     and the plate is invisible against the page either way. */
   .geo-figure {
     position: relative;
     align-self: center;
     width: clamp(170px, 17vw, 250px);
     aspect-ratio: 1 / 1;
-    background: #000000;
+    background: var(--bg);
     border-radius: 16px;
     overflow: hidden;
-    color: #ffffff;
+    color: var(--text);
   }
 
   .geo-flow {
