@@ -78,7 +78,7 @@
      fourteen logos rendered as nothing - which reads as the carousel being
      broken rather than as an obviously old page. Deriving the value from the
      file contents means it changes exactly when the CSS does. -->
-<link rel="stylesheet" href="assets/site.css?v=e5b1e542cd">
+<link rel="stylesheet" href="assets/site.css?v=3228a5e1a8">
 </head>
 <body>
   <a class="skip-link" href="#hero-content">Skip to content</a>
@@ -1087,6 +1087,18 @@
 
       if (pinProgress.live()) measure();
       window.addEventListener('resize', measure);
+      // --nav-h is set by the nav script further down this file, so at this
+      // point the sticky top still resolves to its 75px fallback and the value
+      // cached above is only right while the nav happens to be 75px tall.
+      // Measured once more on the first scroll, by which time the real value
+      // exists. This listener is registered before the values IIFE's, so it
+      // runs first on that same event.
+      var remeasured = false;
+      window.addEventListener('scroll', function () {
+        if (remeasured) return;
+        remeasured = true;
+        measure();
+      }, { passive: true });
       window.__aboutPinProgress = pinProgress;
     })();
 
