@@ -161,7 +161,7 @@ function pageHead({ title, description, canonicalPath, ogType, ogImage, ogImageA
     }
   })();
 </script>
-<link rel="stylesheet" href="../assets/site.css?v=20260812">
+<link rel="stylesheet" href="../assets/site.css?v=20260902">
 </head>
 `;
 }
