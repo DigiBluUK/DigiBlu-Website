@@ -78,7 +78,7 @@
      fourteen logos rendered as nothing - which reads as the carousel being
      broken rather than as an obviously old page. Deriving the value from the
      file contents means it changes exactly when the CSS does. -->
-<link rel="stylesheet" href="assets/site.css?v=fefd6b15bd">
+<link rel="stylesheet" href="assets/site.css?v=32cc597f1e">
 </head>
 <body>
   <a class="skip-link" href="#hero-content">Skip to content</a>
@@ -1020,10 +1020,14 @@
       function update() {
         var r = head.getBoundingClientRect();
         var vh = window.innerHeight || document.documentElement.clientHeight;
-        // Fills from the block reaching the lower part of the viewport until
-        // it has cleared the upper third.
-        var travel = (vh * 0.85 - vh * 0.3) + r.height;
-        var p = (vh * 0.85 - r.top) / (travel || 1);
+        // Fills as the block's TOP travels from 92% of the viewport up to 50%
+        // - about 0.4 of a screen of scrolling, regardless of the block's own
+        // height. It used to run until the whole block had cleared the upper
+        // third (roughly a full screen), and a stakeholder scrolling at speed
+        // was past the section with the copy still grey. Fast now: a flick
+        // lights the paragraph before the eye lands on it.
+        var travel = vh * 0.42;
+        var p = (vh * 0.92 - r.top) / (travel || 1);
         // The pin holds this block still, so its own travel stops around 80%
         // and the last ten words would never light - they sat muted for the
         // whole hold. While the pin is live the rest of the fill rides the
@@ -1035,7 +1039,9 @@
         // undefined forever and the fill would silently keep freezing.
         var pinP = window.__aboutPinProgress;
         if (pinP && pinP.live()) {
-          var q = pinP() / 0.18;
+          // Completes by 6% of the pin. With the band above the fill is
+          // normally done before the pin engages; this is the safety net.
+          var q = pinP() / 0.06;
           if (q > p) p = q;
         }
         p = p < 0 ? 0 : (p > 1 ? 1 : p);
@@ -1076,7 +1082,11 @@
       // does, and getComputedStyle in a scroll handler forces style resolution
       // on every tick.
       function measure() {
-        offset = inner ? (parseFloat(getComputedStyle(inner).top) || 0) : 0;
+        if (!inner) { offset = 0; return; }
+        // The CSS centres the composition from this. Written BEFORE the top
+        // is read, since the top is computed from it.
+        inner.style.setProperty('--about-inner-h', inner.offsetHeight + 'px');
+        offset = parseFloat(getComputedStyle(inner).top) || 0;
       }
 
       function pinProgress() {

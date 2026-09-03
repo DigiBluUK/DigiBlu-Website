@@ -1092,14 +1092,23 @@
   .about-pin-space { display: none; }
 
   @media (min-width: 901px) and (min-height: 860px) {
+    /* Centred in the viewport during the hold, not pinned to the nav. The
+       composition is ~734px tall and the viewport may be 1000px or more, so
+       held at the top it left every spare pixel as one empty band beneath the
+       values - read by a stakeholder as "quite a bit of space" before
+       Services. Centred, the spare splits above and below and reads as a
+       held slide. --about-inner-h is written by the pin IIFE from the real
+       height; the max() keeps it clear of the nav on short viewports. */
     .about-inner {
       position: sticky;
-      top: calc(var(--nav-h, 75px) + 18px);
+      top: max(calc(var(--nav-h, 75px) + 18px), calc((100vh - var(--about-inner-h, 734px)) / 2));
     }
 
-    /* 5 values across 130vh - each gets ~26vh, and the last 20% holds on 05
-       so the section does not release the instant it arrives. */
-    .about-pin-space { display: block; height: 130vh; }
+    /* 5 values across 85vh - each gets ~17vh, and the last 20% holds on 05
+       so the section does not release the instant it arrives. It was 130vh;
+       the hold is where the empty runway shows, so it is as short as the
+       values can comfortably run. */
+    .about-pin-space { display: block; height: 85vh; }
   }
 
   /* Holding the page still for 130vh only makes sense while something is
@@ -1169,7 +1178,9 @@
      simply sits at full ink and nothing is lost but the effect. */
   .about-head.is-reading .about-word { color: rgba(var(--ink-rgb), var(--ink-a-mid)); }
   .about-head.is-reading .about-word.is-read { color: var(--text); }
-  .about-word { transition: color 0.35s ease; }
+  /* 0.18s: the fill is now quick enough that a longer transition visibly
+     trailed the words it was meant to light. */
+  .about-word { transition: color 0.18s ease; }
 
   /* Short accent rule under the heading. */
   .about-rule {
