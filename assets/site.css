@@ -2484,20 +2484,33 @@
        square at full width (240px in a 280px card with 20px margins) so
        cover shows the whole crop; narrower cards shrink the width and the
        face-centred crop keeps the face. */
-    .team-slice.active { --tile-w: clamp(180px, 30%, 240px); }
+    /* A circle, like the collapsed slices - the same centred 190% zoom on
+       the same face-centred crop, so it lands on the face for the same
+       reason theirs does, just at 168px instead of 52. A square tile at any
+       zoom still read as a picture cut out and placed in a box; the circle
+       is the crop the strip already uses, so the open card and the closed
+       ones are one visual language. */
+    .team-slice.active { --tile-w: clamp(104px, 22%, 168px); }
 
+    /* height comes from aspect-ratio, NOT a second var(--tile-w): a percentage
+       inside clamp() resolves against the containing block's HEIGHT when used
+       for height, so the same clamp gave 168 wide by 120 tall - an oval with
+       a 50% radius, not a circle. */
     .team-slice.active .team-slice-photo {
-      inset: 20px auto 20px 20px;
+      inset: 50% auto auto 36px;
       width: var(--tile-w);
-      border-radius: 16px;
+      height: auto;
+      aspect-ratio: 1 / 1;
+      transform: translateY(-50%);
+      border-radius: 50%;
       /* White, fixed - a cutout on a white card, the image filling it. Not a
          theme token: the tile sits inside the navy card in both themes, and
          the cutout edges need one constant backdrop. 135% rather than cover
          so the person fills the frame; still pinned to the bottom edge, and
          at 135% the tightest crop keeps ~17px above the hair at 240px. */
       background-color: #ffffff;
-      background-size: 135%;
-      background-position: center bottom;
+      background-size: 190%;
+      background-position: center center;
       filter: none;
     }
 
@@ -2505,7 +2518,7 @@
        Nothing needs a scrim any more: the text sits on solid navy, and the
        photo is a cutout with no edges to hide. */
     .team-slice.active::after {
-      inset: 28px auto 28px calc(40px + var(--tile-w));
+      inset: 28px auto 28px calc(64px + var(--tile-w));
       width: 1px;
       background: rgba(255, 255, 255, 0.14);
     }
@@ -2515,9 +2528,15 @@
        full profile dialog, which matters below ~1100px where the bio clamps. */
     .team-slice.active .team-slice-more { display: none; }
 
+    /* Inside the card the name and role may wrap. The nowrap on the base
+       rules protected the old overlay layout; in a two-column card at tablet
+       widths the text column can be ~120px, and a nowrap name overflows it. */
+    .team-slice.active .team-slice-name,
+    .team-slice.active .team-slice-role { white-space: normal; }
+
     /* Text column, vertically centred. */
     .team-slice.active .team-slice-label {
-      left: calc(40px + var(--tile-w));
+      left: calc(64px + var(--tile-w));
       top: 0;
       bottom: 0;
       padding: 28px 32px;
