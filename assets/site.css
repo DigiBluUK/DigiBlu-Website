@@ -1284,6 +1284,10 @@
   .value-item.is-revealed .value-num { color: var(--text); }
   .value-item.is-revealed .value-open { border-top-color: rgba(var(--ink-rgb), 0.55); }
 
+  /* The last value's bottom padding is the foot of the section; the rest of
+     it is the spacing between values. Same reasoning as the desktop row. */
+  .value-item:last-child .value-open { padding-bottom: 4px; }
+
   .value-title {
     display: block;
     font-size: 15px;
@@ -1321,10 +1325,15 @@
 
     .value-item.is-open { flex: 1 1 auto; }
 
+    /* 4px at the bottom, not 34. The hairline is on TOP of each value, so
+       bottom padding here is pure air at the foot of the section, sitting
+       inside the standard 2 x --section-y gap to Services - which made that
+       gap read as 178px against 144 everywhere else ("a bit of a gap between
+       our values and services"). */
     .value-open {
       align-items: flex-start;
       gap: 26px;
-      padding: 20px 0 34px;
+      padding: 20px 0 4px;
       border-top-width: 2px;
     }
 
@@ -1348,6 +1357,17 @@
     .value-item.is-revealed:not(.is-open) .value-text { display: none; }
     .value-item.is-revealed:not(.is-open) .value-num { color: rgba(var(--ink-rgb), var(--ink-a-faint)); }
     .value-item.is-revealed:not(.is-open) .value-open { border-top-color: rgba(var(--ink-rgb), 0.14); }
+
+    /* Hover and focus must beat the "revealed but closed" override above.
+       Reveal is cumulative, so on 05 every earlier numeral carries
+       .is-revealed and that four-class rule outranked the plain hover rule
+       (three classes): hovering 01-04 from 05 did nothing, while from 01 -
+       where nothing below is revealed yet - it turned blue. Five classes here,
+       and placed after, so this wins on both counts. Same for the hairline. */
+    .value-list .value-item .value-open:hover .value-num,
+    .value-list .value-item .value-open:focus-visible .value-num { color: var(--blue); }
+    .value-list .value-item .value-open:hover,
+    .value-list .value-item .value-open:focus-visible { border-top-color: var(--blue); }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -2580,6 +2600,15 @@
   .blog-modal-art { margin-bottom: 22px; }
   .blog-modal-art:empty { display: none; }
   .blog-modal-art .blog-art { aspect-ratio: 16 / 6; border-radius: 14px; }
+
+  /* Shorter on a phone. At 16/6 the photograph took a third of the first
+     screen before the title had even appeared; 16/4.5 keeps it as a header
+     band rather than the page's subject. The scrim and desaturation are what
+     make a shallow crop still read - they are doing the work, not the area. */
+  @media (max-width: 640px) {
+    .blog-modal-art { margin-bottom: 16px; }
+    .blog-modal-art .blog-art { aspect-ratio: 16 / 4.5; border-radius: 12px; }
+  }
 
   /* ---------- Footer ---------- */
   /* A plain themed surface tone (not the artwork treatment tried and
