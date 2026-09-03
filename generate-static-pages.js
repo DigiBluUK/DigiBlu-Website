@@ -101,6 +101,7 @@ function truncate(str, max) {
 // generic checkmark it replaced. Generated once by scratchpad tooling from
 // the mask's leading 76x76 square - see CLAUDE.md.
 const FAVICON = "../assets/favicon.png";
+const FAVICON_SVG = "../assets/favicon.svg";   // theme-aware; the PNG is the fallback
 
 // ogImage lets a page override the site-wide share card. Case studies pass
 // their own per-engagement card (assets/og/case-studies/<key>.jpg, built from
@@ -137,6 +138,7 @@ function pageHead({ title, description, canonicalPath, ogType, ogImage, ogImageA
 <meta name="twitter:image" content="${imageUrl}">
 <meta name="twitter:image:alt" content="${escapeHtml(imageAlt)}">
 
+<link rel="icon" type="image/svg+xml" href="${FAVICON_SVG}">
 <link rel="icon" type="image/png" href="${FAVICON}">
 <link rel="apple-touch-icon" href="${FAVICON}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
