@@ -1435,9 +1435,8 @@
 
       var RADIUS = 150;    // viewBox units of influence, out of 384
       var MAX = 3.4;       // field dots, scale multiplier at the cursor
-      var PUSH = 9;        // viewBox units the field is parted by
-      var MARK_MAX = 1.5;  // the mark reacts, but far less
-      var MARK_PUSH = 2;   // and barely moves, so the db stays legible
+      var PUSH = 9;        // viewBox units EVERYTHING is parted by
+      var MARK_MAX = 1.9;  // the mark swells less - geometry, see the loop
       var px = 0, py = 0, active = false, queued = false;
 
       function apply() {
@@ -1459,9 +1458,19 @@
           // linear, so the bulge has a soft shoulder instead of a visible
           // circular edge where the radius ends.
           //
-          // The mark reacts far less than the field and is barely displaced:
-          // the db is a drawing, and pushing its dots around would blur the
-          // letterforms exactly as the dashes used to.
+          // DISPLACEMENT IS UNIFORM - the mark is pushed exactly as far as the
+          // field, so the whole lattice parts around the pointer as one
+          // surface. The mark used to move only 2 units against the field's 9,
+          // which read as a layer of dots sitting over a logo that ignored the
+          // cursor entirely (reported).
+          //
+          // SCALE is not uniform, and that is geometry rather than caution. A
+          // mark dot is r=3.15 against the field's 1.05, so the field's 3.4x
+          // would give it a 21-unit diameter on a 12.28-unit pitch: the
+          // letterforms would merge into a blob wherever the cursor went.
+          // 1.9x puts the mark at 11.97, just inside the pitch, so it swells
+          // with everything else and still reads as a db. Re-derive this if
+          // R_MARK or the grid pitch in dots.cjs ever changes.
           //
           // Written to the transform property while the idle pulse animates
           // the scale property: the two compose. Sharing one property would
@@ -1470,7 +1479,7 @@
           var t = 1 - dist / RADIUS;
           var falloff = t * t * (3 - 2 * t);
           var maxS = d.mk ? MARK_MAX : MAX;
-          var push = (d.mk ? MARK_PUSH : PUSH) * falloff;
+          var push = PUSH * falloff;
           var grow = 1 + (maxS - 1) * falloff;
           // Away from the cursor, along the line joining it. dist can be 0 when
           // the pointer sits exactly on a dot, which would divide by zero.
