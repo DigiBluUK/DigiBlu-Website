@@ -1182,16 +1182,6 @@
      trailed the words it was meant to light. */
   .about-word { transition: color 0.18s ease; }
 
-  /* Short accent rule under the heading. */
-  .about-rule {
-    display: block;
-    width: 48px;
-    height: 3px;
-    border-radius: 999px;
-    background: var(--blue);
-    margin-bottom: 30px;
-  }
-
   /* Labels the accordion below as the values, which the numerals alone do
      not - it is why the heading came back when the section was restacked. */
   .about-values-title {
