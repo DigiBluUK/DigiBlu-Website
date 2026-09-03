@@ -1187,9 +1187,14 @@
     flex-direction: column;
   }
 
+  /* Top-aligned, not baseline. Baseline alignment put the 15px title's
+     baseline on the 34-46px numeral's baseline, which dropped the title's top
+     14px below the numeral's - reported as the text sitting lower than the
+     number on mobile while desktop (already flex-start) looked aligned. The
+     small top pad on .value-text is what lines the cap heights up; see there. */
   .value-open {
     display: flex;
-    align-items: baseline;
+    align-items: flex-start;
     gap: 16px;
     width: 100%;
     padding: 16px 0 20px;
@@ -1232,7 +1237,10 @@
      is measured against - the reveal would then be moving its own trigger.
      Holding the height constant keeps that loop closed. */
   .value-text {
-    padding-top: 4px;
+    /* Lines the title's cap height up with the numeral's. Desktop uses 6px
+       against an 82px numeral; at 34-46px the numeral's cap sits far closer to
+       its box top, so the pad is near zero here. Measured, not eyeballed. */
+    padding-top: 1px;
     opacity: 0;
     transform: translateY(6px);
     transition: opacity 0.5s ease, transform 0.5s ease;
