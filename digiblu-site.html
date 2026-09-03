@@ -4449,7 +4449,13 @@
       var list = document.querySelector('.value-list');
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      function setOpen(n) {
+      // keep: true from a tap, false from the scroll driver. Scrolling owns
+      // the reveal in both directions - down reveals cumulatively, back up
+      // takes it away again, which is intended. A tap must only ever ADD: it
+      // used to run the same cumulative rule, so on a phone with all five
+      // revealed, tapping 03 quietly faded 04 and 05 out (reported as a bug,
+      // and it was one).
+      function setOpen(n, keep) {
         items.forEach(function (item, i) {
           var on = i === n;
           item.classList.toggle('is-open', on);
@@ -4457,7 +4463,7 @@
           // readable rather than one open and four behind a tap. Desktop has
           // room for a single open value, so the CSS there keeps .is-revealed
           // to nothing more than a marker.
-          item.classList.toggle('is-revealed', i <= n);
+          item.classList.toggle('is-revealed', i <= n || (keep && item.classList.contains('is-revealed')));
           var b = item.querySelector('.value-open');
           if (b) b.setAttribute('aria-expanded', String(on));
         });
@@ -4471,7 +4477,7 @@
           // nothing open the row loses all its copy, which is worse than
           // simply staying put.
           if (item.classList.contains('is-open')) return;
-          setOpen(i);
+          setOpen(i, true);
           // Keep the scroll memo honest, or the next scroll inside this same
           // band would compare against a stale value, short-circuit, and leave
           // the clicked value stuck until a band boundary was crossed.
