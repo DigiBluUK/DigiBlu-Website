@@ -326,8 +326,13 @@
        image scrolling beneath, while the blur + saturate still read clearly
        as glass. */
     background: rgba(var(--glass-rgb), 0.68);
-    -webkit-backdrop-filter: blur(18px) saturate(160%);
-    backdrop-filter: blur(18px) saturate(160%);
+    /* 12px, no saturate. It was blur(18px) saturate(160%): backdrop-filter
+       cost scales with area x radius^2 and runs across the whole nav during
+       ALL scrolling, which made it the single heaviest effect on the page for
+       a weak GPU at high DPI (a Surface Pro X stuttered). Near-identical to
+       look at, roughly half the cost. */
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
     border: 1px solid rgba(var(--page-ink-rgb), 0.12);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
   }
@@ -811,8 +816,26 @@
     transform-box: fill-box;
     transform-origin: 50% 50%;
     animation: geo-pulse 6s ease-in-out infinite;
-    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), fill 0.3s ease;
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
     fill-opacity: 0.34;
+  }
+
+  /* The pulse is paused while the page is scrolling and while the figure is
+     off-screen (both classes set by the geo IIFE). Chromium does not
+     composite transforms on individual SVG elements, so 900 circles animating
+     scale is a full software repaint of the figure on every frame - fine on a
+     desktop GPU, and exactly what made an ARM tablet stutter through the About
+     section, where that repaint sits inside a sticky composition that is also
+     moving. A 6s breath at 14% frozen for the duration of a scroll is not
+     something the eye catches; a repaint per frame during that scroll is. */
+  .geo-figure.is-scrolling .geo-flow circle,
+  .geo-figure.is-offscreen .geo-flow circle { animation-play-state: paused; }
+
+  /* fill transitions on hover only. Scrolling writes --mark-lit continuously
+     and supplies its own continuity; a transition there merely restarted 78
+     fill interpolations on every scroll tick, for a change no one could see. */
+  .geo-figure.is-hovering .geo-flow circle {
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), fill 0.3s ease;
   }
 
   /* A breath, not a swing. The lattice is exact, so the motion has to stay

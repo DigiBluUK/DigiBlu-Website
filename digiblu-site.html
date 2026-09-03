@@ -328,8 +328,13 @@
        image scrolling beneath, while the blur + saturate still read clearly
        as glass. */
     background: rgba(var(--glass-rgb), 0.68);
-    -webkit-backdrop-filter: blur(18px) saturate(160%);
-    backdrop-filter: blur(18px) saturate(160%);
+    /* 12px, no saturate. It was blur(18px) saturate(160%): backdrop-filter
+       cost scales with area x radius^2 and runs across the whole nav during
+       ALL scrolling, which made it the single heaviest effect on the page for
+       a weak GPU at high DPI (a Surface Pro X stuttered). Near-identical to
+       look at, roughly half the cost. */
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
     border: 1px solid rgba(var(--page-ink-rgb), 0.12);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
   }
@@ -813,8 +818,26 @@
     transform-box: fill-box;
     transform-origin: 50% 50%;
     animation: geo-pulse 6s ease-in-out infinite;
-    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), fill 0.3s ease;
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
     fill-opacity: 0.34;
+  }
+
+  /* The pulse is paused while the page is scrolling and while the figure is
+     off-screen (both classes set by the geo IIFE). Chromium does not
+     composite transforms on individual SVG elements, so 900 circles animating
+     scale is a full software repaint of the figure on every frame - fine on a
+     desktop GPU, and exactly what made an ARM tablet stutter through the About
+     section, where that repaint sits inside a sticky composition that is also
+     moving. A 6s breath at 14% frozen for the duration of a scroll is not
+     something the eye catches; a repaint per frame during that scroll is. */
+  .geo-figure.is-scrolling .geo-flow circle,
+  .geo-figure.is-offscreen .geo-flow circle { animation-play-state: paused; }
+
+  /* fill transitions on hover only. Scrolling writes --mark-lit continuously
+     and supplies its own continuity; a transition there merely restarted 78
+     fill interpolations on every scroll tick, for a change no one could see. */
+  .geo-figure.is-hovering .geo-flow circle {
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), fill 0.3s ease;
   }
 
   /* A breath, not a swing. The lattice is exact, so the motion has to stay
@@ -4558,6 +4581,7 @@
       if (!fig) return;
 
       var hovering = false;
+      var written = -1;
       var smooth = function (t) { return t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t); };
 
       function update() {
@@ -4568,17 +4592,59 @@
           var centre = r.top + r.height / 2;
           lit = smooth(1 - Math.abs(centre - vh / 2) / (vh * 0.55));
         }
-        fig.style.setProperty('--mark-lit', lit.toFixed(3));
+        // Quantised to 0.02 and written only on change. Every pixel of scroll
+        // used to write a fresh value, and each write restarted a fill
+        // interpolation on all 78 mark dots - style and paint work for a
+        // change no one can see. Fifty steps across the fade is far below
+        // what the eye resolves in a colour mix.
+        var q = Math.round(lit * 50) / 50;
+        if (q === written) return;
+        written = q;
+        fig.style.setProperty('--mark-lit', q.toFixed(2));
       }
 
+      // Pause the pulse while the page is scrolling (.is-scrolling, see the
+      // CSS). Cleared 160ms after the last scroll event: long enough to span
+      // the gap between wheel ticks, short enough that the breath resumes as
+      // soon as the page settles.
+      //
       // Not rAF-throttled: one rect read and one property write, and rAF is
       // throttled to a stop in the preview environment.
-      window.addEventListener('scroll', update, { passive: true });
+      var settle = null;
+      function onScroll() {
+        if (!settle) fig.classList.add('is-scrolling');
+        clearTimeout(settle);
+        settle = setTimeout(function () {
+          settle = null;
+          fig.classList.remove('is-scrolling');
+        }, 160);
+        update();
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', update);
 
+      // And while it is off-screen entirely: nothing to see, nothing to
+      // repaint. The margin keeps it running just before it enters, so it is
+      // never caught frozen at the edge.
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { fig.classList.toggle('is-offscreen', !e.isIntersecting); });
+        }, { rootMargin: '80px 0px' }).observe(fig);
+      }
+
       if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-        fig.addEventListener('pointerenter', function () { hovering = true; update(); });
-        fig.addEventListener('pointerleave', function () { hovering = false; update(); });
+        // .is-hovering carries the fill transition (hover-only, see the CSS).
+        // Kept on for a beat after leaving so the way out fades too.
+        fig.addEventListener('pointerenter', function () {
+          hovering = true;
+          fig.classList.add('is-hovering');
+          update();
+        });
+        fig.addEventListener('pointerleave', function () {
+          hovering = false;
+          update();
+          setTimeout(function () { if (!hovering) fig.classList.remove('is-hovering'); }, 340);
+        });
       }
       update();
     })();
