@@ -2028,6 +2028,39 @@
   @media (max-width: 640px) {
     .case-modal-body { padding: 32px 34px 28px 24px; }
     .case-stat { flex: 1 1 100%; }
+
+    /* The close X becomes a header row the content starts beneath, instead of
+       floating over it. On a phone the panel is a column and the reading pane
+       is its own scroller, so the absolutely positioned X (a child of the
+       panel, not the pane) stayed put while the photograph, the eyebrow pill
+       and the stat boxes scrolled under it - reported as looking like a bug,
+       which it was. Above 640px the pane's 52px gutter keeps the X clear, so
+       this is phone-only.
+
+       Same mechanics as the full-screen contact form: the panel stops
+       scrolling, the pane scrolls, and min-height: 0 is what lets the pane
+       shrink to the space left - a flex child defaults to min-height: auto
+       and would grow the panel instead of scrolling inside it. */
+    .modal-panel.reader-panel,
+    .modal-panel.service-panel { overflow: hidden; }
+
+    .reader-panel .modal-close,
+    .service-panel .modal-close {
+      position: static;
+      flex: 0 0 auto;
+      align-self: flex-end;
+      margin: 12px 14px 0 0;
+    }
+
+    .reader-panel .case-modal-body,
+    .service-panel .service-modal-body {
+      min-height: 0;
+      padding-top: 12px;
+    }
+
+    /* The list view (.show-list) swaps the pane for the sidebar; it needs the
+       same permission to shrink, or it too grows the panel. */
+    .reader-panel.show-list .reader-side { min-height: 0; }
   }
 
   /* ---------- Client logos ----------
