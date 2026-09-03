@@ -2478,12 +2478,24 @@
       background: linear-gradient(135deg, #1b4fd6 0%, #0a1f6e 52%, #050b28 100%);
     }
 
-    /* Photo column. clamp() so it neither swallows a narrow card nor sprawls
-       on a wide one; the face-centred crop means a plain centred cover lands
-       on the face at any column width. */
+    /* The photo sits in a framed tile, not a raw column. Painted straight
+       onto the card, a cutout's flat bottom edge (where the source crop ended)
+       read as the picture being cut off. Inside a rounded, slightly lighter
+       panel, with the image pinned to the panel's bottom edge, that same edge
+       reads as the frame - a portrait standing in a window. The tile is
+       square at full width (240px in a 280px card with 20px margins) so
+       cover shows the whole crop; narrower cards shrink the width and the
+       face-centred crop keeps the face. */
+    .team-slice.active { --tile-w: clamp(180px, 30%, 240px); }
+
     .team-slice.active .team-slice-photo {
-      inset: 0 auto 0 0;
-      width: clamp(200px, 36%, 320px);
+      inset: 20px auto 20px 20px;
+      width: var(--tile-w);
+      border-radius: 16px;
+      background-color: rgba(255, 255, 255, 0.07);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+      background-size: cover;
+      background-position: center bottom;
       filter: none;
     }
 
@@ -2491,18 +2503,22 @@
        Nothing needs a scrim any more: the text sits on solid navy, and the
        photo is a cutout with no edges to hide. */
     .team-slice.active::after {
-      inset: 28px auto 28px clamp(200px, 36%, 320px);
+      inset: 28px auto 28px calc(40px + var(--tile-w));
       width: 1px;
       background: rgba(255, 255, 255, 0.14);
     }
 
-    /* Text column, vertically centred. The right padding keeps the copy clear
-       of the + disc at the card's top-right. */
+    /* No + disc on the desktop card: the bio is already in it, so there is
+       nothing for the disc to promise. Clicking the open card still opens the
+       full profile dialog, which matters below ~1100px where the bio clamps. */
+    .team-slice.active .team-slice-more { display: none; }
+
+    /* Text column, vertically centred. */
     .team-slice.active .team-slice-label {
-      left: clamp(200px, 36%, 320px);
+      left: calc(40px + var(--tile-w));
       top: 0;
       bottom: 0;
-      padding: 28px 60px 28px 32px;
+      padding: 28px 32px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -4570,7 +4586,12 @@
           // readable rather than one open and four behind a tap. Desktop has
           // room for a single open value, so the CSS there keeps .is-revealed
           // to nothing more than a marker.
-          item.classList.toggle('is-revealed', i <= n || (keep && item.classList.contains('is-revealed')));
+          // !! is load-bearing. Without it the expression is undefined for
+          // items beyond n whenever keep is not passed, and toggle() with an
+          // undefined force FLIPS the class rather than removing it - every
+          // scroll event flipped 03/04/05 on and off, which is the "revealing
+          // out of order" a phone showed. A boolean is a real force argument.
+          item.classList.toggle('is-revealed', !!(i <= n || (keep && item.classList.contains('is-revealed'))));
           var b = item.querySelector('.value-open');
           if (b) b.setAttribute('aria-expanded', String(on));
         });

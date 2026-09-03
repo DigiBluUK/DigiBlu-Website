@@ -78,7 +78,7 @@
      fourteen logos rendered as nothing - which reads as the carousel being
      broken rather than as an obviously old page. Deriving the value from the
      file contents means it changes exactly when the CSS does. -->
-<link rel="stylesheet" href="assets/site.css?v=174ef4971c">
+<link rel="stylesheet" href="assets/site.css?v=34f1b87e45">
 </head>
 <body>
   <a class="skip-link" href="#hero-content">Skip to content</a>
@@ -1137,7 +1137,12 @@
           // readable rather than one open and four behind a tap. Desktop has
           // room for a single open value, so the CSS there keeps .is-revealed
           // to nothing more than a marker.
-          item.classList.toggle('is-revealed', i <= n || (keep && item.classList.contains('is-revealed')));
+          // !! is load-bearing. Without it the expression is undefined for
+          // items beyond n whenever keep is not passed, and toggle() with an
+          // undefined force FLIPS the class rather than removing it - every
+          // scroll event flipped 03/04/05 on and off, which is the "revealing
+          // out of order" a phone showed. A boolean is a real force argument.
+          item.classList.toggle('is-revealed', !!(i <= n || (keep && item.classList.contains('is-revealed'))));
           var b = item.querySelector('.value-open');
           if (b) b.setAttribute('aria-expanded', String(on));
         });
