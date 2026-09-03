@@ -78,7 +78,7 @@
      fourteen logos rendered as nothing - which reads as the carousel being
      broken rather than as an obviously old page. Deriving the value from the
      file contents means it changes exactly when the CSS does. -->
-<link rel="stylesheet" href="assets/site.css?v=70578123e3">
+<link rel="stylesheet" href="assets/site.css?v=174ef4971c">
 </head>
 <body>
   <a class="skip-link" href="#hero-content">Skip to content</a>
@@ -1279,6 +1279,21 @@
       // first (its name isn't readable until it does) and a second tap opens
       // the profile.
       var stacked = window.matchMedia('(max-width: 760px)');
+
+      // The desktop card shows the bio beside the photo (see .team-slice-bio).
+      // Injected here rather than authored in the markup, so the bios stay in
+      // TEAM_MEMBERS, the one place they are written - the dialog reads the
+      // same array, so the two can never disagree. A span, not a <p>: the
+      // slice is a <button>, which allows phrasing content only.
+      slices.forEach(function (el, i) {
+        var m = TEAM_MEMBERS[i];
+        var label = el.querySelector('.team-slice-label');
+        if (!m || !label || label.querySelector('.team-slice-bio')) return;
+        var bio = document.createElement('span');
+        bio.className = 'team-slice-bio';
+        bio.textContent = m.bio;
+        label.appendChild(bio);
+      });
 
       slices.forEach(function (el, i) {
         el.addEventListener('click', function () {

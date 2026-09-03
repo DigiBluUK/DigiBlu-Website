@@ -2451,6 +2451,80 @@
     white-space: nowrap;
   }
 
+  /* Injected by the team IIFE from TEAM_MEMBERS, so the bios stay written in
+     one place. Hidden here; the desktop card below is the only place it
+     shows. On a phone a tap opens the profile dialog, which carries it. */
+  .team-slice-bio { display: none; }
+
+  /* ---------- The desktop card ----------
+     Above the stacked breakpoint the active slice is a two-column card:
+     photo on the left, name, role and bio on the right, with a hairline
+     between them. Built on stakeholder feedback that the flat brand-blue
+     backdrop with the photo laid over it "did not sit well", and that a
+     click should open the person up in place rather than only enlarge them.
+
+     The backdrop is the blue-to-navy gradient the case-study art panels
+     already use, so the card reads as the same brand surface. It stays a
+     FIXED colour for the same reason the blue was: the headshots are
+     cutouts, and their semi-transparent edges must composite against one
+     constant backdrop or they halo in one theme and fringe in the other.
+
+     The photo shows in colour here. Grayscale stays on the collapsed circles,
+     which are an index; the open card is the person. */
+  @media (min-width: 761px) {
+    .team-slice.active {
+      background: linear-gradient(135deg, #1b4fd6 0%, #0a1f6e 52%, #050b28 100%);
+    }
+
+    /* Photo column. clamp() so it neither swallows a narrow card nor sprawls
+       on a wide one; the face-centred crop means a plain centred cover lands
+       on the face at any column width. */
+    .team-slice.active .team-slice-photo {
+      inset: 0 auto 0 0;
+      width: clamp(200px, 36%, 320px);
+      filter: none;
+    }
+
+    /* The old bottom-to-top scrim becomes the hairline between the columns.
+       Nothing needs a scrim any more: the text sits on solid navy, and the
+       photo is a cutout with no edges to hide. */
+    .team-slice.active::after {
+      inset: 28px auto 28px clamp(200px, 36%, 320px);
+      width: 1px;
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    /* Text column, vertically centred. The right padding keeps the copy clear
+       of the + disc at the card's top-right. */
+    .team-slice.active .team-slice-label {
+      left: clamp(200px, 36%, 320px);
+      top: 0;
+      bottom: 0;
+      padding: 28px 60px 28px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Seven lines is the whole bio at any card width from about 1100px up;
+       below that the clamp trims it with an ellipsis rather than letting it
+       run out of the 280px card. The full text is one click away in the
+       profile dialog, which the + disc still opens. */
+    .team-slice.active .team-slice-bio {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 7;
+      overflow: hidden;
+      margin-top: 12px;
+      font-size: 14.5px;
+      line-height: 1.55;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.82);
+      white-space: normal;
+      text-align: left;
+    }
+  }
+
   /* Eight 80px slices leave the active one too narrow for the longest name
      ("Dave van der Westhuizen", nowrap) once the viewport tightens, so the
      inactive width steps back down before that becomes an overflow. */
