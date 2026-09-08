@@ -15,7 +15,7 @@
     --text: #ffffff;
     --blue: #1d6ef5;
     --hairline: rgba(var(--ink-rgb), 0.28);
-    --svc-alt-eyebrow-plain: #5b9dff;
+    --svc-alt-line: transparent;
     --gutter: 24px;
     --maxw: 1500px;
     /* One vertical rhythm for every content section. Sections set symmetric
@@ -58,7 +58,7 @@
     --ink-rgb: 13, 17, 23;
     --bg: #ffffff;
     --surface: #f6f7f9;
-    --svc-alt-eyebrow-plain: #1a61d8;
+    --svc-alt-line: rgba(13, 17, 23, 0.14);
     --surface-2: #ffffff;
     --field-bg: #f1f3f6;
     --text: #0d1117;
@@ -80,7 +80,7 @@
       --ink-rgb: 13, 17, 23;
       --bg: #ffffff;
       --surface: #f6f7f9;
-      --svc-alt-eyebrow-plain: #1a61d8;
+      --svc-alt-line: rgba(13, 17, 23, 0.14);
       --surface-2: #ffffff;
       --field-bg: #f1f3f6;
       --text: #0d1117;
@@ -1099,15 +1099,9 @@
     height: 44px;
   }
 
-  .service-card.plain {
-    background: var(--surface);
-    border: 1px solid rgba(var(--ink-rgb),0.14);
-  }
-
-  /* No border on the blue card (8 Sep 2026, on request): the hairline is
-     white at 8% here, since .accent pins white ink, and against the gradient
-     it read as an unnecessary edge. .plain keeps its border - that one is
-     doing real work, separating a --surface card from the page. */
+  /* All six cards carry the accent gradient since 8 Sep 2026, on request
+     ("make it all boxes blue"); .plain, which alternated a --surface card with
+     it on 2, 4 and 6, is gone from the markup and from here. */
   .service-card.accent {
     background: linear-gradient(135deg, #4a8dff 0%, #1b4fd6 45%, #0a1f6e 100%);
   }
@@ -1178,121 +1172,125 @@
     gap: 20px;
   }
 
-  /* Blue and black alternating, the same rhythm and the same two surfaces the
-     first Services section used before it was deleted (8 Sep 2026, on
-     request - these cards were white in dark theme and light grey in light
-     theme). Odd cards take that section's accent gradient, even cards its
-     plain theme surface plus hairline, so on the 3-column grid the blue lands
-     on 1, 3 and 5. */
+  /* Rebuilt to a supplied reference on 8 Sep 2026: a white card in both
+     themes with a thin accent-coloured bar along its top, the service name
+     set large in that accent, the description beneath in dark
+     ink, the artwork band across the foot tinted to the same accent, and the
+     + disc sitting ON the band at the bottom-right as a white disc with the
+     accent glyph. Each card has its own accent - the brand blue's saturation
+     and lightness at six cool hues (blue, sky, purple, indigo, blue-violet,
+     azure) - so the six read as one family; the same hue deltas drive each
+     band's filter below. The cards had been blue-and-black alternating for a
+     few hours before this; that rhythm now belongs to the first section.
+
+     White in both themes, so ink is pinned dark locally (the reverse of the
+     .hero pattern). --svc-alt-line is a theme token: transparent on the dark
+     page, where a white card needs no edge, and a hairline on the light one.
+     10px corners, matching the first section after its "less curved"
+     feedback. position: relative is what the absolutely placed + disc keys
+     off; the card clips to its corners and isolates its stacking. */
   .svc-alt-card {
+    --svc-accent: #1d6ef5;
+    --ink-rgb: 18, 22, 40;
+    --text: #121628;
+    position: relative;
     display: flex;
     flex-direction: column;
-    min-height: 600px;
-    border-radius: 20px;
+    /* No minimum height: the card is its copy plus the band. It was 600px,
+       which left a broad empty run of white under four lines of copy
+       (reported). Rows still level up through the grid's stretch. */
+    background: #ffffff;
+    border: 1px solid var(--svc-alt-line);
+    border-radius: 10px;
     overflow: hidden;
     isolation: isolate;
   }
 
-  /* Fixed-colour surface in both themes, so it pins light ink locally - the
-     same pattern .hero uses.
+  .svc-alt-card:nth-child(1) { --svc-accent: #1d6ef5; }
+  .svc-alt-card:nth-child(2) { --svc-accent: #1db4f5; }
+  .svc-alt-card:nth-child(3) { --svc-accent: #701df5; }
+  .svc-alt-card:nth-child(4) { --svc-accent: #1d2bf5; }
+  .svc-alt-card:nth-child(5) { --svc-accent: #411df5; }
+  .svc-alt-card:nth-child(6) { --svc-accent: #1d97f5; }
 
-     Mirrored to 315deg, where the deleted section used 135deg: at 135deg the
-     lightest stop (#4a8dff) lands in the top-left corner, which on these tall
-     cards is exactly where the 12.5px eyebrow sits, and white-at-88% on it
-     measures 2.83:1, well under the 4.5:1 that size needs. Mirrored, the
-     eyebrow and title sit on #0a1f6e at 11.6:1 and 14.6:1, and the light end
-     falls to the bottom-right where the art band covers it. */
-  .svc-alt-card:nth-child(odd) {
-    --ink-rgb: 255, 255, 255;
-    --text: #ffffff;
-    --svc-alt-eyebrow: rgba(255, 255, 255, 0.88);
-    --svc-alt-line: rgba(255, 255, 255, 0.08);
-    background: linear-gradient(315deg, #4a8dff 0%, #1b4fd6 45%, #0a1f6e 100%);
+  /* The accent bar: dark-to-light sweep of the card's own accent, drawn on
+     the card so it sits under the clip's rounded corners. */
+  .svc-alt-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    z-index: 2;
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--svc-accent) 60%, #0a1240) 0%,
+      var(--svc-accent) 55%,
+      color-mix(in srgb, var(--svc-accent) 55%, #ffffff) 100%);
   }
 
-  .svc-alt-card:nth-child(even) {
-    --svc-alt-eyebrow: var(--svc-alt-eyebrow-plain);
-    --svc-alt-line: rgba(var(--ink-rgb), 0.14);
-    background: var(--surface);
-  }
-
-  /* The outline sits on the body, not the card, so it wraps the copy and
-     stops where the art band begins rather than boxing the artwork in too
-     (8 Sep 2026, on request). No bottom edge for the same reason: the band's
-     own colour closes the shape. The radius matches the card's, so the two
-     round together at the top - the card clips to 20px, and a square-cornered
-     border inside it would be visibly sliced at each corner. --svc-alt-line
-     is set per card type, since the blue and black cards need different
-     hairlines. */
   .svc-alt-body {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
-    padding: 52px 48px 36px;
-    border: 1px solid var(--svc-alt-line);
-    border-bottom: none;
-    border-radius: 20px 20px 0 0;
+    padding: 40px 40px 32px;
   }
 
-  .svc-alt-eyebrow {
-    display: block;
-    font-size: 12.5px;
+  /* The service name, large and uppercase in the accent. Darkened a little
+     for text: the accent tone itself is tuned for the bar and the glyph, and
+     the lighter hues (sky, azure) would sit under 3:1 on white at this size.
+     The mix lands the brand blue at ~5.5:1 and the sky at ~3.9:1, over the
+     3:1 that large text needs. The 24px floor is what makes it large text
+     at every width: 500 weight is not bold in WCAG terms, so at 22px the bar
+     would be 4.5:1 instead and the sky and azure cards would miss it. At
+     74/26 the lightest (sky) measures ~3.7:1 and the brand blue ~6:1. */
+  .svc-alt-name {
+    font-size: clamp(24px, 1.75vw, 28px);
+    line-height: 1.12;
     font-weight: 500;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    /* Per card type (set on the card): white on the blue cards, and on the
-       black ones a blue that clears AA in both themes - plain var(--blue)
-       measures 4.4:1 on the dark surface and 4.26:1 on the light one, both
-       under the bar at 12.5px, so the token carries #5b9dff / #1a61d8. */
-    color: var(--svc-alt-eyebrow);
-    margin-bottom: 44px;
+    letter-spacing: -0.3px;
+    /* Title Case, from the markup, not all caps: the reference image was in
+       caps and it went in that way, then was asked back to capitals on the
+       first letter of each word only (8 Sep 2026). */
+    text-transform: none;
+    color: color-mix(in srgb, var(--svc-accent) 74%, #0a1f6e);
+    margin: 0 0 18px;
   }
 
-  .svc-alt-title {
-    font-size: clamp(24px, 1.95vw, 32px);
-    line-height: 1.18;
+  .svc-alt-desc {
+    font-size: 17px;
+    line-height: 1.5;
     font-weight: 400;
-    letter-spacing: -0.4px;
-    color: var(--text);
-    /* The + is pushed to the foot by margin-top: auto; this is the minimum
-       gap it can ever leave, for a long title on a narrow card. */
-    margin: 0 0 36px;
+    color: rgba(var(--ink-rgb), 0.82);
+    margin: 0;
   }
 
-  /* margin-top: auto pins the disc to the foot of the body, so every disc in
-     a row sits on one line whatever the title's length. It used to be
-     followed by a second margin-top: 36px in this same rule, which won and
-     left each disc hanging a fixed distance below its own title - three discs
-     at three different heights (reported 8 Sep 2026). The 36px floor now
-     lives on the title's margin-bottom. */
+  /* The + sits on the artwork band, bottom-right of the card - a white disc
+     with the accent glyph and a soft shadow so it lifts off the art whatever
+     the tint. Absolutely placed against the card, so it no longer depends on
+     the body's flex layout; its 52px box clears the 24px tap-target floor. */
   .svc-alt-plus {
-    margin-top: auto;
-    align-self: flex-end;
-    width: 40px;
-    height: 40px;
+    position: absolute;
+    right: 26px;
+    bottom: 26px;
+    z-index: 3;
+    width: 52px;
+    height: 52px;
     padding: 0;
     border: none;
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: var(--blue);
-    color: #ffffff;
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
-  }
-
-  /* On the blue cards the brand-blue disc would sink into the gradient, so it
-     inverts: white disc, blue glyph. */
-  .svc-alt-card:nth-child(odd) .svc-alt-plus {
     background: #ffffff;
-    color: #1b4fd6;
+    color: var(--svc-accent);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .svc-alt-plus svg { width: 18px; height: 18px; }
+  .svc-alt-plus svg { width: 20px; height: 20px; }
   .svc-alt-plus:hover,
-  .svc-alt-plus:focus-visible { background: #1a61d8; transform: scale(1.06); }
-  .svc-alt-card:nth-child(odd) .svc-alt-plus:hover,
-  .svc-alt-card:nth-child(odd) .svc-alt-plus:focus-visible { background: #e8eefc; }
+  .svc-alt-plus:focus-visible { transform: scale(1.08); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.34); }
 
   /* The real artwork, not a drawing of it: the bands are crops of the same
      artwork (hero.svg and cases-bg.svg) that sit behind the hero and the Case Studies
@@ -1323,8 +1321,8 @@
   .svc-alt-art {
     --art-hero: url('hero.svg');
     --art-cases: url('cases-bg.svg');
-    flex: 0 0 176px;
-    border-radius: 0 0 19px 19px;
+    flex: 0 0 200px;
+    border-radius: 0 0 9px 9px;
     background-color: #071236;
     background-size: cover;
     background-repeat: no-repeat;
@@ -1338,31 +1336,31 @@
   .svc-alt-art-2 {
     background-image: var(--art-cases);
     background-position: 72% 62%;
-    filter: hue-rotate(-42deg) saturate(1.1);
+    filter: hue-rotate(-19.5deg);
   }
 
   .svc-alt-art-3 {
     background-image: var(--art-hero);
     background-position: 62% 74%;
-    filter: hue-rotate(20deg) saturate(0.95);
+    filter: hue-rotate(45.5deg) saturate(0.95);
   }
 
   .svc-alt-art-4 {
     background-image: var(--art-cases);
     background-position: 24% 22%;
-    filter: hue-rotate(-18deg) saturate(1.05);
+    filter: hue-rotate(18.5deg);
   }
 
   .svc-alt-art-5 {
     background-image: var(--art-hero);
     background-position: 44% 52%;
-    filter: hue-rotate(40deg) saturate(0.88);
+    filter: hue-rotate(32.5deg) saturate(0.92);
   }
 
   .svc-alt-art-6 {
     background-image: var(--art-cases);
     background-position: 8% 84%;
-    filter: hue-rotate(-50deg) saturate(1.05);
+    filter: hue-rotate(-11.5deg);
   }
 
   /* ---------- About + Values ---------- */
@@ -1422,11 +1420,13 @@
      which is far past a comfortable line length. */
   .about-head { max-width: 940px; }
 
-  /* Set at the same size as the alternative arrangement's statement, on
-     request - it is one paragraph now rather than three, so it carries the
-     section on its own and the smaller supporting size no longer applies. */
+  /* Two paragraphs since 8 Sep 2026 (the practitioners statement, then the
+     vision), a step down from the single 23-33px statement they replaced, on
+     request. Still well above body size: this is the section's voice, not
+     supporting copy. The word-by-word fill walks every .about-lede, so the
+     split cost it nothing. */
   .about-lede {
-    font-size: clamp(23px, 2.4vw, 33px);
+    font-size: clamp(20px, 2.05vw, 28px);
     line-height: 1.34;
     letter-spacing: -0.5px;
     color: var(--text);
@@ -1973,12 +1973,21 @@
      old mobile rule that stretched each box to full width is gone with the
      boxes. Theme tokens throughout - nothing here is a fixed-colour surface
      any more, so no pinned ink. */
+  /* Brand blue fill, same pill (8 Sep 2026, on request - "make the big stat
+     pills brand blue, keep the shape"). A fixed-colour surface in both
+     themes, so ink is pinned white locally. Both texts are FULL white, not the
+     muted alpha the hairline version used: white on #1d6ef5 is 4.56:1, so a
+     0.55-0.66 alpha label would land under 3:1 and fail AA at 11px. The
+     hierarchy against the number comes from size and weight instead. */
   .case-stat {
+    --ink-rgb: 255, 255, 255;
+    --text: #ffffff;
     display: inline-flex;
     align-items: baseline;
     gap: 8px;
     padding: 7px 14px;
-    border: 1px solid var(--hairline);
+    background: var(--blue);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 999px;
   }
 
@@ -1986,7 +1995,7 @@
     font-size: 14px;
     font-weight: 700;
     letter-spacing: -0.2px;
-    color: var(--text);
+    color: #ffffff;
   }
 
   .case-stat span {
@@ -1995,7 +2004,7 @@
     font-weight: 500;
     letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: rgba(var(--ink-rgb), var(--ink-a-high));
+    color: #ffffff;
   }
 
   .case-section { margin-bottom: 22px; }
@@ -3750,8 +3759,8 @@
     .svc-alt-grid { grid-template-columns: 1fr; }
     .svc-alt-card { min-height: 0; }
     .svc-alt-body { padding: 36px 28px 28px; }
-    .svc-alt-eyebrow { margin-bottom: 28px; }
-    .svc-alt-art { flex-basis: 150px; }
+    .svc-alt-name { margin-bottom: 16px; }
+    .svc-alt-art { flex-basis: 180px; }
   }
 
   @media (max-width: 620px) {

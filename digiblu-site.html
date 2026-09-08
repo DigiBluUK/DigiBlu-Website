@@ -17,7 +17,7 @@
     --text: #ffffff;
     --blue: #1d6ef5;
     --hairline: rgba(var(--ink-rgb), 0.28);
-    --svc-alt-eyebrow-plain: #5b9dff;
+    --svc-alt-line: transparent;
     --gutter: 24px;
     --maxw: 1500px;
     /* One vertical rhythm for every content section. Sections set symmetric
@@ -60,7 +60,7 @@
     --ink-rgb: 13, 17, 23;
     --bg: #ffffff;
     --surface: #f6f7f9;
-    --svc-alt-eyebrow-plain: #1a61d8;
+    --svc-alt-line: rgba(13, 17, 23, 0.14);
     --surface-2: #ffffff;
     --field-bg: #f1f3f6;
     --text: #0d1117;
@@ -82,7 +82,7 @@
       --ink-rgb: 13, 17, 23;
       --bg: #ffffff;
       --surface: #f6f7f9;
-      --svc-alt-eyebrow-plain: #1a61d8;
+      --svc-alt-line: rgba(13, 17, 23, 0.14);
       --surface-2: #ffffff;
       --field-bg: #f1f3f6;
       --text: #0d1117;
@@ -1101,15 +1101,9 @@
     height: 44px;
   }
 
-  .service-card.plain {
-    background: var(--surface);
-    border: 1px solid rgba(var(--ink-rgb),0.14);
-  }
-
-  /* No border on the blue card (8 Sep 2026, on request): the hairline is
-     white at 8% here, since .accent pins white ink, and against the gradient
-     it read as an unnecessary edge. .plain keeps its border - that one is
-     doing real work, separating a --surface card from the page. */
+  /* All six cards carry the accent gradient since 8 Sep 2026, on request
+     ("make it all boxes blue"); .plain, which alternated a --surface card with
+     it on 2, 4 and 6, is gone from the markup and from here. */
   .service-card.accent {
     background: linear-gradient(135deg, #4a8dff 0%, #1b4fd6 45%, #0a1f6e 100%);
   }
@@ -1180,121 +1174,125 @@
     gap: 20px;
   }
 
-  /* Blue and black alternating, the same rhythm and the same two surfaces the
-     first Services section used before it was deleted (8 Sep 2026, on
-     request - these cards were white in dark theme and light grey in light
-     theme). Odd cards take that section's accent gradient, even cards its
-     plain theme surface plus hairline, so on the 3-column grid the blue lands
-     on 1, 3 and 5. */
+  /* Rebuilt to a supplied reference on 8 Sep 2026: a white card in both
+     themes with a thin accent-coloured bar along its top, the service name
+     set large in that accent, the description beneath in dark
+     ink, the artwork band across the foot tinted to the same accent, and the
+     + disc sitting ON the band at the bottom-right as a white disc with the
+     accent glyph. Each card has its own accent - the brand blue's saturation
+     and lightness at six cool hues (blue, sky, purple, indigo, blue-violet,
+     azure) - so the six read as one family; the same hue deltas drive each
+     band's filter below. The cards had been blue-and-black alternating for a
+     few hours before this; that rhythm now belongs to the first section.
+
+     White in both themes, so ink is pinned dark locally (the reverse of the
+     .hero pattern). --svc-alt-line is a theme token: transparent on the dark
+     page, where a white card needs no edge, and a hairline on the light one.
+     10px corners, matching the first section after its "less curved"
+     feedback. position: relative is what the absolutely placed + disc keys
+     off; the card clips to its corners and isolates its stacking. */
   .svc-alt-card {
+    --svc-accent: #1d6ef5;
+    --ink-rgb: 18, 22, 40;
+    --text: #121628;
+    position: relative;
     display: flex;
     flex-direction: column;
-    min-height: 600px;
-    border-radius: 20px;
+    /* No minimum height: the card is its copy plus the band. It was 600px,
+       which left a broad empty run of white under four lines of copy
+       (reported). Rows still level up through the grid's stretch. */
+    background: #ffffff;
+    border: 1px solid var(--svc-alt-line);
+    border-radius: 10px;
     overflow: hidden;
     isolation: isolate;
   }
 
-  /* Fixed-colour surface in both themes, so it pins light ink locally - the
-     same pattern .hero uses.
+  .svc-alt-card:nth-child(1) { --svc-accent: #1d6ef5; }
+  .svc-alt-card:nth-child(2) { --svc-accent: #1db4f5; }
+  .svc-alt-card:nth-child(3) { --svc-accent: #701df5; }
+  .svc-alt-card:nth-child(4) { --svc-accent: #1d2bf5; }
+  .svc-alt-card:nth-child(5) { --svc-accent: #411df5; }
+  .svc-alt-card:nth-child(6) { --svc-accent: #1d97f5; }
 
-     Mirrored to 315deg, where the deleted section used 135deg: at 135deg the
-     lightest stop (#4a8dff) lands in the top-left corner, which on these tall
-     cards is exactly where the 12.5px eyebrow sits, and white-at-88% on it
-     measures 2.83:1, well under the 4.5:1 that size needs. Mirrored, the
-     eyebrow and title sit on #0a1f6e at 11.6:1 and 14.6:1, and the light end
-     falls to the bottom-right where the art band covers it. */
-  .svc-alt-card:nth-child(odd) {
-    --ink-rgb: 255, 255, 255;
-    --text: #ffffff;
-    --svc-alt-eyebrow: rgba(255, 255, 255, 0.88);
-    --svc-alt-line: rgba(255, 255, 255, 0.08);
-    background: linear-gradient(315deg, #4a8dff 0%, #1b4fd6 45%, #0a1f6e 100%);
+  /* The accent bar: dark-to-light sweep of the card's own accent, drawn on
+     the card so it sits under the clip's rounded corners. */
+  .svc-alt-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    z-index: 2;
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--svc-accent) 60%, #0a1240) 0%,
+      var(--svc-accent) 55%,
+      color-mix(in srgb, var(--svc-accent) 55%, #ffffff) 100%);
   }
 
-  .svc-alt-card:nth-child(even) {
-    --svc-alt-eyebrow: var(--svc-alt-eyebrow-plain);
-    --svc-alt-line: rgba(var(--ink-rgb), 0.14);
-    background: var(--surface);
-  }
-
-  /* The outline sits on the body, not the card, so it wraps the copy and
-     stops where the art band begins rather than boxing the artwork in too
-     (8 Sep 2026, on request). No bottom edge for the same reason: the band's
-     own colour closes the shape. The radius matches the card's, so the two
-     round together at the top - the card clips to 20px, and a square-cornered
-     border inside it would be visibly sliced at each corner. --svc-alt-line
-     is set per card type, since the blue and black cards need different
-     hairlines. */
   .svc-alt-body {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
-    padding: 52px 48px 36px;
-    border: 1px solid var(--svc-alt-line);
-    border-bottom: none;
-    border-radius: 20px 20px 0 0;
+    padding: 40px 40px 32px;
   }
 
-  .svc-alt-eyebrow {
-    display: block;
-    font-size: 12.5px;
+  /* The service name, large and uppercase in the accent. Darkened a little
+     for text: the accent tone itself is tuned for the bar and the glyph, and
+     the lighter hues (sky, azure) would sit under 3:1 on white at this size.
+     The mix lands the brand blue at ~5.5:1 and the sky at ~3.9:1, over the
+     3:1 that large text needs. The 24px floor is what makes it large text
+     at every width: 500 weight is not bold in WCAG terms, so at 22px the bar
+     would be 4.5:1 instead and the sky and azure cards would miss it. At
+     74/26 the lightest (sky) measures ~3.7:1 and the brand blue ~6:1. */
+  .svc-alt-name {
+    font-size: clamp(24px, 1.75vw, 28px);
+    line-height: 1.12;
     font-weight: 500;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    /* Per card type (set on the card): white on the blue cards, and on the
-       black ones a blue that clears AA in both themes - plain var(--blue)
-       measures 4.4:1 on the dark surface and 4.26:1 on the light one, both
-       under the bar at 12.5px, so the token carries #5b9dff / #1a61d8. */
-    color: var(--svc-alt-eyebrow);
-    margin-bottom: 44px;
+    letter-spacing: -0.3px;
+    /* Title Case, from the markup, not all caps: the reference image was in
+       caps and it went in that way, then was asked back to capitals on the
+       first letter of each word only (8 Sep 2026). */
+    text-transform: none;
+    color: color-mix(in srgb, var(--svc-accent) 74%, #0a1f6e);
+    margin: 0 0 18px;
   }
 
-  .svc-alt-title {
-    font-size: clamp(24px, 1.95vw, 32px);
-    line-height: 1.18;
+  .svc-alt-desc {
+    font-size: 17px;
+    line-height: 1.5;
     font-weight: 400;
-    letter-spacing: -0.4px;
-    color: var(--text);
-    /* The + is pushed to the foot by margin-top: auto; this is the minimum
-       gap it can ever leave, for a long title on a narrow card. */
-    margin: 0 0 36px;
+    color: rgba(var(--ink-rgb), 0.82);
+    margin: 0;
   }
 
-  /* margin-top: auto pins the disc to the foot of the body, so every disc in
-     a row sits on one line whatever the title's length. It used to be
-     followed by a second margin-top: 36px in this same rule, which won and
-     left each disc hanging a fixed distance below its own title - three discs
-     at three different heights (reported 8 Sep 2026). The 36px floor now
-     lives on the title's margin-bottom. */
+  /* The + sits on the artwork band, bottom-right of the card - a white disc
+     with the accent glyph and a soft shadow so it lifts off the art whatever
+     the tint. Absolutely placed against the card, so it no longer depends on
+     the body's flex layout; its 52px box clears the 24px tap-target floor. */
   .svc-alt-plus {
-    margin-top: auto;
-    align-self: flex-end;
-    width: 40px;
-    height: 40px;
+    position: absolute;
+    right: 26px;
+    bottom: 26px;
+    z-index: 3;
+    width: 52px;
+    height: 52px;
     padding: 0;
     border: none;
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: var(--blue);
-    color: #ffffff;
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
-  }
-
-  /* On the blue cards the brand-blue disc would sink into the gradient, so it
-     inverts: white disc, blue glyph. */
-  .svc-alt-card:nth-child(odd) .svc-alt-plus {
     background: #ffffff;
-    color: #1b4fd6;
+    color: var(--svc-accent);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .svc-alt-plus svg { width: 18px; height: 18px; }
+  .svc-alt-plus svg { width: 20px; height: 20px; }
   .svc-alt-plus:hover,
-  .svc-alt-plus:focus-visible { background: #1a61d8; transform: scale(1.06); }
-  .svc-alt-card:nth-child(odd) .svc-alt-plus:hover,
-  .svc-alt-card:nth-child(odd) .svc-alt-plus:focus-visible { background: #e8eefc; }
+  .svc-alt-plus:focus-visible { transform: scale(1.08); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.34); }
 
   /* The real artwork, not a drawing of it: the bands are crops of the same
      artwork (hero.svg and cases-bg.svg) that sit behind the hero and the Case Studies
@@ -1325,8 +1323,8 @@
   .svc-alt-art {
     --art-hero: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjcyIDk0MSIgd2lkdGg9IjE2NzIiIGhlaWdodD0iOTQxIj48IS0tIERpZ2lCbHUgaGVybyBhcnR3b3JrLCB2ZWN0b3IuIFRyYWNlZCBmcm9tIHRoZSBvcmlnaW5hbCBoZXJvLmpwZydzIHBpeGVscyBvbiA4IFNlcCAyMDI2OiBzZXZlbiByaW1zIGZpdHRlZCBhcyBsaW5lICsgdGFuZ2VudCBhcmMgKyBsaW5lLCBmaWxscyBhbmQgcmltIGNvbG91cnMgc2FtcGxlZCBmcm9tIHRoZSBKUEVHLiBFYWNoIGJhbmQncyBpbndhcmQgZ2xvdyBpcyBhIGRpc3RhbmNlIGdyYWRpZW50IChsaW5lYXIgYWxvbmcgZWFjaCBzdHJhaWdodCBlZGdlLCByYWRpYWwgYWJvdXQgdGhlIGFyYyBjZW50cmUpLiBTYW1lIDE2NzJ4OTQxIHNwYWNlIGFzIHRoZSBKUEVHIHNvIHRoZSAuaGVyby1zcGFyayBwYXRocyBzdGlsbCBhbGlnbi4gLS0+PHJlY3Qgd2lkdGg9IjE2NzIiIGhlaWdodD0iOTQxIiBmaWxsPSIjMDYwMTJhIi8+PGRlZnM+PGNsaXBQYXRoIGlkPSJiMCI+PHBhdGggZD0iTTE3MTIgMTIxLjlMMTA2MC44IDE3LjhBMTA1LjQgMTA1LjQgMCAwIDAgOTUxLjYgNzEuNUw0NTcgOTgxTDE3MTIgOTgxWiIvPjwvY2xpcFBhdGg+PGxpbmVhckdyYWRpZW50IGlkPSJnMGEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTA2MC44IiB5MT0iMTcuOCIgeDI9IjEwNTEuMzQiIHkyPSI3Ny4wNSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMzc0OGI4Ii8+PHN0b3Agb2Zmc2V0PSIwLjA1IiBzdG9wLWNvbG9yPSIjMmMzY2FjIi8+PHN0b3Agb2Zmc2V0PSIwLjEzIiBzdG9wLWNvbG9yPSIjMmMzY2FjIi8+PHN0b3Agb2Zmc2V0PSIwLjUiIHN0b3AtY29sb3I9IiMxMDE4NmYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwNDA4NGIiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iZzBiIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9Ijk1MS42IiB5MT0iNzEuNSIgeDI9IjEwMDQuMyIgeTI9IjEwMC4xOCI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMzc0OGI4Ii8+PHN0b3Agb2Zmc2V0PSIwLjA1IiBzdG9wLWNvbG9yPSIjMmMzY2FjIi8+PHN0b3Agb2Zmc2V0PSIwLjEzIiBzdG9wLWNvbG9yPSIjMmMzY2FjIi8+PHN0b3Agb2Zmc2V0PSIwLjUiIHN0b3AtY29sb3I9IiMxMDE4NmYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwNDA4NGIiLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iZzBjIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjEwNDQuMTgiIGN5PSIxMjEuODgiIHI9IjEwNS40Ij48c3RvcCBvZmZzZXQ9IjAuNDMiIHN0b3AtY29sb3I9IiMwNDA4NGIiLz48c3RvcCBvZmZzZXQ9IjAuNzIiIHN0b3AtY29sb3I9IiMxMDE4NmYiLz48c3RvcCBvZmZzZXQ9IjAuOTIiIHN0b3AtY29sb3I9IiMyYzNjYWMiLz48c3RvcCBvZmZzZXQ9IjAuOTciIHN0b3AtY29sb3I9IiMyYzNjYWMiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzNzQ4YjgiLz48L3JhZGlhbEdyYWRpZW50PjxjbGlwUGF0aCBpZD0iYjEiPjxwYXRoIGQ9Ik0xNzEyIDI2My45TDExMTguNSAxNzAuMUExMTMuMSAxMTMuMSAwIDAgMCAxMDAyLjMgMjI2LjVMNTc4LjUgOTgxTDE3MTIgOTgxWiIvPjwvY2xpcFBhdGg+PGxpbmVhckdyYWRpZW50IGlkPSJnMWEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTExOC41IiB5MT0iMTcwLjEiIHgyPSIxMTA5LjE5IiB5Mj0iMjI5LjM3Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMzMjQ2ZDEiLz48c3RvcCBvZmZzZXQ9IjAuMDUiIHN0b3AtY29sb3I9IiMyODM5YzkiLz48c3RvcCBvZmZzZXQ9IjAuMTMiIHN0b3AtY29sb3I9IiMyODM5YzkiLz48c3RvcCBvZmZzZXQ9IjAuNSIgc3RvcC1jb2xvcj0iIzExMWE5YSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA2MGI3YSIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJnMWIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTAwMi4zIiB5MT0iMjI2LjUiIHgyPSIxMDU0LjYzIiB5Mj0iMjU1Ljg1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMzMjQ2ZDEiLz48c3RvcCBvZmZzZXQ9IjAuMDUiIHN0b3AtY29sb3I9IiMyODM5YzkiLz48c3RvcCBvZmZzZXQ9IjAuMTMiIHN0b3AtY29sb3I9IiMyODM5YzkiLz48c3RvcCBvZmZzZXQ9IjAuNSIgc3RvcC1jb2xvcj0iIzExMWE5YSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA2MGI3YSIvPjwvbGluZWFyR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJnMWMiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjeD0iMTEwMC45NCIgY3k9IjI4MS44MyIgcj0iMTEzLjEiPjxzdG9wIG9mZnNldD0iMC40NyIgc3RvcC1jb2xvcj0iIzA2MGI3YSIvPjxzdG9wIG9mZnNldD0iMC43MyIgc3RvcC1jb2xvcj0iIzExMWE5YSIvPjxzdG9wIG9mZnNldD0iMC45MyIgc3RvcC1jb2xvcj0iIzI4MzljOSIvPjxzdG9wIG9mZnNldD0iMC45NyIgc3RvcC1jb2xvcj0iIzI4MzljOSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzMyNDZkMSIvPjwvcmFkaWFsR3JhZGllbnQ+PGNsaXBQYXRoIGlkPSJiMiI+PHBhdGggZD0iTTE3MTIgNDA2LjJMMTE2MyAzMTlBMTA2IDEwNiAwIDAgMCAxMDU1IDM3MC4xTDY5Ni40IDk4MUwxNzEyIDk4MVoiLz48L2NsaXBQYXRoPjxsaW5lYXJHcmFkaWVudCBpZD0iZzJhIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjExNjMiIHkxPSIzMTkiIHgyPSIxMTUzLjYzIiB5Mj0iMzc4LjI2Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMzNTYzZWYiLz48c3RvcCBvZmZzZXQ9IjAuMDUiIHN0b3AtY29sb3I9IiMyYzU1ZWMiLz48c3RvcCBvZmZzZXQ9IjAuMTMiIHN0b3AtY29sb3I9IiMyYzU1ZWMiLz48c3RvcCBvZmZzZXQ9IjAuNSIgc3RvcC1jb2xvcj0iIzE3M2JkNCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzBhMjljMyIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJnMmIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTA1NSIgeTE9IjM3MC4xIiB4Mj0iMTEwNi43NiIgeTI9IjQwMC40NCI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMzU2M2VmIi8+PHN0b3Agb2Zmc2V0PSIwLjA1IiBzdG9wLWNvbG9yPSIjMmM1NWVjIi8+PHN0b3Agb2Zmc2V0PSIwLjEzIiBzdG9wLWNvbG9yPSIjMmM1NWVjIi8+PHN0b3Agb2Zmc2V0PSIwLjUiIHN0b3AtY29sb3I9IiMxNzNiZDQiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwYTI5YzMiLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iZzJjIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjExNDYuNDUiIGN5PSI0MjMuNyIgcj0iMTA2Ij48c3RvcCBvZmZzZXQ9IjAuNDMiIHN0b3AtY29sb3I9IiMwYTI5YzMiLz48c3RvcCBvZmZzZXQ9IjAuNzIiIHN0b3AtY29sb3I9IiMxNzNiZDQiLz48c3RvcCBvZmZzZXQ9IjAuOTIiIHN0b3AtY29sb3I9IiMyYzU1ZWMiLz48c3RvcCBvZmZzZXQ9IjAuOTciIHN0b3AtY29sb3I9IiMyYzU1ZWMiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzNTYzZWYiLz48L3JhZGlhbEdyYWRpZW50PjxjbGlwUGF0aCBpZD0iYjMiPjxwYXRoIGQ9Ik0xNzEyIDUzNy40TDEyMDYuMSA0NTUuOEE5Ni45IDk2LjkgMCAwIDAgMTEwOCA1MDAuOUw4MTMuOSA5ODFMMTcxMiA5ODFaIi8+PC9jbGlwUGF0aD48bGluZWFyR3JhZGllbnQgaWQ9ImczYSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIxMjA2LjEiIHkxPSI0NTUuOCIgeDI9IjExOTYuNTQiIHkyPSI1MTUuMDMiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzNhNmFmYyIvPjxzdG9wIG9mZnNldD0iMC4wNSIgc3RvcC1jb2xvcj0iIzMyNTlmYyIvPjxzdG9wIG9mZnNldD0iMC4xMyIgc3RvcC1jb2xvcj0iIzMyNTlmYyIvPjxzdG9wIG9mZnNldD0iMC41IiBzdG9wLWNvbG9yPSIjMWE0MmZkIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMGEzNWZjIi8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9ImczYiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIxMTA4IiB5MT0iNTAwLjkiIHgyPSIxMTU5LjE4IiB5Mj0iNTMyLjIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMzYTZhZmMiLz48c3RvcCBvZmZzZXQ9IjAuMDUiIHN0b3AtY29sb3I9IiMzMjU5ZmMiLz48c3RvcCBvZmZzZXQ9IjAuMTMiIHN0b3AtY29sb3I9IiMzMjU5ZmMiLz48c3RvcCBvZmZzZXQ9IjAuNSIgc3RvcC1jb2xvcj0iIzFhNDJmZCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzBhMzVmYyIvPjwvbGluZWFyR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJnM2MiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjeD0iMTE5MC42NiIgY3k9IjU1MS40NiIgcj0iOTYuOSI+PHN0b3Agb2Zmc2V0PSIwLjM4IiBzdG9wLWNvbG9yPSIjMGEzNWZjIi8+PHN0b3Agb2Zmc2V0PSIwLjY5IiBzdG9wLWNvbG9yPSIjMWE0MmZkIi8+PHN0b3Agb2Zmc2V0PSIwLjkyIiBzdG9wLWNvbG9yPSIjMzI1OWZjIi8+PHN0b3Agb2Zmc2V0PSIwLjk3IiBzdG9wLWNvbG9yPSIjMzI1OWZjIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjM2E2YWZjIi8+PC9yYWRpYWxHcmFkaWVudD48Y2xpcFBhdGggaWQ9ImI0Ij48cGF0aCBkPSJNMTcxMiA2NjUuMkwxMjQ0LjkgNTg3QTg0LjUgODQuNSAwIDAgMCAxMTU5LjUgNjI1LjJMOTM0LjYgOTgxTDE3MTIgOTgxWiIvPjwvY2xpcFBhdGg+PGxpbmVhckdyYWRpZW50IGlkPSJnNGEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTI0NC45IiB5MT0iNTg3IiB4Mj0iMTIzNC45OCIgeTI9IjY0Ni4xNyI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjNWI5OGZjIi8+PHN0b3Agb2Zmc2V0PSIwLjA1IiBzdG9wLWNvbG9yPSIjNTQ4N2ZiIi8+PHN0b3Agb2Zmc2V0PSIwLjEzIiBzdG9wLWNvbG9yPSIjNTQ4N2ZiIi8+PHN0b3Agb2Zmc2V0PSIwLjUiIHN0b3AtY29sb3I9IiMzZDc2ZmMiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzMzZkZmQiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iZzRiIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjExNTkuNSIgeTE9IjYyNS4yIiB4Mj0iMTIxMC4yMiIgeTI9IjY1Ny4yNSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjNWI5OGZjIi8+PHN0b3Agb2Zmc2V0PSIwLjA1IiBzdG9wLWNvbG9yPSIjNTQ4N2ZiIi8+PHN0b3Agb2Zmc2V0PSIwLjEzIiBzdG9wLWNvbG9yPSIjNTQ4N2ZiIi8+PHN0b3Agb2Zmc2V0PSIwLjUiIHN0b3AtY29sb3I9IiMzZDc2ZmMiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzMzZkZmQiLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iZzRjIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjEyMzAuOTMiIGN5PSI2NzAuMzQiIHI9Ijg0LjUiPjxzdG9wIG9mZnNldD0iMC4yOSIgc3RvcC1jb2xvcj0iIzMzNmRmZCIvPjxzdG9wIG9mZnNldD0iMC42NCIgc3RvcC1jb2xvcj0iIzNkNzZmYyIvPjxzdG9wIG9mZnNldD0iMC45MSIgc3RvcC1jb2xvcj0iIzU0ODdmYiIvPjxzdG9wIG9mZnNldD0iMC45NiIgc3RvcC1jb2xvcj0iIzU0ODdmYiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzViOThmYyIvPjwvcmFkaWFsR3JhZGllbnQ+PGNsaXBQYXRoIGlkPSJiNSI+PHBhdGggZD0iTTE3MTIgNzgzTDEyNzIuNyA3MDYuNUE3My4yIDczLjIgMCAwIDAgMTE5OC44IDczOC42TDEwNDAuNyA5ODFMMTcxMiA5ODFaIi8+PC9jbGlwUGF0aD48bGluZWFyR3JhZGllbnQgaWQ9Imc1YSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIxMjcyLjciIHkxPSI3MDYuNSIgeDI9IjEyNjIuMzciIHkyPSI3NjUuNiI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjN2RiMmZjIi8+PHN0b3Agb2Zmc2V0PSIwLjA1IiBzdG9wLWNvbG9yPSIjNzdhNGZiIi8+PHN0b3Agb2Zmc2V0PSIwLjEzIiBzdG9wLWNvbG9yPSIjNzdhNGZiIi8+PHN0b3Agb2Zmc2V0PSIwLjUiIHN0b3AtY29sb3I9IiM2ZTliZmQiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM2NTk0ZmUiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iZzViIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjExOTguOCIgeTE9IjczOC42IiB4Mj0iMTI0OS4wNSIgeTI9Ijc3MS4zOSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjN2RiMmZjIi8+PHN0b3Agb2Zmc2V0PSIwLjA1IiBzdG9wLWNvbG9yPSIjNzdhNGZiIi8+PHN0b3Agb2Zmc2V0PSIwLjEzIiBzdG9wLWNvbG9yPSIjNzdhNGZiIi8+PHN0b3Agb2Zmc2V0PSIwLjUiIHN0b3AtY29sb3I9IiM2ZTliZmQiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM2NTk0ZmUiLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iZzVjIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjEyNjAuMSIgY3k9Ijc3OC42MSIgcj0iNzMuMiI+PHN0b3Agb2Zmc2V0PSIwLjE4IiBzdG9wLWNvbG9yPSIjNjU5NGZlIi8+PHN0b3Agb2Zmc2V0PSIwLjU5IiBzdG9wLWNvbG9yPSIjNmU5YmZkIi8+PHN0b3Agb2Zmc2V0PSIwLjg5IiBzdG9wLWNvbG9yPSIjNzdhNGZiIi8+PHN0b3Agb2Zmc2V0PSIwLjk2IiBzdG9wLWNvbG9yPSIjNzdhNGZiIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjN2RiMmZjIi8+PC9yYWRpYWxHcmFkaWVudD48Y2xpcFBhdGggaWQ9ImI2Ij48cGF0aCBkPSJNMTcxMiA4OTYuMkwxMjgyLjIgODIwLjJBNTIuMyA1Mi4zIDAgMCAwIDEyMjkuOCA4NDIuNEwxMTM2LjMgOTgxTDE3MTIgOTgxWiIvPjwvY2xpcFBhdGg+PGxpbmVhckdyYWRpZW50IGlkPSJnNmEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTI4Mi4yIiB5MT0iODIwLjIiIHgyPSIxMjcxLjc4IiB5Mj0iODc5LjI5Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNiN2QyZmMiLz48c3RvcCBvZmZzZXQ9IjAuMDUiIHN0b3AtY29sb3I9IiNiMGNhZmIiLz48c3RvcCBvZmZzZXQ9IjAuMTMiIHN0b3AtY29sb3I9IiNiMGNhZmIiLz48c3RvcCBvZmZzZXQ9IjAuNSIgc3RvcC1jb2xvcj0iI2E2YzNmYiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2E0YzNmYiIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJnNmIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTIyOS44IiB5MT0iODQyLjQiIHgyPSIxMjc5LjUiIHkyPSI4NzYuMDIiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2I3ZDJmYyIvPjxzdG9wIG9mZnNldD0iMC4wNSIgc3RvcC1jb2xvcj0iI2IwY2FmYiIvPjxzdG9wIG9mZnNldD0iMC4xMyIgc3RvcC1jb2xvcj0iI2IwY2FmYiIvPjxzdG9wIG9mZnNldD0iMC41IiBzdG9wLWNvbG9yPSIjYTZjM2ZiIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjYTRjM2ZiIi8+PC9saW5lYXJHcmFkaWVudD48cmFkaWFsR3JhZGllbnQgaWQ9Imc2YyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGN4PSIxMjczLjEyIiBjeT0iODcxLjcxIiByPSI1Mi4zIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNhNWMzZmIiLz48c3RvcCBvZmZzZXQ9IjAuNDMiIHN0b3AtY29sb3I9IiNhNmMzZmIiLz48c3RvcCBvZmZzZXQ9IjAuODUiIHN0b3AtY29sb3I9IiNiMGNhZmIiLz48c3RvcCBvZmZzZXQ9IjAuOTQiIHN0b3AtY29sb3I9IiNiMGNhZmIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNiN2QyZmMiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48ZyBjbGlwLXBhdGg9InVybCgjYjApIj48cmVjdCB4PSItNDAiIHk9Ii00MCIgd2lkdGg9IjE3NTIiIGhlaWdodD0iMTAyMSIgZmlsbD0iIzA0MDg0YiIvPjxwb2x5Z29uIHBvaW50cz0iMTA0NC4xOCwxMjEuODggMTcwOS4wMSwtNDA0MS4zNyAtMTIzNC45NCwtNDUxMS45OSAtMjY1OC45OSwtMTg5My4zNyIgZmlsbD0idXJsKCNnMGMpIi8+PHBvbHlnb24gcG9pbnRzPSIxMDU5LjMyLDE3LjU2IDQwMjMuMTksNDkxLjM2IDM1NTAuMTEsMzQ1My44MyA1ODYuMjQsMjk4MC4wMyIgZmlsbD0idXJsKCNnMGEpIi8+PHBvbHlnb24gcG9pbnRzPSI5NTIuMzIsNzAuMTggLTQ4MS42MywyNzA3IDIxNTMuNDUsNDE0MSAzNTg3LjQsMTUwNC4xOCIgZmlsbD0idXJsKCNnMGIpIi8+PC9nPjxnIGNsaXAtcGF0aD0idXJsKCNiMSkiPjxyZWN0IHg9Ii00MCIgeT0iLTQwIiB3aWR0aD0iMTc1MiIgaGVpZ2h0PSIxMDIxIiBmaWxsPSIjMDYwYjdhIi8+PHBvbHlnb24gcG9pbnRzPSIxMTAwLjk0LDI4MS44MyAxODAzLjI1LC00MTg3LjMzIC0xMzAxLjkxLC00Njc4LjA4IC0yODQ0Ljc1LC0xOTMxLjMzIiBmaWxsPSJ1cmwoI2cxYykiLz48cG9seWdvbiBwb2ludHM9IjExMTcuMDIsMTY5Ljg3IDQwODEuNzIsNjM4LjQyIDM2MTYsMzYwMi4wNSA2NTEuMywzMTMzLjUiIGZpbGw9InVybCgjZzFhKSIvPjxwb2x5Z29uIHBvaW50cz0iMTAwMy4wMywyMjUuMTkgLTQ2Ni44OSwyODQyLjEyIDIxNDkuNjIsNDMwOS43MyAzNjE5LjU0LDE2OTIuOCIgZmlsbD0idXJsKCNnMWIpIi8+PC9nPjxnIGNsaXAtcGF0aD0idXJsKCNiMikiPjxyZWN0IHg9Ii00MCIgeT0iLTQwIiB3aWR0aD0iMTc1MiIgaGVpZ2h0PSIxMDIxIiBmaWxsPSIjMGEyOWMzIi8+PHBvbHlnb24gcG9pbnRzPSIxMTQ2LjQ1LDQyMy43IDE4MDguNDYsLTM3NjQuMyAtMTA0NS42LC00MjE3LjYyIC0yNTExLjU0LC0xNzIwLjMiIGZpbGw9InVybCgjZzJjKSIvPjxwb2x5Z29uIHBvaW50cz0iMTE2MS41MiwzMTguNzYgNDEyNS44Niw3ODkuNiAzNjU3LjQ1LDM3NTIuODEgNjkzLjExLDMyODEuOTciIGZpbGw9InVybCgjZzJhKSIvPjxwb2x5Z29uIHBvaW50cz0iMTA1NS43NiwzNjguODEgLTQ2My42OSwyOTU3LjMgMjEyNC41MSw0NDc0LjI4IDM2NDMuOTYsMTg4NS43OSIgZmlsbD0idXJsKCNnMmIpIi8+PC9nPjxnIGNsaXAtcGF0aD0idXJsKCNiMykiPjxyZWN0IHg9Ii00MCIgeT0iLTQwIiB3aWR0aD0iMTc1MiIgaGVpZ2h0PSIxMDIxIiBmaWxsPSIjMGEzNWZjIi8+PHBvbHlnb24gcG9pbnRzPSIxMTkwLjY2LDU1MS40NiAxODA4LjE3LC0zMjc1LjAzIC03NTcuMjUsLTM2ODguODMgLTIxMTUuODMsLTE0NzEuMDMiIGZpbGw9InVybCgjZzNjKSIvPjxwb2x5Z29uIHBvaW50cz0iMTIwNC42Miw0NTUuNTYgNDE2Ny44Miw5MzMuNTIgMzY4OS44NywzODk1LjIgNzI2LjY3LDM0MTcuMjQiIGZpbGw9InVybCgjZzNhKSIvPjxwb2x5Z29uIHBvaW50cz0iMTEwOC43OCw0OTkuNjIgLTQ1OS4wOSwzMDU5LjA3IDIxMDAuMTIsNDYyNC40NyAzNjY3Ljk5LDIwNjUuMDIiIGZpbGw9InVybCgjZzNiKSIvPjwvZz48ZyBjbGlwLXBhdGg9InVybCgjYjQpIj48cmVjdCB4PSItNDAiIHk9Ii00MCIgd2lkdGg9IjE3NTIiIGhlaWdodD0iMTAyMSIgZmlsbD0iIzMzNmRmZCIvPjxwb2x5Z29uIHBvaW50cz0iMTIzMC45Myw2NzAuMzQgMTc4OS41NywtMjY2My4xOCAtNDI2LjExLC0zMDM0LjEyIC0xNjI2LjQzLC0xMTM1LjE4IiBmaWxsPSJ1cmwoI2c0YykiLz48cG9seWdvbiBwb2ludHM9IjEyNDMuNDIsNTg2Ljc1IDQyMDMuNzIsMTA4Mi4zNSAzNzA3Ljg5LDQwNDEuMSA3NDcuNTksMzU0NS40OSIgZmlsbD0idXJsKCNnNGEpIi8+PHBvbHlnb24gcG9pbnRzPSIxMTYwLjMsNjIzLjkzIC00NDMuNDIsMzE2MS4wNyAyMDkyLjcsNDc2My42IDM2OTYuNDIsMjIyNi40NiIgZmlsbD0idXJsKCNnNGIpIi8+PC9nPjxnIGNsaXAtcGF0aD0idXJsKCNiNSkiPjxyZWN0IHg9Ii00MCIgeT0iLTQwIiB3aWR0aD0iMTc1MiIgaGVpZ2h0PSIxMDIxIiBmaWxsPSIjNjU5NGZlIi8+PHBvbHlnb24gcG9pbnRzPSIxMjYwLjEsNzc4LjYxIDE3NjQuMTEsLTIxMDUuNjkgLTEzOC4zNSwtMjQzNi45OCAtMTE5MS44OSwtODIxLjY5IiBmaWxsPSJ1cmwoI2c1YykiLz48cG9seWdvbiBwb2ludHM9IjEyNzEuMjIsNzA2LjI0IDQyMjguMjIsMTIyMS4xOCAzNzExLjgyLDQxNzYuNCA3NTQuODIsMzY2MS40NiIgZmlsbD0idXJsKCNnNWEpIi8+PHBvbHlnb24gcG9pbnRzPSIxMTk5LjYyLDczNy4zNCAtNDQwLjEsMzI1MS4zNyAyMDcyLjE4LDQ4OTEuMDIgMzcxMS45LDIzNzYuOTkiIGZpbGw9InVybCgjZzViKSIvPjwvZz48ZyBjbGlwLXBhdGg9InVybCgjYjYpIj48cmVjdCB4PSItNDAiIHk9Ii00MCIgd2lkdGg9IjE3NTIiIGhlaWdodD0iMTAyMSIgZmlsbD0iI2E0YzNmYiIvPjxwb2x5Z29uIHBvaW50cz0iMTI3My4xMiw4NzEuNzEgMTYzNi4zOCwtMTE4OC41MSAyOTguOTcsLTE0MjUgLTQ1OS42MiwtMzAwLjUxIiBmaWxsPSJ1cmwoI2c2YykiLz48cG9seWdvbiBwb2ludHM9IjEyODAuNzIsODE5Ljk0IDQyMzYuMzcsMTM0Mi41OCAzNzE1LjQ0LDQyOTcgNzU5Ljc5LDM3NzQuMzYiIGZpbGw9InVybCgjZzZhKSIvPjxwb2x5Z29uIHBvaW50cz0iMTIzMC42NCw4NDEuMTYgLTQ0Ny45NCwzMzI5LjQgMjAzNi44Niw1MDEwLjQxIDM3MTUuNDQsMjUyMi4xNiIgZmlsbD0idXJsKCNnNmIpIi8+PC9nPjxwYXRoIGQ9Ik0xNzEyIDEyMS45TDEwNjAuOCAxNy44QTEwNS40IDEwNS40IDAgMCAwIDk1MS42IDcxLjVMNDU3IDk4MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNzU4YmZkIiBzdHJva2Utb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTcxMiAxMjEuOUwxMDYwLjggMTcuOEExMDUuNCAxMDUuNCAwIDAgMCA5NTEuNiA3MS41TDQ1NyA5ODEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzc1OGJmZCIgc3Ryb2tlLXdpZHRoPSIyLjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTcxMiAyNjMuOUwxMTE4LjUgMTcwLjFBMTEzLjEgMTEzLjEgMCAwIDAgMTAwMi4zIDIyNi41TDU3OC41IDk4MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNmM5MGZmIiBzdHJva2Utb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTcxMiAyNjMuOUwxMTE4LjUgMTcwLjFBMTEzLjEgMTEzLjEgMCAwIDAgMTAwMi4zIDIyNi41TDU3OC41IDk4MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNmM5MGZmIiBzdHJva2Utd2lkdGg9IjIuNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xNzEyIDQwNi4yTDExNjMgMzE5QTEwNiAxMDYgMCAwIDAgMTA1NSAzNzAuMUw2OTYuNCA5ODEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzZhYjJmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTE3MTIgNDA2LjJMMTE2MyAzMTlBMTA2IDEwNiAwIDAgMCAxMDU1IDM3MC4xTDY5Ni40IDk4MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNmFiMmZmIiBzdHJva2Utd2lkdGg9IjIuNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xNzEyIDUzNy40TDEyMDYuMSA0NTUuOEE5Ni45IDk2LjkgMCAwIDAgMTEwOCA1MDAuOUw4MTMuOSA5ODEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzZhYzlmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTE3MTIgNTM3LjRMMTIwNi4xIDQ1NS44QTk2LjkgOTYuOSAwIDAgMCAxMTA4IDUwMC45TDgxMy45IDk4MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNmFjOWZmIiBzdHJva2Utd2lkdGg9IjIuNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xNzEyIDY2NS4yTDEyNDQuOSA1ODdBODQuNSA4NC41IDAgMCAwIDExNTkuNSA2MjUuMkw5MzQuNiA5ODEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg1ZjlmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTE3MTIgNjY1LjJMMTI0NC45IDU4N0E4NC41IDg0LjUgMCAwIDAgMTE1OS41IDYyNS4yTDkzNC42IDk4MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjODVmOWZmIiBzdHJva2Utd2lkdGg9IjIuNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xNzEyIDc4M0wxMjcyLjcgNzA2LjVBNzMuMiA3My4yIDAgMCAwIDExOTguOCA3MzguNkwxMDQwLjcgOTgxIiBmaWxsPSJub25lIiBzdHJva2U9IiNhMGZlZmYiIHN0cm9rZS1vcGFjaXR5PSIwLjIiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xNzEyIDc4M0wxMjcyLjcgNzA2LjVBNzMuMiA3My4yIDAgMCAwIDExOTguOCA3MzguNkwxMDQwLjcgOTgxIiBmaWxsPSJub25lIiBzdHJva2U9IiNhMGZlZmYiIHN0cm9rZS13aWR0aD0iMi42IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTE3MTIgODk2LjJMMTI4Mi4yIDgyMC4yQTUyLjMgNTIuMyAwIDAgMCAxMjI5LjggODQyLjRMMTEzNi4zIDk4MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTFmZWZmIiBzdHJva2Utb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTcxMiA4OTYuMkwxMjgyLjIgODIwLjJBNTIuMyA1Mi4zIDAgMCAwIDEyMjkuOCA4NDIuNEwxMTM2LjMgOTgxIiBmaWxsPSJub25lIiBzdHJva2U9IiNlMWZlZmYiIHN0cm9rZS13aWR0aD0iMi42IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+);
     --art-cases: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNTAwIDg0NCIgd2lkdGg9IjE1MDAiIGhlaWdodD0iODQ0Ij48IS0tIERpZ2lCbHUgQ2FzZSBTdHVkaWVzIGFydHdvcmssIHZlY3Rvci4gVHJhY2VkIGZyb20gdGhlIG9yaWdpbmFsIGZvb3Rlci1iZy5qcGcncyBwaXhlbHMgb24gOCBTZXAgMjAyNiBieSB0aGUgc2FtZSBtZXRob2QgYXMgaGVyby5zdmc6IHNldmVuIHJpbXMgZml0dGVkIGFzIGxpbmUgKyB0YW5nZW50IGFyYyArIGxpbmUsIGZpbGxzIGFuZCByaW0gY29sb3VycyBzYW1wbGVkIGZyb20gdGhlIEpQRUcsIGVhY2ggYmFuZCdzIGlud2FyZCBnbG93IGEgZGlzdGFuY2UgZ3JhZGllbnQuIFNhbWUgMTUwMHg4NDQgc3BhY2UgYXMgdGhlIEpQRUcuIC0tPjxyZWN0IHdpZHRoPSIxNTAwIiBoZWlnaHQ9Ijg0NCIgZmlsbD0iIzA5MDIyMSIvPjxkZWZzPjxjbGlwUGF0aCBpZD0iYjAiPjxwYXRoIGQ9Ik0tNDAgNzUuNkw0MjEuNiAtMTEuMkE5Ny4xIDk3LjEgMCAwIDEgNTI5LjkgNDlMODU1LjMgODg0TC00MCA4ODRaIi8+PC9jbGlwUGF0aD48bGluZWFyR3JhZGllbnQgaWQ9ImcwYSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSI0MjEuNiIgeTE9Ii0xMS4yIiB4Mj0iNDMyLjYxIiB5Mj0iNDcuNzgiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzJmNDFiNCIvPjxzdG9wIG9mZnNldD0iMC4wNSIgc3RvcC1jb2xvcj0iIzJhM2JhZSIvPjxzdG9wIG9mZnNldD0iMC4xNyIgc3RvcC1jb2xvcj0iIzI1MzVhNyIvPjxzdG9wIG9mZnNldD0iMC41IiBzdG9wLWNvbG9yPSIjMDkxMjU5Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMDIwOTNlIi8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9ImcwYiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSI1MjkuOSIgeTE9IjQ5IiB4Mj0iNDczLjk5IiB5Mj0iNzAuNzgiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzJmNDFiNCIvPjxzdG9wIG9mZnNldD0iMC4wNSIgc3RvcC1jb2xvcj0iIzJhM2JhZSIvPjxzdG9wIG9mZnNldD0iMC4xNyIgc3RvcC1jb2xvcj0iIzI1MzVhNyIvPjxzdG9wIG9mZnNldD0iMC41IiBzdG9wLWNvbG9yPSIjMDkxMjU5Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMDIwOTNlIi8+PC9saW5lYXJHcmFkaWVudD48cmFkaWFsR3JhZGllbnQgaWQ9ImcwYyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGN4PSI0MzkuNDIiIGN5PSI4NC4yNSIgcj0iOTcuMSI+PHN0b3Agb2Zmc2V0PSIwLjM4IiBzdG9wLWNvbG9yPSIjMDIwOTNlIi8+PHN0b3Agb2Zmc2V0PSIwLjY5IiBzdG9wLWNvbG9yPSIjMDkxMjU5Ii8+PHN0b3Agb2Zmc2V0PSIwLjkiIHN0b3AtY29sb3I9IiMyNTM1YTciLz48c3RvcCBvZmZzZXQ9IjAuOTciIHN0b3AtY29sb3I9IiMyYTNiYWUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMyZjQxYjQiLz48L3JhZGlhbEdyYWRpZW50PjxjbGlwUGF0aCBpZD0iYjEiPjxwYXRoIGQ9Ik0tNDAgMjA4LjVMMzgxLjEgMTMyLjRBNzYgNzYgMCAwIDEgNDY1LjUgMTc5LjlMNzM2LjUgODg0TC00MCA4ODRaIi8+PC9jbGlwUGF0aD48bGluZWFyR3JhZGllbnQgaWQ9ImcxYSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIzODEuMSIgeTE9IjEzMi40IiB4Mj0iMzkxLjc0IiB5Mj0iMTkxLjQ1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMzMTQzZDAiLz48c3RvcCBvZmZzZXQ9IjAuMDUiIHN0b3AtY29sb3I9IiMyYzNkY2MiLz48c3RvcCBvZmZzZXQ9IjAuMTciIHN0b3AtY29sb3I9IiMyNjM2YzgiLz48c3RvcCBvZmZzZXQ9IjAuNSIgc3RvcC1jb2xvcj0iIzA4MTQ4NyIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAxMGE3MCIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJnMWIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iNDY1LjUiIHkxPSIxNzkuOSIgeDI9IjQwOS41IiB5Mj0iMjAxLjQ1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMzMTQzZDAiLz48c3RvcCBvZmZzZXQ9IjAuMDUiIHN0b3AtY29sb3I9IiMyYzNkY2MiLz48c3RvcCBvZmZzZXQ9IjAuMTciIHN0b3AtY29sb3I9IiMyNjM2YzgiLz48c3RvcCBvZmZzZXQ9IjAuNSIgc3RvcC1jb2xvcj0iIzA4MTQ4NyIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAxMGE3MCIvPjwvbGluZWFyR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJnMWMiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjeD0iMzk0LjU3IiBjeT0iMjA3LjIiIHI9Ijc2Ij48c3RvcCBvZmZzZXQ9IjAuMjEiIHN0b3AtY29sb3I9IiMwMTBhNzAiLz48c3RvcCBvZmZzZXQ9IjAuNjEiIHN0b3AtY29sb3I9IiMwODE0ODciLz48c3RvcCBvZmZzZXQ9IjAuODciIHN0b3AtY29sb3I9IiMyNjM2YzgiLz48c3RvcCBvZmZzZXQ9IjAuOTYiIHN0b3AtY29sb3I9IiMyYzNkY2MiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzMTQzZDAiLz48L3JhZGlhbEdyYWRpZW50PjxjbGlwUGF0aCBpZD0iYjIiPjxwYXRoIGQ9Ik0tNDAgMzM1LjdMMzI1LjcgMjY2LjZBNjcuOSA2Ny45IDAgMCAxIDQwMS43IDMwOC44TDYyMy43IDg4NEwtNDAgODg0WiIvPjwvY2xpcFBhdGg+PGxpbmVhckdyYWRpZW50IGlkPSJnMmEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMzI1LjciIHkxPSIyNjYuNiIgeDI9IjMzNi45IiB5Mj0iMzI1LjU1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMzNjYwZjUiLz48c3RvcCBvZmZzZXQ9IjAuMDUiIHN0b3AtY29sb3I9IiMzMTU4ZjQiLz48c3RvcCBvZmZzZXQ9IjAuMTciIHN0b3AtY29sb3I9IiMyYTUwZjMiLz48c3RvcCBvZmZzZXQ9IjAuNSIgc3RvcC1jb2xvcj0iIzBmMzFkOCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAyMjZjNSIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJnMmIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iNDAxLjciIHkxPSIzMDguOCIgeDI9IjM0NS43NCIgeTI9IjMzMC40NSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMzY2MGY1Ii8+PHN0b3Agb2Zmc2V0PSIwLjA1IiBzdG9wLWNvbG9yPSIjMzE1OGY0Ii8+PHN0b3Agb2Zmc2V0PSIwLjE3IiBzdG9wLWNvbG9yPSIjMmE1MGYzIi8+PHN0b3Agb2Zmc2V0PSIwLjUiIHN0b3AtY29sb3I9IiMwZjMxZDgiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwMjI2YzUiLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iZzJjIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjMzOC4zOCIgY3k9IjMzMy4zMSIgcj0iNjcuOSI+PHN0b3Agb2Zmc2V0PSIwLjEyIiBzdG9wLWNvbG9yPSIjMDIyNmM1Ii8+PHN0b3Agb2Zmc2V0PSIwLjU2IiBzdG9wLWNvbG9yPSIjMGYzMWQ4Ii8+PHN0b3Agb2Zmc2V0PSIwLjg1IiBzdG9wLWNvbG9yPSIjMmE1MGYzIi8+PHN0b3Agb2Zmc2V0PSIwLjk2IiBzdG9wLWNvbG9yPSIjMzE1OGY0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMzY2MGY1Ii8+PC9yYWRpYWxHcmFkaWVudD48Y2xpcFBhdGggaWQ9ImIzIj48cGF0aCBkPSJNLTQwIDQ1Ni4xTDI4Ni43IDM5NS43QTYxLjEgNjEuMSAwIDAgMSAzNTQuOCA0MzMuN0w1MjguOCA4ODRMLTQwIDg4NFoiLz48L2NsaXBQYXRoPjxsaW5lYXJHcmFkaWVudCBpZD0iZzNhIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjI4Ni43IiB5MT0iMzk1LjciIHgyPSIyOTcuNjMiIHkyPSI0NTQuNyI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjM2Q2NmZjIi8+PHN0b3Agb2Zmc2V0PSIwLjA1IiBzdG9wLWNvbG9yPSIjMzg1ZmZiIi8+PHN0b3Agb2Zmc2V0PSIwLjE3IiBzdG9wLWNvbG9yPSIjMzI1NmZiIi8+PHN0b3Agb2Zmc2V0PSIwLjUiIHN0b3AtY29sb3I9IiMxMDM1ZmQiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwMjJhZmIiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iZzNiIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjM1NC44IiB5MT0iNDMzLjciIHgyPSIyOTguODUiIHkyPSI0NTUuMzgiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzNkNjZmYyIvPjxzdG9wIG9mZnNldD0iMC4wNSIgc3RvcC1jb2xvcj0iIzM4NWZmYiIvPjxzdG9wIG9mZnNldD0iMC4xNyIgc3RvcC1jb2xvcj0iIzMyNTZmYiIvPjxzdG9wIG9mZnNldD0iMC41IiBzdG9wLWNvbG9yPSIjMTAzNWZkIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMDIyYWZiIi8+PC9saW5lYXJHcmFkaWVudD48cmFkaWFsR3JhZGllbnQgaWQ9ImczYyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGN4PSIyOTcuODMiIGN5PSI0NTUuNzgiIHI9IjYxLjEiPjxzdG9wIG9mZnNldD0iMC4wMiIgc3RvcC1jb2xvcj0iIzAyMmFmYiIvPjxzdG9wIG9mZnNldD0iMC41MSIgc3RvcC1jb2xvcj0iIzEwMzVmZCIvPjxzdG9wIG9mZnNldD0iMC44NCIgc3RvcC1jb2xvcj0iIzMyNTZmYiIvPjxzdG9wIG9mZnNldD0iMC45NSIgc3RvcC1jb2xvcj0iIzM4NWZmYiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzNkNjZmYyIvPjwvcmFkaWFsR3JhZGllbnQ+PGNsaXBQYXRoIGlkPSJiNCI+PHBhdGggZD0iTS00MCA1NzEuM0wyNTIuNSA1MTQuN0E1MSA1MSAwIDAgMSAzMDkuNyA1NDYuM0w0NDAuNiA4ODRMLTQwIDg4NFoiLz48L2NsaXBQYXRoPjxsaW5lYXJHcmFkaWVudCBpZD0iZzRhIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjI1Mi41IiB5MT0iNTE0LjciIHgyPSIyNjMuODciIHkyPSI1NzMuNjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzViOTRmZSIvPjxzdG9wIG9mZnNldD0iMC4wNSIgc3RvcC1jb2xvcj0iIzU2OGJmZSIvPjxzdG9wIG9mZnNldD0iMC4xNyIgc3RvcC1jb2xvcj0iIzRmODJmZSIvPjxzdG9wIG9mZnNldD0iMC41IiBzdG9wLWNvbG9yPSIjMzM2OWZkIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMjM1Y2ZlIi8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9Imc0YiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIzMDkuNyIgeTE9IjU0Ni4zIiB4Mj0iMjUzLjc4IiB5Mj0iNTY4LjA0Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM1Yjk0ZmUiLz48c3RvcCBvZmZzZXQ9IjAuMDUiIHN0b3AtY29sb3I9IiM1NjhiZmUiLz48c3RvcCBvZmZzZXQ9IjAuMTciIHN0b3AtY29sb3I9IiM0ZjgyZmUiLz48c3RvcCBvZmZzZXQ9IjAuNSIgc3RvcC1jb2xvcj0iIzMzNjlmZCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzIzNWNmZSIvPjwvbGluZWFyR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJnNGMiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjeD0iMjYyLjE2IiBjeT0iNTY0Ljc4IiByPSI1MSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMjg2MGZlIi8+PHN0b3Agb2Zmc2V0PSIwLjQxIiBzdG9wLWNvbG9yPSIjMzM2OWZkIi8+PHN0b3Agb2Zmc2V0PSIwLjgiIHN0b3AtY29sb3I9IiM0ZjgyZmUiLz48c3RvcCBvZmZzZXQ9IjAuOTQiIHN0b3AtY29sb3I9IiM1NjhiZmUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM1Yjk0ZmUiLz48L3JhZGlhbEdyYWRpZW50PjxjbGlwUGF0aCBpZD0iYjUiPjxwYXRoIGQ9Ik0tNDAgNjgwLjNMMjIyLjcgNjIzLjhBNDIuMyA0Mi4zIDAgMCAxIDI3MS4xIDY0OS45TDM2MS45IDg4NEwtNDAgODg0WiIvPjwvY2xpcFBhdGg+PGxpbmVhckdyYWRpZW50IGlkPSJnNWEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMjIyLjciIHkxPSI2MjMuOCIgeDI9IjIzNS4zOCIgeTI9IjY4Mi40NCI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjODliNWZjIi8+PHN0b3Agb2Zmc2V0PSIwLjA1IiBzdG9wLWNvbG9yPSIjODVhZmZjIi8+PHN0b3Agb2Zmc2V0PSIwLjE3IiBzdG9wLWNvbG9yPSIjODFhOGZjIi8+PHN0b3Agb2Zmc2V0PSIwLjUiIHN0b3AtY29sb3I9IiM2Yzk3ZmUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM1ZDkwZjciLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iZzViIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjI3MS4xIiB5MT0iNjQ5LjkiIHgyPSIyMTUuMTMiIHkyPSI2NzEuNTIiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzg5YjVmYyIvPjxzdG9wIG9mZnNldD0iMC4wNSIgc3RvcC1jb2xvcj0iIzg1YWZmYyIvPjxzdG9wIG9mZnNldD0iMC4xNyIgc3RvcC1jb2xvcj0iIzgxYThmYyIvPjxzdG9wIG9mZnNldD0iMC41IiBzdG9wLWNvbG9yPSIjNmM5N2ZlIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNWQ5MGY3Ii8+PC9saW5lYXJHcmFkaWVudD48cmFkaWFsR3JhZGllbnQgaWQ9Imc1YyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGN4PSIyMzEuNjQiIGN5PSI2NjUuMTQiIHI9IjQyLjMiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzY2OTRmYiIvPjxzdG9wIG9mZnNldD0iMC4yOSIgc3RvcC1jb2xvcj0iIzZjOTdmZSIvPjxzdG9wIG9mZnNldD0iMC43NiIgc3RvcC1jb2xvcj0iIzgxYThmYyIvPjxzdG9wIG9mZnNldD0iMC45MyIgc3RvcC1jb2xvcj0iIzg1YWZmYyIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzg5YjVmYyIvPjwvcmFkaWFsR3JhZGllbnQ+PGNsaXBQYXRoIGlkPSJiNiI+PHBhdGggZD0iTS00MCA3NzEuOUwxOTUuNTEgNzE3LjE4QTM1IDM1IDAgMCAxIDIzNiA3MzguNDVMMjkzLjMgODg0TC00MCA4ODRaIi8+PC9jbGlwUGF0aD48bGluZWFyR3JhZGllbnQgaWQ9Imc2YSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIxOTUuNTEiIHkxPSI3MTcuMTgiIHgyPSIyMDkuMDkiIHkyPSI3NzUuNjIiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2JjZDdmZSIvPjxzdG9wIG9mZnNldD0iMC4wNSIgc3RvcC1jb2xvcj0iI2I5ZDRmZSIvPjxzdG9wIG9mZnNldD0iMC4xNyIgc3RvcC1jb2xvcj0iI2I1ZDBmZSIvPjxzdG9wIG9mZnNldD0iMC41IiBzdG9wLWNvbG9yPSIjYWNjOGZkIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjYTVjMmZlIi8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9Imc2YiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIyMzYiIHkxPSI3MzguNDUiIHgyPSIxODAuMTciIHkyPSI3NjAuNDMiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2JjZDdmZSIvPjxzdG9wIG9mZnNldD0iMC4wNSIgc3RvcC1jb2xvcj0iI2I5ZDRmZSIvPjxzdG9wIG9mZnNldD0iMC4xNyIgc3RvcC1jb2xvcj0iI2I1ZDBmZSIvPjxzdG9wIG9mZnNldD0iMC41IiBzdG9wLWNvbG9yPSIjYWNjOGZkIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjYTVjMmZlIi8+PC9saW5lYXJHcmFkaWVudD48cmFkaWFsR3JhZGllbnQgaWQ9Imc2YyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGN4PSIyMDMuNDMiIGN5PSI3NTEuMjciIHI9IjM1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNhYmM3ZmQiLz48c3RvcCBvZmZzZXQ9IjAuMTQiIHN0b3AtY29sb3I9IiNhY2M4ZmQiLz48c3RvcCBvZmZzZXQ9IjAuNzEiIHN0b3AtY29sb3I9IiNiNWQwZmUiLz48c3RvcCBvZmZzZXQ9IjAuOTEiIHN0b3AtY29sb3I9IiNiOWQ0ZmUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNiY2Q3ZmUiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48ZyBjbGlwLXBhdGg9InVybCgjYjApIj48cmVjdCB4PSItNDAiIHk9Ii00MCIgd2lkdGg9IjE1ODAiIGhlaWdodD0iOTI0IiBmaWxsPSIjMDIwOTNlIi8+PHBvbHlnb24gcG9pbnRzPSI0MzkuNDIsODQuMjUgLTI3My41NSwtMzczMy43NSAyODg4LjM1LC00MzI4LjMyIDQwNTguNDUsLTEzMjUuNzUiIGZpbGw9InVybCgjZzBjKSIvPjxwb2x5Z29uIHBvaW50cz0iNDIzLjA3LC0xMS40OCAtMjUyNi43Myw1NDMuMjEgLTE5NzYuMDMsMzQ5Mi4yMyA5NzMuNzcsMjkzNy41NCIgZmlsbD0idXJsKCNnMGEpIi8+PHBvbHlnb24gcG9pbnRzPSI1MjkuMzYsNDcuNiAxNjE5LjIxLDI4NDQuMjUgLTExNzYuMTIsMzkzMy4zMyAtMjI2NS45OCwxMTM2LjY5IiBmaWxsPSJ1cmwoI2cwYikiLz48L2c+PGcgY2xpcC1wYXRoPSJ1cmwoI2IxKSI+PHJlY3QgeD0iLTQwIiB5PSItNDAiIHdpZHRoPSIxNTgwIiBoZWlnaHQ9IjkyNCIgZmlsbD0iIzAxMGE3MCIvPjxwb2x5Z29uIHBvaW50cz0iMzk0LjU3LDIwNy4yIC0xNDQuMjgsLTI3ODQuNjcgMjMyOC40NCwtMzIzMS41MyAzMjMxLjcyLC04ODQuNjciIGZpbGw9InVybCgjZzFjKSIvPjxwb2x5Z29uIHBvaW50cz0iMzgyLjU4LDEzMi4xMyAtMjU3MS4wOCw2NjUuOTEgLTIwMzkuMzIsMzYxOC40MSA5MTQuMzMsMzA4NC42MyIgZmlsbD0idXJsKCNnMWEpIi8+PHBvbHlnb24gcG9pbnRzPSI0NjQuOTYsMTc4LjUgMTU0My4xLDI5NzkuNjggLTEyNTYuNzIsNDA1Ny4xOCAtMjMzNC44NiwxMjU2IiBmaWxsPSJ1cmwoI2cxYikiLz48L2c+PGcgY2xpcC1wYXRoPSJ1cmwoI2IyKSI+PHJlY3QgeD0iLTQwIiB5PSItNDAiIHdpZHRoPSIxNTgwIiBoZWlnaHQ9IjkyNCIgZmlsbD0iIzAyMjZjNSIvPjxwb2x5Z29uIHBvaW50cz0iMzM4LjM4LDMzMy4zMSAtMTY4LjY5LC0yMzM0Ljk0IDIwNTcuNDgsLTI3NTUuNTggMjg3MS4zMSwtNjQ2Ljk0IiBmaWxsPSJ1cmwoI2cyYykiLz48cG9seWdvbiBwb2ludHM9IjMyNy4xNywyNjYuMzIgLTI2MjIuMTQsODIzLjYgLTIwNjIuMDUsMzc3MC44NiA4ODcuMjYsMzIxMy41OCIgZmlsbD0idXJsKCNnMmEpIi8+PHBvbHlnb24gcG9pbnRzPSI0MDEuMTYsMzA3LjQgMTQ4MS45LDMxMDcuNTggLTEzMTUuOSw0MTkwLjMzIC0yMzk2LjYzLDEzOTAuMTUiIGZpbGw9InVybCgjZzJiKSIvPjwvZz48ZyBjbGlwLXBhdGg9InVybCgjYjMpIj48cmVjdCB4PSItNDAiIHk9Ii00MCIgd2lkdGg9IjE1ODAiIGhlaWdodD0iOTI0IiBmaWxsPSIjMDIyYWZiIi8+PHBvbHlnb24gcG9pbnRzPSIyOTcuODMsNDU1Ljc4IC0xNDcuMywtMTk0Ny4zNCAxODQ2Ljg5LC0yMzE2LjAzIDI1NzYuNywtNDI3LjM0IiBmaWxsPSJ1cmwoI2czYykiLz48cG9seWdvbiBwb2ludHM9IjI4OC4xOCwzOTUuNDMgLTI2NjMuMzEsOTQxLjA5IC0yMTE2LjkxLDM4OTAuOTIgODM0LjU3LDMzNDUuMjUiIGZpbGw9InVybCgjZzNhKSIvPjxwb2x5Z29uIHBvaW50cz0iMzU0LjI2LDQzMi4zIDE0MzYuMTEsMzIzMi4wNSAtMTM2MS4xOSw0MzE2LjA4IC0yNDQzLjA0LDE1MTYuMzMiIGZpbGw9InVybCgjZzNiKSIvPjwvZz48ZyBjbGlwLXBhdGg9InVybCgjYjQpIj48cmVjdCB4PSItNDAiIHk9Ii00MCIgd2lkdGg9IjE1ODAiIGhlaWdodD0iOTI0IiBmaWxsPSIjMjM1Y2ZlIi8+PHBvbHlnb24gcG9pbnRzPSIyNjIuMTYsNTY0Ljc4IC0xMjQuNDEsLTE0MzguMjYgMTU0OC4xOCwtMTc2MS45MiAyMTYzLjU5LC0xNzQuMjYiIGZpbGw9InVybCgjZzRjKSIvPjxwb2x5Z29uIHBvaW50cz0iMjUzLjk3LDUxNC40MiAtMjY5Mi44NiwxMDg0LjY0IC0yMTI0LjM3LDQwMzAuMjggODIyLjQ2LDM0NjAuMDYiIGZpbGw9InVybCgjZzRhKSIvPjxwb2x5Z29uIHBvaW50cz0iMzA5LjE2LDU0NC45IDEzOTMuOTYsMzM0My41MSAtMTQwMi4yNiw0NDMwLjMzIC0yNDg3LjA2LDE2MzEuNzIiIGZpbGw9InVybCgjZzRiKSIvPjwvZz48ZyBjbGlwLXBhdGg9InVybCgjYjUpIj48cmVjdCB4PSItNDAiIHk9Ii00MCIgd2lkdGg9IjE1ODAiIGhlaWdodD0iOTI0IiBmaWxsPSIjNWQ5MGY3Ii8+PHBvbHlnb24gcG9pbnRzPSIyMzEuNjQsNjY1LjE0IC0xMjYuMDUsLTk4OC42MiAxMjg3LjEzLC0xMjkyLjU1IDE4MDkuOTUsNTUuMzgiIGZpbGw9InVybCgjZzVjKSIvPjxwb2x5Z29uIHBvaW50cz0iMjI0LjE3LDYyMy40OCAtMjcxMC4yMywxMjU0LjYgLTIwNzYuMDMsNDE4Ni44IDg1OC4zNywzNTU1LjY4IiBmaWxsPSJ1cmwoI2c1YSkiLz48cG9seWdvbiBwb2ludHM9IjI3MC41Niw2NDguNSAxMzU1Ljk2LDM0NDYuODggLTE0NDIuNDYsNDUyOC4wMSAtMjUyNy44NiwxNzI5LjY0IiBmaWxsPSJ1cmwoI2c1YikiLz48L2c+PGcgY2xpcC1wYXRoPSJ1cmwoI2I2KSI+PHJlY3QgeD0iLTQwIiB5PSItNDAiIHdpZHRoPSIxNTgwIiBoZWlnaHQ9IjkyNCIgZmlsbD0iI2E1YzJmZSIvPjxwb2x5Z29uIHBvaW50cz0iMjAzLjQzLDc1MS4yNyAtMTEzLjQxLC02MTIuNCAxMDYzLjQ5LC04ODUuODUgMTUwNi4xMSwyMzguNDEiIGZpbGw9InVybCgjZzZjKSIvPjxwb2x5Z29uIHBvaW50cz0iMTk2Ljk3LDcxNi44NCAtMjcyNi42NSwxMzk2LjEzIC0yMDQ3LjcsNDMxOC4yOSA4NzUuOTIsMzYzOSIgZmlsbD0idXJsKCNnNmEpIi8+PHBvbHlnb24gcG9pbnRzPSIyMzUuNDUsNzM3LjA2IDEzMzQuOTksMzUyOS45IC0xNDU2LjQ2LDQ2MjguOSAtMjU1NiwxODM2LjA1IiBmaWxsPSJ1cmwoI2c2YikiLz48L2c+PHBhdGggZD0iTS00MCA3NS42TDQyMS42IC0xMS4yQTk3LjEgOTcuMSAwIDAgMSA1MjkuOSA0OUw4NTUuMyA4ODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY5ODNmYyIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTS00MCA3NS42TDQyMS42IC0xMS4yQTk3LjEgOTcuMSAwIDAgMSA1MjkuOSA0OUw4NTUuMyA4ODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY5ODNmYyIgc3Ryb2tlLXdpZHRoPSIyLjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNLTQwIDIwOC41TDM4MS4xIDEzMi40QTc2IDc2IDAgMCAxIDQ2NS41IDE3OS45TDczNi41IDg4NCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNmU4ZmZmIiBzdHJva2Utb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNLTQwIDIwOC41TDM4MS4xIDEzMi40QTc2IDc2IDAgMCAxIDQ2NS41IDE3OS45TDczNi41IDg4NCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNmU4ZmZmIiBzdHJva2Utd2lkdGg9IjIuMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0tNDAgMzM1LjdMMzI1LjcgMjY2LjZBNjcuOSA2Ny45IDAgMCAxIDQwMS43IDMwOC44TDYyMy43IDg4NCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjN2NiYWZmIiBzdHJva2Utb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNLTQwIDMzNS43TDMyNS43IDI2Ni42QTY3LjkgNjcuOSAwIDAgMSA0MDEuNyAzMDguOEw2MjMuNyA4ODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdjYmFmZiIgc3Ryb2tlLXdpZHRoPSIyLjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNLTQwIDQ1Ni4xTDI4Ni43IDM5NS43QTYxLjEgNjEuMSAwIDAgMSAzNTQuOCA0MzMuN0w1MjguOCA4ODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhYzNmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTS00MCA0NTYuMUwyODYuNyAzOTUuN0E2MS4xIDYxLjEgMCAwIDEgMzU0LjggNDMzLjdMNTI4LjggODg0IiBmaWxsPSJub25lIiBzdHJva2U9IiM3YWMzZmYiIHN0cm9rZS13aWR0aD0iMi4yIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTS00MCA1NzEuM0wyNTIuNSA1MTQuN0E1MSA1MSAwIDAgMSAzMDkuNyA1NDYuM0w0NDAuNiA4ODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2EyZjhmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTS00MCA1NzEuM0wyNTIuNSA1MTQuN0E1MSA1MSAwIDAgMSAzMDkuNyA1NDYuM0w0NDAuNiA4ODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2EyZjhmZiIgc3Ryb2tlLXdpZHRoPSIyLjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNLTQwIDY4MC4zTDIyMi43IDYyMy44QTQyLjMgNDIuMyAwIDAgMSAyNzEuMSA2NDkuOUwzNjEuOSA4ODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2I4ZmZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTS00MCA2ODAuM0wyMjIuNyA2MjMuOEE0Mi4zIDQyLjMgMCAwIDEgMjcxLjEgNjQ5LjlMMzYxLjkgODg0IiBmaWxsPSJub25lIiBzdHJva2U9IiNiOGZmZmYiIHN0cm9rZS13aWR0aD0iMi4yIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTS00MCA3NzEuOUwxOTUuNTEgNzE3LjE4QTM1IDM1IDAgMCAxIDIzNiA3MzguNDVMMjkzLjMgODg0IiBmaWxsPSJub25lIiBzdHJva2U9IiNlM2ZkZmYiIHN0cm9rZS1vcGFjaXR5PSIwLjIiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0tNDAgNzcxLjlMMTk1LjUxIDcxNy4xOEEzNSAzNSAwIDAgMSAyMzYgNzM4LjQ1TDI5My4zIDg4NCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTNmZGZmIiBzdHJva2Utd2lkdGg9IjIuMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==);
-    flex: 0 0 176px;
-    border-radius: 0 0 19px 19px;
+    flex: 0 0 200px;
+    border-radius: 0 0 9px 9px;
     background-color: #071236;
     background-size: cover;
     background-repeat: no-repeat;
@@ -1340,31 +1338,31 @@
   .svc-alt-art-2 {
     background-image: var(--art-cases);
     background-position: 72% 62%;
-    filter: hue-rotate(-42deg) saturate(1.1);
+    filter: hue-rotate(-19.5deg);
   }
 
   .svc-alt-art-3 {
     background-image: var(--art-hero);
     background-position: 62% 74%;
-    filter: hue-rotate(20deg) saturate(0.95);
+    filter: hue-rotate(45.5deg) saturate(0.95);
   }
 
   .svc-alt-art-4 {
     background-image: var(--art-cases);
     background-position: 24% 22%;
-    filter: hue-rotate(-18deg) saturate(1.05);
+    filter: hue-rotate(18.5deg);
   }
 
   .svc-alt-art-5 {
     background-image: var(--art-hero);
     background-position: 44% 52%;
-    filter: hue-rotate(40deg) saturate(0.88);
+    filter: hue-rotate(32.5deg) saturate(0.92);
   }
 
   .svc-alt-art-6 {
     background-image: var(--art-cases);
     background-position: 8% 84%;
-    filter: hue-rotate(-50deg) saturate(1.05);
+    filter: hue-rotate(-11.5deg);
   }
 
   /* ---------- About + Values ---------- */
@@ -1424,11 +1422,13 @@
      which is far past a comfortable line length. */
   .about-head { max-width: 940px; }
 
-  /* Set at the same size as the alternative arrangement's statement, on
-     request - it is one paragraph now rather than three, so it carries the
-     section on its own and the smaller supporting size no longer applies. */
+  /* Two paragraphs since 8 Sep 2026 (the practitioners statement, then the
+     vision), a step down from the single 23-33px statement they replaced, on
+     request. Still well above body size: this is the section's voice, not
+     supporting copy. The word-by-word fill walks every .about-lede, so the
+     split cost it nothing. */
   .about-lede {
-    font-size: clamp(23px, 2.4vw, 33px);
+    font-size: clamp(20px, 2.05vw, 28px);
     line-height: 1.34;
     letter-spacing: -0.5px;
     color: var(--text);
@@ -1975,12 +1975,21 @@
      old mobile rule that stretched each box to full width is gone with the
      boxes. Theme tokens throughout - nothing here is a fixed-colour surface
      any more, so no pinned ink. */
+  /* Brand blue fill, same pill (8 Sep 2026, on request - "make the big stat
+     pills brand blue, keep the shape"). A fixed-colour surface in both
+     themes, so ink is pinned white locally. Both texts are FULL white, not the
+     muted alpha the hairline version used: white on #1d6ef5 is 4.56:1, so a
+     0.55-0.66 alpha label would land under 3:1 and fail AA at 11px. The
+     hierarchy against the number comes from size and weight instead. */
   .case-stat {
+    --ink-rgb: 255, 255, 255;
+    --text: #ffffff;
     display: inline-flex;
     align-items: baseline;
     gap: 8px;
     padding: 7px 14px;
-    border: 1px solid var(--hairline);
+    background: var(--blue);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 999px;
   }
 
@@ -1988,7 +1997,7 @@
     font-size: 14px;
     font-weight: 700;
     letter-spacing: -0.2px;
-    color: var(--text);
+    color: #ffffff;
   }
 
   .case-stat span {
@@ -1997,7 +2006,7 @@
     font-weight: 500;
     letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: rgba(var(--ink-rgb), var(--ink-a-high));
+    color: #ffffff;
   }
 
   .case-section { margin-bottom: 22px; }
@@ -3752,8 +3761,8 @@
     .svc-alt-grid { grid-template-columns: 1fr; }
     .svc-alt-card { min-height: 0; }
     .svc-alt-body { padding: 36px 28px 28px; }
-    .svc-alt-eyebrow { margin-bottom: 28px; }
-    .svc-alt-art { flex-basis: 150px; }
+    .svc-alt-name { margin-bottom: 16px; }
+    .svc-alt-art { flex-basis: 180px; }
   }
 
   @media (max-width: 620px) {
@@ -4056,7 +4065,7 @@
         </button>
       </div>
 
-      <div class="service-card plain">
+      <div class="service-card accent">
         <div class="service-num">02</div>
         <h3>Opportunity Discovery</h3>
         <p>We assess where you stand today, surface the highest-impact opportunities, and build the case for change.</p>
@@ -4076,7 +4085,7 @@
         </button>
       </div>
 
-      <div class="service-card plain">
+      <div class="service-card accent">
         <div class="service-num">04</div>
         <h3>Digital Solutions</h3>
         <p>We design, build, and deploy tailored digital and automation solutions in weeks, with support that continues after launch.</p>
@@ -4096,7 +4105,7 @@
         </button>
       </div>
 
-      <div class="service-card plain">
+      <div class="service-card accent">
         <div class="service-num">06</div>
         <h3>Managed Services</h3>
         <p>We keep your systems sharp as needs evolve, with ongoing updates that protect the value you have already built.</p>
@@ -4122,48 +4131,48 @@
       <div class="svc-alt-grid">
       <article class="svc-alt-card">
         <div class="svc-alt-body">
-          <span class="svc-alt-eyebrow">Artificial Intelligence</span>
-          <h3 class="svc-alt-title">We help you identify where AI creates real value, govern it responsibly, and put it to work with measurable results.</h3>
+          <h3 class="svc-alt-name">Artificial Intelligence</h3>
+          <p class="svc-alt-desc">We help you identify where AI creates real value, govern it responsibly, and put it to work with measurable results.</p>
           <button type="button" class="svc-alt-plus" data-service="ai" aria-label="Learn more about Artificial Intelligence"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
         </div>
         <div class="svc-alt-art svc-alt-art-1" aria-hidden="true"></div>
       </article>
       <article class="svc-alt-card">
         <div class="svc-alt-body">
-          <span class="svc-alt-eyebrow">Opportunity Discovery</span>
-          <h3 class="svc-alt-title">We assess where you stand today, surface the highest-impact opportunities, and build the case for change.</h3>
+          <h3 class="svc-alt-name">Opportunity Discovery</h3>
+          <p class="svc-alt-desc">We assess where you stand today, surface the highest-impact opportunities, and build the case for change.</p>
           <button type="button" class="svc-alt-plus" data-service="discovery" aria-label="Learn more about Opportunity Discovery"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
         </div>
         <div class="svc-alt-art svc-alt-art-2" aria-hidden="true"></div>
       </article>
       <article class="svc-alt-card">
         <div class="svc-alt-body">
-          <span class="svc-alt-eyebrow">Process Excellence</span>
-          <h3 class="svc-alt-title">We simplify the people, processes, and technology behind your operations into one coherent, well-run system.</h3>
+          <h3 class="svc-alt-name">Process Excellence</h3>
+          <p class="svc-alt-desc">We simplify the people, processes, and technology behind your operations into one coherent, well-run system.</p>
           <button type="button" class="svc-alt-plus" data-service="process" aria-label="Learn more about Process Excellence"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
         </div>
         <div class="svc-alt-art svc-alt-art-3" aria-hidden="true"></div>
       </article>
       <article class="svc-alt-card">
         <div class="svc-alt-body">
-          <span class="svc-alt-eyebrow">Digital Solutions</span>
-          <h3 class="svc-alt-title">We design, build, and deploy tailored digital and automation solutions in weeks, with support that continues after launch.</h3>
+          <h3 class="svc-alt-name">Digital Solutions</h3>
+          <p class="svc-alt-desc">We design, build, and deploy tailored digital and automation solutions in weeks, with support that continues after launch.</p>
           <button type="button" class="svc-alt-plus" data-service="digital" aria-label="Learn more about Digital Solutions"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
         </div>
         <div class="svc-alt-art svc-alt-art-4" aria-hidden="true"></div>
       </article>
       <article class="svc-alt-card">
         <div class="svc-alt-body">
-          <span class="svc-alt-eyebrow">Target Operating Model</span>
-          <h3 class="svc-alt-title">We shape an operating model that aligns your people, processes, and technology to what the business actually needs.</h3>
+          <h3 class="svc-alt-name">Target Operating Model</h3>
+          <p class="svc-alt-desc">We shape an operating model that aligns your people, processes, and technology to what the business actually needs.</p>
           <button type="button" class="svc-alt-plus" data-service="tom" aria-label="Learn more about Target Operating Model"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
         </div>
         <div class="svc-alt-art svc-alt-art-5" aria-hidden="true"></div>
       </article>
       <article class="svc-alt-card">
         <div class="svc-alt-body">
-          <span class="svc-alt-eyebrow">Managed Services</span>
-          <h3 class="svc-alt-title">We keep your systems sharp as needs evolve, with ongoing updates that protect the value you have already built.</h3>
+          <h3 class="svc-alt-name">Managed Services</h3>
+          <p class="svc-alt-desc">We keep your systems sharp as needs evolve, with ongoing updates that protect the value you have already built.</p>
           <button type="button" class="svc-alt-plus" data-service="post" aria-label="Learn more about Managed Services"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
         </div>
         <div class="svc-alt-art svc-alt-art-6" aria-hidden="true"></div>
@@ -4326,7 +4335,8 @@
 
     <div class="about-top">
       <div class="about-head">
-        <p class="about-lede">At DigiBlu, we bring together experienced practitioners with client-side, technology, and consultancy backgrounds. We act as pragmatic partners, focused on getting to value quickly rather than getting lost in process. Our vision is to be one of the UK's foremost independent AI-enabled digital transformation businesses, turning today's pressures into lasting advantage.</p>
+        <p class="about-lede">At DigiBlu, we bring together experienced practitioners with client-side, technology, and consultancy backgrounds. We act as pragmatic partners, focused on getting to value quickly rather than getting lost in process.</p>
+        <p class="about-lede">Our vision is to be one of the UK's foremost independent AI-enabled digital transformation businesses, turning today's pressures into lasting advantage.</p>
       </div>
 
       <div class="geo-figure" aria-hidden="true">
