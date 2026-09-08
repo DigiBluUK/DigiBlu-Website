@@ -275,6 +275,15 @@
     padding-top: var(--nav-h);
   }
 
+  /* hero.svg, not hero.jpg, since 8 Sep 2026: a vector rebuild of the same
+     artwork, traced from the JPEG's own pixels (see scratchpad hero-trace
+     notes in CLAUDE.md). The JPEG was 1672x941 at 0.055 bytes/pixel - it
+     upscaled 1.5x on an ordinary laptop and 3x on a 2560-wide screen at DPR 2,
+     and its 8x8 blocks and gradient banding showed (reported as blurred and
+     pixelated). The SVG is sharp at any size and a fraction of the bytes.
+     Same 1672x941 coordinate space, so the .hero-spark paths traced from the
+     JPEG still ride the rims. hero.jpg stays in the repo only as the raster
+     source the share cards were built from. */
   .hero::before {
     content: '';
     position: absolute;
@@ -292,7 +301,7 @@
     background:
       linear-gradient(to bottom, rgba(0, 0, 0, 0.72) 0, rgba(0, 0, 0, 0.5) var(--hero-art-top), rgba(0, 0, 0, 0) calc(var(--hero-art-top) + 180px)),
       linear-gradient(to right, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.55) 42%, rgba(0, 0, 0, 0.3) 100%),
-      url('hero.jpg') center / cover no-repeat;
+      url('hero.svg') center / cover no-repeat;
   }
 
   /* Traces one of the bright diagonal bands baked into hero.jpg (traced by
@@ -1305,12 +1314,14 @@
      each url() appears once in the stylesheet and the rebuild script's
      existing hero.jpg / footer-bg.jpg replaces cover these too - it uses
      String.Replace, which takes every occurrence, so no new loop is needed.
-     Check the built artifact has no url('hero.jpg') left, as always.
+     Check the built artifact has no unresolved hero or footer-bg url left, as
+     always. (Since 8 Sep 2026 --art-hero points at hero.svg, the vector
+     rebuild; see .hero::before.)
 
      filter recolours the whole band, so it must stay on .svc-alt-art and not
      move to the card, or it would tint the copy as well. */
   .svc-alt-art {
-    --art-hero: url('hero.jpg');
+    --art-hero: url('hero.svg');
     --art-cases: url('footer-bg.jpg');
     flex: 0 0 176px;
     border-radius: 0 0 19px 19px;
