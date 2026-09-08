@@ -1295,7 +1295,7 @@
   .svc-alt-card:nth-child(odd) .svc-alt-plus:focus-visible { background: #e8eefc; }
 
   /* The real artwork, not a drawing of it: the bands are crops of the same
-     hero.jpg and footer-bg.jpg that sit behind the hero and the Case Studies
+     artwork (hero.svg and cases-bg.svg) that sit behind the hero and the Case Studies
      band, so the nested rounded frames on the cards are literally the same
      shape (8 Sep 2026, on request). Each card takes a different crop, and all
      but the first a different hue, which distinguishes the six services and
@@ -1312,7 +1312,7 @@
 
      The two images are held in custom properties and referenced from here, so
      each url() appears once in the stylesheet and the rebuild script's
-     existing hero.jpg / footer-bg.jpg replaces cover these too - it uses
+     existing hero / cases-bg replaces cover these too - it uses
      String.Replace, which takes every occurrence, so no new loop is needed.
      Check the built artifact has no unresolved hero or footer-bg url left, as
      always. (Since 8 Sep 2026 --art-hero points at hero.svg, the vector
@@ -1322,7 +1322,7 @@
      move to the card, or it would tint the copy as well. */
   .svc-alt-art {
     --art-hero: url('hero.svg');
-    --art-cases: url('footer-bg.jpg');
+    --art-cases: url('cases-bg.svg');
     flex: 0 0 176px;
     border-radius: 0 0 19px 19px;
     background-color: #071236;
@@ -1647,13 +1647,19 @@
      gap stays the same var(--section-y)+var(--section-y) rhythm as every
      other section, rather than reading as half-height because only one side
      contributed padding. */
+  /* cases-bg.svg, not footer-bg.jpg, since 8 Sep 2026: a vector rebuild of the
+     same artwork by the method hero.svg used (see CLAUDE.md, Files table). The
+     JPEG was 1500x844 at 0.046 bytes/pixel and showed its 8x8 blocks and
+     gradient banding once upscaled (reported as blurred and pixelated). Same
+     1500x844 coordinate space. footer-bg.jpg stays only as the reference it
+     was traced from. */
   .cases {
     --ink-rgb: 255, 255, 255;
     --text: #ffffff;
     padding: var(--section-y) 0;
     background:
       linear-gradient(to right, rgba(2, 6, 23, 0.92) 0%, rgba(2, 6, 23, 0.8) 40%, rgba(2, 6, 23, 0.68) 100%),
-      url('footer-bg.jpg') center / cover no-repeat,
+      url('cases-bg.svg') center / cover no-repeat,
       #04081c;
   }
 
