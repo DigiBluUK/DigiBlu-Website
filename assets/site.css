@@ -1095,9 +1095,12 @@
     border: 1px solid rgba(var(--ink-rgb),0.14);
   }
 
+  /* No border on the blue card (8 Sep 2026, on request): the hairline is
+     white at 8% here, since .accent pins white ink, and against the gradient
+     it read as an unnecessary edge. .plain keeps its border - that one is
+     doing real work, separating a --surface card from the page. */
   .service-card.accent {
     background: linear-gradient(135deg, #4a8dff 0%, #1b4fd6 45%, #0a1f6e 100%);
-    border: 1px solid rgba(var(--ink-rgb),0.08);
   }
 
   .service-num {
@@ -1282,68 +1285,73 @@
   .svc-alt-card:nth-child(odd) .svc-alt-plus:hover,
   .svc-alt-card:nth-child(odd) .svc-alt-plus:focus-visible { background: #e8eefc; }
 
-  /* Nested arcs, not stripes: the same language as the artwork behind the
-     hero and the Case Studies band - big rounded frames sweeping out of a
-     corner with thin bright rims (8 Sep 2026, on request). A
-     repeating-radial-gradient centred well outside the box draws exactly
-     that, and being a gradient it stays crisp at any size and DPR, which
-     crops of hero.jpg did not (they were tried first and came out blurred).
-     The origin corner, ring pitch and rim colour vary per card so the six
-     read as one family rather than one picture repeated.
+  /* The real artwork, not a drawing of it: the bands are crops of the same
+     hero.jpg and footer-bg.jpg that sit behind the hero and the Case Studies
+     band, so the nested rounded frames on the cards are literally the same
+     shape (8 Sep 2026, on request). Each card takes a different crop, and all
+     but the first a different hue, which distinguishes the six services and
+     breaks up what was otherwise an unrelieved wall of blue. The hues stay
+     in the COOL half of the wheel - teal through blue to violet, roughly -50
+     to +40 degrees. A first pass ran to +96 and produced a red and a magenta
+     band, too hot beside the brand; an orange and a teal band had already
+     been rejected here earlier the same day.
 
-     Two depths, matching the cards: the odd cards are the blue gradient, so
-     their bands go dark navy to anchor them; the even cards are near-black,
-     so theirs go brighter to lift off. Rims carry the cool blue-to-cyan range
-     the hero art uses; an orange and a teal band sat here earlier and were
-     reported as off-brand. The band takes the card's bottom radius itself as
-     well as being clipped by it - the parent's overflow clip alone left a
-     faint seam at the rounded corners. */
+     background-size: cover with no zoom, which is the whole reason this works
+     now. An earlier attempt at the same idea set 230-320% and was reported as
+     blurred - it was upscaling an 85KB JPEG. At cover on a ~487x176 band the
+     source is scaled DOWN from 1672px wide, so it stays sharp even at DPR 2.
+
+     The two images are held in custom properties and referenced from here, so
+     each url() appears once in the stylesheet and the rebuild script's
+     existing hero.jpg / footer-bg.jpg replaces cover these too - it uses
+     String.Replace, which takes every occurrence, so no new loop is needed.
+     Check the built artifact has no url('hero.jpg') left, as always.
+
+     filter recolours the whole band, so it must stay on .svc-alt-art and not
+     move to the card, or it would tint the copy as well. */
   .svc-alt-art {
+    --art-hero: url('hero.jpg');
+    --art-cases: url('footer-bg.jpg');
     flex: 0 0 176px;
     border-radius: 0 0 19px 19px;
     background-color: #071236;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 
   .svc-alt-art-1 {
-    background-image:
-      repeating-radial-gradient(ellipse 150% 130% at -10% 125%, rgba(255, 255, 255, 0) 0 62px, rgba(150, 195, 255, 0.30) 62px 64px, rgba(255, 255, 255, 0) 64px 124px),
-      radial-gradient(ellipse 150% 130% at -10% 125%, rgba(70, 130, 240, 0.45) 0%, rgba(255, 255, 255, 0) 64%),
-      linear-gradient(115deg, #01050f 0%, #061643 55%, #0e3184 100%);
+    background-image: var(--art-hero);
+    background-position: 18% 28%;
   }
 
   .svc-alt-art-2 {
-    background-image:
-      repeating-radial-gradient(ellipse 150% 130% at 112% -22%, rgba(255, 255, 255, 0) 0 54px, rgba(140, 200, 255, 0.42) 54px 56px, rgba(255, 255, 255, 0) 56px 108px),
-      radial-gradient(ellipse 150% 130% at 112% -22%, rgba(90, 165, 255, 0.55) 0%, rgba(255, 255, 255, 0) 64%),
-      linear-gradient(250deg, #04122e 0%, #10459c 55%, #2d7bff 100%);
+    background-image: var(--art-cases);
+    background-position: 72% 62%;
+    filter: hue-rotate(-42deg) saturate(1.1);
   }
 
   .svc-alt-art-3 {
-    background-image:
-      repeating-radial-gradient(ellipse 150% 130% at 118% 128%, rgba(255, 255, 255, 0) 0 70px, rgba(130, 175, 255, 0.28) 70px 72px, rgba(255, 255, 255, 0) 72px 140px),
-      radial-gradient(ellipse 150% 130% at 118% 128%, rgba(60, 110, 230, 0.42) 0%, rgba(255, 255, 255, 0) 64%),
-      linear-gradient(145deg, #01040d 0%, #08183f 52%, #12308a 100%);
+    background-image: var(--art-hero);
+    background-position: 62% 74%;
+    filter: hue-rotate(20deg) saturate(0.95);
   }
 
   .svc-alt-art-4 {
-    background-image:
-      repeating-radial-gradient(ellipse 150% 130% at -16% -26%, rgba(255, 255, 255, 0) 0 48px, rgba(160, 185, 255, 0.42) 48px 50px, rgba(255, 255, 255, 0) 50px 96px),
-      radial-gradient(ellipse 150% 130% at -16% -26%, rgba(110, 140, 255, 0.52) 0%, rgba(255, 255, 255, 0) 64%),
-      linear-gradient(295deg, #050a26 0%, #23349e 52%, #4a8dff 100%);
+    background-image: var(--art-cases);
+    background-position: 24% 22%;
+    filter: hue-rotate(-18deg) saturate(1.05);
   }
 
   .svc-alt-art-5 {
-    background-image:
-      repeating-radial-gradient(ellipse 150% 130% at -22% 45%, rgba(255, 255, 255, 0) 0 56px, rgba(120, 205, 255, 0.36) 56px 58px, rgba(255, 255, 255, 0) 58px 112px),
-      radial-gradient(ellipse 150% 130% at -22% 45%, rgba(50, 130, 220, 0.42) 0%, rgba(255, 255, 255, 0) 64%),
-      linear-gradient(70deg, #010610 0%, #071a4a 54%, #14357f 100%);
+    background-image: var(--art-hero);
+    background-position: 44% 52%;
+    filter: hue-rotate(40deg) saturate(0.88);
   }
 
   .svc-alt-art-6 {
-    background-image:
-      repeating-radial-gradient(ellipse 150% 130% at 122% 118%, rgba(255, 255, 255, 0) 0 58px, rgba(150, 190, 255, 0.45) 58px 60px, rgba(255, 255, 255, 0) 60px 116px),
-      radial-gradient(ellipse 150% 130% at 122% 118%, rgba(100, 170, 255, 0.55) 0%, rgba(255, 255, 255, 0) 64%),
-      linear-gradient(240deg, #030b28 0%, #14409c 52%, #3d84ff 100%);
+    background-image: var(--art-cases);
+    background-position: 8% 84%;
+    filter: hue-rotate(-50deg) saturate(1.05);
   }
 
   /* ---------- About + Values ---------- */
