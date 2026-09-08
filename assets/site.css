@@ -1203,7 +1203,6 @@
        which left a broad empty run of white under four lines of copy
        (reported). Rows still level up through the grid's stretch. */
     background: #ffffff;
-    border: 1px solid var(--svc-alt-line);
     border-radius: 10px;
     overflow: hidden;
     isolation: isolate;
@@ -1232,11 +1231,20 @@
       color-mix(in srgb, var(--svc-accent) 55%, #ffffff) 100%);
   }
 
+  /* The hairline lives here, not on the card, so it wraps the copy and stops
+     where the art band begins instead of boxing the artwork in (8 Sep 2026,
+     "no outline needed around images" - the second time this was asked for
+     on this section; the white-card rebuild had put it back on the card).
+     No bottom edge, and the top corners match the card's clip. The accent
+     bar paints over its top edge. */
   .svc-alt-body {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     padding: 40px 40px 32px;
+    border: 1px solid var(--svc-alt-line);
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
   }
 
   /* The service name, large and uppercase in the accent. Darkened a little
@@ -1325,7 +1333,7 @@
     --art-hero: url('hero.svg');
     --art-cases: url('cases-bg.svg');
     flex: 0 0 200px;
-    border-radius: 0 0 9px 9px;
+    border-radius: 0 0 10px 10px;
     background-color: #071236;
     background-size: cover;
     background-repeat: no-repeat;
