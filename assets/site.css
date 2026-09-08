@@ -847,8 +847,11 @@
   .geo-figure {
     position: relative;
     align-self: center;
-    justify-self: center;
-    width: clamp(210px, 23vw, 350px);
+    justify-self: start;
+    /* 300px, down from 350: close to the height of the two paragraphs beside
+       it at the widths where they sit side by side, so the pair reads as one
+       row rather than a short block next to a tall one. */
+    width: clamp(210px, 20vw, 300px);
     aspect-ratio: 1 / 1;
     background: var(--bg);
     border-radius: 16px;
@@ -1406,19 +1409,26 @@
   /* The narrative sits left with the geometric figure beside it. The content
      arrangement is unchanged - the values still sit beneath, not alongside -
      the figure just occupies space the 820px measure was leaving empty. */
-  /* The figure column is a real track rather than `auto`, and the figure is
-     centred in it. With `auto` the column shrank to the figure's own width and
-     it sat hard against the right edge of the content area. */
+  /* The text column is the measure itself and the figure column takes the
+     rest, with the figure at the START of it, beside the copy. It was
+     minmax(0, 1fr) + a 430px track with the figure centred in that track,
+     which at 1648px put it 122px from the text and 40px short of the right
+     edge - neither beside the copy nor on a line, and it was read as
+     floating (8 Sep 2026). The two columns are centred on each other, so
+     the figure sits level with the paragraphs rather than hanging below
+     them. */
   .about-top {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 430px);    gap: 52px;
-    align-items: start;
+    grid-template-columns: minmax(0, 860px) minmax(0, 1fr);
+    gap: 64px;
+    align-items: center;
     margin-bottom: 52px;
   }
 
   /* Without a cap the paragraphs would run the full 1500px content measure,
-     which is far past a comfortable line length. */
-  .about-head { max-width: 940px; }
+     which is far past a comfortable line length. 860, down from 940 on
+     request: a touch narrower, and the figure comes in to meet it. */
+  .about-head { max-width: 860px; }
 
   /* Two paragraphs since 8 Sep 2026 (the practitioners statement, then the
      vision), a step down from the single 23-33px statement they replaced, on
@@ -3615,10 +3625,13 @@
     margin-bottom: 18px;
   }
 
-  .team-modal-body .service-modal-intro { text-align: left; }
+  /* Centred, like the photo, name and role above it. It was left-aligned
+     under a centred heading and read as pushed to one side (reported on the
+     badge dialog, 8 Sep 2026; the two share the layout). */
+  .team-modal-body .service-modal-intro { text-align: center; }
 
   .badge-modal-body h2 { margin-bottom: 10px; }
-  .badge-modal-body .service-modal-intro { margin-bottom: 0; text-align: left; }
+  .badge-modal-body .service-modal-intro { margin-bottom: 0; text-align: center; }
 
   .service-modal-item h3 {
     font-size: 14.5px;
