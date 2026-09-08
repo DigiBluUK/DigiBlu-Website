@@ -15,6 +15,8 @@
     --text: #ffffff;
     --blue: #1d6ef5;
     --hairline: rgba(var(--ink-rgb), 0.28);
+    --svc-alt-card-bg: #ffffff;
+    --svc-alt-card-line: transparent;
     --gutter: 24px;
     --maxw: 1500px;
     /* One vertical rhythm for every content section. Sections set symmetric
@@ -57,6 +59,8 @@
     --ink-rgb: 13, 17, 23;
     --bg: #ffffff;
     --surface: #f6f7f9;
+    --svc-alt-card-bg: #f6f7f9;
+    --svc-alt-card-line: rgba(13, 17, 23, 0.14);
     --surface-2: #ffffff;
     --field-bg: #f1f3f6;
     --text: #0d1117;
@@ -78,6 +82,8 @@
       --ink-rgb: 13, 17, 23;
       --bg: #ffffff;
       --surface: #f6f7f9;
+      --svc-alt-card-bg: #f6f7f9;
+      --svc-alt-card-line: rgba(13, 17, 23, 0.14);
       --surface-2: #ffffff;
       --field-bg: #f1f3f6;
       --text: #0d1117;
@@ -243,18 +249,53 @@
        plain `vh` line stays first as the fallback for older engines. */
     min-height: 100vh;
     min-height: 100svh;
-    /* Scrim sits above Asset2 so the centred headline stays legible where the
-       artwork brightens toward the lower right. */
-    background:
-      linear-gradient(to right, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.55) 42%, rgba(0, 0, 0, 0.3) 100%),
-      url('hero.jpg') center / cover no-repeat,
-      var(--bg);
+    /* The artwork covers the whole section and the nav floats over it, as it
+       always did - but the strip behind the nav is calmed (8 Sep 2026). The
+       bright ridge in hero.jpg crested exactly where the nav links sit and
+       read as the picture touching the menu (reported). A first attempt
+       started the art below the nav on a solid band; that read as the nav
+       having a black background, so the art is back to full cover and a
+       vertical fade on ::before subdues the ridge under the nav instead,
+       easing out over 180px below it. --hero-art-top is the foot of that
+       strip: --nav-h is measured from the live nav, so it is right on every
+       device. The base colour stays black rather than var(--bg) because
+       .logo/.theme-toggle/.nav-toggle hardcode white for the over-photo
+       state and the art edges are near-black anyway. */
+    --hero-art-top: calc(var(--nav-h) + 12px);
+    background: #000;
+    /* NO isolation / z-index here. .site-nav is a fixed-position CHILD of
+       .hero; a stacking context on .hero traps it, and every positioned block
+       further down the page (the service cards, for one) then paints over
+       the nav as soon as the hero has scrolled away - "the navigation
+       disappears on Services" (reported 8 Sep 2026, introduced the same day
+       with isolation: isolate for the art layer). The art layer sits at
+       z-index 0 and the hero's own content is lifted above it instead. */
     display: flex;
     flex-direction: column;
     /* Nav used to sit in-flow at the top of this column; now that .site-nav
        is fixed and out of flow (see below), this keeps the headline centred
        in the same visual space rather than drifting up to fill the gap. */
     padding-top: var(--nav-h);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    /* 0, not -1: without a stacking context on .hero (see above) a negative
+       z-index would drop behind the hero's own black background. */
+    z-index: 0;
+    /* Two scrims over the art: a vertical one that calms the strip behind the
+       nav (see above), and the original left-to-right one that keeps the
+       centred headline legible where the artwork brightens toward the lower
+       right. */
+    background:
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.72) 0, rgba(0, 0, 0, 0.5) var(--hero-art-top), rgba(0, 0, 0, 0) calc(var(--hero-art-top) + 180px)),
+      linear-gradient(to right, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.55) 42%, rgba(0, 0, 0, 0.3) 100%),
+      url('hero.jpg') center / cover no-repeat;
   }
 
   /* Traces one of the bright diagonal bands baked into hero.jpg (traced by
@@ -267,9 +308,20 @@
      not a per-frame filter) keeps this compositor-cheap. */
   .hero-spark {
     position: absolute;
+    /* Same box as .hero::before (the whole section), so the slice maths line
+       the paths up with the art. Keep the height explicit: an <svg> with
+       width 100% and height auto sizes itself to its viewBox ratio instead of
+       its inset box, which once left the paths 256px short and misaligned -
+       assert this box equals ::before's whenever either changes. */
     inset: 0;
     width: 100%;
     height: 100%;
+    /* The lights fade out as they climb into the strip behind the nav, for
+       the same reason the art is calmed there - a bright dot arriving under
+       "Our Experts" was the visible half of the original report. A mask, not
+       a clip, so the light dims over 120px rather than vanishing at a line. */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent var(--hero-art-top), #000 calc(var(--hero-art-top) + 120px));
+    mask-image: linear-gradient(to bottom, transparent 0, transparent var(--hero-art-top), #000 calc(var(--hero-art-top) + 120px));
     z-index: 0;
     pointer-events: none;
   }
@@ -557,6 +609,9 @@
 
   /* ---------- Center content ---------- */
   .hero-center {
+    /* Above the art layer and the spark, both positioned at z-index 0. */
+    position: relative;
+    z-index: 1;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -605,6 +660,8 @@
 
   /* ---------- Bottom row ---------- */
   .hero-bottom {
+    position: relative;
+    z-index: 1;
     width: 100%;
     max-width: var(--maxw);
     margin: 0 auto;
@@ -981,7 +1038,9 @@
 
   .service-card {
     position: relative;
-    border-radius: 18px;
+    /* 18px until 8 Sep 2026: feedback was the corners read as too curved, but
+       a square card was not wanted either. 10px still reads as rounded. */
+    border-radius: 10px;
     padding: 28px;
     min-height: 260px;
     display: flex;
@@ -1071,6 +1130,168 @@
     color: rgba(var(--ink-rgb),0.82);
   }
 
+  /* ---------- Services (alternative treatment, A/B) ----------
+     Built to a supplied reference: a navy band with faint vertical rules,
+     three tall white cards to a row, each with the service name as a small
+     blue eyebrow, the description set large in dark ink, a blue + disc at the
+     foot of the copy, and an abstract art band across the bottom of the card.
+
+     The band is a fixed navy in both themes (the cards are white, and white
+     on a white light-theme page is nothing), so it pins white ink for its
+     heading the way .cases does, and each card pins dark ink back.
+
+     The art bands are crops of the site's own hero and case-study artwork,
+     declared ONCE as custom properties so the artifact rebuild inlines each
+     image once, not once per card. Per-card position, zoom and a hue shift
+     give six different abstracts from two files. */
+  .services-alt {
+    background: var(--bg);
+    padding: var(--section-y) var(--gutter);
+  }
+
+  .services-alt-inner {
+    max-width: var(--maxw);
+    margin: 0 auto;
+  }
+
+  .services-alt h2 {
+    font-size: clamp(34px, 4.6vw, 52px);
+    line-height: 1.12;
+    font-weight: 400;
+    letter-spacing: -0.7px;
+    color: var(--text);
+    margin-bottom: var(--head-gap);
+  }
+
+  .svc-alt-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .svc-alt-card {
+    --ink-rgb: 18, 22, 40;
+    --text: #121628;
+    display: flex;
+    flex-direction: column;
+    min-height: 600px;
+    background: var(--svc-alt-card-bg);
+    border: 1px solid var(--svc-alt-card-line);
+    border-radius: 20px;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .svc-alt-body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 52px 48px 36px;
+  }
+
+  .svc-alt-eyebrow {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    /* var(--blue) at 88% brightness (the same literal the hover states use),
+       not var(--blue): 12.5px text on the light-theme card surface (#f6f7f9)
+       measured 4.26:1 with the token, under AA; this reads 5.3:1 there and
+       5.6:1 on the dark-theme white card. */
+    color: #1a61d8;
+    margin-bottom: 44px;
+  }
+
+  .svc-alt-title {
+    font-size: clamp(24px, 1.95vw, 32px);
+    line-height: 1.18;
+    font-weight: 400;
+    letter-spacing: -0.4px;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .svc-alt-plus {
+    margin-top: auto;
+    align-self: flex-end;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--blue);
+    color: #ffffff;
+    cursor: pointer;
+    margin-top: 36px;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .svc-alt-plus svg { width: 18px; height: 18px; }
+  .svc-alt-plus:hover,
+  .svc-alt-plus:focus-visible { background: #1a61d8; transform: scale(1.06); }
+
+  /* Art bands are drawn in CSS, not photographs: a deep-to-bright gradient
+     with diagonal ribbons laid over it (repeating hard-stop stripes, in the
+     spirit of the hero artwork's bands) and a soft glow in one corner. They
+     render crisp at every size and DPR and cost no asset. Two other
+     treatments were tried on 8 Sep 2026 and reversed the same day: crops of
+     hero.jpg / footer-bg.jpg at 230-320% zoom (blurred on high-DPI, one card
+     near-black) and a photograph per service (six Pexels files under
+     assets/services/, since deleted) - the drawn bands were preferred. The
+     band takes the card's bottom radius itself as well as being clipped by
+     it - relying on the parent's overflow clip alone left a faint seam at
+     the rounded corners. */
+  .svc-alt-art {
+    flex: 0 0 176px;
+    border-radius: 0 0 19px 19px;
+    background-color: #071236;
+  }
+
+  .svc-alt-art-1 {
+    background-image:
+      radial-gradient(120% 100% at 88% 8%, rgba(120, 178, 255, 0.85) 0%, rgba(120, 178, 255, 0) 55%),
+      repeating-linear-gradient(-34deg, rgba(255, 255, 255, 0) 0 44px, rgba(255, 255, 255, 0.30) 44px 46px, rgba(255, 255, 255, 0) 46px 66px, rgba(140, 190, 255, 0.28) 66px 82px, rgba(255, 255, 255, 0) 82px 116px),
+      linear-gradient(112deg, #040a24 0%, #0b2a8a 52%, #1d6ef5 100%);
+  }
+
+  .svc-alt-art-2 {
+    background-image:
+      radial-gradient(110% 100% at 10% 90%, rgba(80, 210, 255, 0.75) 0%, rgba(80, 210, 255, 0) 55%),
+      repeating-linear-gradient(28deg, rgba(255, 255, 255, 0) 0 38px, rgba(255, 255, 255, 0.26) 38px 40px, rgba(255, 255, 255, 0) 40px 58px, rgba(90, 200, 255, 0.30) 58px 70px, rgba(255, 255, 255, 0) 70px 104px),
+      linear-gradient(250deg, #041a33 0%, #0a4aa8 55%, #22a3ff 100%);
+  }
+
+  .svc-alt-art-3 {
+    background-image:
+      radial-gradient(120% 100% at 80% 90%, rgba(255, 176, 92, 0.85) 0%, rgba(255, 176, 92, 0) 58%),
+      repeating-linear-gradient(-52deg, rgba(255, 255, 255, 0) 0 52px, rgba(255, 255, 255, 0.24) 52px 54px, rgba(255, 255, 255, 0) 54px 80px, rgba(255, 200, 140, 0.28) 80px 96px, rgba(255, 255, 255, 0) 96px 130px),
+      linear-gradient(105deg, #1a0a2e 0%, #7a2e1a 50%, #f08c3a 100%);
+  }
+
+  .svc-alt-art-4 {
+    background-image:
+      radial-gradient(120% 100% at 12% 10%, rgba(150, 160, 255, 0.85) 0%, rgba(150, 160, 255, 0) 55%),
+      repeating-linear-gradient(40deg, rgba(255, 255, 255, 0) 0 30px, rgba(255, 255, 255, 0.28) 30px 32px, rgba(255, 255, 255, 0) 32px 50px, rgba(170, 170, 255, 0.30) 50px 60px, rgba(255, 255, 255, 0) 60px 92px),
+      linear-gradient(295deg, #07082a 0%, #2b2e9e 50%, #5b6cf5 100%);
+  }
+
+  .svc-alt-art-5 {
+    background-image:
+      radial-gradient(110% 100% at 90% 85%, rgba(90, 230, 210, 0.8) 0%, rgba(90, 230, 210, 0) 56%),
+      repeating-linear-gradient(-22deg, rgba(255, 255, 255, 0) 0 48px, rgba(255, 255, 255, 0.26) 48px 50px, rgba(255, 255, 255, 0) 50px 72px, rgba(120, 230, 220, 0.28) 72px 88px, rgba(255, 255, 255, 0) 88px 124px),
+      linear-gradient(118deg, #03151f 0%, #0b5e6e 52%, #1fb8c8 100%);
+  }
+
+  .svc-alt-art-6 {
+    background-image:
+      radial-gradient(120% 100% at 15% 85%, rgba(110, 170, 255, 0.85) 0%, rgba(110, 170, 255, 0) 55%),
+      repeating-linear-gradient(56deg, rgba(255, 255, 255, 0) 0 36px, rgba(255, 255, 255, 0.30) 36px 38px, rgba(255, 255, 255, 0) 38px 56px, rgba(140, 190, 255, 0.30) 56px 68px, rgba(255, 255, 255, 0) 68px 100px),
+      linear-gradient(240deg, #030b28 0%, #10307a 50%, #2d7bff 100%);
+  }
+
   /* ---------- About + Values ---------- */
   .about {
     max-width: var(--maxw);
@@ -1091,33 +1312,11 @@
      passes, which is also what every width under 901px gets. */
   .about-pin-space { display: none; }
 
-  @media (min-width: 901px) and (min-height: 860px) {
-    /* Centred in the viewport during the hold, not pinned to the nav. The
-       composition is ~734px tall and the viewport may be 1000px or more, so
-       held at the top it left every spare pixel as one empty band beneath the
-       values - read by a stakeholder as "quite a bit of space" before
-       Services. Centred, the spare splits above and below and reads as a
-       held slide. --about-inner-h is written by the pin IIFE from the real
-       height; the max() keeps it clear of the nav on short viewports. */
-    .about-inner {
-      position: sticky;
-      top: max(calc(var(--nav-h, 75px) + 18px), calc((100vh - var(--about-inner-h, 734px)) / 2));
-    }
-
-    /* 5 values across 85vh - each gets ~17vh, and the last 20% holds on 05
-       so the section does not release the instant it arrives. It was 130vh;
-       the hold is where the empty runway shows, so it is as short as the
-       values can comfortably run. */
-    .about-pin-space { display: block; height: 85vh; }
-  }
-
-  /* Holding the page still for 130vh only makes sense while something is
-     changing. Under reduced motion the values are all revealed at once, so the
-     hold would be a long stretch of nothing happening. */
-  @media (prefers-reduced-motion: reduce) {
-    .about-inner { position: static; }
-    .about-pin-space { display: none; }
-  }
+  /* The desktop sticky hold (.about-inner sticky, .about-pin-space 85vh)
+     was removed on 8 Sep 2026 along with the one-at-a-time values it existed
+     to run. Every value is open at once on desktop now, so there is nothing
+     for a hold to pace; the spacer stays in the markup at display: none and
+     the pin script reads its zero height as "not live". */
 
   .pill {
     display: inline-flex;
@@ -1232,8 +1431,14 @@
   /* --ink-a-faint, not a flatter grey: the numeral is the only visible label
      on a real button, so it has to stay legible when collapsed - 3.7:1 dark
      and 5.0:1 light, against the open one at 21:1. */
+  /* A fixed width, in em so it scales with the numeral. tabular-nums is
+     requested but DM Sans has no tnum feature, so it is ignored: at 64px
+     "01" measures 65px against "04" at 84px, and the titles beside them
+     started 19px apart down the column (reported as 01 and 04 not aligned).
+     1.32em clears the widest pair ("04", 1.31em); "00" would need 1.38. */
   .value-num {
-    flex: 0 0 auto;
+    flex: 0 0 1.32em;
+    min-width: 1.32em;
     font-size: clamp(34px, 9vw, 46px);
     font-weight: 500;
     font-variant-numeric: tabular-nums;
@@ -1293,67 +1498,59 @@
     color: rgba(var(--ink-rgb), var(--ink-a-aa));
   }
 
-  /* Desktop turns the column into a row. Only layout and scale here - the
-     collapsed/open/hover states are in the base block, so both axes share
-     them and cannot drift apart. Collapsed items are sized by their numeral
-     alone and the open one takes the rest of the row; only flex-grow is
-     transitioned, since animating width or the text would reflow the copy
-     mid-motion. */
+  /* Desktop: all five values open at once, three across then two (8 Sep
+     2026). It was a horizontal accordion driven by scroll, and the feedback
+     was consistent - scroll at a normal pace and the values had gone past
+     before they could be read. The item keeps the same anatomy (numeral,
+     hairline, title, description) so nothing about the look changes; only
+     the layout and the fact that nothing collapses. The buttons stay in the
+     markup for the phone column and do nothing here; hover still tints. */
   @media (min-width: 761px) {
     .value-list {
-      flex-direction: row;
-      align-items: stretch;
-      gap: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px 36px;
     }
 
-    .value-item {
-      display: flex;
-      flex: 0 0 auto;
-      min-width: 0;
-      transition: flex-grow 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
+    .value-item { display: block; }
 
-    .value-item.is-open { flex: 1 1 auto; }
-
-    /* 4px at the bottom, not 34. The hairline is on TOP of each value, so
-       bottom padding here is pure air at the foot of the section, sitting
-       inside the standard 2 x --section-y gap to Services - which made that
-       gap read as 178px against 144 everywhere else ("a bit of a gap between
-       our values and services"). */
     .value-open {
       align-items: flex-start;
-      gap: 26px;
-      padding: 20px 0 4px;
+      gap: 22px;
+      padding: 20px 0 8px;
       border-top-width: 2px;
+      border-top-color: rgba(var(--ink-rgb), 0.55);
+      cursor: default;
     }
 
-    .value-num { font-size: clamp(44px, 5vw, 82px); }
+    .value-item:last-child .value-open { padding-bottom: 8px; }
 
-    /* Desktop is a horizontal accordion, so only one value can be open at a
-       time - a collapsed item has to surrender its width for the open one to
-       grow into, which the fade the small-screen case uses cannot do. The
-       cumulative reveal is therefore small-screen only, and .is-revealed is
-       reduced back to marking how far the scroll has travelled. */
+    /* Smaller than the 82px accordion numeral: five of them share the width
+       now, and the title has to sit beside each one. */
+    .value-num {
+      font-size: clamp(40px, 4.2vw, 64px);
+      color: var(--text);
+    }
+
+    /* 5px lines the title's cap height up with a 64px numeral (it was 6px
+       against 82px). Measured from the font's cap metrics, not eyeballed. */
     .value-text {
-      display: none;
+      display: block;
       max-width: 430px;
-      padding-top: 6px;
+      padding-top: 5px;
       opacity: 1;
       transform: none;
       transition: none;
     }
 
-    .value-item.is-open .value-text { display: block; }
-    .value-item.is-revealed:not(.is-open) .value-text { display: none; }
-    .value-item.is-revealed:not(.is-open) .value-num { color: rgba(var(--ink-rgb), var(--ink-a-faint)); }
-    .value-item.is-revealed:not(.is-open) .value-open { border-top-color: rgba(var(--ink-rgb), 0.14); }
-
-    /* Hover and focus must beat the "revealed but closed" override above.
-       Reveal is cumulative, so on 05 every earlier numeral carries
-       .is-revealed and that four-class rule outranked the plain hover rule
-       (three classes): hovering 01-04 from 05 did nothing, while from 01 -
-       where nothing below is revealed yet - it turned blue. Five classes here,
-       and placed after, so this wins on both counts. Same for the hairline. */
+    /* Hover and focus tint the numeral and hairline brand blue, as the
+       accordion did - asked for back the same day the tint was dropped. The
+       buttons still do nothing on desktop; the tint is the life of the row,
+       not an affordance, which is why the cursor stays default. */
+    /* Four classes deep on purpose. Every value is .is-open here, and the
+       base block's .value-item.is-open .value-open (three) outranked a plain
+       .value-open:hover (two) - so the numeral went blue and the hairline did
+       not (reported). Same trap the old accordion hit with .is-revealed. */
     .value-list .value-item .value-open:hover .value-num,
     .value-list .value-item .value-open:focus-visible .value-num { color: var(--blue); }
     .value-list .value-item .value-open:hover,
@@ -1678,38 +1875,37 @@
     margin-bottom: 28px;
   }
 
-  /* Brand blue rather than the neutral tint these used to carry. It is a
-     fixed-colour surface in both themes, so ink is pinned white locally -
-     the same pattern the hero and accent cards use (grep
-     `--ink-rgb: 255, 255, 255`), not a theme token that would flip. */
+  /* Pills, matching the section-header .pill on the homepage (hairline ring,
+     999px radius, small uppercase label), on request (8 Sep 2026). They were
+     solid brand-blue boxes with the number stacked over the label; the ring
+     reads lighter beside the photograph and ties the reader to the page. The
+     number and label sit on one line, and the whole row simply wraps, so the
+     old mobile rule that stretched each box to full width is gone with the
+     boxes. Theme tokens throughout - nothing here is a fixed-colour surface
+     any more, so no pinned ink. */
   .case-stat {
-    flex: 1 1 140px;
-    padding: 14px 16px;
-    background: var(--blue);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 12px;
-    --ink-rgb: 255, 255, 255;
-    --text: #ffffff;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 7px 14px;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
   }
 
   .case-stat b {
-    display: block;
-    font-size: 20px;
+    font-size: 14px;
     font-weight: 700;
-    letter-spacing: -0.4px;
+    letter-spacing: -0.2px;
     color: var(--text);
-    margin-bottom: 2px;
   }
 
-  /* Full white, not the usual muted alpha. Brand blue leaves almost no
-     contrast headroom - pure white on #1d6ef5 measures 4.56:1, so the 0.6
-     alpha these labels carried elsewhere would land at 2.6:1 and fail AA
-     outright. The hierarchy against the number above comes from size and
-     weight (12px/400 vs 20px/700) instead of opacity. */
   .case-stat span {
-    font-size: 12px;
+    font-size: 11px;
     line-height: 1.4;
-    color: #ffffff;
+    font-weight: 500;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
   }
 
   .case-section { margin-bottom: 22px; }
@@ -2017,7 +2213,6 @@
 
   @media (max-width: 640px) {
     .case-modal-body { padding: 32px 34px 28px 24px; }
-    .case-stat { flex: 1 1 100%; }
 
     /* The close X becomes a header row the content starts beneath, instead of
        floating over it. On a phone the panel is a column and the reading pane
@@ -2720,13 +2915,17 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: grayscale(0.55) contrast(1.05);
+    /* Natural colour since 8 Sep 2026 - the blue scrim and the partial
+       desaturation that unified the set were removed on request ("get rid
+       of blue tint"). */
   }
 
   .case-art-scrim {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(10, 31, 110, 0.70) 0%, rgba(29, 110, 245, 0.38) 52%, rgba(5, 11, 40, 0.78) 100%);
+    /* Neutral, not brand blue: a light darkening towards the corners so
+       the eight photographs still sit as one set without a colour cast. */
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0.06) 50%, rgba(0, 0, 0, 0.36) 100%);
   }
 
 
@@ -3402,6 +3601,7 @@
   /* ---------- Breakpoints ---------- */
   @media (max-width: 1100px) {
     .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .svc-alt-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
   @media (max-width: 900px) {
@@ -3457,6 +3657,11 @@
 
   @media (max-width: 760px) {
     .services-grid { grid-template-columns: 1fr; }
+    .svc-alt-grid { grid-template-columns: 1fr; }
+    .svc-alt-card { min-height: 0; }
+    .svc-alt-body { padding: 36px 28px 28px; }
+    .svc-alt-eyebrow { margin-bottom: 28px; }
+    .svc-alt-art { flex-basis: 150px; }
   }
 
   @media (max-width: 620px) {

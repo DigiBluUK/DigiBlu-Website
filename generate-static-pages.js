@@ -167,9 +167,9 @@ function pageHeader() {
 
     <ul class="nav-center">
       <li><a href="../index.html#hero-content">Home</a></li>
-      <li><a href="../index.html#about">About Us</a></li>
       <li><a href="../index.html#services">Services</a></li>
       <li><a href="../index.html#case-studies">Case Studies</a></li>
+      <li><a href="../index.html#about">About Us</a></li>
       <li><a href="../index.html#team">Our Experts</a></li>
     </ul>
 
@@ -197,9 +197,9 @@ function pageHeader() {
     <div class="mobile-menu" id="mobileMenu">
       <ul>
         <li><a href="../index.html#hero-content">Home</a></li>
-        <li><a href="../index.html#about">About Us</a></li>
         <li><a href="../index.html#services">Services</a></li>
         <li><a href="../index.html#case-studies">Case Studies</a></li>
+        <li><a href="../index.html#about">About Us</a></li>
         <li><a href="../index.html#team">Our Experts</a></li>
         </ul>
       <!-- Mirrors the homepage: below 900px only the theme toggle moves out
@@ -248,7 +248,7 @@ function pageFooter() {
             <li><a href="../index.html#services">Process Excellence</a></li>
             <li><a href="../index.html#services">Digital Solutions</a></li>
             <li><a href="../index.html#services">Target Operating Model</a></li>
-            <li><a href="../index.html#services">Post-Implementation</a></li>
+            <li><a href="../index.html#services">Managed Services</a></li>
           </ul>
         </div>
 
@@ -256,8 +256,8 @@ function pageFooter() {
           <h4>Company</h4>
           <ul>
             <li><a href="../index.html#hero-content">Home</a></li>
-            <li><a href="../index.html#about">About Us</a></li>
             <li><a href="../index.html#case-studies">Case Studies</a></li>
+            <li><a href="../index.html#about">About Us</a></li>
                   <li><a href="../index.html#contact">Contact Us</a></li>
           </ul>
         </div>
@@ -362,7 +362,7 @@ function renderCaseStudy(c, i) {
     ['Outcome', c.outcome]
   ].map(([label, body]) => `      <div class="case-section">
         <h3>${escapeHtml(label)}</h3>
-        <p>${escapeHtml(body)}</p>
+${String(body).split('\n').filter(t => t.trim()).map(t => `        <p>${escapeHtml(t)}</p>`).join('\n')}
       </div>`).join('\n');
 
   const quote = c.quote ? `      <figure class="case-modal-quote">
