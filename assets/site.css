@@ -15,7 +15,6 @@
     --text: #ffffff;
     --blue: #1d6ef5;
     --hairline: rgba(var(--ink-rgb), 0.28);
-    --svc-alt-line: transparent;
     --gutter: 24px;
     --maxw: 1500px;
     /* One vertical rhythm for every content section. Sections set symmetric
@@ -58,7 +57,6 @@
     --ink-rgb: 13, 17, 23;
     --bg: #ffffff;
     --surface: #f6f7f9;
-    --svc-alt-line: rgba(13, 17, 23, 0.14);
     --surface-2: #ffffff;
     --field-bg: #f1f3f6;
     --text: #0d1117;
@@ -80,7 +78,6 @@
       --ink-rgb: 13, 17, 23;
       --bg: #ffffff;
       --surface: #f6f7f9;
-      --svc-alt-line: rgba(13, 17, 23, 0.14);
       --surface-2: #ffffff;
       --field-bg: #f1f3f6;
       --text: #0d1117;
@@ -664,6 +661,12 @@
     color: var(--text);
   }
 
+  /* The strapline is one line, "Applied AI… Real ROI", since 9 Sep 2026 (it
+     was "Applied AI." over "Real ROI." and the full stops read as misplaced).
+     Each half is a span that will not break inside itself, so where the line
+     must wrap on a phone it wraps at the ellipsis, never inside a phrase. */
+  .hero h1 span { white-space: nowrap; }
+
   /* ---------- Bottom row ---------- */
   .hero-bottom {
     position: relative;
@@ -1105,8 +1108,12 @@
   /* All six cards carry the accent gradient since 8 Sep 2026, on request
      ("make it all boxes blue"); .plain, which alternated a --surface card with
      it on 2, 4 and 6, is gone from the markup and from here. */
+  /* The team card's gradient (blue to navy to near-black), not the lighter
+     sky-to-navy sweep the cards launched with: asked on 9 Sep 2026 for the
+     boxes to sit darker, like Meet the Team. One value in two places on
+     purpose - the two surfaces are meant to read as the same material. */
   .service-card.accent {
-    background: linear-gradient(135deg, #4a8dff 0%, #1b4fd6 45%, #0a1f6e 100%);
+    background: linear-gradient(135deg, #1b4fd6 0%, #0a1f6e 52%, #050b28 100%);
   }
 
   .service-num {
@@ -1134,244 +1141,6 @@
     line-height: 1.55;
     font-weight: 400;
     color: rgba(var(--ink-rgb),0.82);
-  }
-
-  /* ---------- Services (alternative treatment, A/B) ----------
-     Built to a supplied reference: a navy band with faint vertical rules,
-     three tall white cards to a row, each with the service name as a small
-     blue eyebrow, the description set large in dark ink, a blue + disc at the
-     foot of the copy, and an abstract art band across the bottom of the card.
-
-     The band is a fixed navy in both themes (the cards are white, and white
-     on a white light-theme page is nothing), so it pins white ink for its
-     heading the way .cases does, and each card pins dark ink back.
-
-     The art bands are crops of the site's own hero and case-study artwork,
-     declared ONCE as custom properties so the artifact rebuild inlines each
-     image once, not once per card. Per-card position, zoom and a hue shift
-     give six different abstracts from two files. */
-  .services-alt {
-    background: var(--bg);
-    padding: var(--section-y) var(--gutter);
-  }
-
-  .services-alt-inner {
-    max-width: var(--maxw);
-    margin: 0 auto;
-  }
-
-  .services-alt h2 {
-    font-size: clamp(34px, 4.6vw, 52px);
-    line-height: 1.12;
-    font-weight: 400;
-    letter-spacing: -0.7px;
-    color: var(--text);
-    margin-bottom: var(--head-gap);
-  }
-
-  .svc-alt-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-
-  /* Rebuilt to a supplied reference on 8 Sep 2026: a white card in both
-     themes with a thin accent-coloured bar along its top, the service name
-     set large in that accent, the description beneath in dark
-     ink, the artwork band across the foot tinted to the same accent, and the
-     + disc sitting ON the band at the bottom-right as a white disc with the
-     accent glyph. Each card has its own accent - the brand blue's saturation
-     and lightness at six cool hues (blue, sky, purple, indigo, blue-violet,
-     azure) - so the six read as one family; the same hue deltas drive each
-     band's filter below. The cards had been blue-and-black alternating for a
-     few hours before this; that rhythm now belongs to the first section.
-
-     White in both themes, so ink is pinned dark locally (the reverse of the
-     .hero pattern). --svc-alt-line is a theme token: transparent on the dark
-     page, where a white card needs no edge, and a hairline on the light one.
-     10px corners, matching the first section after its "less curved"
-     feedback. position: relative is what the absolutely placed + disc keys
-     off; the card clips to its corners and isolates its stacking. */
-  .svc-alt-card {
-    --svc-accent: #1d6ef5;
-    --ink-rgb: 18, 22, 40;
-    --text: #121628;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    /* No minimum height: the card is its copy plus the band. It was 600px,
-       which left a broad empty run of white under four lines of copy
-       (reported). Rows still level up through the grid's stretch. */
-    background: #ffffff;
-    border-radius: 10px;
-    overflow: hidden;
-    isolation: isolate;
-  }
-
-  .svc-alt-card:nth-child(1) { --svc-accent: #1d6ef5; }
-  .svc-alt-card:nth-child(2) { --svc-accent: #1db4f5; }
-  .svc-alt-card:nth-child(3) { --svc-accent: #701df5; }
-  .svc-alt-card:nth-child(4) { --svc-accent: #1d2bf5; }
-  .svc-alt-card:nth-child(5) { --svc-accent: #411df5; }
-  .svc-alt-card:nth-child(6) { --svc-accent: #1d97f5; }
-
-  /* The accent bar: dark-to-light sweep of the card's own accent, drawn on
-     the card so it sits under the clip's rounded corners. */
-  .svc-alt-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 5px;
-    z-index: 2;
-    background: linear-gradient(90deg,
-      color-mix(in srgb, var(--svc-accent) 60%, #0a1240) 0%,
-      var(--svc-accent) 55%,
-      color-mix(in srgb, var(--svc-accent) 55%, #ffffff) 100%);
-  }
-
-  /* The hairline lives here, not on the card, so it wraps the copy and stops
-     where the art band begins instead of boxing the artwork in (8 Sep 2026,
-     "no outline needed around images" - the second time this was asked for
-     on this section; the white-card rebuild had put it back on the card).
-     No bottom edge, and the top corners match the card's clip. The accent
-     bar paints over its top edge. */
-  .svc-alt-body {
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    padding: 40px 40px 32px;
-    border: 1px solid var(--svc-alt-line);
-    border-bottom: none;
-    border-radius: 10px 10px 0 0;
-  }
-
-  /* The service name, large and uppercase in the accent. Darkened a little
-     for text: the accent tone itself is tuned for the bar and the glyph, and
-     the lighter hues (sky, azure) would sit under 3:1 on white at this size.
-     The mix lands the brand blue at ~5.5:1 and the sky at ~3.9:1, over the
-     3:1 that large text needs. The 24px floor is what makes it large text
-     at every width: 500 weight is not bold in WCAG terms, so at 22px the bar
-     would be 4.5:1 instead and the sky and azure cards would miss it. At
-     74/26 the lightest (sky) measures ~3.7:1 and the brand blue ~6:1. */
-  .svc-alt-name {
-    font-size: clamp(24px, 1.75vw, 28px);
-    line-height: 1.12;
-    font-weight: 500;
-    letter-spacing: -0.3px;
-    /* Title Case, from the markup, not all caps: the reference image was in
-       caps and it went in that way, then was asked back to capitals on the
-       first letter of each word only (8 Sep 2026). */
-    text-transform: none;
-    color: color-mix(in srgb, var(--svc-accent) 74%, #0a1f6e);
-    margin: 0 0 18px;
-  }
-
-  .svc-alt-desc {
-    font-size: 17px;
-    line-height: 1.5;
-    font-weight: 400;
-    color: rgba(var(--ink-rgb), 0.82);
-    margin: 0;
-  }
-
-  /* The + sits on the artwork band, bottom-right of the card - a white disc
-     with the accent glyph and a soft shadow so it lifts off the art whatever
-     the tint. Absolutely placed against the card, so it no longer depends on
-     the body's flex layout; its 52px box clears the 24px tap-target floor. */
-  .svc-alt-plus {
-    position: absolute;
-    right: 26px;
-    bottom: 26px;
-    z-index: 3;
-    width: 52px;
-    height: 52px;
-    padding: 0;
-    border: none;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: #ffffff;
-    color: var(--svc-accent);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .svc-alt-plus svg { width: 20px; height: 20px; }
-  .svc-alt-plus:hover,
-  .svc-alt-plus:focus-visible { transform: scale(1.08); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.34); }
-
-  /* The real artwork, not a drawing of it: the bands are crops of the same
-     artwork (hero.svg and cases-bg.svg) that sit behind the hero and the Case Studies
-     band, so the nested rounded frames on the cards are literally the same
-     shape (8 Sep 2026, on request). Each card takes a different crop, and all
-     but the first a different hue, which distinguishes the six services and
-     breaks up what was otherwise an unrelieved wall of blue. The hues stay
-     in the COOL half of the wheel - teal through blue to violet, roughly -50
-     to +40 degrees. A first pass ran to +96 and produced a red and a magenta
-     band, too hot beside the brand; an orange and a teal band had already
-     been rejected here earlier the same day.
-
-     background-size: cover with no zoom, which is the whole reason this works
-     now. An earlier attempt at the same idea set 230-320% and was reported as
-     blurred - it was upscaling an 85KB JPEG. At cover on a ~487x176 band the
-     source is scaled DOWN from 1672px wide, so it stays sharp even at DPR 2.
-
-     The two images are held in custom properties and referenced from here, so
-     each url() appears once in the stylesheet and the rebuild script's
-     existing hero / cases-bg replaces cover these too - it uses
-     String.Replace, which takes every occurrence, so no new loop is needed.
-     Check the built artifact has no unresolved hero or footer-bg url left, as
-     always. (Since 8 Sep 2026 --art-hero points at hero.svg, the vector
-     rebuild; see .hero::before.)
-
-     filter recolours the whole band, so it must stay on .svc-alt-art and not
-     move to the card, or it would tint the copy as well. */
-  .svc-alt-art {
-    --art-hero: url('hero.svg');
-    --art-cases: url('cases-bg.svg');
-    flex: 0 0 200px;
-    border-radius: 0 0 10px 10px;
-    background-color: #071236;
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
-
-  .svc-alt-art-1 {
-    background-image: var(--art-hero);
-    background-position: 18% 28%;
-  }
-
-  .svc-alt-art-2 {
-    background-image: var(--art-cases);
-    background-position: 72% 62%;
-    filter: hue-rotate(-19.5deg);
-  }
-
-  .svc-alt-art-3 {
-    background-image: var(--art-hero);
-    background-position: 62% 74%;
-    filter: hue-rotate(45.5deg) saturate(0.95);
-  }
-
-  .svc-alt-art-4 {
-    background-image: var(--art-cases);
-    background-position: 24% 22%;
-    filter: hue-rotate(18.5deg);
-  }
-
-  .svc-alt-art-5 {
-    background-image: var(--art-hero);
-    background-position: 44% 52%;
-    filter: hue-rotate(32.5deg) saturate(0.92);
-  }
-
-  .svc-alt-art-6 {
-    background-image: var(--art-cases);
-    background-position: 8% 84%;
-    filter: hue-rotate(-11.5deg);
   }
 
   /* ---------- About + Values ---------- */
@@ -3721,7 +3490,6 @@
   /* ---------- Breakpoints ---------- */
   @media (max-width: 1100px) {
     .services-grid { grid-template-columns: repeat(2, 1fr); }
-    .svc-alt-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
   @media (max-width: 900px) {
@@ -3777,11 +3545,6 @@
 
   @media (max-width: 760px) {
     .services-grid { grid-template-columns: 1fr; }
-    .svc-alt-grid { grid-template-columns: 1fr; }
-    .svc-alt-card { min-height: 0; }
-    .svc-alt-body { padding: 36px 28px 28px; }
-    .svc-alt-name { margin-bottom: 16px; }
-    .svc-alt-art { flex-basis: 180px; }
   }
 
   @media (max-width: 620px) {
