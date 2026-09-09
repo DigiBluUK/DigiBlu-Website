@@ -392,7 +392,7 @@ There are six `.modal-overlay` dialogs: `#contactModal`, `#serviceModal`, `#case
 
 ## SEO
 
-**`SITE_ORIGIN` drives every canonical, `og:image`, JSON-LD self-URL, sitemap entry and `robots.txt` line, and it is environment-overridable** - see "Two remotes, two branches". Point it at a host that is not serving the files and crawlers are told a site you do not control is canonical, and no share card resolves.
+**`SITE_ORIGIN` drives every canonical, `og:image`, JSON-LD self-URL, sitemap entry and `robots.txt` line, and it is environment-overridable** - see "Serving from a different origin" above, and "Branches and releases" for which branch is live. Point it at a host that is not serving the files and crawlers are told a site you do not control is canonical, and no share card resolves.
 
 **Per-engagement share cards**: each case study has its own 1200x630 card (`assets/og/case-studies/<key>.jpg`); blog and legal pages fall back to the site-wide `og-image.jpg`. `pageHead()` takes optional `ogImage`/`ogImageAlt`, and the alt text follows the image so a card naming one case study is never announced on another page.
 
