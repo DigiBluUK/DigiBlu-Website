@@ -1,6 +1,18 @@
 // Generated from index.html by scripts/html-to-jsx.cjs; hand-fixes are
 // allowed after generation, so do not regenerate over a tuned file.
-export default function Footer() {
+// standalone: on the case-study and legal pages, where the home page's
+// dialogs do not exist, the six services and Contact Us are links back to
+// the home page - exactly what generate-static-pages.js rendered there.
+const SERVICES: [string, string][] = [
+  ["ai", "Artificial Intelligence"],
+  ["discovery", "Opportunity Discovery"],
+  ["process", "Process Excellence"],
+  ["digital", "Digital Solutions"],
+  ["tom", "Target Operating Model"],
+  ["post", "Managed Services"],
+];
+
+export default function Footer({ standalone = false }: { standalone?: boolean }) {
   return (
     <>
         <footer>
@@ -28,33 +40,32 @@ export default function Footer() {
               <div className="footer-col">
                 <h4>Services</h4>
                 <ul>
-                  <li><button type="button" data-service="ai">Artificial Intelligence</button></li>
-                  <li><button type="button" data-service="discovery">Opportunity Discovery</button></li>
-                  <li><button type="button" data-service="process">Process Excellence</button></li>
-                  <li><button type="button" data-service="digital">Digital Solutions</button></li>
-                  <li><button type="button" data-service="tom">Target Operating Model</button></li>
-                  <li><button type="button" data-service="post">Managed Services</button></li>
+                  {SERVICES.map(([key, name]) => (
+                    <li key={key}>
+                      {standalone ? <a href="/#services">{name}</a> : <button type="button" data-service={key}>{name}</button>}
+                    </li>
+                  ))}
                 </ul>
               </div>
 
               <div className="footer-col">
                 <h4>Company</h4>
                 <ul>
-                  <li><a href="#hero-content">Home</a></li>
-                  <li><a href="#case-studies">Case Studies</a></li>
-                  <li><a href="#about">About Us</a></li>
-                      <li><button type="button" className="js-contact-open">Contact Us</button></li>
+                  <li><a href="/#hero-content">Home</a></li>
+                  <li><a href="/#case-studies">Case Studies</a></li>
+                  <li><a href="/#about">About Us</a></li>
+                      <li>{standalone ? <a href="/#contact">Contact Us</a> : <button type="button" className="js-contact-open">Contact Us</button>}</li>
                 </ul>
               </div>
 
               <div className="footer-col">
                 <h4>Legal</h4>
                 <ul>
-                  <li><a href="legal/website-terms-of-use.html" data-legal="terms">Terms of Use</a></li>
-                  <li><a href="legal/privacy-policy.html" data-legal="privacy">Privacy Policy</a></li>
-                  <li><a href="legal/modern-slavery-policy.html" data-legal="slavery">Modern Slavery Policy</a></li>
-                  <li><a href="legal/carbon-reduction-plan.html" data-legal="carbon">Carbon Reduction Plan</a></li>
-                  <li><a href="legal/armed-forces-covenant.html" data-legal="armed-forces">Armed Forces Covenant</a></li>
+                  <li><a href="/legal/website-terms-of-use" data-legal="terms">Terms of Use</a></li>
+                  <li><a href="/legal/privacy-policy" data-legal="privacy">Privacy Policy</a></li>
+                  <li><a href="/legal/modern-slavery-policy" data-legal="slavery">Modern Slavery Policy</a></li>
+                  <li><a href="/legal/carbon-reduction-plan" data-legal="carbon">Carbon Reduction Plan</a></li>
+                  <li><a href="/legal/armed-forces-covenant" data-legal="armed-forces">Armed Forces Covenant</a></li>
                 </ul>
               </div>
             </div>

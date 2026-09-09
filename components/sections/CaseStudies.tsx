@@ -26,7 +26,7 @@ export default function CaseStudies() {
                     <span className="case-tag">Under half the cost per transaction</span>
                     <span className="case-tag">100% policy compliant</span>
                   </div>
-                  <a href="case-studies/sse-ovo.html" className="case-read-more" data-case="sse-ovo">
+                  <a href="/case-studies/sse-ovo" className="case-read-more" data-case="sse-ovo">
                     Read more
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </a>
@@ -47,7 +47,7 @@ export default function CaseStudies() {
                     <span className="case-tag">Fewer errors and resubmissions</span>
                     <span className="case-tag">Multi-state US coverage</span>
                   </div>
-                  <a href="case-studies/assurancesd.html" className="case-read-more" data-case="assurancesd">
+                  <a href="/case-studies/assurancesd" className="case-read-more" data-case="assurancesd">
                     Read more
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </a>
@@ -68,7 +68,7 @@ export default function CaseStudies() {
                     <span className="case-tag">3 weeks to production</span>
                     <span className="case-tag">Fully auditable workflows</span>
                   </div>
-                  <a href="case-studies/cedar-creek.html" className="case-read-more" data-case="cedar-creek">
+                  <a href="/case-studies/cedar-creek" className="case-read-more" data-case="cedar-creek">
                     Read more
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </a>

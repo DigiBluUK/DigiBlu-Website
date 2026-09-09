@@ -83,8 +83,9 @@ function componentFile(name, jsx) {
 }
 
 if (require.main === module) {
-  const [from, to, name, outFile] = process.argv.slice(2);
-  const lines = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8").split(/\r?\n/);
+  // optional fifth argument: another source file (the generator's page header)
+  const [from, to, name, outFile, srcFile] = process.argv.slice(2);
+  const lines = fs.readFileSync(srcFile || path.join(__dirname, "..", "index.html"), "utf8").split(/\r?\n/);
   const slice = lines.slice(Number(from) - 1, Number(to)).join("\n");
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
   fs.writeFileSync(outFile, componentFile(name, toJsx(slice)));
