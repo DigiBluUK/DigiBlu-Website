@@ -21,6 +21,18 @@
        --blue itself stays for text, links, tints and focus rings, which a
        gradient cannot be. Same value in both themes on purpose. */
     --brand-fill: linear-gradient(135deg, #1b4fd6 0%, #0a1f6e 52%, #050b28 100%);
+    /* The same sweep for ACCENTS - text, hairlines, the About mark - which sit
+       on the page rather than under white ink. In light theme it IS the fill
+       (dark blue on white reads at 6.7:1 and up). In dark theme the fill's
+       navy end is 1.4:1 on black and its brand-blue start only 3.1:1, so the
+       accent sweep runs the same family from the bright end instead: 6.6,
+       5.4 and 4.56:1 on black, every stop clear of AA for the 12px label.
+       Three colour tokens rather than one gradient so the SVG mark's
+       gradient stops can read them too. */
+    --brand-ink-1: #6aa4ff;
+    --brand-ink-2: #2f7bff;
+    --brand-ink-3: #1d6ef5;
+    --brand-ink: linear-gradient(135deg, var(--brand-ink-1) 0%, var(--brand-ink-2) 55%, var(--brand-ink-3) 100%);
     --hairline: rgba(var(--ink-rgb), 0.28);
     --gutter: 24px;
     --maxw: 1500px;
@@ -64,6 +76,9 @@
     --ink-rgb: 13, 17, 23;
     --bg: #ffffff;
     --surface: #f6f7f9;
+    --brand-ink-1: #1b4fd6;
+    --brand-ink-2: #0a1f6e;
+    --brand-ink-3: #050b28;
     --surface-2: #ffffff;
     --field-bg: #f1f3f6;
     --text: #0d1117;
@@ -85,6 +100,9 @@
       --ink-rgb: 13, 17, 23;
       --bg: #ffffff;
       --surface: #f6f7f9;
+      --brand-ink-1: #1b4fd6;
+      --brand-ink-2: #0a1f6e;
+      --brand-ink-3: #050b28;
       --surface-2: #ffffff;
       --field-bg: #f1f3f6;
       --text: #0d1117;
@@ -912,8 +930,9 @@
      and supplies its own continuity; a transition there merely restarted 78
      fill interpolations on every scroll tick, for a change no one could see. */
   .geo-figure.is-hovering .geo-flow circle {
-    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), fill 0.3s ease;
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
+  .geo-figure.is-hovering .geo-flow .mk-lit { transition: opacity 0.3s ease; }
 
   /* A breath, not a swing. The lattice is exact, so the motion has to stay
      small enough that it never reads as the grid wobbling - the dots pulse in
@@ -952,11 +971,17 @@
      mark in full ink rather than no fill at all. */
   .geo-flow circle.mk { fill: var(--text); }
 
-  @supports (color: color-mix(in srgb, red 50%, blue)) {
-    .geo-flow circle.mk {
-      fill: color-mix(in srgb, var(--blue) calc(var(--mark-lit, 0) * 100%), var(--text));
-    }
-  }
+  /* The lit mark is a second copy of the 78 dots, in a group whose opacity is
+     --mark-lit, filled with the brand sweep from #geoBrand (9 Sep 2026 - the
+     mark was a colour-mix into flat --blue before, and a gradient cannot be
+     mixed, so it is layered instead). The stops read the theme's ink tokens.
+     Three classes on the circle rule, or .geo-flow circle.mk above outranks
+     it and the copies paint in ink. */
+  .gb1 { stop-color: var(--brand-ink-1); }
+  .gb2 { stop-color: var(--brand-ink-2); }
+  .gb3 { stop-color: var(--brand-ink-3); }
+  .geo-flow .mk-lit { opacity: var(--mark-lit, 0); }
+  .geo-flow .mk-lit circle.mk { fill: url(#geoBrand); }
 
   /* Twelve delay buckets, assigned by position when the lattice is generated,
      so the pulse crosses it as a wave instead of every dot breathing in
@@ -1252,11 +1277,20 @@
   /* Labels the accordion below as the values, which the numerals alone do
      not - it is why the heading came back when the section was restacked. */
   .about-values-title {
+    width: max-content;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--blue);
+    /* The brand sweep as text (9 Sep 2026, "the header, our values"): the
+       gradient is clipped to the glyphs and the colour made transparent so
+       it shows through. width: max-content so the sweep crosses the two
+       words instead of the whole line box, where the label would only ever
+       see the first colour. */
+    background: var(--brand-ink);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     margin-bottom: 26px;
   }
 
@@ -1312,16 +1346,22 @@
     font-variant-numeric: tabular-nums;
     line-height: 1;
     color: rgba(var(--ink-rgb), var(--ink-a-faint));
-    transition: color 0.25s ease;
+    transition: none;
   }
 
   .value-item.is-open .value-num { color: var(--text); }
   .value-item.is-open .value-open { border-top-color: rgba(var(--ink-rgb), 0.55); }
 
   .value-open:hover .value-num,
-  .value-open:focus-visible .value-num { color: var(--blue); }
+  .value-open:focus-visible .value-num {
+    background: var(--brand-ink);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: color 0.25s ease;
+  }
   .value-open:hover,
-  .value-open:focus-visible { border-top-color: var(--blue); }
+  .value-open:focus-visible { border-image-source: var(--brand-ink); border-image-slice: 1; }
 
   /* Small screens reveal cumulatively as the section scrolls: every value is
      laid out from the start and fades in as its turn comes, so the section
@@ -1420,9 +1460,15 @@
        .value-open:hover (two) - so the numeral went blue and the hairline did
        not (reported). Same trap the old accordion hit with .is-revealed. */
     .value-list .value-item .value-open:hover .value-num,
-    .value-list .value-item .value-open:focus-visible .value-num { color: var(--blue); }
+    .value-list .value-item .value-open:focus-visible .value-num {
+      background: var(--brand-ink);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      transition: color 0.25s ease;
+    }
     .value-list .value-item .value-open:hover,
-    .value-list .value-item .value-open:focus-visible { border-top-color: var(--blue); }
+    .value-list .value-item .value-open:focus-visible { border-image-source: var(--brand-ink); border-image-slice: 1; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1824,6 +1870,8 @@
     padding: 20px 22px;
     background: rgba(var(--ink-rgb), 0.05);
     border-left: 3px solid var(--blue);
+    border-image-source: var(--brand-ink);
+    border-image-slice: 1;
     border-radius: 0 12px 12px 0;
   }
 
@@ -3244,7 +3292,7 @@
   .modal-success svg {
     width: 40px;
     height: 40px;
-    color: var(--blue);
+    color: var(--brand-ink-2);
     margin: 0 auto 18px;
   }
 
