@@ -22,3 +22,6 @@ npm-debug.log*
 out/
 next-env.d.ts
 .wrangler/
+
+# generated from content/**/*.md at build time (npm run content)
+content/.generated/
