@@ -1,6 +1,6 @@
 # DigiBlu site: sign-off checklist for the Next.js build
 
-Check the preview URL of the `next` branch against these. Do the whole list twice: once in dark theme and once in light (the sun/moon button in the nav). Do the phone column on a real phone or a browser narrower than 900px. Tick each line when it matches; note anything that does not.
+Check the preview URL of the `dev` branch against these. Do the whole list twice: once in dark theme and once in light (the sun/moon button in the nav). Do the phone column on a real phone or a browser narrower than 900px. Tick each line when it matches; note anything that does not.
 
 Preview URL: _(filled in when Cloudflare is connected; until then `http://localhost:3000` from `npm run dev`)_
 
