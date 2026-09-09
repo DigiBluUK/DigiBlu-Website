@@ -688,9 +688,10 @@
     color: var(--text);
   }
 
-  /* The strapline is one sentence on one line, "Applied AI, real ROI.", since
+  /* The strapline is one sentence on one line, "Applied AI, real ROI", since
      9 Sep 2026 (it was "Applied AI." over "Real ROI." and the full stops read
-     as misplaced; an ellipsis version lasted an hour). Each half is a span
+     as misplaced; an ellipsis version lasted an hour, and the closing full
+     stop went on 9 Sep with every other heading's). Each half is a span
      that will not break inside itself, so where the line must wrap on a phone
      it wraps at the comma, never inside a phrase. */
   .hero h1 span { white-space: nowrap; }
@@ -888,7 +889,21 @@
     border-radius: 16px;
     overflow: hidden;
     color: var(--text);
+    /* Its own compositor layer, and paint contained (9 Sep 2026): the pulse
+       is a software repaint of 978 circles every frame - Chromium does not
+       composite transforms on SVG children - and without these it dirtied
+       the layer the whole section shares. A Surface Pro X showed a glitch a
+       desktop did not; this is the cheap half of the answer, the probe in
+       the geo IIFE (.is-lowend) is the other. */
+    will-change: transform;
+    contain: paint;
   }
+
+  /* A device that cannot hold the pulse at ~38fps gets the figure still:
+     no breath, no cursor response, the mark still lighting on scroll. Set
+     once by the frame-time probe in the geo IIFE. */
+  .geo-figure.is-lowend .geo-flow circle { animation: none; transition: none; }
+  .geo-figure.is-lowend .geo-flow .mk-lit { transition: none; }
 
   .geo-flow {
     display: block;
@@ -3804,7 +3819,7 @@
 
     <div class="hero-center" id="hero-content">
       <span class="hero-logo" aria-hidden="true"></span>
-      <h1><span>Applied AI,</span> <span>real ROI.</span></h1>
+      <h1><span>Applied AI,</span> <span>real ROI</span></h1>
     </div>
 
     <div class="hero-bottom">
@@ -3971,7 +3986,7 @@
         <div class="case-grid">
           <div>
           <span class="case-client">SSE / OVO</span>
-          <h3 class="case-headline">Automating complicated customer service interactions.</h3>
+          <h3 class="case-headline">Automating complicated customer service interactions</h3>
           </div>
           <div>
             <p class="case-body">As energy bills climbed, so did call volumes. We built virtual agents that handle Direct Debit reviews and collections conversations end to end - across QR codes, URLs and WhatsApp - so customers can resolve arrears without waiting to speak to anyone.</p>
@@ -3992,7 +4007,7 @@
         <div class="case-grid">
           <div>
           <span class="case-client">AssuranceSD</span>
-          <h3 class="case-headline">Transforming FMS services with digital onboarding.</h3>
+          <h3 class="case-headline">Transforming FMS services with digital onboarding</h3>
           </div>
           <div>
             <p class="case-body">Applying for government funding ran on paper, and it was hardest on the elderly and disabled applicants it exists to help. We built a secure web application with Jotform forms and e-signatures, so applications are completed and signed online with fewer errors and faster approvals.</p>
@@ -4013,7 +4028,7 @@
         <div class="case-grid">
           <div>
           <span class="case-client">Cedar Creek Church</span>
-          <h3 class="case-headline">Modernising operational requests with Jotform.</h3>
+          <h3 class="case-headline">Modernising operational requests with Jotform</h3>
           </div>
           <div>
             <p class="case-body">Payments, facilities, room bookings, events and maintenance requests ran on paper, spreadsheets and email. We designed and launched six Jotform workflows in three weeks, with validation, approvals and notifications built in, so every request is captured consistently and is fully auditable.</p>
@@ -4107,7 +4122,7 @@
          on a short viewport (see the CSS). -->
     <div class="about-inner">
     <span class="pill">About Us</span>
-    <h2>Who we are.</h2>
+    <h2>Who we are</h2>
 
     <div class="about-top">
       <div class="about-head">
@@ -5004,8 +5019,40 @@
       // never caught frozen at the edge.
       if ('IntersectionObserver' in window) {
         new IntersectionObserver(function (entries) {
-          entries.forEach(function (e) { fig.classList.toggle('is-offscreen', !e.isIntersecting); });
+          entries.forEach(function (e) {
+            fig.classList.toggle('is-offscreen', !e.isIntersecting);
+            if (e.isIntersecting) probe();
+          });
         }, { rootMargin: '80px 0px' }).observe(fig);
+      }
+
+      // Frame-time probe (9 Sep 2026). A Surface Pro X showed a glitch on this
+      // figure that a desktop does not: the pulse is a software repaint of
+      // 978 circles per frame, and an ARM tablet at DPR 2 cannot always hold
+      // it. Measured once, the first time the figure is on screen with the
+      // page still - the pulse only runs then, so that is the cost in
+      // question - over 1.5s of frames. Under ~38fps the figure goes static
+      // (.is-lowend, see the CSS) and the cursor loop below stands down.
+      // Needs a dozen real frames before it will say anything: a hidden tab,
+      // or the preview pane, throttles rAF to nothing, and silence is not
+      // slowness.
+      var probed = false;
+      function probe() {
+        if (probed || !window.requestAnimationFrame) return;
+        probed = true;
+        var start = 0, last = 0, frames = 0, began = performance.now();
+        function tick(t) {
+          if (fig.classList.contains('is-scrolling') || fig.classList.contains('is-offscreen')) {
+            start = 0; frames = 0;
+            if (t - began < 12000) requestAnimationFrame(tick);
+            return;
+          }
+          if (!start) { start = last = t; } else { frames++; last = t; }
+          if (t - start < 1500) { requestAnimationFrame(tick); return; }
+          if (frames < 12) return;
+          if ((t - start) / frames > 26) fig.classList.add('is-lowend');
+        }
+        requestAnimationFrame(tick);
       }
 
       if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
@@ -5064,6 +5111,7 @@
       var px = 0, py = 0, active = false, queued = false;
 
       function apply() {
+        if (fig.classList.contains('is-lowend')) { queued = false; return; }
         queued = false;
         for (var i = 0; i < dash.length; i++) {
           var d = dash[i];
@@ -5664,7 +5712,7 @@
           client: 'SSE / OVO',
           sector: 'Energy',
           service: 'Artificial Intelligence',
-          title: 'Automating complicated customer service interactions.',
+          title: 'Automating complicated customer service interactions',
           stats: [
             { v: '350%', l: 'Forecast ROI' },
             { v: '<50%', l: 'Cost per transaction' },
@@ -5684,7 +5732,7 @@
           client: 'AssuranceSD',
           sector: 'Financial Management Services',
           service: 'Digital Solutions',
-          title: 'Transforming FMS services with digital onboarding.',
+          title: 'Transforming FMS services with digital onboarding',
           stats: [
             { v: 'Paper-free', l: 'Application process' },
             { v: 'Fewer', l: 'Errors and resubmissions' },
@@ -5704,7 +5752,7 @@
           client: 'Cedar Creek Church',
           sector: 'Faith & Community',
           service: 'Digital Solutions',
-          title: 'Modernising operational requests with Jotform.',
+          title: 'Modernising operational requests with Jotform',
           stats: [
             { v: '6', l: 'Processes digitised' },
             { v: '3 weeks', l: 'Kick-off to production' },
@@ -5724,7 +5772,7 @@
           client: 'Special Olympics Canada',
           sector: 'Non-profit',
           service: 'Digital Solutions',
-          title: 'Simplifying funding applications for life-changing sport programs.',
+          title: 'Simplifying funding applications for life-changing sport programs',
           stats: [
             { v: '41,000+', l: 'Participants in Canada' },
             { v: '17,500', l: 'Volunteers supported' },
@@ -5744,7 +5792,7 @@
           client: 'Global healthcare workforce provider',
           sector: 'Healthcare',
           service: 'Digital Solutions',
-          title: 'Halving onboarding time for a 30,000-strong healthcare workforce.',
+          title: 'Halving onboarding time for a 30,000-strong healthcare workforce',
           stats: [
             { v: '90 → 45 days', l: 'Time to onboard' },
             { v: '2×', l: 'Candidate outreach' },
@@ -5764,7 +5812,7 @@
           client: 'Northwest University',
           sector: 'Education',
           service: 'Process Excellence',
-          title: 'Streamlining HR and payroll integration through automation.',
+          title: 'Streamlining HR and payroll integration through automation',
           stats: [
             { v: '37,000+', l: 'Undergraduate students' },
             { v: 'Fewer', l: 'Payroll data errors' },
@@ -5784,7 +5832,7 @@
           client: 'Major US city agency',
           sector: 'Public Sector',
           service: 'Digital Solutions',
-          title: 'Digitising intake at emergency humanitarian relief centers.',
+          title: 'Digitising intake at emergency humanitarian relief centers',
           stats: [
             { v: '1 week', l: 'To live deployment' },
             { v: 'HIPAA', l: 'Compliant intake forms' },
@@ -5804,7 +5852,7 @@
           client: 'Old Mutual',
           sector: 'Financial Services',
           service: 'TOM',
-          title: 'Designing, deploying and scaling an automation Centre of Excellence.',
+          title: 'Designing, deploying and scaling an automation Centre of Excellence',
           stats: [
             { v: '64', l: 'Processes automated' },
             { v: '150,000+', l: 'Hours of manual work saved' },
@@ -6252,7 +6300,7 @@
         slavery: {
           title: 'Modern Slavery Policy',
           url: 'https://www.digiblu.com/modern-slavery-policy',
-          intro: 'Last updated August 2026. Covering the 2024 financial and calendar year.',
+          intro: 'Last updated August 2026.',
           points: [
             { h: '1. Introduction', p: 'This statement relates to actions and activities during the 2024 financial and calendar year.\nDigiBlu UK Limited is exempt from the Modern Slavery Act 2015, but voluntarily complies with its provisions to ensure there is no slavery or human trafficking in Our own operations or Our supply chain. We assess and manage this risk through Our organisation structure and supply chains, related policies, due diligence processes, risk assessment and management, key performance indicators, and staff training.\nWe all have a duty to be alert to risks, however small, and management provides staff with a supportive environment for reporting them.' },
             { h: '2. Organisation Structure and Supply Chains', p: 'DigiBlu is a company registered in England and Wales, delivering services through directly employed staff and third-party suppliers based principally in the UK, USA, UAE, Europe and South Africa. DigiBlu’s registered office is in Chelmsford, UK.\nOur supply chain includes robotic process automation (RPA) and other technology suppliers providing cloud hosting, cloud automation software, and cloud support services to public and private sector clients. Main supply chain partners include Blue Prism, Thoughtonomy, AntWorks, TrustPortal, CLEVVA and SoftTools.' },
@@ -6267,7 +6315,7 @@
         carbon: {
           title: 'Carbon Reduction Plan',
           url: 'https://www.digiblu.com/carbon-reduction-plan',
-          intro: 'Last updated January 2026. Published as a supplier to Crown Commercial Service.',
+          intro: 'Last updated January 2026.',
           points: [
             { h: 'Overview', p: 'This Carbon Reduction Plan was produced by DigiBlu UK Limited (company registration no. 12015792; registered office Steeple House, Suite 3 Floor One, Church Lane, Chelmsford, Essex, CM1 1NH) on 1 January 2026.' },
             { h: '1. Introduction', p: 'DigiBlu is committed to reducing its carbon emissions over time, with the objective of achieving Net Zero carbon emissions by 31 December 2050.\nThis pledge supports the UK Government’s requirement that, from 30 September 2022, in-scope organisations - including suppliers to Crown Commercial Service via the G-Cloud Framework, such as DigiBlu - monitor their carbon emissions and comply with carbon reduction targets working toward Net Zero greenhouse gas emissions by 31 December 2050.\nDigiBlu is pleased to report a 12.5% reduction in the Tonnes of Carbon Dioxide (tCO2e) and other greenhouse gases generated by the business during 2025, achieved through determined effort by DigiBlu colleagues - a 30% cumulative reduction in GHG against the 2022 baseline year.' },

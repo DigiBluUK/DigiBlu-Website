@@ -686,9 +686,10 @@
     color: var(--text);
   }
 
-  /* The strapline is one sentence on one line, "Applied AI, real ROI.", since
+  /* The strapline is one sentence on one line, "Applied AI, real ROI", since
      9 Sep 2026 (it was "Applied AI." over "Real ROI." and the full stops read
-     as misplaced; an ellipsis version lasted an hour). Each half is a span
+     as misplaced; an ellipsis version lasted an hour, and the closing full
+     stop went on 9 Sep with every other heading's). Each half is a span
      that will not break inside itself, so where the line must wrap on a phone
      it wraps at the comma, never inside a phrase. */
   .hero h1 span { white-space: nowrap; }
@@ -886,7 +887,21 @@
     border-radius: 16px;
     overflow: hidden;
     color: var(--text);
+    /* Its own compositor layer, and paint contained (9 Sep 2026): the pulse
+       is a software repaint of 978 circles every frame - Chromium does not
+       composite transforms on SVG children - and without these it dirtied
+       the layer the whole section shares. A Surface Pro X showed a glitch a
+       desktop did not; this is the cheap half of the answer, the probe in
+       the geo IIFE (.is-lowend) is the other. */
+    will-change: transform;
+    contain: paint;
   }
+
+  /* A device that cannot hold the pulse at ~38fps gets the figure still:
+     no breath, no cursor response, the mark still lighting on scroll. Set
+     once by the frame-time probe in the geo IIFE. */
+  .geo-figure.is-lowend .geo-flow circle { animation: none; transition: none; }
+  .geo-figure.is-lowend .geo-flow .mk-lit { transition: none; }
 
   .geo-flow {
     display: block;
