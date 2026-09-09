@@ -41,6 +41,12 @@ git merge --ff-only dev              # on main, at a release, then:
 git tag -a v1.1.0 -m "..." && git push origin main v1.1.0
 ```
 
+## Next.js port (branch `next`)
+
+The site is being rebuilt as a **Next.js 16 App Router app on the `next` branch**, like for like, in five priorities (2 to 5 here; Priority 1, the contact-form backend on Azure Functions + Azure Communication Services, is DigiBlu's developer's). Plans live in `docs/superpowers/plans/`. **Priority 2 (foundation) is done**: the stylesheet is imported verbatim (`app/globals.css` is GENERATED from `assets/site.css` by `scripts/build-globals-css.cjs` - only its `url()` paths change to `/assets/...` and one self-hosted `@font-face` is prepended; never hand-edit it, run `npm run assets`), assets are served from `public/assets/` (a mirror of `assets/` minus the stylesheet and `team/source/`), and each section of `index.html` was converted to a server component by `scripts/html-to-jsx.cjs` from its exact line range (`components/sections/*`, `components/Footer.tsx`, `components/ScrollTop.tsx`, `components/dialogs/*`), the About lattice rendered from `content/lattice.json` (`scripts/extract-lattice.cjs`) rather than 60KB of JSX. **The old files stay in the tree as the reference until cut-over**, and `scripts/parity.cjs` compares the two servers' served HTML (counts and visible text; the old page's script-injected elements are not in either response). Every page is static; the OpenNext Cloudflare adapter is configured (`open-next.config.ts`, `wrangler.jsonc`, `npm run build:cf` verified) so the runtime is available but nothing is deployed and no account is configured. No behaviours yet: buttons render inert and dialogs hidden until Priority 4 ports the twenty scripts as client components; Priority 3 moves the content to markdown; Priority 5 is parity sign-off and cut-over.
+
+**Two traps met on the way:** `http-server` serves `./public` by default once that folder exists, so the reference site's launch entry names the root (`http-server .`); and React warns on `src=""`, so the badge dialog's image carries no `src` until the script sets one. Dev servers: `digiblu-next` on 3000 and `digiblu-static` on 4173 in `.claude/launch.json`, both from the same tree.
+
 ## Deploying to a real host (Netlify etc.)
 
 **Deploy `index.html` and the folders — NOT `digiblu-site.html`.** This tripped up a real deploy already, so it is worth being blunt about:
