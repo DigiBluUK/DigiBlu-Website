@@ -10,7 +10,9 @@ const ROOT = path.join(process.cwd(), "content");
 // breaks: true so a single newline is a <br> - the legal points carry
 // numbered sub-clauses joined that way, and the old page showed them with
 // white-space: pre-line. Paragraphs are still blank-line separated.
-marked.use({ breaks: true, gfm: true });
+// GFM autolinks are off: the legal text names privacy@digiblu.com as plain
+// text and the old page showed it that way; a mailto link would be a change.
+marked.use({ breaks: true, gfm: true, tokenizer: { url: () => undefined } });
 
 export type Section = { heading: string; html: string };
 export type Stat = { v: string; l: string };

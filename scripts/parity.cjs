@@ -6,8 +6,15 @@
 // The old page's scripts inject elements at runtime (reader rows, the word
 // spans of the narrative, team bios); those never appear in either server
 // response, so the comparison is on served HTML, before any script runs.
-const OLD = process.env.OLD || "http://localhost:4173/";
-const NEW = process.env.NEW || "http://localhost:3000/";
+// node scripts/parity.cjs [oldPath] [newPath] - defaults to the home page;
+// e.g. node scripts/parity.cjs /case-studies/sse-ovo.html /case-studies/sse-ovo
+// Paths may be given without the leading slash: Git Bash on Windows rewrites
+// an argument that starts with "/" into a filesystem path before Node sees
+// it (set MSYS_NO_PATHCONV=1 to stop that, or just omit the slash).
+const norm = (p) => "/" + p.replace(/^\/+/, "");
+const [oldArg = "/", newArg = oldArg] = process.argv.slice(2);
+const OLD = (process.env.OLD || "http://localhost:4173") + norm(oldArg);
+const NEW = (process.env.NEW || "http://localhost:3000") + norm(newArg);
 
 function stats(html) {
   const body = html.slice(html.indexOf("<body"), html.lastIndexOf("</body>"));
@@ -28,7 +35,7 @@ function stats(html) {
     forms: count(/<form\b/g),
     inputs: count(/<(?:input|textarea|select)\b/g),
     words: text.split(" ").length,
-    h1: (noScript.match(/<h1>[\s\S]*?<\/h1>/) || [""])[0].replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim(),
+    h1: (noScript.match(/<h1[^>]*>[\s\S]*?<\/h1>/) || [""])[0].replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim(),
     text,
   };
 }
