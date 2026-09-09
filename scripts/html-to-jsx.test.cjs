@@ -3,7 +3,11 @@ const assert = require("node:assert/strict");
 const { toJsx } = require("./html-to-jsx.cjs");
 
 test("class, for and tabindex", () => {
-  assert.equal(toJsx('<label class="a b" for="x" tabindex="-1">Hi</label>'), '<label className="a b" htmlFor="x" tabIndex="-1">Hi</label>');
+  assert.equal(toJsx('<label class="a b" for="x" tabindex="-1">Hi</label>'), '<label className="a b" htmlFor="x" tabIndex={-1}>Hi</label>');
+});
+
+test("numeric attributes are emitted as numbers, inputmode is camelCased", () => {
+  assert.equal(toJsx('<textarea rows="4" inputmode="text"></textarea>'), '<textarea rows={4} inputMode="text"></textarea>');
 });
 
 test("svg dashed attributes become camelCase, aria and data do not", () => {
@@ -14,7 +18,7 @@ test("svg dashed attributes become camelCase, aria and data do not", () => {
 });
 
 test("the camelCase table", () => {
-  assert.equal(toJsx('<input autocomplete="off" maxlength="3" readonly>'), '<input autoComplete="off" maxLength="3" readOnly />');
+  assert.equal(toJsx('<input autocomplete="off" maxlength="3" readonly>'), '<input autoComplete="off" maxLength={3} readOnly />');
   assert.equal(toJsx('<link crossorigin fetchpriority="high">'), '<link crossOrigin fetchPriority="high" />');
 });
 

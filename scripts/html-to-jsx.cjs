@@ -12,8 +12,10 @@ const TABLE = {
   enctype: "encType", crossorigin: "crossOrigin", fetchpriority: "fetchPriority", srcset: "srcSet",
   datetime: "dateTime", spellcheck: "spellCheck", contenteditable: "contentEditable", "accept-charset": "acceptCharset",
   "http-equiv": "httpEquiv", "xlink:href": "xlinkHref", "xml:space": "xmlSpace", "xmlns:xlink": "xmlnsXlink",
-  allowfullscreen: "allowFullScreen", referrerpolicy: "referrerPolicy",
+  allowfullscreen: "allowFullScreen", referrerpolicy: "referrerPolicy", inputmode: "inputMode",
 };
+// React's types want these as numbers, so they are emitted as {N}, not "N"
+const NUMERIC = new Set(["tabindex", "rows", "cols", "maxlength", "minlength", "size", "span", "colspan", "rowspan"]);
 
 function camel(s) { return s.replace(/-([a-z])/g, (m, c) => c.toUpperCase()); }
 
@@ -44,6 +46,7 @@ function convertAttrs(attrs) {
     const value = m[2] !== undefined ? m[2] : m[3] !== undefined ? m[3] : m[4];
     if (value === undefined) { out.push(attrName(name)); continue; }
     if (name.toLowerCase() === "style") { out.push(`style=${styleObject(value)}`); continue; }
+    if (NUMERIC.has(name.toLowerCase()) && /^-?\d+$/.test(value)) { out.push(`${attrName(name)}={${value}}`); continue; }
     out.push(`${attrName(name)}="${value}"`);
   }
   return out.length ? " " + out.join(" ") : "";
