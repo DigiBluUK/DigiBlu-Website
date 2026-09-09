@@ -37,6 +37,10 @@ To try the Cloudflare Worker locally:
 npm run preview:cf   # builds the Worker, populates its prerender cache, serves it with wrangler
 ```
 
+## Consent and analytics
+
+Cookie consent is `lib/consent/` plus `components/consent/`: vanilla-cookieconsent configured from `lib/consent/config.ts`, Google Consent Mode v2 defaults set in the document head, and a GA4 loader that runs only after analytics is allowed. Set `NEXT_PUBLIC_GA_MEASUREMENT_ID` (see `.env.example`); leave it empty to build without analytics. To reuse on another site, copy the two folders, the head script line in `app/layout.tsx`, the `<Consent />` mount and the footer's `<CookieSettingsLink />`, then edit `config.ts`.
+
 ## Branches and releases
 
 | Branch | Role |

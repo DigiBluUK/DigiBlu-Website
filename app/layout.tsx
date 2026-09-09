@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { SITE_URL as SITE, SITE_TITLE as TITLE, SITE_DESCRIPTION as DESCRIPTION, SITE_SOCIAL as SOCIAL } from "@/lib/site";
+import { CONSENT_DEFAULT_SCRIPT } from "@/lib/consent/gtag";
+import Consent from "@/components/consent/Consent";
 
 // The old <head> of index.html, expressed the Next way. The host and the
 // site-wide strings live in lib/site.ts, shared with the routes, the sitemap
@@ -78,10 +80,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preload" as="image" href="/assets/hero.svg" type="image/svg+xml" fetchPriority="high" />
+        {/* Consent Mode defaults first: everything Google denied before any
+            Google code could run. The consent manager updates them later. */}
+        <script dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG) }} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Consent />
+      </body>
     </html>
   );
 }

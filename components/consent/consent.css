@@ -1,0 +1,84 @@
+/* vanilla-cookieconsent, dressed as the site. The library exposes its
+   colours, radii and font as custom properties on #cc-main; they are mapped
+   to the site's own tokens so the banner and the preferences dialog follow
+   the dark/light toggle with no second theme to maintain. Nothing here
+   changes the library's layout, focus handling or ARIA. */
+#cc-main {
+  --cc-font-family: 'DM Sans', sans-serif;
+  --cc-modal-border-radius: 14px;
+  --cc-btn-border-radius: 999px;
+  --cc-modal-transition-duration: 0.2s;
+  --cc-bg: var(--surface-2);
+  --cc-primary-color: var(--text);
+  --cc-secondary-color: rgba(var(--ink-rgb), var(--ink-a-high));
+  --cc-btn-primary-bg: #1b4fd6;
+  --cc-btn-primary-color: #ffffff;
+  --cc-btn-primary-border-color: #1b4fd6;
+  --cc-btn-primary-hover-bg: #0a1f6e;
+  --cc-btn-primary-hover-border-color: #0a1f6e;
+  --cc-btn-secondary-bg: rgba(var(--ink-rgb), 0.06);
+  --cc-btn-secondary-color: var(--text);
+  --cc-btn-secondary-border-color: rgba(var(--ink-rgb), 0.16);
+  --cc-btn-secondary-hover-bg: rgba(var(--ink-rgb), 0.12);
+  --cc-btn-secondary-hover-border-color: rgba(var(--ink-rgb), 0.28);
+  --cc-separator-border-color: var(--hairline);
+  --cc-toggle-on-bg: var(--blue);
+  --cc-toggle-off-bg: rgba(var(--ink-rgb), 0.28);
+  --cc-toggle-on-knob-bg: #ffffff;
+  --cc-toggle-off-knob-bg: #ffffff;
+  --cc-toggle-readonly-bg: rgba(var(--ink-rgb), 0.18);
+  --cc-toggle-readonly-knob-bg: #ffffff;
+  --cc-cookie-category-block-bg: rgba(var(--ink-rgb), 0.04);
+  --cc-cookie-category-block-border: rgba(var(--ink-rgb), 0.08);
+  --cc-cookie-category-block-hover-bg: rgba(var(--ink-rgb), 0.07);
+  --cc-cookie-category-block-hover-border: rgba(var(--ink-rgb), 0.12);
+  --cc-cookie-category-expanded-block-bg: transparent;
+  --cc-cookie-category-expanded-block-hover-bg: rgba(var(--ink-rgb), 0.04);
+  --cc-overlay-bg: rgba(0, 0, 0, 0.55);
+  --cc-footer-bg: rgba(var(--ink-rgb), 0.04);
+  --cc-footer-color: rgba(var(--ink-rgb), var(--ink-a-high));
+  --cc-footer-border-color: var(--hairline);
+  --cc-webkit-scrollbar-bg: rgba(var(--ink-rgb), 0.06);
+  --cc-webkit-scrollbar-hover-bg: rgba(var(--ink-rgb), 0.16);
+  color-scheme: light dark;
+}
+
+/* The primary buttons carry the brand sweep like every other primary fill
+   on the site; white text on it clears AA at button size. */
+#cc-main .cm__btn--primary,
+#cc-main .pm__btn--primary {
+  background: var(--brand-fill);
+  border-color: transparent;
+}
+#cc-main .cm__btn--primary:hover,
+#cc-main .pm__btn--primary:hover {
+  background: var(--brand-fill);
+  filter: brightness(1.12);
+}
+
+/* Links inside the copy in the site's blue, underlined so they read as
+   links against the muted text. */
+#cc-main a {
+  color: var(--blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* The banner sits clear of the scroll-to-top disc (bottom right) by
+   living bottom left; on a phone it spans the width above the thumb zone. */
+#cc-main .cm--box.cm--bottom {
+  margin-bottom: 16px;
+}
+@media (max-width: 640px) {
+  #cc-main .cm {
+    max-width: none;
+  }
+}
+
+/* The cookie tables: the site's small type and hairlines. */
+#cc-main .pm__table-caption {
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}

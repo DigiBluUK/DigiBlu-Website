@@ -1,3 +1,4 @@
+import CookieSettingsLink from "@/components/consent/CookieSettingsLink";
 // Generated from index.html by scripts/html-to-jsx.cjs; hand-fixes are
 // allowed after generation, so do not regenerate over a tuned file.
 // standalone: on the case-study and legal pages, where the home page's
@@ -66,6 +67,7 @@ export default function Footer({ standalone = false }: { standalone?: boolean })
                   <li><a href="/legal/modern-slavery-policy" data-legal="slavery">Modern Slavery Policy</a></li>
                   <li><a href="/legal/carbon-reduction-plan" data-legal="carbon">Carbon Reduction Plan</a></li>
                   <li><a href="/legal/armed-forces-covenant" data-legal="armed-forces">Armed Forces Covenant</a></li>
+                  <li><CookieSettingsLink /></li>
                 </ul>
               </div>
             </div>
