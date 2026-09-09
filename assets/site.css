@@ -14,6 +14,13 @@
     --field-bg: #0d0d0d;
     --text: #ffffff;
     --blue: #1d6ef5;
+    /* The primary fill since 9 Sep 2026: the blue-to-navy-to-near-black
+       sweep the service cards and the open team card carry, asked to be the
+       one brand surface site-wide ("so brand colour is in sync"). Every
+       button, pill, selected row and disc that was flat --blue uses this;
+       --blue itself stays for text, links, tints and focus rings, which a
+       gradient cannot be. Same value in both themes on purpose. */
+    --brand-fill: linear-gradient(135deg, #1b4fd6 0%, #0a1f6e 52%, #050b28 100%);
     --hairline: rgba(var(--ink-rgb), 0.28);
     --gutter: 24px;
     --maxw: 1500px;
@@ -110,7 +117,7 @@
     left: -9999px;
     top: 12px;
     z-index: 200;
-    background: var(--blue);
+    background: var(--brand-fill);
     color: #fff;
     padding: 10px 18px;
     border-radius: 8px;
@@ -130,7 +137,7 @@
     width: 46px;
     height: 46px;
     border-radius: 50%;
-    background: var(--blue);
+    background: var(--brand-fill);
     color: #fff;
     border: none;
     display: flex;
@@ -494,9 +501,9 @@
     padding: 7px 14px;
     cursor: pointer;
     white-space: nowrap;
-    background: var(--blue);
+    background: var(--brand-fill);
     color: #fff;
-    border: 1px solid var(--blue);
+    border: 1px solid transparent;
   }
 
   .theme-toggle {
@@ -661,10 +668,11 @@
     color: var(--text);
   }
 
-  /* The strapline is one line, "Applied AI… Real ROI", since 9 Sep 2026 (it
-     was "Applied AI." over "Real ROI." and the full stops read as misplaced).
-     Each half is a span that will not break inside itself, so where the line
-     must wrap on a phone it wraps at the ellipsis, never inside a phrase. */
+  /* The strapline is one sentence on one line, "Applied AI, real ROI.", since
+     9 Sep 2026 (it was "Applied AI." over "Real ROI." and the full stops read
+     as misplaced; an ellipsis version lasted an hour). Each half is a span
+     that will not break inside itself, so where the line must wrap on a phone
+     it wraps at the comma, never inside a phrase. */
   .hero h1 span { white-space: nowrap; }
 
   /* ---------- Bottom row ---------- */
@@ -1113,7 +1121,7 @@
      boxes to sit darker, like Meet the Team. One value in two places on
      purpose - the two surfaces are meant to read as the same material. */
   .service-card.accent {
-    background: linear-gradient(135deg, #1b4fd6 0%, #0a1f6e 52%, #050b28 100%);
+    background: var(--brand-fill);
   }
 
   .service-num {
@@ -1773,7 +1781,7 @@
     align-items: baseline;
     gap: 8px;
     padding: 7px 14px;
-    background: var(--blue);
+    background: var(--brand-fill);
     border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 999px;
   }
@@ -2036,8 +2044,8 @@
      on that blue is 4.56:1, so the label stays full white rather than an
      alpha step that would drop under AA. */
   .reader-page-btn[aria-current="page"] {
-    background: var(--blue);
-    border-color: var(--blue);
+    background: var(--brand-fill);
+    border-color: transparent;
     color: #ffffff;
   }
 
@@ -2067,7 +2075,7 @@
      around the row drop out the same way they do on hover. */
   .reader-list .case-index-item.is-active,
   .reader-list .case-index-item.is-active:hover {
-    background: var(--blue);
+    background: var(--brand-fill);
     --ink-rgb: 255, 255, 255;
     --text: #ffffff;
   }
@@ -2296,7 +2304,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: var(--blue);
+    background: var(--brand-fill);
     border: none;
     color: #fff;
     display: flex;
@@ -2353,7 +2361,7 @@
 
   .team-slice.active {
     flex-grow: 1;
-    background: var(--blue);
+    background: var(--brand-fill);
   }
 
   /* Real headshots (chroma-keyed cutouts, see the Team section comment in
@@ -2482,7 +2490,7 @@
     place-items: center;
     border-radius: 50%;
     color: #ffffff;
-    background: var(--blue);
+    background: var(--brand-fill);
     opacity: 0;
     transition: opacity 0.3s ease 0.15s, background 0.2s ease;
   }
@@ -2502,7 +2510,7 @@
      a flat var(--blue) with no hover shift), so this is a one-off literal:
      var(--blue) at 88% brightness. Raises white-on-blue from 4.56:1 to
      5.61:1, so the hover state is never the weaker of the two. */
-  .team-slice.active:hover .team-slice-more { background: #1a61d8; }
+  .team-slice.active:hover .team-slice-more { filter: brightness(1.18); }
 
   .team-slice-name {
     display: block;
@@ -2544,7 +2552,7 @@
      which are an index; the open card is the person. */
   @media (min-width: 761px) {
     .team-slice.active {
-      background: linear-gradient(135deg, #1b4fd6 0%, #0a1f6e 52%, #050b28 100%);
+      background: var(--brand-fill);
     }
 
     /* The photo sits in a framed tile, not a raw column. Painted straight
@@ -2744,7 +2752,7 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: var(--blue);
+    background: var(--brand-fill);
     color: #fff;
     border: none;
     border-radius: 999px;
@@ -3081,7 +3089,7 @@
   }
 
   .modal-step.active .step-num { background: var(--text); border-color: var(--text); color: var(--surface-2); }
-  .modal-step.done .step-num { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .modal-step.done .step-num { background: var(--brand-fill); border-color: transparent; color: #fff; }
 
   .modal-step .step-label {
     font-size: 13px;
@@ -3205,7 +3213,7 @@
   .modal-next,
   .modal-submit {
     flex: 1;
-    background: var(--blue);
+    background: var(--brand-fill);
     color: #fff;
     border: none;
     border-radius: 999px;
@@ -3258,7 +3266,7 @@
 
   .modal-done {
     margin-top: 24px;
-    background: var(--blue);
+    background: var(--brand-fill);
     color: #fff;
     border: none;
     border-radius: 999px;
