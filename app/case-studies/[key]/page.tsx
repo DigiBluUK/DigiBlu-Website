@@ -7,6 +7,7 @@ import PageHeader from "@/components/PageHeader";
 import BackLink from "@/components/BackLink";
 import Markdown from "@/components/Markdown";
 import Footer from "@/components/Footer";
+import PageBehaviours from "@/components/PageBehaviours";
 
 // One static page per case study, from content/case-studies/*.md; the
 // markup is generate-static-pages.js's renderCaseStudy, converted.
@@ -90,6 +91,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ key:
         </div>
       </main>
       <Footer standalone />
+      <PageBehaviours />
     </>
   );
 }

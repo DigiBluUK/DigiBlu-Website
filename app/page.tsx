@@ -14,6 +14,7 @@ import CaseReaderDialog from "@/components/dialogs/CaseReaderDialog";
 import BadgeDialog from "@/components/dialogs/BadgeDialog";
 import TeamDialog from "@/components/dialogs/TeamDialog";
 import LegalDialog from "@/components/dialogs/LegalDialog";
+import HomeBehaviours from "@/components/HomeBehaviours";
 
 // The home page in the old site's order: hero, accreditations, services,
 // case studies, clients, about, team; then the footer, the scroll-to-top
@@ -39,6 +40,7 @@ export default function Home() {
       <BadgeDialog />
       <TeamDialog />
       <LegalDialog />
+      <HomeBehaviours />
     </>
   );
 }

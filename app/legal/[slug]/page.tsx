@@ -7,6 +7,7 @@ import PageHeader from "@/components/PageHeader";
 import BackLink from "@/components/BackLink";
 import Markdown from "@/components/Markdown";
 import Footer from "@/components/Footer";
+import PageBehaviours from "@/components/PageBehaviours";
 
 // One static page per legal document, from content/legal/*.md. The slugs
 // are DigiBlu's own (privacy-policy, not the terse internal keys).
@@ -57,6 +58,7 @@ export default async function LegalPage({ params }: { params: Promise<{ slug: st
         </div>
       </main>
       <Footer standalone />
+      <PageBehaviours />
     </>
   );
 }
