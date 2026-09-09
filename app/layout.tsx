@@ -1,16 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
+import { SITE_URL as SITE, SITE_TITLE as TITLE, SITE_DESCRIPTION as DESCRIPTION, SITE_SOCIAL as SOCIAL } from "@/lib/site";
 
-// The old <head> of index.html, expressed the Next way. The canonical/OG host
-// is the GitHub Pages one the old head carried; it moves to digiblu.com at
-// cut-over (Priority 5), in one place.
-const SITE = "https://digibluuk.github.io/DigiBlu-Website/";
-const TITLE = "DigiBlu | AI and Digital Transformation Consultancy";
-const DESCRIPTION =
-  "DigiBlu pairs experienced consulting practitioners with deep technical expertise, delivering AI, automation and digital transformation that gets to value fast.";
-const SOCIAL =
-  "Experienced practitioners with client, technology and consultancy backgrounds. Pragmatic, technology-agnostic partners focused on speed to value.";
+// The old <head> of index.html, expressed the Next way. The host and the
+// site-wide strings live in lib/site.ts, shared with the routes, the sitemap
+// and robots; the host moves to digiblu.com at cut-over in that one place.
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
