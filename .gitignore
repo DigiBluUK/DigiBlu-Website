@@ -15,3 +15,10 @@ npm-debug.log*
 # Local scratch/output some tools may create
 *.tmp
 *.log
+
+# Next.js / OpenNext
+.next/
+.open-next/
+out/
+next-env.d.ts
+.wrangler/
