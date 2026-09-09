@@ -2485,14 +2485,22 @@
     box-shadow: 0 0 0 1px rgba(var(--ink-rgb), 0.16);
   }
 
-  .tp-vic    { background-image: url('team/vic-gysin.png'); }
-  .tp-david  { background-image: url('team/david-williams.png'); }
-  .tp-karen  { background-image: url('team/karen-potgieter.png'); }
-  .tp-jon    { background-image: url('team/jon-hinder.png'); }
-  .tp-martin { background-image: url('team/martin-mccloskey.png'); }
-  .tp-dianne { background-image: url('team/dianne-harris.png'); }
-  .tp-dave   { background-image: url('team/dave-vanderwesthuizen.png'); }
-  .tp-nick   { background-image: url('team/nick-bantick.png'); }
+  .tp-vic    { background-image: url('team/vic-gysin.png');
+    background-image: image-set(url('team/vic-gysin.webp') type('image/webp'), url('team/vic-gysin.png') type('image/png')); }
+  .tp-david  { background-image: url('team/david-williams.png');
+    background-image: image-set(url('team/david-williams.webp') type('image/webp'), url('team/david-williams.png') type('image/png')); }
+  .tp-karen  { background-image: url('team/karen-potgieter.png');
+    background-image: image-set(url('team/karen-potgieter.webp') type('image/webp'), url('team/karen-potgieter.png') type('image/png')); }
+  .tp-jon    { background-image: url('team/jon-hinder.png');
+    background-image: image-set(url('team/jon-hinder.webp') type('image/webp'), url('team/jon-hinder.png') type('image/png')); }
+  .tp-martin { background-image: url('team/martin-mccloskey.png');
+    background-image: image-set(url('team/martin-mccloskey.webp') type('image/webp'), url('team/martin-mccloskey.png') type('image/png')); }
+  .tp-dianne { background-image: url('team/dianne-harris.png');
+    background-image: image-set(url('team/dianne-harris.webp') type('image/webp'), url('team/dianne-harris.png') type('image/png')); }
+  .tp-dave   { background-image: url('team/dave-vanderwesthuizen.png');
+    background-image: image-set(url('team/dave-vanderwesthuizen.webp') type('image/webp'), url('team/dave-vanderwesthuizen.png') type('image/png')); }
+  .tp-nick   { background-image: url('team/nick-bantick.png');
+    background-image: image-set(url('team/nick-bantick.webp') type('image/webp'), url('team/nick-bantick.png') type('image/png')); }
 
   /* Scrim so the name/role stay legible over whatever tone the photo behind
      them happens to be. Sits between the photo and the label in paint order

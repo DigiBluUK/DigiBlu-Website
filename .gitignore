@@ -25,3 +25,8 @@ next-env.d.ts
 
 # generated from content/**/*.md at build time (npm run content)
 content/.generated/
+
+# Environment files with real values (the example is committed)
+.env
+.env.local
+.env.*.local
