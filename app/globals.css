@@ -1,0 +1,3693 @@
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 100 1000; font-display: swap; src: url('/assets/dmsans.woff2') format('woff2'); }
+
+  :root {
+    /* Tells the browser which way round its own native UI should render:
+       scrollbars, form controls, spellcheck underlines. Without it the UA
+       assumes light and paints a pale grey scrollbar over the dark page.
+       Kept in step with the palette in all three theme states below. */
+    color-scheme: dark;
+    /* `--ink-rgb` drives every translucent text/border colour on the page, so
+       flipping it inverts the whole palette without touching each rule. */
+    --ink-rgb: 255, 255, 255;
+    --bg: #000000;
+    --surface: #050505;
+    --surface-2: #060606;
+    --field-bg: #0d0d0d;
+    --text: #ffffff;
+    --blue: #1d6ef5;
+    /* The primary fill since 9 Sep 2026: the blue-to-navy-to-near-black
+       sweep the service cards and the open team card carry, asked to be the
+       one brand surface site-wide ("so brand colour is in sync"). Every
+       button, pill, selected row and disc that was flat --blue uses this;
+       --blue itself stays for text, links, tints and focus rings, which a
+       gradient cannot be. Same value in both themes on purpose. */
+    --brand-fill: linear-gradient(135deg, #1b4fd6 0%, #0a1f6e 52%, #050b28 100%);
+    /* The same sweep for ACCENTS - text, hairlines, the About mark - which sit
+       on the page rather than under white ink. In light theme it IS the fill
+       (dark blue on white reads at 6.7:1 and up). In dark theme the fill's
+       navy end is 1.4:1 on black and its brand-blue start only 3.1:1, so the
+       accent sweep runs the same family from the bright end instead: 6.6,
+       5.4 and 4.56:1 on black, every stop clear of AA for the 12px label.
+       Three colour tokens rather than one gradient so the SVG mark's
+       gradient stops can read them too. */
+    --brand-ink-1: #6aa4ff;
+    --brand-ink-2: #2f7bff;
+    --brand-ink-3: #1d6ef5;
+    --brand-ink: linear-gradient(135deg, var(--brand-ink-1) 0%, var(--brand-ink-2) 55%, var(--brand-ink-3) 100%);
+    --hairline: rgba(var(--ink-rgb), 0.28);
+    --gutter: 24px;
+    --maxw: 1500px;
+    /* One vertical rhythm for every content section. Sections set symmetric
+       block padding from this, so reordering them can never leave a gap
+       depending on a neighbour's padding. */
+    --section-y: 72px;
+    --head-gap: 48px;
+    /* Real height of the fixed nav bar, measured and kept in sync by a small
+       script (see the .site-nav IIFE) rather than hand-guessed, since .hero's
+       padding-top and html's scroll-padding-top both need to match it
+       exactly or content ends up either hidden under the nav or gapped too
+       far below it. 76px is the layout-thrash-free initial value before JS
+       runs (matches the nav's own padding + control height). */
+    --nav-h: 76px;
+    /* Escape hatch for elements that sit inside a surface which pins its own
+       ink (.hero, .cases) but are visually part of the page rather than that
+       surface. Never overridden below the root, so `var(--page-ink-rgb)`
+       always resolves to the current theme's page palette. */
+    --page-ink-rgb: 255, 255, 255;
+    --page-text: #ffffff;
+    /* Tint behind the scrolled nav's frosted glass — dark in dark theme,
+       white in light, so the blur reads as glass over the page rather than
+       a grey wash. */
+    --glass-rgb: 10, 12, 18;
+    /* Alpha steps for de-emphasised text. The dark values are the originals,
+       kept exactly so the dark theme is unchanged; the light overrides raise
+       them because the same alpha on white measured only 2.6-4.3:1. Anything
+       already at 0.6+ clears 4.5:1 in both themes and is left alone. */
+    --ink-a-faint: 0.40;
+    --ink-a-low: 0.45;
+    --ink-a-mid: 0.50;
+    --ink-a-high: 0.55;
+    /* Already hand-tuned in an earlier pass to clear 4.5:1 against black;
+       kept at that value for dark and only lifted for light. */
+    --ink-a-aa: 0.58;
+  }
+
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --ink-rgb: 13, 17, 23;
+    --bg: #ffffff;
+    --surface: #f6f7f9;
+    --brand-ink-1: #1b4fd6;
+    --brand-ink-2: #0a1f6e;
+    --brand-ink-3: #050b28;
+    --surface-2: #ffffff;
+    --field-bg: #f1f3f6;
+    --text: #0d1117;
+    --page-ink-rgb: 13, 17, 23;
+    --page-text: #0d1117;
+    --glass-rgb: 255, 255, 255;
+    --ink-a-faint: 0.60;
+    --ink-a-low: 0.62;
+    --ink-a-mid: 0.64;
+    --ink-a-high: 0.66;
+    --ink-a-aa: 0.66;
+  }
+
+  /* Follow the OS preference until an explicit choice is stamped on the root,
+     so the theme works with JS disabled and honours an external toggle. */
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      color-scheme: light;
+      --ink-rgb: 13, 17, 23;
+      --bg: #ffffff;
+      --surface: #f6f7f9;
+      --brand-ink-1: #1b4fd6;
+      --brand-ink-2: #0a1f6e;
+      --brand-ink-3: #050b28;
+      --surface-2: #ffffff;
+      --field-bg: #f1f3f6;
+      --text: #0d1117;
+      --page-ink-rgb: 13, 17, 23;
+      --page-text: #0d1117;
+      --glass-rgb: 255, 255, 255;
+      --a-muted: 0.75;
+      --a-soft: 0.66;
+      --a-faint: 0.60;
+    }
+  }
+
+  /* Surfaces that stay dark or blue in both themes keep light ink, so their
+     text never inverts to dark-on-blue. */
+  .hero,
+  .service-card.accent,
+  .btn-signup,
+  .faq-cta-btn,
+  .team-nav button,
+  .modal-next,
+  .modal-submit,
+  .modal-done,
+  .modal-step.done .step-num {
+    --ink-rgb: 255, 255, 255;
+    --text: #ffffff;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 12px;
+    z-index: 200;
+    background: var(--brand-fill);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .skip-link:focus { left: var(--gutter); }
+
+  /* Reuses the site's standard round-button treatment (same size/shadow-free
+     brand blue as the nav toggles), just floated and gated on scroll. */
+  .scroll-top-btn {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--brand-fill);
+    color: #fff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 90;
+  }
+
+  .scroll-top-btn.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .scroll-top-btn svg { width: 18px; height: 18px; }
+
+  @media (max-width: 620px) {
+    .scroll-top-btn { right: 16px; bottom: 16px; width: 42px; height: 42px; }
+  }
+
+  /* Every interactive control needs a visible keyboard ring. --text is used
+     rather than the accent so the ring stays legible on blue buttons too. */
+  .team-slice:focus-visible,
+  .team-nav-btns button:focus-visible,
+  .theme-toggle:focus-visible,
+  .nav-toggle:focus-visible,
+  .btn-signup:focus-visible,
+  .btn-started:focus-visible,
+  .faq-cta-btn:focus-visible,
+  .service-learn-more:focus-visible,
+  .case-read-more:focus-visible,
+  .case-viewall-btn:focus-visible,
+  .case-index-item:focus-visible,
+  .case-back-btn:focus-visible,
+  .reader-page-btn:focus-visible,
+  .accred-chip:focus-visible,
+  .modal-close:focus-visible,
+  .modal-next:focus-visible,
+  .modal-back:focus-visible,
+  .modal-submit:focus-visible,
+  .modal-done:focus-visible,
+  .nav-center a:focus-visible,
+  .mobile-menu a:focus-visible,
+  .footer-col a:focus-visible,
+  .footer-col button:focus-visible,
+  .footer-socials a:focus-visible,
+  .scroll-top-btn:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .team-slice { transition: none; }
+    .team-slice-label { transition: none; }
+    .modal-overlay,
+    .modal-panel { transition: none; }
+    .scroll-top-btn { transition: none; }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* In-page nav anchors glide rather than jump, and land clear of the fixed
+     nav bar (see .site-nav) rather than under it. Suppressed under
+     reduced-motion. */
+  html {
+    scroll-behavior: smooth;
+    /* Anchored jumps land the section's first visible element just under the
+       nav, not the section's top edge. --nav-h is the bar's own height and
+       the +26px covers the 12px top margin the glass panel gains once
+       scrolled, plus breathing room.
+
+       --section-y is SUBTRACTED, and the sign is the whole point.
+       scroll-padding-top is how far from the top of the viewport the target
+       is placed, so a larger value lands it LOWER. Adding the section's own
+       top padding pushed the heading further down - the opposite of the fix.
+       Subtracting it scrolls that empty padding up behind the bar, leaving
+       the heading just below the nav.
+
+       Both terms are variables on purpose: --section-y drops to 56px at
+       900px and --nav-h is measured from the live nav by script, so one rule
+       stays right at every width.
+
+       Anchored jumps only - ordinary scrolling is untouched. */
+    scroll-padding-top: calc(var(--nav-h) + 26px - var(--section-y));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hero {
+    position: relative;
+    /* `vh` on mobile browsers measures the viewport with the URL bar
+       retracted, so the CTA row gets pushed below the fold and the layout
+       jumps as the bar shows/hides. `svh` (small viewport) is stable; the
+       plain `vh` line stays first as the fallback for older engines. */
+    min-height: 100vh;
+    min-height: 100svh;
+    /* The artwork covers the whole section and the nav floats over it, as it
+       always did - but the strip behind the nav is calmed (8 Sep 2026). The
+       bright ridge in hero.jpg crested exactly where the nav links sit and
+       read as the picture touching the menu (reported). A first attempt
+       started the art below the nav on a solid band; that read as the nav
+       having a black background, so the art is back to full cover and a
+       vertical fade on ::before subdues the ridge under the nav instead,
+       easing out over 180px below it. --hero-art-top is the foot of that
+       strip: --nav-h is measured from the live nav, so it is right on every
+       device. The base colour stays black rather than var(--bg) because
+       .logo/.theme-toggle/.nav-toggle hardcode white for the over-photo
+       state and the art edges are near-black anyway. */
+    --hero-art-top: calc(var(--nav-h) + 12px);
+    background: #000;
+    /* NO isolation / z-index here. .site-nav is a fixed-position CHILD of
+       .hero; a stacking context on .hero traps it, and every positioned block
+       further down the page (the service cards, for one) then paints over
+       the nav as soon as the hero has scrolled away - "the navigation
+       disappears on Services" (reported 8 Sep 2026, introduced the same day
+       with isolation: isolate for the art layer). The art layer sits at
+       z-index 0 and the hero's own content is lifted above it instead. */
+    display: flex;
+    flex-direction: column;
+    /* Nav used to sit in-flow at the top of this column; now that .site-nav
+       is fixed and out of flow (see below), this keeps the headline centred
+       in the same visual space rather than drifting up to fill the gap. */
+    padding-top: var(--nav-h);
+  }
+
+  /* hero.svg, not hero.jpg, since 8 Sep 2026: a vector rebuild of the same
+     artwork, traced from the JPEG's own pixels (see scratchpad hero-trace
+     notes in CLAUDE.md). The JPEG was 1672x941 at 0.055 bytes/pixel - it
+     upscaled 1.5x on an ordinary laptop and 3x on a 2560-wide screen at DPR 2,
+     and its 8x8 blocks and gradient banding showed (reported as blurred and
+     pixelated). The SVG is sharp at any size and a fraction of the bytes.
+     Same 1672x941 coordinate space, so the .hero-spark paths traced from the
+     JPEG still ride the rims. hero.jpg stays in the repo only as the raster
+     source the share cards were built from. */
+  .hero::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    /* 0, not -1: without a stacking context on .hero (see above) a negative
+       z-index would drop behind the hero's own black background. */
+    z-index: 0;
+    /* Two scrims over the art: a vertical one that calms the strip behind the
+       nav (see above), and the original left-to-right one that keeps the
+       centred headline legible where the artwork brightens toward the lower
+       right. */
+    background:
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.72) 0, rgba(0, 0, 0, 0.5) var(--hero-art-top), rgba(0, 0, 0, 0) calc(var(--hero-art-top) + 180px)),
+      linear-gradient(to right, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.55) 42%, rgba(0, 0, 0, 0.3) 100%),
+      url('/assets/hero.svg') center / cover no-repeat;
+  }
+
+  /* Traces one of the bright diagonal bands baked into hero.jpg (traced by
+     sampling the actual highlight pixels, not eyeballed) so a small light
+     appears to travel along the artwork's own line. viewBox + `xMidYMid
+     slice` deliberately mirrors the background's `center / cover` so the
+     path stays pixel-aligned with the art at every viewport size, including
+     the heavy crops on narrow/tall phone viewports. Pure SMIL motion (no JS
+     animation loop, no filter blur — glow comes from the radial gradient,
+     not a per-frame filter) keeps this compositor-cheap. */
+  .hero-spark {
+    position: absolute;
+    /* Same box as .hero::before (the whole section), so the slice maths line
+       the paths up with the art. Keep the height explicit: an <svg> with
+       width 100% and height auto sizes itself to its viewBox ratio instead of
+       its inset box, which once left the paths 256px short and misaligned -
+       assert this box equals ::before's whenever either changes. */
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    /* The lights fade out as they climb into the strip behind the nav, for
+       the same reason the art is calmed there - a bright dot arriving under
+       "Our Experts" was the visible half of the original report. A mask, not
+       a clip, so the light dims over 120px rather than vanishing at a line. */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent var(--hero-art-top), #000 calc(var(--hero-art-top) + 120px));
+    mask-image: linear-gradient(to bottom, transparent 0, transparent var(--hero-art-top), #000 calc(var(--hero-art-top) + 120px));
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-spark { display: none; }
+  }
+
+  /* ---------- Nav ----------
+     .site-nav is the full-width fixed bar (position + background/shadow);
+     nav itself stays the max-width-centred content row it always was, so
+     none of its children needed to change. Transparent at rest so it reads
+     as part of the hero photo on load; solidifies once .scrolled is added
+     by the script below, both because a transparent bar over arbitrary page
+     content further down would be illegible and to give a visual cue that
+     it has detached from the hero. */
+  .site-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    /* Below .modal-overlay's z-index: 100, so an open dialog always paints
+       above the fixed nav rather than tying with it. */
+    z-index: 80;
+    background: transparent;
+  }
+
+  /* .site-nav is still a DOM descendant of .hero, which pins white ink for
+     every element inside it (see the "surfaces that stay dark or blue" rule
+     near the top of this file) regardless of scroll position — a plain
+     var(--text) reference here would still resolve to hero's pinned white,
+     not the page's actual theme colour. --page-ink-rgb/--page-text are the
+     escape hatch for exactly this (already used by .mobile-menu for the
+     same reason): once detached from the hero this bar is visually part of
+     the page, not the hero photo, so it needs to opt back out. */
+  .site-nav.scrolled {
+    --ink-rgb: var(--page-ink-rgb);
+    --text: var(--page-text);
+  }
+
+  /* Frosted glass rather than a full-bleed opaque bar: the panel is inset
+     from the viewport edges and rounded, so it reads as floating over the
+     page with content visibly moving beneath it. The glass is on `nav` (the
+     max-width content row) rather than on .site-nav (the full-width fixed
+     positioner), which is what keeps it wrapping the nav options instead of
+     painting edge to edge. */
+  .site-nav.scrolled nav {
+    width: calc(100% - (var(--gutter) * 2));
+    margin-top: 12px;
+    border-radius: 16px;
+    /* 0.68 rather than a thinner wash: the panel floats over arbitrary page
+       content, so its text contrast cannot be computed statically the way a
+       flat surface's can. This keeps nav labels legible over even a dark
+       image scrolling beneath, while the blur + saturate still read clearly
+       as glass. */
+    background: rgba(var(--glass-rgb), 0.68);
+    /* 12px, no saturate. It was blur(18px) saturate(160%): backdrop-filter
+       cost scales with area x radius^2 and runs across the whole nav during
+       ALL scrolling, which made it the single heaviest effect on the page for
+       a weak GPU at high DPI (a Surface Pro X stuttered). Near-identical to
+       look at, roughly half the cost. */
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(var(--page-ink-rgb), 0.12);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Without backdrop-filter the panel would be a flat translucent wash over
+     live text, so fall back to a near-opaque surface instead. */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .site-nav.scrolled nav { background: rgba(var(--glass-rgb), 0.96); }
+  }
+
+  nav {
+    transition: background 0.25s ease, border-color 0.25s ease,
+                box-shadow 0.25s ease, margin-top 0.25s ease, width 0.25s ease;
+    border: 1px solid transparent;
+  }
+
+  /* .logo / .theme-toggle / .nav-toggle hardcode white (not --ink-rgb) for
+     the transparent, over-the-hero-photo state, so redefining --text above
+     doesn't reach them on its own — same asymmetry, different fix. */
+  .site-nav.scrolled .logo,
+  .site-nav.scrolled .theme-toggle,
+  .site-nav.scrolled .nav-toggle {
+    color: var(--text);
+  }
+
+  nav {
+    width: 100%;
+    max-width: var(--maxw);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px var(--gutter);
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    color: #fff;
+  }
+
+  /* Real DigiBlu logo (digiblu.com header mark), painted as a single-ink
+     mask so it reads correctly white-on-hero here and follows --text via
+     .page-header .logo on the standalone pages, same mechanism as the
+     client-logo/accred-badge masks rather than a two-tone image.
+
+     The mask is built from a *repaired* copy of DigiBlu's master file: that
+     master is clipped on its right edge, leaving the final "U" with a 3px
+     stem where every other stem in the wordmark is 4px, flush to the canvas
+     with no anti-aliased margin — at nav size it rendered as a visibly cut
+     "U". The "U" is symmetric about x=299.5, and the existing pixels already
+     mirror correctly (287<->312, 288<->311, 289<->310), so the missing
+     columns were restored by mirroring the glyph's own left edge rather than
+     redrawing anything. Width/height below track the repaired 313x76 mask's
+     4.118 aspect ratio — re-derive them if the mask is ever regenerated. */
+  .logo-mark {
+    display: block;
+    width: 124px;
+    height: 30px;
+    background-color: currentColor;
+    -webkit-mask-image: url('/assets/logo-mask.png');
+    mask-image: url('/assets/logo-mask.png');
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: left center;
+    mask-position: left center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  .nav-center {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    list-style: none;
+  }
+
+  .nav-center a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    /* Vertical padding lifts the hit area off the 19px text box without
+       affecting the nav's height, which is set by the taller controls. */
+    padding: 9px 0;
+    text-decoration: none;
+    color: rgba(var(--ink-rgb),0.92);
+    font-size: 15px;
+    font-weight: 400;
+  }
+
+  .nav-center svg { width: 11px; height: 11px; opacity: 0.85; }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-signup {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    border-radius: 7px;
+    padding: 7px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    background: var(--brand-fill);
+    color: #fff;
+    border: 1px solid transparent;
+  }
+
+  .theme-toggle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(var(--ink-rgb),0.06);
+    border: 1px solid var(--hairline);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle svg { width: 17px; height: 17px; }
+  /* The button shows the theme currently in effect. */
+  .theme-toggle .icon-sun { display: none; }
+  :root[data-theme="light"] .theme-toggle .icon-sun { display: block; }
+  :root[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .theme-toggle .icon-sun { display: block; }
+    :root:not([data-theme="dark"]) .theme-toggle .icon-moon { display: none; }
+  }
+
+  /* Hidden on desktop; revealed at the breakpoint where .nav-center drops out. */
+  .nav-toggle {
+    display: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background: rgba(var(--ink-rgb),0.06);
+    border: 1px solid var(--hairline);
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .nav-toggle svg { width: 18px; height: 18px; }
+  .nav-toggle .icon-close { display: none; }
+  .nav-toggle[aria-expanded="true"] .icon-open { display: none; }
+  .nav-toggle[aria-expanded="true"] .icon-close { display: block; }
+
+  /* The menu is a floating page-level panel that happens to be nested in the
+     hero, so it must use the page palette, not the hero's. Without this it
+     inherits the hero's pinned-white --ink-rgb while taking its background
+     from the theme-aware --surface-2, which renders white-on-white (contrast
+     1.0, menu completely unreadable) in light mode at <=900px. */
+  .mobile-menu {
+    --ink-rgb: var(--page-ink-rgb);
+    --text: var(--page-text);
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: var(--gutter);
+    right: var(--gutter);
+    background: var(--surface-2);
+    border: 1px solid rgba(var(--ink-rgb),0.14);
+    border-radius: 14px;
+    padding: 10px;
+    z-index: 50;
+  }
+
+  .mobile-menu.open { display: block; }
+
+  .mobile-menu ul { list-style: none; }
+
+  .mobile-menu a {
+    display: block;
+    padding: 13px 14px;
+    border-radius: 9px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(var(--ink-rgb),0.92);
+  }
+
+  .mobile-menu a:hover { background: rgba(var(--ink-rgb),0.06); }
+
+  /* Only rendered below 900px (see the breakpoint block) — holds the theme
+     toggle, which is the one control that moves out of the bar at that
+     width. The CTA stays in the bar at every size. */
+  .mobile-menu-actions {
+    display: none;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(var(--ink-rgb),0.12);
+  }
+
+  /* Overrides the 38px circle from .theme-toggle: alone in a menu of text
+     rows, a bare icon button reads as cryptic, so this becomes a labelled
+     full-width row matching the nav links above it. */
+  .mobile-menu-actions .theme-toggle {
+    width: 100%;
+    height: auto;
+    justify-content: flex-start;
+    gap: 10px;
+    border: none;
+    border-radius: 9px;
+    background: none;
+    padding: 13px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(var(--ink-rgb),0.92);
+  }
+
+  .mobile-menu-actions .theme-toggle:hover { background: rgba(var(--ink-rgb),0.06); }
+
+  /* ---------- Center content ---------- */
+  .hero-center {
+    /* Above the art layer and the spark, both positioned at z-index 0. */
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px var(--gutter) 40px;
+  }
+
+  /* Full icon+wordmark lockup above the headline, at every width. It was
+     mobile-only at first (the nav shows the same lockup on desktop), then
+     brought back everywhere on request.
+
+     A separate class from .logo-mark on purpose: that one is cropped to
+     icon-only below 900px for the nav bar, which would fight the full
+     lockup wanted here.
+
+     Sized on the mask's exact 4.1184 aspect. The mask has zero transparent
+     padding (verified by decoding its alpha), so this box IS the visible
+     mark: any aspect drift letterboxes it inside the box via
+     mask-size: contain, and the margin below is real optical whitespace
+     rather than a value padded out by invisible pixels. 36 x 4.1184 = 148.3. */
+  .hero-logo {
+    display: block;
+    width: 148.3px;
+    height: 36px;
+    margin: 0 auto 22px;
+    background-color: var(--text);
+    -webkit-mask-image: url('/assets/logo-mask.png');
+    mask-image: url('/assets/logo-mask.png');
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  h1 {
+    font-size: clamp(42px, 7.2vw, 92px);
+    line-height: 1.06;
+    font-weight: 300;
+    letter-spacing: -1px;
+    color: var(--text);
+  }
+
+  /* The strapline is one sentence on one line, "Applied AI, real ROI", since
+     9 Sep 2026 (it was "Applied AI." over "Real ROI." and the full stops read
+     as misplaced; an ellipsis version lasted an hour, and the closing full
+     stop went on 9 Sep with every other heading's). Each half is a span
+     that will not break inside itself, so where the line must wrap on a phone
+     it wraps at the comma, never inside a phrase. */
+  .hero h1 span { white-space: nowrap; }
+
+  /* ---------- Bottom row ---------- */
+  .hero-bottom {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: var(--maxw);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    /* Centered as a group on desktop so it lines up under the centered
+       headline above it instead of hugging the container's left edge, which
+       read as misaligned. Mobile reverts to flex-start (stacked, left-
+       aligned) in the 620px breakpoint below. */
+    justify-content: center;
+    gap: 26px;
+    padding: 0 var(--gutter) 42px;
+  }
+
+  .btn-started {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 6px;
+    padding: 13px 22px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* Sized to the text's own cap height rather than the 15px font-size, so
+     the arrow reads as part of the word rather than looming over it. */
+  .btn-started svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+  .hero-bottom p {
+    font-size: 19px;
+    line-height: 1.35;
+    font-weight: 300;
+    color: rgba(var(--ink-rgb),0.95);
+    max-width: 34ch;
+  }
+
+  /* ---------- Accreditations ----------
+     Written list of the six real certifications, replacing the earlier badge
+     marquee on request — easier to read than an image strip, and each chip
+     still opens the same badge popup (BADGE_DETAILS in the script) with the
+     real artwork and a plain-language description. */
+  .accred {
+    background: var(--bg);
+    padding: 40px 0;
+    border-bottom: 1px solid rgba(var(--ink-rgb), 0.08);
+  }
+
+  .accred-inner {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    display: flex;
+    align-items: center;
+    gap: 44px;
+  }
+
+  /* Anchoring the row with a standing label keeps this reading as a stated
+     claim rather than a loose list of chips. */
+  .accred-label {
+    flex: 0 0 auto;
+    max-width: 96px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.45;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(var(--ink-rgb), var(--ink-a-mid));
+  }
+
+  /* Single-line auto-scroller rather than a wrapping row, matching the
+     Clients carousel so the two strips read as one system. One repetition
+     per group is enough to overflow the widest viewport this can occupy
+     (~1310px of track space at --maxw, against ~1620px of chips), so unlike
+     the old badge marquee no second repetition is needed to avoid a gap. */
+  .accred-viewport {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+  }
+
+  .accred-track {
+    display: flex;
+    width: max-content;
+    /* The track is two identical groups animating to -50%, so ONE group width
+       (all six certifications) passes in HALF the duration. 20s here = every
+       chip seen within 10s, per feedback; it was 44s (22s per set) before that,
+       and 64s originally. Hover still pauses, reduced-motion still stops it. */
+    animation: accred-scroll 20s linear infinite;
+  }
+
+  .accred-track:hover { animation-play-state: paused; }
+
+  @keyframes accred-scroll {
+    to { transform: translateX(-50%); }
+  }
+
+  .accred-group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    list-style: none;
+    gap: 12px;
+    padding-right: 12px;
+  }
+
+  .accred-chip {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 16px;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .accred-chip:hover { border-color: rgba(var(--ink-rgb),0.3); background: var(--surface-2); }
+
+  .accred-chip-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .accred-chip-desc {
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+    white-space: nowrap;
+  }
+
+  .accred-chip-desc::before { content: '•'; margin-right: 7px; opacity: 0.55; }
+
+  @media (max-width: 760px) {
+    .accred { padding: 32px 0; }
+    .accred-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .accred-label { max-width: none; }
+    /* The viewport is the flex child that must shrink, not the label. */
+    .accred-viewport { width: 100%; flex: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .accred-track { animation: none; }
+    .accred-group[aria-hidden="true"] { display: none; }
+    .accred-viewport { -webkit-mask-image: none; mask-image: none; }
+  }
+
+  /* ---------- Geometric figure ----------
+     A solid mass dissolving into rectangular fragments, generated rather than
+     drawn: a deterministic hash thresholded against a horizontal ramp, with
+     runs merged vertically and then horizontally. The horizontal merge is not
+     an optimisation - without it the solid left mass is ten abutting rects and
+     the browser leaves faint vertical seams where their edges land on
+     sub-pixel boundaries.
+
+     Fill is currentColor, so one file serves both themes. Purely decorative,
+     hence aria-hidden and no role. */
+  /* A flow field of short dashes animating in place.
+
+     Theme-aware, not a pinned black plate. It was fixed black with white
+     strokes at first, which left a black square sitting on the white page in
+     light theme; the strokes now follow --text and the plate follows --bg, so
+     the field is white on black in dark theme and black on white in light,
+     and the plate is invisible against the page either way. */
+  .geo-figure {
+    position: relative;
+    align-self: center;
+    justify-self: start;
+    /* 300px, down from 350: close to the height of the two paragraphs beside
+       it at the widths where they sit side by side, so the pair reads as one
+       row rather than a short block next to a tall one. */
+    width: clamp(210px, 20vw, 300px);
+    aspect-ratio: 1 / 1;
+    background: var(--bg);
+    border-radius: 16px;
+    overflow: hidden;
+    color: var(--text);
+    /* Its own compositor layer, and paint contained (9 Sep 2026): the pulse
+       is a software repaint of 978 circles every frame - Chromium does not
+       composite transforms on SVG children - and without these it dirtied
+       the layer the whole section shares. A Surface Pro X showed a glitch a
+       desktop did not; this is the cheap half of the answer, the probe in
+       the geo IIFE (.is-lowend) is the other. */
+    will-change: transform;
+    contain: paint;
+  }
+
+  /* A device that cannot hold the pulse at ~38fps gets the figure still:
+     no breath, no cursor response, the mark still lighting on scroll. Set
+     once by the frame-time probe in the geo IIFE. */
+  .geo-figure.is-lowend .geo-flow circle { animation: none; transition: none; }
+  .geo-figure.is-lowend .geo-flow .mk-lit { transition: none; }
+
+  .geo-flow {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Each dash is already drawn at its own angle, so the animation only has to
+     add a sway - it never composes with a base rotation, which SVG makes
+     awkward. transform-box: fill-box puts the origin at each dash's own
+     centre, so they pivot in place rather than swinging about the viewBox. */
+  /* Two transform channels on purpose. The idle sway animates the `rotate`
+     property; the pointer response writes the `transform` property. They
+     compose (translate/rotate/scale are applied before transform), so the two
+     add rather than fight - and an inline transform cannot be clobbered by the
+     running animation, which would happen if both used the same property.
+
+     The transition is what makes the pointer response smooth: each move
+     restarts it, so the dashes ease toward their new angle and ease back when
+     the cursor leaves rather than snapping. */
+  .geo-flow circle {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: geo-pulse 6s ease-in-out infinite;
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    fill-opacity: 0.34;
+  }
+
+  /* The pulse is paused while the page is scrolling and while the figure is
+     off-screen (both classes set by the geo IIFE). Chromium does not
+     composite transforms on individual SVG elements, so 900 circles animating
+     scale is a full software repaint of the figure on every frame - fine on a
+     desktop GPU, and exactly what made an ARM tablet stutter through the About
+     section, where that repaint sits inside a sticky composition that is also
+     moving. A 6s breath at 14% frozen for the duration of a scroll is not
+     something the eye catches; a repaint per frame during that scroll is. */
+  .geo-figure.is-scrolling .geo-flow circle,
+  .geo-figure.is-offscreen .geo-flow circle { animation-play-state: paused; }
+
+  /* fill transitions on hover only. Scrolling writes --mark-lit continuously
+     and supplies its own continuity; a transition there merely restarted 78
+     fill interpolations on every scroll tick, for a change no one could see. */
+  .geo-figure.is-hovering .geo-flow circle {
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .geo-figure.is-hovering .geo-flow .mk-lit { transition: opacity 0.3s ease; }
+
+  /* A breath, not a swing. The lattice is exact, so the motion has to stay
+     small enough that it never reads as the grid wobbling - the dots pulse in
+     place and the geometry holds. */
+  @keyframes geo-pulse {
+    0%, 100% { scale: 0.82; }
+    50%      { scale: 1.14; }
+  }
+
+  /* The letterform dots sit at full ink against the field's 0.34, which is
+     what makes the db read. They also pulse less: at the field's amplitude
+     the mark's edge would visibly crawl. */
+  .geo-flow circle.mk {
+    fill-opacity: 1;
+    animation-name: geo-pulse-mark;
+  }
+
+  @keyframes geo-pulse-mark {
+    0%, 100% { scale: 0.95; }
+    50%      { scale: 1.06; }
+  }
+
+  /* The mark phases into brand blue as the figure travels up the viewport,
+     rather than switching at a threshold: --mark-lit is a 0..1 value written
+     by the geo IIFE from the scroll position, so the colour tracks the gesture
+     - fully blue with the figure centred, easing back to ink as it leaves.
+     Hovering forces it to 1, and because the variable is set inline by script
+     that override is applied in the same place rather than as a CSS rule,
+     which an inline style would outrank.
+
+     Only fill changes - the mark keeps its size, so the lattice never shifts.
+     The .mk rule overrides the svg's own fill="currentColor" presentation
+     attribute, which CSS outranks.
+
+     color-mix is behind @supports so a browser without it still gets a legible
+     mark in full ink rather than no fill at all. */
+  .geo-flow circle.mk { fill: var(--text); }
+
+  /* The lit mark is a second copy of the 78 dots, in a group whose opacity is
+     --mark-lit, filled with the brand sweep from #geoBrand (9 Sep 2026 - the
+     mark was a colour-mix into flat --blue before, and a gradient cannot be
+     mixed, so it is layered instead). The stops read the theme's ink tokens.
+     Three classes on the circle rule, or .geo-flow circle.mk above outranks
+     it and the copies paint in ink. */
+  .gb1 { stop-color: var(--brand-ink-1); }
+  .gb2 { stop-color: var(--brand-ink-2); }
+  .gb3 { stop-color: var(--brand-ink-3); }
+  .geo-flow .mk-lit { opacity: var(--mark-lit, 0); }
+  .geo-flow .mk-lit circle.mk { fill: url(#geoBrand); }
+
+  /* Twelve delay buckets, assigned by position when the lattice is generated,
+     so the pulse crosses it as a wave instead of every dot breathing in
+     lockstep. Buckets rather than a per-dot inline delay: 900 inline styles
+     per figure is a lot of markup for the same result. */
+  .geo-flow .d0 { animation-delay: 0.0s; }
+  .geo-flow .d1 { animation-delay: -0.5s; }
+  .geo-flow .d2 { animation-delay: -1.0s; }
+  .geo-flow .d3 { animation-delay: -1.5s; }
+  .geo-flow .d4 { animation-delay: -2.0s; }
+  .geo-flow .d5 { animation-delay: -2.5s; }
+  .geo-flow .d6 { animation-delay: -3.0s; }
+  .geo-flow .d7 { animation-delay: -3.5s; }
+  .geo-flow .d8 { animation-delay: -4.0s; }
+  .geo-flow .d9 { animation-delay: -4.5s; }
+  .geo-flow .d10 { animation-delay: -5.0s; }
+  .geo-flow .d11 { animation-delay: -5.5s; }
+
+  /* A field of several hundred dashes moving continuously is precisely what
+     this preference is about. Reduced motion gets the field, still. */
+  @media (prefers-reduced-motion: reduce) {
+    .geo-flow circle { animation: none; transition: none; }
+  }
+
+  /* Below 900px the grid is one column, so the figure stacks under the
+     narrative rather than sitting beside it. It used to be hidden here
+     entirely; that was wrong - it is part of how the section reads, and its
+     absence made mobile look like a different design. Sized against the
+     viewport so it stays generous without crowding the values beneath.
+
+     The cursor response does not apply on touch (no hover to track) but the
+     idle sway still runs, so it is not a static image there. */
+  @media (max-width: 900px) {
+    .geo-figure {
+      width: min(68vw, 290px);
+      margin: 4px auto 8px;
+    }
+  }
+
+  /* ---------- Services ---------- */
+  .services {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    background: var(--bg);
+    padding: var(--section-y) var(--gutter);
+  }
+
+  /* One treatment for every section title, so they cannot drift apart. Only
+     the trailing margin varies, set on each section below. */
+  .about h2,
+  .services h2,
+  .cases h2,
+  .team-head h2,
+  .clients h2 {
+    font-size: clamp(34px, 4.6vw, 52px);
+    line-height: 1.12;
+    font-weight: 400;
+    letter-spacing: -0.7px;
+    color: var(--text);
+  }
+
+  .about h2,
+  .services h2 { margin-bottom: var(--head-gap); }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  /* Services' entrance. .reveal-ready is added by script, so nothing is hidden
+     unless something is guaranteed to reveal it again.
+
+     Only opacity and transform are animated - both compositor properties, so
+     six cards settling at once costs no layout work. The stagger is by
+     nth-child rather than per-element inline delays. */
+  .services.reveal-ready > .pill,
+  .services.reveal-ready > h2,
+  .services.reveal-ready .service-card {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .services.reveal-in > .pill,
+  .services.reveal-in > h2,
+  .services.reveal-in .service-card {
+    opacity: 1;
+    transform: none;
+  }
+
+  .services.reveal-ready > h2 { transition-delay: 0.08s; }
+  .services.reveal-ready .service-card:nth-child(1) { transition-delay: 0.16s; }
+  .services.reveal-ready .service-card:nth-child(2) { transition-delay: 0.22s; }
+  .services.reveal-ready .service-card:nth-child(3) { transition-delay: 0.28s; }
+  .services.reveal-ready .service-card:nth-child(4) { transition-delay: 0.34s; }
+  .services.reveal-ready .service-card:nth-child(5) { transition-delay: 0.40s; }
+  .services.reveal-ready .service-card:nth-child(6) { transition-delay: 0.46s; }
+
+  .service-card {
+    position: relative;
+    /* 18px until 8 Sep 2026: feedback was the corners read as too curved, but
+       a square card was not wanted either. 10px still reads as rounded. */
+    border-radius: 10px;
+    padding: 28px;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .service-learn-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 18px;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    width: fit-content;
+  }
+
+  .service-learn-more svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  .service-learn-more:hover svg { transform: translate(2px, -2px); }
+
+  /* These read as inline text links, so the visible box is only ~17px tall —
+     under the 24px WCAG 2.5.8 minimum. The overlay extends the tap target to
+     44px without changing layout or the visual weight of the link. */
+  .service-learn-more,
+  .case-read-more,
+  .case-back-btn { position: relative; }
+
+  .service-learn-more::after,
+  .case-read-more::after,
+  .case-back-btn::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 44px;
+  }
+
+  /* All six cards carry the accent gradient since 8 Sep 2026, on request
+     ("make it all boxes blue"); .plain, which alternated a --surface card with
+     it on 2, 4 and 6, is gone from the markup and from here. */
+  /* The team card's gradient (blue to navy to near-black), not the lighter
+     sky-to-navy sweep the cards launched with: asked on 9 Sep 2026 for the
+     boxes to sit darker, like Meet the Team. One value in two places on
+     purpose - the two surfaces are meant to read as the same material. */
+  .service-card.accent {
+    background: var(--brand-fill);
+  }
+
+  .service-num {
+    font-size: 40px;
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    color: rgba(var(--ink-rgb),0.95);
+    /* 46px read as two unrelated blocks rather than a numbered heading. The
+       card is a flex column with .service-learn-more pinned by margin-top:
+       auto, so tightening this only closes the number/title gap - the slack
+       moves above the Learn more link and the card keeps its 260px min. */
+    margin-bottom: 20px;
+  }
+
+  .service-card h3 {
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .service-card p {
+    font-size: 15px;
+    line-height: 1.55;
+    font-weight: 400;
+    color: rgba(var(--ink-rgb),0.82);
+  }
+
+  /* ---------- About + Values ---------- */
+  .about {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: var(--section-y) var(--gutter);
+  }
+
+  /* The section holds still while the values run 01 to 05, then releases and
+     the page carries on into Services. Sticky content plus a spacer that the
+     hold consumes - no scroll hijacking, no preventDefault, so a flick, a
+     scrollbar drag and a keyboard PageDown all behave normally and the user is
+     never actually trapped.
+
+     Gated on viewport HEIGHT as much as width: a sticky element taller than
+     the viewport pins its top and puts its own bottom permanently out of
+     reach. The composition measures ~734px, so below 860px of viewport the
+     pin is dropped entirely and the values simply advance as the section
+     passes, which is also what every width under 901px gets. */
+  .about-pin-space { display: none; }
+
+  /* The desktop sticky hold (.about-inner sticky, .about-pin-space 85vh)
+     was removed on 8 Sep 2026 along with the one-at-a-time values it existed
+     to run. Every value is open at once on desktop now, so there is nothing
+     for a hold to pace; the spacer stays in the markup at display: none and
+     the pin script reads its zero height as "not live". */
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: rgba(var(--ink-rgb),0.85);
+    margin-bottom: 18px;
+  }
+
+  /* The narrative sits left with the geometric figure beside it. The content
+     arrangement is unchanged - the values still sit beneath, not alongside -
+     the figure just occupies space the 820px measure was leaving empty. */
+  /* The text column is the measure itself and the figure column takes the
+     rest, with the figure at the START of it, beside the copy. It was
+     minmax(0, 1fr) + a 430px track with the figure centred in that track,
+     which at 1648px put it 122px from the text and 40px short of the right
+     edge - neither beside the copy nor on a line, and it was read as
+     floating (8 Sep 2026). The two columns are centred on each other, so
+     the figure sits level with the paragraphs rather than hanging below
+     them. */
+  .about-top {
+    display: grid;
+    grid-template-columns: minmax(0, 860px) minmax(0, 1fr);
+    gap: 64px;
+    align-items: center;
+    margin-bottom: 52px;
+  }
+
+  /* Without a cap the paragraphs would run the full 1500px content measure,
+     which is far past a comfortable line length. 860, down from 940 on
+     request: a touch narrower, and the figure comes in to meet it. */
+  .about-head { max-width: 860px; }
+
+  /* Two paragraphs since 8 Sep 2026 (the practitioners statement, then the
+     vision), a step down from the single 23-33px statement they replaced, on
+     request. Still well above body size: this is the section's voice, not
+     supporting copy. The word-by-word fill walks every .about-lede, so the
+     split cost it nothing. */
+  .about-lede {
+    font-size: clamp(20px, 2.05vw, 28px);
+    line-height: 1.34;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin-bottom: 18px;
+  }
+
+  .about-lede:last-of-type { margin-bottom: 0; }
+
+  /* Scroll read-through. The narrative starts stepped back and fills to full
+     ink word by word as the block travels up the viewport, so the colour
+     tracks roughly where the reader has got to.
+
+     The filled state is --text, not a literal white: white is only correct in
+     dark theme, and on the light background it would be invisible. The unread
+     state is a token too, so it rises in light theme where the same alpha over
+     white would drop under AA - it measures 5.3:1 dark and 5.9:1 light, so the
+     text is legible before it fills, not just after.
+
+     The muting only applies once the script has wrapped the words and added
+     .is-reading, so with JS off, or under prefers-reduced-motion, the copy
+     simply sits at full ink and nothing is lost but the effect. */
+  .about-head.is-reading .about-word { color: rgba(var(--ink-rgb), var(--ink-a-mid)); }
+  .about-head.is-reading .about-word.is-read { color: var(--text); }
+  /* 0.18s: the fill is now quick enough that a longer transition visibly
+     trailed the words it was meant to light. */
+  .about-word { transition: color 0.18s ease; }
+
+  /* Labels the accordion below as the values, which the numerals alone do
+     not - it is why the heading came back when the section was restacked. */
+  .about-values-title {
+    width: max-content;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    /* The brand sweep as text (9 Sep 2026, "the header, our values"): the
+       gradient is clipped to the glyphs and the colour made transparent so
+       it shows through. width: max-content so the sweep crosses the two
+       words instead of the whole line box, where the label would only ever
+       see the first colour. */
+    background: var(--brand-ink);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 26px;
+  }
+
+  /* ---------- Values ----------
+     One visual language at every width: a large numeral, muted until its value
+     is opened and full ink when it is, under a hairline rule. Only the axis
+     changes - a column on a phone, a row on desktop.
+
+     It used to differ. The small-screen case was a plain list with small blue
+     numerals and every value expanded, which read as a different component
+     rather than the same one laid out differently. The accordion behaviour is
+     in the JS and was never width-dependent, so bringing the styling down here
+     needed no script change. */
+  .value-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Top-aligned, not baseline. Baseline alignment put the 15px title's
+     baseline on the 34-46px numeral's baseline, which dropped the title's top
+     14px below the numeral's - reported as the text sitting lower than the
+     number on mobile while desktop (already flex-start) looked aligned. The
+     small top pad on .value-text is what lines the cap heights up; see there. */
+  .value-open {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+    padding: 16px 0 20px;
+    background: none;
+    border: none;
+    border-top: 1px solid rgba(var(--ink-rgb), 0.14);
+    font-family: 'DM Sans', sans-serif;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.25s ease;
+  }
+
+  /* --ink-a-faint, not a flatter grey: the numeral is the only visible label
+     on a real button, so it has to stay legible when collapsed - 3.7:1 dark
+     and 5.0:1 light, against the open one at 21:1. */
+  /* A fixed width, in em so it scales with the numeral. tabular-nums is
+     requested but DM Sans has no tnum feature, so it is ignored: at 64px
+     "01" measures 65px against "04" at 84px, and the titles beside them
+     started 19px apart down the column (reported as 01 and 04 not aligned).
+     1.32em clears the widest pair ("04", 1.31em); "00" would need 1.38. */
+  .value-num {
+    flex: 0 0 1.32em;
+    min-width: 1.32em;
+    font-size: clamp(34px, 9vw, 46px);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: rgba(var(--ink-rgb), var(--ink-a-faint));
+    transition: none;
+  }
+
+  .value-item.is-open .value-num { color: var(--text); }
+  .value-item.is-open .value-open { border-top-color: rgba(var(--ink-rgb), 0.55); }
+
+  .value-open:hover .value-num,
+  .value-open:focus-visible .value-num {
+    background: var(--brand-ink);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: color 0.25s ease;
+  }
+  .value-open:hover,
+  .value-open:focus-visible { border-image-source: var(--brand-ink); border-image-slice: 1; }
+
+  /* Small screens reveal cumulatively as the section scrolls: every value is
+     laid out from the start and fades in as its turn comes, so the section
+     ends with all five readable and nothing behind a tap.
+
+     Faded rather than collapsed, deliberately. Collapsing would grow the list
+     as each value appeared, and the list's own box is what the scroll position
+     is measured against - the reveal would then be moving its own trigger.
+     Holding the height constant keeps that loop closed. */
+  .value-text {
+    /* Lines the title's cap height up with the numeral's. Desktop uses 6px
+       against an 82px numeral; at 34-46px the numeral's cap sits far closer to
+       its box top, so the pad is near zero here. Measured, not eyeballed. */
+    padding-top: 1px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .value-item.is-revealed .value-text,
+  .value-item.is-open .value-text { opacity: 1; transform: none; }
+
+  .value-item.is-revealed .value-num { color: var(--text); }
+  .value-item.is-revealed .value-open { border-top-color: rgba(var(--ink-rgb), 0.55); }
+
+  /* The last value's bottom padding is the foot of the section; the rest of
+     it is the spacing between values. Same reasoning as the desktop row. */
+  .value-item:last-child .value-open { padding-bottom: 4px; }
+
+  .value-title {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .value-desc {
+    display: block;
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(var(--ink-rgb), var(--ink-a-aa));
+  }
+
+  /* Desktop: all five values open at once, three across then two (8 Sep
+     2026). It was a horizontal accordion driven by scroll, and the feedback
+     was consistent - scroll at a normal pace and the values had gone past
+     before they could be read. The item keeps the same anatomy (numeral,
+     hairline, title, description) so nothing about the look changes; only
+     the layout and the fact that nothing collapses. The buttons stay in the
+     markup for the phone column and do nothing here; hover still tints. */
+  @media (min-width: 761px) {
+    .value-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px 36px;
+    }
+
+    .value-item { display: block; }
+
+    .value-open {
+      align-items: flex-start;
+      gap: 22px;
+      padding: 20px 0 8px;
+      border-top-width: 2px;
+      border-top-color: rgba(var(--ink-rgb), 0.55);
+      cursor: default;
+    }
+
+    .value-item:last-child .value-open { padding-bottom: 8px; }
+
+    /* Smaller than the 82px accordion numeral: five of them share the width
+       now, and the title has to sit beside each one. */
+    .value-num {
+      font-size: clamp(40px, 4.2vw, 64px);
+      color: var(--text);
+    }
+
+    /* 5px lines the title's cap height up with a 64px numeral (it was 6px
+       against 82px). Measured from the font's cap metrics, not eyeballed. */
+    .value-text {
+      display: block;
+      max-width: 430px;
+      padding-top: 5px;
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    /* Hover and focus tint the numeral and hairline brand blue, as the
+       accordion did - asked for back the same day the tint was dropped. The
+       buttons still do nothing on desktop; the tint is the life of the row,
+       not an affordance, which is why the cursor stays default. */
+    /* Four classes deep on purpose. Every value is .is-open here, and the
+       base block's .value-item.is-open .value-open (three) outranked a plain
+       .value-open:hover (two) - so the numeral went blue and the hairline did
+       not (reported). Same trap the old accordion hit with .is-revealed. */
+    .value-list .value-item .value-open:hover .value-num,
+    .value-list .value-item .value-open:focus-visible .value-num {
+      background: var(--brand-ink);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      transition: color 0.25s ease;
+    }
+    .value-list .value-item .value-open:hover,
+    .value-list .value-item .value-open:focus-visible { border-image-source: var(--brand-ink); border-image-slice: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .value-item { transition: none; }
+  }
+
+  @media (max-width: 900px) {
+    .about-top { grid-template-columns: 1fr; gap: 36px; margin-bottom: 40px; }
+  }
+
+  /* ---------- Case studies ---------- */
+  /* Full-bleed band using the same artwork as the hero (frames left rather
+     than right, so the two bookend each other). Bright in the top-left and
+     dark elsewhere, so ink is pinned white and the scrim is weighted left. */
+  /* Vertical padding lives on the full-bleed outer element (not the inner
+     wrapper), so the background extends through it and the section-to-section
+     gap stays the same var(--section-y)+var(--section-y) rhythm as every
+     other section, rather than reading as half-height because only one side
+     contributed padding. */
+  /* cases-bg.svg, not footer-bg.jpg, since 8 Sep 2026: a vector rebuild of the
+     same artwork by the method hero.svg used (see CLAUDE.md, Files table). The
+     JPEG was 1500x844 at 0.046 bytes/pixel and showed its 8x8 blocks and
+     gradient banding once upscaled (reported as blurred and pixelated). Same
+     1500x844 coordinate space. footer-bg.jpg stays only as the reference it
+     was traced from. */
+  .cases {
+    --ink-rgb: 255, 255, 255;
+    --text: #ffffff;
+    padding: var(--section-y) 0;
+    background:
+      linear-gradient(to right, rgba(2, 6, 23, 0.92) 0%, rgba(2, 6, 23, 0.8) 40%, rgba(2, 6, 23, 0.68) 100%),
+      url('/assets/cases-bg.svg') center / cover no-repeat,
+      #04081c;
+  }
+
+  .cases-inner {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+
+  .cases h2 { margin-bottom: var(--head-gap); }
+
+  /* Lifted above the page-wide alphas to clear AA over the artwork. */
+  .cases .case-body { color: rgba(255, 255, 255, 0.84); }
+  .cases .case-tag { color: rgba(255, 255, 255, 0.8); border-color: rgba(255, 255, 255, 0.32); }
+  .cases .case { border-top-color: rgba(255, 255, 255, 0.2); }
+  .cases .case:last-child { border-bottom-color: rgba(255, 255, 255, 0.2); }
+
+  /* Every other section's .pill sits on a flat --bg colour, where a thin
+     translucent border alone reads clearly. This one sits directly on the
+     photograph with no fill (measured: ~2.35:1 border contrast against the
+     scrim there, against photo grain/detail — not a flat colour a border can
+     cleanly separate from). A background chip gives it the same self-
+     contained "pill" read the other sections get for free. */
+  .cases .pill { background: rgba(0, 0, 0, 0.35); border-color: rgba(255, 255, 255, 0.4); }
+
+  /* Same lift the old .case-meta row carried, for the same reason: this
+     section sits on a photograph, not a flat surface, so --ink-a-mid (0.50)
+     that reads fine elsewhere is too faint over the artwork. Inherited by
+     .case-client when it replaced that row. */
+  .cases .case-client { color: rgba(255, 255, 255, 0.78); }
+
+  .case-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .case {
+    border-top: 1px solid rgba(var(--ink-rgb), 0.16);
+    padding: 22px 0 44px;
+  }
+
+  .case:last-child {
+    border-bottom: 1px solid rgba(var(--ink-rgb), 0.16);
+  }
+
+  /* Label rail above each study, mirroring the spec-sheet rule + meta pairing. */
+  /* The client name, sitting directly above the headline. It replaces both
+     the old .case-meta row (sector + service on the left, client on the
+     right) and the .blog-tag pill that sat above the title - the sector and
+     service repeated what the copy and the detail popup already say, and the
+     client was stranded on the far right where it read as a reference code
+     rather than the name of the organisation. Same type treatment the meta
+     row used, so nothing about the section's voice changes. */
+  .case-client {
+    display: block;
+    margin-bottom: 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(var(--ink-rgb), var(--ink-a-mid));
+    font-variant-numeric: tabular-nums;
+  }
+
+  .case-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 56px;
+    align-items: start;
+  }
+
+  .case-headline {
+    font-size: clamp(23px, 2.9vw, 36px);
+    line-height: 1.18;
+    font-weight: 300;
+    letter-spacing: -0.6px;
+    color: var(--text);
+    /* A measure, so all three featured headlines wrap to the same two lines.
+       The column is ~22em wide and the three titles run 24.5em, 22.3em and
+       20.8em unwrapped - so the shortest (Cedar Creek) sat on ONE line while
+       the other two wrapped, which read as inconsistent (reported 8 Sep 2026).
+       Any value between 12.25em (half the longest, or it would take a third
+       line) and 20.8em (the shortest, or it would not wrap) gives two lines
+       each; 17em sits mid-window so a font fallback or a new title of similar
+       length cannot tip it either way. In em, so it tracks the clamped
+       font-size at every viewport rather than needing its own breakpoints.
+       Re-measure if a featured title changes length materially. */
+    max-width: 17em;
+    text-wrap: balance;
+  }
+
+  .case-body {
+    font-size: 15px;
+    line-height: 1.72;
+    color: rgba(var(--ink-rgb), 0.65);
+  }
+
+  .case-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .case-tag {
+    padding: 5px 11px;
+    border: 1px solid rgba(var(--ink-rgb), 0.18);
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: rgba(var(--ink-rgb), 0.65);
+  }
+
+  /* Same underlined affordance as the Services cards, so "open a popup" reads
+     the same way in both sections. */
+  .case-read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 20px;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .case-read-more svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  .case-read-more:hover svg { transform: translate(2px, -2px); }
+
+  .cases-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+  }
+
+  /* `hidden` alone loses to the `display: flex` rule above — reused here by
+     the blog section's "View more" button, which toggles this at runtime. */
+  .cases-actions[hidden] { display: none; }
+
+  .case-viewall-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid rgba(var(--ink-rgb), 0.4);
+    border-radius: 999px;
+    padding: 12px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .case-viewall-btn:hover {
+    background: rgba(var(--ink-rgb), 0.1);
+    border-color: rgba(var(--ink-rgb), 0.7);
+  }
+
+  .case-viewall-btn .case-count {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 820px) {
+    .case-grid { grid-template-columns: 1fr; gap: 22px; }
+  }
+
+  /* The chips are sized for a desktop card. Once the grid is a single narrow
+     column they stop reading as small metadata and start competing with the
+     headline: at 375px the longest ("Under half the cost per transaction")
+     ran 213px, about two-thirds of the 327px content width, stacked under a
+     198px topic tag. Nothing overflowed — they were simply too heavy for the
+     space. Stepping down type, padding and gap keeps them subordinate. */
+  @media (max-width: 620px) {
+    .case-tags { gap: 6px; margin-top: 16px; }
+
+    .case-tag {
+      font-size: 10.5px;
+      padding: 4px 9px;
+    }
+  }
+
+  /* ---------- Case study modals (index + detail) ----------
+     Both reuse .modal-overlay / .modal-panel / .modal-close from the contact
+     modal; only the inner content layout is new. */
+  .case-modal-panel { max-width: 760px; }
+
+  /* scrollbar-gutter keeps this clear of .modal-close (a 32px circle inset
+     18px from the panel edge) regardless of whether the platform renders an
+     inline scrollbar (Windows) or an overlay one (macOS) — without it, the
+     two behaved inconsistently: same rule as .service-modal-body below, so
+     both popup families sit the same relative to their close button. */
+  /* flex: 1 fills the panel. .modal-panel is a flex row and this was the
+     default `0 1 auto`, so a popup whose content is narrower than the panel
+     - the case index, which is just a list of titles - shrank to its content
+     and left ~97px of bare panel to its right. The scrollbar rides that edge,
+     so it appeared well to the LEFT of the close button in that one popup
+     while sitting to its right everywhere else. min-width: 0 keeps a long
+     unbroken string from forcing the flex item wider than the panel. */
+  .case-modal-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 44px 52px 40px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+
+  /* ---------- Scrollbars ----------
+     Applied site-wide, not just to the modals: the page itself scrolls, and
+     the raw platform bar is an opaque grey slab that reads as chrome bolted
+     onto the design. It only shows at all on machines whose OS draws inline
+     (non-overlay) scrollbars, so the site looked different device to device.
+
+     `color-scheme` on :root (see the token blocks at the top) is half the
+     fix and has to come first - without it the UA assumes a light page and
+     paints a pale track, and in browsers that ignore the custom properties
+     below it is the only thing that keeps the native bar in the right key.
+
+     The universal selector is deliberate: every scroll container inherits
+     the treatment, including ones added later, rather than each needing to
+     be listed. ::-webkit-scrollbar does not inherit the way scrollbar-color
+     does, so it cannot simply be set on html.
+
+     `border: 3px solid transparent` + `background-clip: content-box` insets
+     the thumb inside the 10px gutter: the background paints only into the
+     content box, leaving the transparent border acting as padding. Firefox
+     has no ::-webkit pseudo-elements and takes scrollbar-width/-color
+     instead, so both syntaxes are declared. Everything resolves through
+     --ink-rgb, so light and dark need no second rule. */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--ink-rgb), 0.26) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-track,
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--ink-rgb), 0.24);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(var(--ink-rgb), 0.42);
+    background-clip: content-box;
+  }
+
+  /* max-width is load-bearing, not cosmetic: this pill is display:inline-flex
+     with no width of its own, so without a cap it never wraps and can
+     overflow straight into .modal-close (32px circle, inset 18px) once the
+     panel gets narrow enough — at any viewport, not just the mobile
+     breakpoint below, since long sector/service strings differ in width by
+     device/font-rendering. See the mobile breakpoint for the extra type
+     shrink on small screens. */
+  .case-modal-eyebrow { margin-bottom: 18px; max-width: calc(100% - 30px); }
+
+  .case-modal-body h2 {
+    font-size: 26px;
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .case-modal-client {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+    margin-bottom: 24px;
+  }
+
+  /* Headline metrics, pulled out of the Outcome copy so the numbers are
+     scannable before anyone commits to reading the write-up. */
+  .case-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  /* Pills, matching the section-header .pill on the homepage (hairline ring,
+     999px radius, small uppercase label), on request (8 Sep 2026). They were
+     solid brand-blue boxes with the number stacked over the label; the ring
+     reads lighter beside the photograph and ties the reader to the page. The
+     number and label sit on one line, and the whole row simply wraps, so the
+     old mobile rule that stretched each box to full width is gone with the
+     boxes. Theme tokens throughout - nothing here is a fixed-colour surface
+     any more, so no pinned ink. */
+  /* Brand blue fill, same pill (8 Sep 2026, on request - "make the big stat
+     pills brand blue, keep the shape"). A fixed-colour surface in both
+     themes, so ink is pinned white locally. Both texts are FULL white, not the
+     muted alpha the hairline version used: white on #1d6ef5 is 4.56:1, so a
+     0.55-0.66 alpha label would land under 3:1 and fail AA at 11px. The
+     hierarchy against the number comes from size and weight instead. */
+  .case-stat {
+    --ink-rgb: 255, 255, 255;
+    --text: #ffffff;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 7px 14px;
+    background: var(--brand-fill);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+  }
+
+  .case-stat b {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: #ffffff;
+  }
+
+  .case-stat span {
+    font-size: 11px;
+    line-height: 1.4;
+    font-weight: 500;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #ffffff;
+  }
+
+  .case-section { margin-bottom: 22px; }
+
+  .case-section h3 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(var(--ink-rgb), var(--ink-a-mid));
+    margin-bottom: 8px;
+  }
+
+  .case-section p {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: rgba(var(--ink-rgb), 0.78);
+  }
+
+  .case-modal-quote {
+    margin: 28px 0;
+    padding: 20px 22px;
+    background: rgba(var(--ink-rgb), 0.05);
+    border-left: 3px solid var(--blue);
+    border-image-source: var(--brand-ink);
+    border-image-slice: 1;
+    border-radius: 0 12px 12px 0;
+  }
+
+  .case-modal-quote p {
+    font-size: 14.5px;
+    line-height: 1.6;
+    font-style: italic;
+    color: rgba(var(--ink-rgb), 0.85);
+    margin-bottom: 10px;
+  }
+
+  .case-modal-quote cite {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    color: rgba(var(--ink-rgb), 0.6);
+  }
+
+  .case-modal-footer {
+    padding-top: 24px;
+    border-top: 1px solid rgba(var(--ink-rgb), 0.12);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* The reader dialogs' mobile-only "All case studies" / "All articles"
+     toggle (see .reader-toggle below). */
+  .case-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .case-back-btn svg { width: 13px; height: 13px; }
+
+
+  .case-index-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* The row bleeds 16px into the body's own padding (negative margin plus
+     matching padding) so the hover highlight has breathing room around the
+     text instead of stopping flush against the first and last character,
+     which read as a clipped band. `width: auto` is required with the
+     negative margins - the old `width: 100%` would add 32px of overflow. */
+  .case-index-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    width: auto;
+    text-align: left;
+    padding: 18px 16px;
+    margin: 0 -16px;
+    border: none;
+    border-radius: 12px;
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.18s ease;
+  }
+
+  /* Dividers are pseudo-elements inset to the text column rather than a
+     border on the row itself. A border would inherit the bleed and the
+     border-radius above, so the rule would bow around the rounded corners
+     and run the full bleed width; this keeps the rules aligned to the text
+     while the highlight sits wider than them. */
+  .case-index-item::before,
+  .case-index-item:last-child::after {
+    content: '';
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    height: 1px;
+    background: rgba(var(--ink-rgb), 0.12);
+    transition: opacity 0.18s ease;
+  }
+
+  .case-index-item::before { top: 0; }
+  .case-index-item:last-child::after { bottom: 0; }
+
+  .case-index-item:hover { background: rgba(var(--ink-rgb), 0.06); }
+
+  /* Drop the rules that would otherwise cut across the highlighted row -
+     its own top rule, and the next row's top rule, which is the hovered
+     row's bottom edge. Without this the highlight reads as a band with
+     lines through it rather than a single selected row. */
+  .case-index-item:hover::before,
+  .case-index-item:hover + .case-index-item::before,
+  .case-index-item:last-child:hover::after { opacity: 0; }
+
+  .case-index-client {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: rgba(var(--ink-rgb), var(--ink-a-mid));
+    margin-bottom: 5px;
+  }
+
+  .case-index-title {
+    font-size: 15.5px;
+    line-height: 1.4;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .case-index-item .case-index-go {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(var(--ink-rgb), 0.08);
+    color: var(--text);
+    display: grid;
+    place-items: center;
+  }
+
+  .case-index-item .case-index-go svg { width: 13px; height: 13px; }
+
+  /* ---------- Reader layout ----------
+     The case-study and blog dialogs list every entry down the left and read
+     the selected one on the right, so moving between entries is one click
+     instead of close, View all, pick, back. Both dialogs share these rules;
+     the rows are the same .case-index-item the old index popups used, with
+     .is-active marking the entry being read.
+
+     .modal-panel is already a flex row, so the aside and the reading pane
+     sit side by side and each scrolls on its own inside the panel's
+     max-height. Below 900px there is no room for two columns: the aside is
+     hidden and .show-list swaps it in for the reading pane, driven by the
+     footer's .reader-toggle button, which only shows at that width.
+
+     Doubled selector on the panel: .case-modal-panel and .service-panel set
+     their own max-width at the same specificity and cascade later, so a bare
+     .reader-panel would lose to both. */
+  .modal-panel.reader-panel { max-width: 1140px; }
+
+  .reader-side {
+    position: relative;
+    flex: 0 0 330px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 44px 22px 32px 30px;
+    border-right: 1px solid rgba(var(--ink-rgb), 0.12);
+    background: rgba(var(--ink-rgb), 0.03);
+    overflow: hidden;
+  }
+
+  /* The list scrolls, not the aside. That is what lets the pager sit pinned at
+     the bottom of the column instead of being something you have to scroll
+     past ten rows to reach.
+
+     The horizontal padding here is load-bearing, not spacing. Rows carry
+     margin: 0 -14px so their hover/selected fill bleeds past the text column,
+     and a scroll container clips whatever overflows it - so once this element
+     became the scroller, that bleed was cut off and the selected blue row
+     appeared cropped down its left edge. Matching padding (with the negative
+     margin putting the text column back where it was) gives the bleed room
+     inside the scroller instead of outside it. */
+  .reader-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    padding: 0 14px;
+    margin: 0 -14px;
+  }
+
+  /* Rendered only when there is more than one page - see PAGE_SIZE in the
+     case-study IIFE. At eight case studies it stays hidden and appears on its
+     own once an eleventh is added. */
+  .reader-pager {
+    flex: 0 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(var(--ink-rgb), 0.12);
+  }
+
+  .reader-page-btn {
+    min-width: 30px;
+    height: 30px;
+    padding: 0 7px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    border: 1px solid rgba(var(--ink-rgb), 0.16);
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .reader-page-btn:hover:not(:disabled) { border-color: rgba(var(--ink-rgb), 0.42); }
+
+  /* The page you are on, in the same brand blue the selected row uses. White
+     on that blue is 4.56:1, so the label stays full white rather than an
+     alpha step that would drop under AA. */
+  .reader-page-btn[aria-current="page"] {
+    background: var(--brand-fill);
+    border-color: transparent;
+    color: #ffffff;
+  }
+
+  .reader-page-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .reader-page-btn svg { width: 12px; height: 12px; }
+
+  .reader-side-count {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+    margin-bottom: 10px;
+  }
+
+  .reader-list .case-index-item { padding: 14px 14px; margin: 0 -14px; gap: 12px; }
+  .reader-list .case-index-item::before,
+  .reader-list .case-index-item:last-child::after { left: 14px; right: 14px; }
+  .reader-list .case-index-title { font-size: 14.5px; }
+  .reader-list .case-index-client { font-size: 10.5px; }
+
+  /* Brand blue for the entry being read - the same fixed-colour selection
+     the team strip uses, ink pinned white the way every blue surface on the
+     site does it. Both labels go to full white: white itself is only 4.56:1
+     on the blue, so any alpha step below it would fail AA. The dividers
+     around the row drop out the same way they do on hover. */
+  .reader-list .case-index-item.is-active,
+  .reader-list .case-index-item.is-active:hover {
+    background: var(--brand-fill);
+    --ink-rgb: 255, 255, 255;
+    --text: #ffffff;
+  }
+  .reader-list .case-index-item.is-active::before,
+  .reader-list .case-index-item.is-active + .case-index-item::before,
+  .reader-list .case-index-item.is-active:last-child::after { opacity: 0; }
+  .reader-list .case-index-item.is-active .case-index-client { color: #ffffff; }
+  .reader-list .case-index-item.is-active .case-index-go { background: rgba(255, 255, 255, 0.18); }
+
+  .reader-toggle { display: none; }
+
+  @media (max-width: 900px) {
+    .reader-side { display: none; }
+    .reader-toggle { display: inline-flex; }
+    .reader-panel.show-list .reader-side {
+      display: flex;
+      flex: 1 1 auto;
+      border-right: none;
+      background: none;
+    }
+    .reader-panel.show-list .case-modal-body,
+    .reader-panel.show-list .service-modal-body { display: none; }
+
+    /* Bigger hit area for touch. 30px clears the 24px bar the rest of the
+       site is audited against, but these are small standalone targets and
+       the list they page through is full-width here, so there is room. */
+    .reader-page-btn { min-width: 38px; height: 38px; }
+  }
+
+  @media (max-width: 640px) {
+    .case-modal-body { padding: 32px 34px 28px 24px; }
+
+    /* The close X becomes a header row the content starts beneath, instead of
+       floating over it. On a phone the panel is a column and the reading pane
+       is its own scroller, so the absolutely positioned X (a child of the
+       panel, not the pane) stayed put while the photograph, the eyebrow pill
+       and the stat boxes scrolled under it - reported as looking like a bug,
+       which it was. Above 640px the pane's 52px gutter keeps the X clear, so
+       this is phone-only.
+
+       Same mechanics as the full-screen contact form: the panel stops
+       scrolling, the pane scrolls, and min-height: 0 is what lets the pane
+       shrink to the space left - a flex child defaults to min-height: auto
+       and would grow the panel instead of scrolling inside it. */
+    .modal-panel.reader-panel,
+    .modal-panel.service-panel { overflow: hidden; }
+
+    .reader-panel .modal-close,
+    .service-panel .modal-close {
+      position: static;
+      flex: 0 0 auto;
+      align-self: flex-end;
+      margin: 12px 14px 0 0;
+    }
+
+    .reader-panel .case-modal-body,
+    .service-panel .service-modal-body {
+      min-height: 0;
+      padding-top: 12px;
+    }
+
+    /* The list view (.show-list) swaps the pane for the sidebar; it needs the
+       same permission to shrink, or it too grows the panel. */
+    .reader-panel.show-list .reader-side { min-height: 0; }
+  }
+
+  /* ---------- Client logos ----------
+     The source logos from digiblu.com are full-colour with a solid white
+     background baked in (0% alpha), so dropping them in directly would paint
+     five white squares on the dark theme. They are pre-processed into alpha
+     masks (white keyed out, ink opaque) and painted with `background-color`,
+     which makes them a single ink that follows --text in both themes and
+     satisfies the "black and white" treatment with no per-logo overrides. */
+  .clients {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    background: var(--bg);
+    padding: var(--section-y) var(--gutter);
+  }
+
+  .clients h2 { margin-bottom: var(--head-gap); }
+
+  /* Auto-scrolling carousel, same mechanism as the Accreditations strip
+     above: two identical groups in a flex track, animated to -50% so the
+     loop is seamless, paused on hover. Converted from a static row once
+     digiblu.com's own carousel turned out to hold 14 logos across its three
+     slides, not the 5 visible on its first slide. */
+  .clients-viewport {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+  }
+
+  .clients-track {
+    display: flex;
+    width: max-content;
+    /* Paced to match the Accreditations strip, on request. Speed is what
+       matters here, not duration: the two rows are different widths, so equal
+       durations would read as different speeds. Accreditations runs 1623px in
+       20s = 81px/s, so this row (2232px) needs 27s, and the mobile block below
+       needs 21s for its narrower 1735px track. All three land within 2% of
+       each other. Re-derive these if logos are added or removed - the group
+       width changes with them and a stale duration silently changes the pace. */
+    animation: clients-scroll 27s linear infinite;
+  }
+
+  .clients-track:hover { animation-play-state: paused; }
+
+  @keyframes clients-scroll {
+    to { transform: translateX(-50%); }
+  }
+
+  .clients-group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    list-style: none;
+    gap: 56px;
+    padding-right: 56px;
+  }
+
+  .client-logo {
+    /* Must be block: width/height are ignored on an inline span, which
+       collapses every logo to 0x0. */
+    display: block;
+    background-color: var(--text);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    /* Muted at rest and full on hover, matching the accreditation marquee so
+       the two logo rows read as one system. */
+    opacity: 0.55;
+    transition: opacity 0.2s ease;
+  }
+
+  .clients-track:hover .client-logo { opacity: 0.85; }
+  .client-logo:hover { opacity: 1; }
+
+  /* Heights are normalised by area rather than by height alone: the source
+     lockups run from icon+wordmark blocks to thin single-line wordmarks, so
+     matching heights would leave the wide ones visually dominant. Each
+     height is derived from a constant target area, then hand-trimmed —
+     extreme-aspect wordmarks (AssuranceSD, GatenbySanderson) are stepped
+     down further so their width doesn't dominate, same call already made
+     for G-Cloud in the Accreditations strip. */
+  .cl-equiniti   { width: 53px;  height: 42px; -webkit-mask-image: url('/assets/clients/equiniti.png');               mask-image: url('/assets/clients/equiniti.png'); }
+  .cl-sunrise    { width: 106px; height: 27px; -webkit-mask-image: url('/assets/clients/sunrise-medical.png');        mask-image: url('/assets/clients/sunrise-medical.png'); }
+  .cl-nsm        { width: 98px;  height: 35px; -webkit-mask-image: url('/assets/clients/nsm.png');                    mask-image: url('/assets/clients/nsm.png'); }
+  .cl-acacium    { width: 115px; height: 24px; -webkit-mask-image: url('/assets/clients/acacium.png');                mask-image: url('/assets/clients/acacium.png'); }
+  .cl-medinet    { width: 97px;  height: 29px; -webkit-mask-image: url('/assets/clients/medinet.png');                mask-image: url('/assets/clients/medinet.png'); }
+  .cl-edmundson  { width: 126px; height: 21px; -webkit-mask-image: url('/assets/clients/edmundson-electrical.png');   mask-image: url('/assets/clients/edmundson-electrical.png'); }
+  .cl-tpx        { width: 85px;  height: 33px; -webkit-mask-image: url('/assets/clients/tpx.png');                    mask-image: url('/assets/clients/tpx.png'); }
+  .cl-spamedica  { width: 115px; height: 24px; -webkit-mask-image: url('/assets/clients/spamedica.png');              mask-image: url('/assets/clients/spamedica.png'); }
+  .cl-ppl        { width: 94px;  height: 34px; -webkit-mask-image: url('/assets/clients/ppl.png');                    mask-image: url('/assets/clients/ppl.png'); }
+  .cl-agria      { width: 90px;  height: 36px; -webkit-mask-image: url('/assets/clients/agria.png');                  mask-image: url('/assets/clients/agria.png'); }
+  .cl-soc        { width: 122px; height: 24px; -webkit-mask-image: url('/assets/clients/special-olympics-canada.png'); mask-image: url('/assets/clients/special-olympics-canada.png'); }
+  .cl-oneadvanced{ width: 133px; height: 17px; -webkit-mask-image: url('/assets/clients/oneadvanced.png');            mask-image: url('/assets/clients/oneadvanced.png'); }
+  .cl-ema        { width: 122px; height: 24px; -webkit-mask-image: url('/assets/clients/ema.png');                    mask-image: url('/assets/clients/ema.png'); }
+  .cl-safari     { width: 92px;  height: 37px; -webkit-mask-image: url('/assets/clients/safari-destinations.png');    mask-image: url('/assets/clients/safari-destinations.png'); }
+
+  @media (max-width: 760px) {
+    .clients-group { gap: 44px; padding-right: 44px; }
+  }
+
+  @media (max-width: 620px) {
+    .clients-group { gap: 36px; padding-right: 36px; }
+    .clients-track { animation-duration: 21s; }
+    /* Scale the whole row down together so the optical balance is preserved. */
+    .cl-equiniti   { width: 45px;  height: 36px; }
+    .cl-sunrise    { width: 90px;  height: 23px; }
+    .cl-nsm        { width: 83px;  height: 30px; }
+    .cl-acacium    { width: 98px;  height: 21px; }
+    .cl-medinet    { width: 82px;  height: 24px; }
+    .cl-edmundson  { width: 107px; height: 18px; }
+    .cl-tpx        { width: 72px;  height: 28px; }
+    .cl-spamedica  { width: 98px;  height: 21px; }
+    .cl-ppl        { width: 80px;  height: 29px; }
+    .cl-agria      { width: 77px;  height: 31px; }
+    .cl-soc        { width: 104px; height: 20px; }
+    .cl-oneadvanced{ width: 113px; height: 14px; }
+    .cl-ema        { width: 104px; height: 20px; }
+    .cl-safari     { width: 78px;  height: 31px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .clients-track { animation: none; }
+    .clients-group[aria-hidden="true"] { display: none; }
+    .clients-viewport { -webkit-mask-image: none; mask-image: none; }
+    .client-logo { transition: none; }
+  }
+
+  /* ---------- Team (accordion strip) ---------- */
+  .team {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: var(--section-y) var(--gutter);
+  }
+
+  .team-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: var(--head-gap);
+  }
+
+  .team-head h2 { margin-bottom: 14px; }
+
+  .team-sub {
+    max-width: 480px;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: rgba(var(--ink-rgb), 0.6);
+  }
+
+  .team-nav-btns {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .team-nav-btns button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--brand-fill);
+    border: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .team-nav-btns button svg { width: 16px; height: 16px; }
+
+  .team-strip {
+    display: flex;
+    gap: 6px;
+    /* 280px: 50-70% of the original 440px, per feedback that the desktop
+       boxes ran too tall. */
+    height: 280px;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  /* Inactive slices hold a fixed narrow width and the active one absorbs all
+     remaining space. Distributing growth proportionally instead left the
+     active panel too narrow to fit its label once the viewport tightened. */
+  /* 80px, not the 56px this started at: the photo is a face-centred square
+     painted with `cover` into a 280px-tall slice, so the visible width is
+     `sliceWidth / 280` of the source. The head spans ~27% of the source
+     width (head width ≈ 0.75 × head height, against a 2.8-head crop), so a
+     56px slice showed ~20% — a vertical sliver *through* the face, which is
+     what read as the photos being cropped. 80px ≈ 28.6% clears the whole
+     head. If the crop factor in process_team_faces.js ever changes, this
+     needs re-deriving with it. */
+  .team-slice {
+    position: relative;
+    flex: 0 0 80px;
+    border: none;
+    border-radius: 14px;
+    background: var(--surface);
+    cursor: pointer;
+    overflow: hidden;
+    padding: 0;
+    transition: flex-grow 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* Brand blue behind the selected member rather than the theme surface.
+     The headshots are chroma-keyed cutouts, so their semi-transparent edge
+     pixels composite against whatever sits behind them - on --surface that
+     is near-white in light theme and near-black in dark, so the same cutout
+     showed a pale halo in one and a dark fringe in the other. A fixed blue
+     gives every photo one constant backdrop, so the edges resolve the same
+     way in both themes, and it ties the expanded card to the brand.
+     Transitioned so the colour arrives with the expand rather than snapping
+     ahead of it. */
+  .team-slice { transition: flex-grow 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.4s ease; }
+
+  .team-slice.active {
+    flex-grow: 1;
+    background: var(--brand-fill);
+  }
+
+  /* Real headshots (chroma-keyed cutouts, see the Team section comment in
+     index.html), not the old generic silhouette icon. Grayscale is the
+     photo treatment requested — dimmed at rest, full strength once active,
+     same muted/hover language as the client-logo and accreditation rows. */
+  /* The source crops are face-centred (see process_team_faces.js), which is
+     what makes a plain centred cover-crop safe here: the active slice is a
+     wide, short box (783x280 on desktop) so cover shows only ~36% of the
+     image height, and that band has to land on the face at every viewport
+     width. Centring the face in the image rather than nudging
+     background-position by percentage is what makes it aspect-independent —
+     don't reintroduce a percentage offset. */
+  .team-slice-photo {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center center;
+    filter: grayscale(1);
+    /* Was 0.4, which is what made these read as washed out — badly so in
+       light theme, where a grayscale cutout faded 60% toward a near-white
+       surface almost disappeared. These are transparent cutouts, so opacity
+       fades the person *toward the slice colour* rather than dimming a
+       filled photo. Inactive slices are already distinguished by width and
+       by the absence of the name label, so they need only a token step
+       down; keep this high. */
+    opacity: 1;
+    transition: opacity 0.4s ease;
+  }
+
+  /* Inactive slices show a uniform circular face crop, not a full-bleed
+     sliver of the photo.
+
+     Why: full-bleed cannot be made to look aligned across these particular
+     sources. An inactive slice shows the image's whole height, so wherever
+     the subject's cutout ends, a hard horizontal edge appears mid-frame with
+     empty space beneath — which is what made some of the team (David, Jon)
+     read as cropped while others (Vic) looked right. Making every subject
+     reach the frame bottom instead requires a ~1.52-head-height crop, which
+     puts the head at 49% of image width and therefore needs ~139px slices,
+     leaving too little for the active panel and collapsing below ~1150px.
+     The underlying variance is in the photos themselves: body below the eye
+     line ranges 0.76 to 1.46 head-heights across the eight.
+
+     A circle sidesteps all of it — same size, same position, same framing
+     for every person, at any viewport. background-size is zoomed so the head
+     fills the circle rather than showing the whole bust in miniature; the
+     source crops are face-centred, so a centred zoom lands on the face. */
+  .team-slice:not(.active) .team-slice-photo {
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    width: 52px;
+    height: 52px;
+    margin: -26px 0 0 -26px;
+    border-radius: 50%;
+    background-size: 190%;
+    box-shadow: 0 0 0 1px rgba(var(--ink-rgb), 0.16);
+  }
+
+  .tp-vic    { background-image: url('/assets/team/vic-gysin.png'); }
+  .tp-david  { background-image: url('/assets/team/david-williams.png'); }
+  .tp-karen  { background-image: url('/assets/team/karen-potgieter.png'); }
+  .tp-jon    { background-image: url('/assets/team/jon-hinder.png'); }
+  .tp-martin { background-image: url('/assets/team/martin-mccloskey.png'); }
+  .tp-dianne { background-image: url('/assets/team/dianne-harris.png'); }
+  .tp-dave   { background-image: url('/assets/team/dave-vanderwesthuizen.png'); }
+  .tp-nick   { background-image: url('/assets/team/nick-bantick.png'); }
+
+  /* Scrim so the name/role stay legible over whatever tone the photo behind
+     them happens to be. Sits between the photo and the label in paint order
+     via the label's own z-index, since a ::after would otherwise paint after
+     (on top of) the label span. */
+  .team-slice::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(4, 8, 26, 0.92) 0%, rgba(4, 8, 26, 0.35) 55%, rgba(4, 8, 26, 0) 78%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .team-slice.active::after { opacity: 1; }
+
+  .team-slice-label {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 22px;
+    text-align: left;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.3s ease 0.15s, transform 0.3s ease 0.15s;
+  }
+
+  .team-slice.active .team-slice-label { opacity: 1; transform: translateY(0); }
+
+  /* Without this there is nothing telling you a slice opens a profile — the
+     expanded panel looked like the end state, so a click on it appeared to
+     do nothing. Sits on the active slice only at desktop widths (a collapsed
+     56-80px slice has no room, and its first click expands rather than
+     opening the dialog anyway); on mobile every row shows it, because there
+     a tap goes straight to the profile. */
+  /* Brand blue, and deliberately the *same* fill at every width — the
+     mobile block below overrides only layout now, not colour, so this is
+     the single source of truth for how the affordance reads.
+
+     It has to be a fixed colour rather than a theme token: on desktop this
+     sits at the slice's top right, above where the ::after scrim reaches
+     (that gradient only covers the bottom ~78%), and the headshots are
+     transparent-background cutouts — so at that corner it can be sitting
+     on the plain surface rather than the photo. A theme-derived fill went
+     white-on-near-white there in light mode (~1:1). Solid blue separates
+     from both surfaces (4.20:1 light, 4.47:1 dark) and from the photos,
+     which are grayscale-filtered and so can never collide with it. */
+  .team-slice-more {
+    position: absolute;
+    z-index: 1;
+    top: 18px;
+    right: 18px;
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #ffffff;
+    background: var(--brand-fill);
+    opacity: 0;
+    transition: opacity 0.3s ease 0.15s, background 0.2s ease;
+  }
+
+  /* The glyph used to be a plus inside its own drawn ring, sitting in the
+     blue disc - two concentric circles, with the ring only 43% of the disc
+     and a lot of blue padding around it, which read as the plus not sitting
+     properly in the circle. The ring was redundant: the disc already is the
+     circle. This is a bare plus, sized so it fills the disc the way a + button
+     normally does. It measured perfectly centred before and after - the
+     complaint was proportion, not alignment. */
+  .team-slice-more svg { width: 18px; height: 18px; }
+
+  .team-slice.active .team-slice-more { opacity: 1; }
+
+  /* No --blue-dark token exists (every other blue control in this file is
+     a flat var(--blue) with no hover shift), so this is a one-off literal:
+     var(--blue) at 88% brightness. Raises white-on-blue from 4.56:1 to
+     5.61:1, so the hover state is never the weaker of the two. */
+  .team-slice.active:hover .team-slice-more { filter: brightness(1.18); }
+
+  .team-slice-name {
+    display: block;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #ffffff;
+    white-space: nowrap;
+  }
+
+  .team-slice-role {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.75);
+    margin-top: 4px;
+    white-space: nowrap;
+  }
+
+  /* Injected by the team IIFE from TEAM_MEMBERS, so the bios stay written in
+     one place. Hidden here; the desktop card below is the only place it
+     shows. On a phone a tap opens the profile dialog, which carries it. */
+  .team-slice-bio { display: none; }
+
+  /* ---------- The desktop card ----------
+     Above the stacked breakpoint the active slice is a two-column card:
+     photo on the left, name, role and bio on the right, with a hairline
+     between them. Built on stakeholder feedback that the flat brand-blue
+     backdrop with the photo laid over it "did not sit well", and that a
+     click should open the person up in place rather than only enlarge them.
+
+     The backdrop is the blue-to-navy gradient the case-study art panels
+     already use, so the card reads as the same brand surface. It stays a
+     FIXED colour for the same reason the blue was: the headshots are
+     cutouts, and their semi-transparent edges must composite against one
+     constant backdrop or they halo in one theme and fringe in the other.
+
+     The photo shows in colour here. Grayscale stays on the collapsed circles,
+     which are an index; the open card is the person. */
+  @media (min-width: 761px) {
+    .team-slice.active {
+      background: var(--brand-fill);
+    }
+
+    /* The photo sits in a framed tile, not a raw column. Painted straight
+       onto the card, a cutout's flat bottom edge (where the source crop ended)
+       read as the picture being cut off. Inside a rounded, slightly lighter
+       panel, with the image pinned to the panel's bottom edge, that same edge
+       reads as the frame - a portrait standing in a window. The tile is
+       square at full width (240px in a 280px card with 20px margins) so
+       cover shows the whole crop; narrower cards shrink the width and the
+       face-centred crop keeps the face. */
+    /* A circle, like the collapsed slices - the same centred 190% zoom on
+       the same face-centred crop, so it lands on the face for the same
+       reason theirs does, just at 168px instead of 52. A square tile at any
+       zoom still read as a picture cut out and placed in a box; the circle
+       is the crop the strip already uses, so the open card and the closed
+       ones are one visual language. */
+    .team-slice.active { --tile-w: clamp(104px, 22%, 168px); }
+
+    /* height comes from aspect-ratio, NOT a second var(--tile-w): a percentage
+       inside clamp() resolves against the containing block's HEIGHT when used
+       for height, so the same clamp gave 168 wide by 120 tall - an oval with
+       a 50% radius, not a circle. */
+    .team-slice.active .team-slice-photo {
+      inset: 50% auto auto 36px;
+      width: var(--tile-w);
+      height: auto;
+      aspect-ratio: 1 / 1;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      /* White, fixed - a cutout on a white card, the image filling it. Not a
+         theme token: the tile sits inside the navy card in both themes, and
+         the cutout edges need one constant backdrop. 135% rather than cover
+         so the person fills the frame; still pinned to the bottom edge, and
+         at 135% the tightest crop keeps ~17px above the hair at 240px. */
+      background-color: #ffffff;
+      background-size: 190%;
+      background-position: center center;
+      filter: none;
+    }
+
+    /* The old bottom-to-top scrim becomes the hairline between the columns.
+       Nothing needs a scrim any more: the text sits on solid navy, and the
+       photo is a cutout with no edges to hide. */
+    .team-slice.active::after {
+      inset: 28px auto 28px calc(64px + var(--tile-w));
+      width: 1px;
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    /* No + disc on the desktop card: the bio is already in it, so there is
+       nothing for the disc to promise. Clicking the open card still opens the
+       full profile dialog, which matters below ~1100px where the bio clamps. */
+    .team-slice.active .team-slice-more { display: none; }
+
+    /* Inside the card the name and role may wrap. The nowrap on the base
+       rules protected the old overlay layout; in a two-column card at tablet
+       widths the text column can be ~120px, and a nowrap name overflows it. */
+    .team-slice.active .team-slice-name,
+    .team-slice.active .team-slice-role { white-space: normal; }
+
+    /* Text column, vertically centred. */
+    .team-slice.active .team-slice-label {
+      left: calc(64px + var(--tile-w));
+      top: 0;
+      bottom: 0;
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Seven lines is the whole bio at any card width from about 1100px up;
+       below that the clamp trims it with an ellipsis rather than letting it
+       run out of the 280px card. The full text is one click away in the
+       profile dialog, which the + disc still opens. */
+    .team-slice.active .team-slice-bio {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 7;
+      overflow: hidden;
+      margin-top: 12px;
+      font-size: 14.5px;
+      line-height: 1.55;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.82);
+      white-space: normal;
+      text-align: left;
+    }
+  }
+
+  /* Eight 80px slices leave the active one too narrow for the longest name
+     ("Dave van der Westhuizen", nowrap) once the viewport tightens, so the
+     inactive width steps back down before that becomes an overflow. */
+  @media (max-width: 1180px) {
+    .team-slice { flex: 0 0 62px; }
+  }
+
+  /* Eight slices cannot share a phone-width row and still leave the active one
+     wide enough to read, so below this the strip becomes a stacked list and
+     every name stays visible without needing to be selected. */
+  @media (max-width: 760px) {
+    .team-head { flex-direction: column; align-items: flex-start; }
+    .team-nav-btns { display: none; }
+
+    .team-strip {
+      flex-direction: column;
+      height: auto;
+      gap: 10px;
+      overflow: visible;
+    }
+
+    .team-slice {
+      flex: 0 0 auto;
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px;
+      cursor: default;
+    }
+
+    /* The tap that opens a profile also moves the highlight here (see the
+       click handler), so the blue row is whichever member was last opened.
+       Ink pinned white, as on the desktop active slice; the role label goes
+       to full white because white itself is only 4.56:1 on the blue, so the
+       muted alpha the other rows use would fail AA. */
+    .team-slice.active { --ink-rgb: 255, 255, 255; --text: #ffffff; }
+    .team-slice.active .team-slice-role { color: #ffffff; }
+
+    /* Same circular face crop as the inactive desktop slices, including the
+       zoom — without it the whole bust shrinks into a 48px circle and the
+       face is unreadable.
+
+       box-shadow is repeated here rather than left to the desktop rule that
+       defines it: that rule is .team-slice:not(.active) .team-slice-photo,
+       and the first slice keeps its .active class at this width (the strip
+       has no expand/collapse on mobile, so nothing ever clears it). It
+       therefore matched every row's ring except the first one's. Restating
+       it on the unqualified selector covers the active row too, so all
+       eight circles are identical here. */
+    .team-slice-photo,
+    .team-slice:not(.active) .team-slice-photo {
+      position: static;
+      inset: auto;
+      top: auto;
+      left: auto;
+      margin: 0;
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-size: 190%;
+      box-shadow: 0 0 0 1px rgba(var(--ink-rgb), 0.16);
+      opacity: 1;
+    }
+
+    /* No scrim needed once the photo is a small static circle rather than
+       the full-bleed background it is on desktop. */
+    .team-slice::after { display: none; }
+
+    /* No expand/collapse at this width, so the label must be visible outright
+       rather than arriving via a transition that may never run. */
+    .team-slice-label {
+      position: static;
+      z-index: auto;
+      padding: 0;
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .team-slice-name,
+    .team-slice-role { white-space: normal; }
+
+    .team-slice-name { font-size: 16.5px; color: var(--text); }
+    .team-slice-role { font-size: 13px; color: rgba(var(--ink-rgb), var(--ink-a-high)); }
+
+    /* Every row here, not just the active one: a tap opens the profile
+       directly at this width, so each row needs the affordance. Static
+       rather than absolute, pushed right by the label's auto margin.
+       Layout only — the blue fill and white glyph are inherited from the
+       base rule so the affordance is identical on mobile and desktop. */
+    .team-slice-label { flex: 1; }
+
+    .team-slice-more {
+      position: static;
+      opacity: 1;
+      flex-shrink: 0;
+    }
+  }
+
+  /* Named for the FAQ section it was built for. That section has been
+     removed, but this button is also the service-detail modal's footer CTA
+     and the blog modal's "Read full article" toggle, so the rule stays.
+     Known naming debt, same as .case-viewall-btn being reused by the blog. */
+  .faq-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--brand-fill);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 11px 20px 11px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .faq-cta-btn .arrow-badge {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(var(--ink-rgb),0.22);
+    display: grid;
+    place-items: center;
+  }
+
+  .faq-cta-btn svg { width: 14px; height: 14px; }
+
+  /* ---------- Art panels ----------
+     Named for the blog, which is gone; the case studies reuse these for the
+     panel above each engagement's title, so they stay. Generated gradient
+     plus a service icon rather than photography - there is no rights-cleared
+     imagery, and the gradient reuses the Services accent-card treatment. */
+  .blog-art {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    display: grid;
+    place-items: center;
+  }
+
+  /* Four hues so adjacent cards in the grid never repeat the same panel. */
+  .blog-art.a1 { background: linear-gradient(135deg, #4a8dff 0%, #1b4fd6 45%, #0a1f6e 100%); }
+  .blog-art.a2 { background: linear-gradient(135deg, #1b4fd6 0%, #0a1f6e 55%, #050b28 100%); }
+  .blog-art.a3 { background: linear-gradient(135deg, #6aa4ff 0%, #2f63e0 50%, #12307f 100%); }
+  .blog-art.a4 { background: linear-gradient(135deg, #0a1f6e 0%, #1b4fd6 60%, #4a8dff 100%); }
+
+  /* Case-study photography. Each engagement leads with a real photograph of
+     its sector rather than the gradient panel alone - but under a brand scrim
+     and partly desaturated, so eight photographs from eight different sources
+     still read as one set and as part of this site. It also means a warm
+     source (the sunset pylon) and a cold one (the green hospital corridor)
+     land in the same key instead of fighting each other.
+
+     The .aN gradient underneath is deliberately kept: it is what shows if a
+     photo ever fails to load, so the panel degrades to what it used to be. */
+  .case-art-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Natural colour since 8 Sep 2026 - the blue scrim and the partial
+       desaturation that unified the set were removed on request ("get rid
+       of blue tint"). */
+  }
+
+  .case-art-scrim {
+    position: absolute;
+    inset: 0;
+    /* Neutral, not brand blue: a light darkening towards the corners so
+       the eight photographs still sit as one set without a colour cast. */
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0.06) 50%, rgba(0, 0, 0, 0.36) 100%);
+  }
+
+
+  /* The art panel leading the blog detail modal and the standalone blog
+     pages. Shorter than the 16/10 grid card so it introduces the article
+     without pushing the heading below the fold in a dialog. */
+  .blog-modal-art { margin-bottom: 22px; }
+  .blog-modal-art:empty { display: none; }
+  .blog-modal-art .blog-art { aspect-ratio: 16 / 6; border-radius: 14px; }
+
+  /* Shorter on a phone. At 16/6 the photograph took a third of the first
+     screen before the title had even appeared; 16/4.5 keeps it as a header
+     band rather than the page's subject. The scrim and desaturation are what
+     make a shallow crop still read - they are doing the work, not the area. */
+  @media (max-width: 640px) {
+    .blog-modal-art { margin-bottom: 16px; }
+    .blog-modal-art .blog-art { aspect-ratio: 16 / 4.5; border-radius: 12px; }
+  }
+
+  /* ---------- Footer ---------- */
+  /* A plain themed surface tone (not the artwork treatment tried and
+     reverted earlier), just enough to read as a distinct band rather than
+     blending into whatever plain --bg section sits above it. */
+  /* Same background as the rest of the page (black in dark, white in light)
+     so the footer marries up with the site rather than sitting in its own
+     tinted band — a brand-navy footer and a deeper-neutral band were both
+     tried and explicitly rejected. The single hairline is the *only*
+     intended division from the FAQ section above; keep it. */
+  /* Matches .footer-bottom's own 0.1 rule below rather than --hairline
+     (0.28), so the two horizontal lines in the footer read as one weight
+     instead of the top one shouting over the one above the copyright.
+     Written as a literal rather than by changing --hairline, which is
+     shared with buttons, pills, the theme toggle and .footer-social - all
+     of which need the stronger edge to stay legible as controls. */
+  footer {
+    position: relative;
+    background: var(--bg);
+    border-top: 1px solid rgba(var(--ink-rgb), 0.1);
+    overflow: hidden;
+  }
+
+  .footer-inner {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 70px var(--gutter) 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .footer-brand { max-width: 300px; }
+
+  .footer-logo { margin-bottom: 20px; }
+
+  .footer-logo .logo-mark { width: 107px; height: 26px; }
+
+  .footer-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    font-weight: 400;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+    margin-bottom: 14px;
+  }
+
+  .footer-address {
+    font-size: 12.5px;
+    line-height: 1.6;
+    font-weight: 400;
+    /* 0.4 measured 3.66:1 against black, below the 4.5:1 AA threshold. */
+    color: rgba(var(--ink-rgb), var(--ink-a-aa));
+    margin-bottom: 24px;
+  }
+
+  .footer-socials { display: flex; gap: 10px; }
+
+  .footer-socials a {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--hairline);
+    display: grid;
+    place-items: center;
+    color: rgba(var(--ink-rgb),0.85);
+  }
+
+  .footer-socials svg { width: 15px; height: 15px; }
+
+  .footer-cols {
+    display: flex;
+    gap: 64px;
+    flex-wrap: wrap;
+  }
+
+  .footer-col h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  /* Gap traded for per-link padding: the visual rhythm is near-identical
+     (~35px pitch vs 32px before) but each link is a ~35px tap target instead
+     of a 19px one. */
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+
+  /* Shared by real <a> anchors (in-page section links) and <button>s (service
+     and legal popups, the contact modal) so a visitor can't tell which
+     mechanism a given footer link uses — same block layout, same type
+     colour, no underline. The button reset (background/border/font/
+     text-align/cursor) is inert on <a> elements. */
+  .footer-col a,
+  .footer-col button {
+    display: block;
+    width: 100%;
+    padding: 8px 0;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: inherit;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+    text-decoration: none;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .footer-bottom {
+    max-width: var(--maxw);
+    margin: 56px auto 0;
+    padding: 22px var(--gutter);
+    border-top: 1px solid rgba(var(--ink-rgb),0.1);
+    font-size: 13px;
+    /* 0.45 measured 4.41:1 against black, just under the 4.5:1 AA threshold. */
+    color: rgba(var(--ink-rgb), var(--ink-a-aa));
+  }
+
+  @media (max-width: 700px) {
+    .footer-inner { flex-direction: column; }
+    .footer-cols { gap: 40px; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; }
+  }
+
+  /* ---------- Contact Modal ---------- */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    /* `visibility` (not just opacity) keeps the closed dialog's fields out of
+       the tab order. Without it every input stays keyboard-focusable. */
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+  }
+
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+    transition: opacity 0.2s ease, visibility 0s linear 0s;
+  }
+
+  .modal-panel {
+    position: relative;
+    width: 100%;
+    max-width: 780px;
+    background: var(--surface-2);
+    border: 1px solid rgba(var(--ink-rgb),0.14);
+    border-radius: 20px;
+    display: flex;
+    overflow: hidden;
+    transform: translateY(10px);
+    transition: transform 0.2s ease;
+    /* dvh tracks the browser chrome as it collapses, so the panel can never
+       compute taller than the space actually visible. */
+    max-height: calc(100vh - 48px);
+    max-height: calc(100dvh - 48px);
+  }
+
+  .modal-overlay.open .modal-panel { transform: translateY(0); }
+
+  .modal-close {
+    position: absolute;
+    /* Icon-only, so this has no visible effect today — set so the button
+       can't fall back to a UA default if it ever gains a text label. */
+    font-family: 'DM Sans', sans-serif;
+    top: 18px;
+    right: 18px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(var(--ink-rgb),0.06);
+    border: 1px solid rgba(var(--ink-rgb),0.14);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1;
+  }
+
+  .modal-close svg { width: 14px; height: 14px; }
+
+  /* Left: plain black brand panel with the step tracker. */
+  .modal-aside {
+    flex: 0 0 250px;
+    background: var(--surface);
+    border-right: 1px solid rgba(var(--ink-rgb),0.1);
+    padding: 40px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .modal-aside h2 {
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .modal-aside .modal-sub {
+    font-size: 13px;
+    line-height: 1.55;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+  }
+
+  .modal-steps {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    transition: background 0.2s ease;
+  }
+
+  .modal-step.active { background: rgba(var(--ink-rgb),0.07); }
+
+  .modal-step .step-num {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11.5px;
+    font-weight: 700;
+    background: rgba(var(--ink-rgb),0.08);
+    border: 1px solid rgba(var(--ink-rgb),0.16);
+    color: rgba(var(--ink-rgb), var(--ink-a-mid));
+  }
+
+  .modal-step.active .step-num { background: var(--text); border-color: var(--text); color: var(--surface-2); }
+  .modal-step.done .step-num { background: var(--brand-fill); border-color: transparent; color: #fff; }
+
+  .modal-step .step-label {
+    font-size: 13px;
+    font-weight: 600;
+    /* 0.42 measured 3.95:1 against the panel, below the 4.5:1 AA threshold. */
+    color: rgba(var(--ink-rgb), var(--ink-a-aa));
+  }
+
+  .modal-step.active .step-label,
+  .modal-step.done .step-label { color: rgba(var(--ink-rgb),0.92); }
+
+  /* Right: the form itself. */
+  .modal-main {
+    flex: 1;
+    min-width: 0;
+    padding: 40px;
+    overflow-y: auto;
+  }
+
+  .modal-main h2 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .modal-main .modal-sub {
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+    margin-bottom: 26px;
+  }
+
+  .form-step { display: none; }
+  .form-step.active { display: block; }
+
+  .modal-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .modal-field { margin-bottom: 16px; }
+
+  .modal-field label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: rgba(var(--ink-rgb),0.7);
+    margin-bottom: 7px;
+  }
+
+  .modal-field-optional {
+    font-weight: 400;
+    color: rgba(var(--ink-rgb), var(--ink-a-mid));
+  }
+
+  .modal-field input,
+  .modal-field textarea {
+    width: 100%;
+    background: var(--field-bg);
+    border: 1px solid rgba(var(--ink-rgb),0.16);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    resize: none;
+    appearance: none;
+  }
+
+  .modal-field input::placeholder,
+  .modal-field textarea::placeholder { color: rgba(var(--ink-rgb),0.32); }
+
+  /* Overrides .modal-field input's width:100%/appearance:none above (higher
+     specificity), which would otherwise stretch the checkbox into an
+     invisible full-width box rather than a normal native control. */
+  .modal-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .modal-checkbox input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    accent-color: var(--blue);
+    appearance: auto;
+    -webkit-appearance: auto;
+    cursor: pointer;
+  }
+
+  .modal-checkbox span {
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+  }
+
+  .modal-checkbox a { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
+
+  .modal-field input:focus-visible,
+  .modal-field textarea:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+    border-color: var(--blue);
+  }
+
+  .modal-panel:focus { outline: none; }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .modal-back,
+  .modal-next,
+  .modal-submit {
+    flex: 1;
+    background: var(--brand-fill);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .modal-back {
+    flex: 0 0 auto;
+    padding: 13px 22px;
+    background: rgba(var(--ink-rgb),0.08);
+    border: 1px solid rgba(var(--ink-rgb),0.16);
+    color: var(--text);
+  }
+
+  .modal-back[hidden],
+  .modal-submit[hidden] { display: none; }
+
+  .modal-success {
+    display: none;
+    text-align: center;
+    padding: 30px 0 8px;
+  }
+
+  .modal-success svg {
+    width: 40px;
+    height: 40px;
+    color: var(--brand-ink-2);
+    margin: 0 auto 18px;
+  }
+
+  .modal-success h2 { margin-bottom: 8px; }
+
+  .modal-success p {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+  }
+
+  .modal-panel.sent .modal-form,
+  .modal-panel.sent .modal-main > h2,
+  .modal-panel.sent .modal-main > .modal-sub,
+  /* The step tracker describes a flow that is finished once the form is sent. */
+  .modal-panel.sent .modal-steps { display: none; }
+
+  .modal-panel.sent .modal-success { display: block; }
+
+  .modal-done {
+    margin-top: 24px;
+    background: var(--brand-fill);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 30px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .step-counter {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: rgba(var(--ink-rgb), var(--ink-a-low));
+    margin-bottom: 10px;
+  }
+
+  .modal-panel.sent .step-counter { display: none; }
+
+  /* ---------- Service detail modal: reuses .modal-overlay / .modal-panel /
+     .modal-close from the contact modal above; single-column content only. ---------- */
+  .service-panel { max-width: 640px; }
+
+  /* Same scrollbar-gutter/right-padding treatment as .case-modal-body above,
+     so both popup families sit the same relative to .modal-close instead of
+     drifting depending on which one happens to need a scrollbar. */
+  /* Same flex fill as .case-modal-body - see the note there. */
+  .service-modal-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 44px 52px 40px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+
+  .service-modal-eyebrow { margin-bottom: 18px; max-width: calc(100% - 30px); }
+
+  .service-modal-body h2 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+
+  .service-modal-intro {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(var(--ink-rgb),0.78);
+    margin-bottom: 28px;
+  }
+
+  .service-modal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 32px;
+  }
+
+  .service-modal-item {
+    padding-top: 18px;
+    border-top: 1px solid rgba(var(--ink-rgb),0.12);
+  }
+
+  .service-modal-item:first-child { padding-top: 0; border-top: none; }
+
+  /* Legal clauses are set via textContent with literal \n between numbered
+     sub-clauses (safer than innerHTML for static data), so this is what turns
+     those characters into visible line breaks. Scoped to the legal modal only
+     — Services/Case Studies/Blog reuse .service-modal-item with plain single-
+     paragraph text and don't need it. */
+  #legalModalList .service-modal-item p { white-space: pre-line; }
+
+  /* ---------- Badge detail modal ----------
+     Reuses .service-panel / .service-modal-body / .service-modal-eyebrow /
+     .service-modal-intro (see the Learn More popups). The Accreditations
+     strip itself is now a plain written list (see .accred-chip), but the
+     popup still shows the real original artwork — a plain <img> pointed at
+     assets/badges/*.png. */
+  .badge-panel { max-width: 420px; }
+
+  .badge-modal-body { text-align: center; }
+
+  .badge-modal-visual-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 128px;
+    margin-bottom: 24px;
+  }
+
+  #badgeModalVisual {
+    max-width: 100%;
+    max-height: 128px;
+    width: auto;
+    height: auto;
+  }
+
+  /* Every mark except G-Cloud has its own ink colour (ISO blue, the Cyber
+     Essentials shield fill) and reads fine on any surface. G-Cloud's only
+     published asset is white line-art on a transparent background — shown
+     plainly it vanishes against the modal's light-theme white panel. A
+     permanent dark plate (not theme-dependent) keeps it legible in both
+     themes without altering the artwork itself, mirroring how DigiBlu's own
+     site only ever shows this mark on a black band. */
+  .badge-modal-visual-wrap.on-dark-plate {
+    background: #0a0e1a;
+    border-radius: 12px;
+    padding: 18px 26px;
+  }
+
+  /* ---------- Team member profile modal ----------
+     Opened from the Our Experts strip, same pattern as the accreditation
+     chips. Reuses .service-panel and the badge modal's centred layout; the
+     photo reuses the .tp-* background classes from the strip itself so the
+     headshot paths live in exactly one place. */
+  .team-panel { max-width: 460px; }
+
+  .team-modal-body { text-align: center; }
+
+  .team-modal-photo {
+    display: block;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background-size: 190%;
+    background-position: center center;
+    filter: grayscale(1);
+    box-shadow: 0 0 0 1px rgba(var(--ink-rgb), 0.16);
+  }
+
+  .team-modal-body h2 { margin-bottom: 4px; }
+
+  .team-modal-role {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+    margin-bottom: 18px;
+  }
+
+  /* Centred, like the photo, name and role above it. It was left-aligned
+     under a centred heading and read as pushed to one side (reported on the
+     badge dialog, 8 Sep 2026; the two share the layout). */
+  .team-modal-body .service-modal-intro { text-align: center; }
+
+  .badge-modal-body h2 { margin-bottom: 10px; }
+  .badge-modal-body .service-modal-intro { margin-bottom: 0; text-align: center; }
+
+  .service-modal-item h3 {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .service-modal-item p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: rgba(var(--ink-rgb),0.72);
+  }
+
+  .service-modal-footer {
+    padding-top: 24px;
+    border-top: 1px solid rgba(var(--ink-rgb),0.12);
+  }
+
+  @media (max-width: 640px) {
+    .modal-panel { flex-direction: column; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto; }
+    .modal-aside { flex: none; border-right: none; border-bottom: 1px solid rgba(var(--ink-rgb),0.1); padding: 30px 28px; }
+    .modal-steps { flex-direction: row; margin-top: 20px; }
+    .modal-step { flex-direction: column; text-align: center; gap: 6px; flex: 1; }
+    .modal-step .step-label { font-size: 11px; }
+    .modal-field-row { grid-template-columns: 1fr; gap: 0; }
+    .service-modal-body { padding: 32px 34px 28px 24px; }
+
+    /* The contact form goes full screen on a phone rather than sitting in a
+       card. Reported as clunky to scroll, with fields seeming to be missing
+       when they were not - which is what the card does: it is a short box
+       inside the viewport, the whole panel scrolls as one (see the rule
+       above), and the on-screen keyboard shrinks what is left until only a
+       field or two is visible with no sign there is more.
+
+       Two changes fix it. The panel fills the screen, so the scrollable area
+       is as tall as the device allows. And the panel itself stops scrolling -
+       .modal-main becomes the scroll container instead, so the header and its
+       step tracker stay put while the fields move under them, which is what
+       tells you where you are in the form.
+
+       min-height: 0 is required, not tidiness: a flex child defaults to
+       min-height: auto and will refuse to shrink below its content, so
+       .modal-main would grow the panel instead of scrolling inside it. */
+    #contactModal { padding: 0; }
+
+    #contactModal .modal-panel {
+      width: 100%;
+      max-width: none;
+      height: 100vh;
+      height: 100dvh;
+      max-height: 100dvh;
+      border: none;
+      border-radius: 0;
+      overflow: hidden;
+    }
+
+    #contactModal .modal-aside { flex: 0 0 auto; }
+
+    #contactModal .modal-main {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    /* The eyebrow pill is the only content that reaches the panel's top-right
+       corner, where .modal-close sits (32px wide, inset 18px). The max-width
+       that keeps it clear of the X lives on the base rule now (applies at
+       every width, not just here) — this breakpoint just buys back some
+       density on small screens with smaller type once it wraps. */
+    .case-modal-eyebrow,
+    .service-modal-eyebrow {
+      font-size: 10.5px;
+      padding: 5px 11px;
+      letter-spacing: 1.1px;
+    }
+  }
+
+  /* ---------- Breakpoints ---------- */
+  @media (max-width: 1100px) {
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 900px) {
+    /* Tighten the whole vertical rhythm at once rather than per section, so
+       the scale stays the single source of spacing. */
+    :root { --section-y: 56px; --head-gap: 36px; }
+    .nav-center { display: none; }
+    .nav-toggle { display: flex; }
+    nav { position: relative; }
+
+    /* Icon only, no wordmark, so the bar stays uncluttered next to the
+       hamburger. Done by cropping the existing single lockup mask rather
+       than shipping a second asset: `auto 100%` scales the mask by height
+       and lets it overflow the 32px box, which `left center` anchors to the
+       circular mark (the mark occupies the first 24.3% of the 313x76 mask,
+       = 30px once the mask is 30px tall). Re-derive the width if the mask
+       is ever regenerated. */
+    .logo-mark {
+      width: 32px;
+      -webkit-mask-size: auto 100%;
+      mask-size: auto 100%;
+    }
+
+    /* Only the theme toggle moves into the menu — the CTA stays in the bar
+       beside the hamburger, since there is room for it and it is the page's
+       primary action. */
+    .nav-right .theme-toggle { display: none; }
+
+    .mobile-menu-actions { display: flex; }
+
+    /* Steps the lockup down at mobile. Same exact-aspect rule as the base:
+       28 x 4.1184 = 115.3. The 15px here is the *box* gap, not the optical
+       one - the h1's cap-top sits 6.76px below its line box (half-leading
+       plus the font's ascender-to-cap gap at 42px/1.06), so it renders as
+       ~22px of real whitespace between the mark's ink and the headline's
+       caps, about 0.75x the cap height. Re-measure that offset if the h1
+       type scale changes; the box value alone is misleading.
+
+       background-color must be var(--text), NOT currentColor: .hero pins
+       --text to white for everything on its photo, but `color` is computed
+       on body from the *root's* --text (near-black in light theme) and
+       merely inherits down, so currentColor resolved to near-black and the
+       mark vanished against the dark hero art in light mode. Referencing
+       the variable from this element re-resolves it against .hero's pinned
+       white. (The base rule above carries the same var(--text) for this
+       reason - do not "simplify" either to currentColor.) */
+    .hero-logo {
+      width: 115.3px;
+      height: 28px;
+      margin-bottom: 15px;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .services-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 620px) {
+    .hero-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 18px;
+    }
+    .hero-bottom p { font-size: 17px; }
+  }
+
+  /* ---------- Standalone content pages (case studies / blog / legal) ----------
+     Generated by generate-static-pages.js so each has a real, crawlable URL —
+     see CLAUDE.md. They reuse the homepage nav/footer chrome and the modals'
+     own content classes (.case-modal-*, .service-modal-*, .blog-full-text)
+     directly, since those are already theme-aware (rgba(var(--ink-rgb),...)),
+     not tied to sitting inside a dark .modal-panel specifically. */
+
+  /* .logo / .theme-toggle / .nav-toggle hardcode white because on the homepage
+     nav always sits on .hero's dark photo background regardless of theme.
+     These standalone pages have no hero behind their nav, so on a real (not
+     forced-dark) page background that white would be illegible in light
+     theme — same bug category as the mobile-menu fix above, different fix:
+     these three set a literal colour rather than reading --ink-rgb, so
+     redefining a variable on this wrapper would not reach them. */
+  .page-header .logo,
+  .page-header .theme-toggle,
+  .page-header .nav-toggle {
+    color: var(--text);
+  }
+
+  .detail-page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: var(--section-y) var(--gutter);
+  }
+
+  /* The page title is an <h1> here (these are real standalone pages, unlike
+     the modals where the same content sits under the homepage's own h1).
+     Without this rule it fell back to the browser default h2/h1 styling —
+     wrong size, no bottom margin — since every other heading rule on the
+     site is scoped to a specific section (.blog h2, .cases h2, ...) and
+     none of them match inside .detail-page. Sized a step above the modal's
+     26px because it's a page title rather than a panel title. */
+  .detail-page h1 {
+    font-size: clamp(26px, 3.4vw, 34px);
+    line-height: 1.18;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  /* `flex` rather than `inline-flex`, with the width shrunk to the label so
+     the link is still only as wide as its own text. As an inline box it sat
+     on the same line as the eyebrow pill that follows it, so the pill read
+     as a sibling of the back link rather than as the page's own category
+     label. Block-level puts the pill on its own line beneath, which is where
+     it belongs. */
+  .detail-back {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(var(--ink-rgb), var(--ink-a-high));
+    text-decoration: none;
+    margin-bottom: 18px;
+  }
+
+  .detail-back svg { width: 14px; height: 14px; }
+  .detail-back:hover { color: var(--text); }
