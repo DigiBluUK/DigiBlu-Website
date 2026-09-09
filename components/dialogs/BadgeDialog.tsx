@@ -10,7 +10,7 @@ export default function BadgeDialog() {
             </button>
             <div className="service-modal-body badge-modal-body">
               <div className="badge-modal-visual-wrap" id="badgeModalVisualWrap">
-                <img id="badgeModalVisual" src="" alt="" />
+                <img id="badgeModalVisual" alt="" />
               </div>
               {/* No eyebrow pill here. It read "Accreditation", which the badge
                    title below already says, and being forced to display:block in
