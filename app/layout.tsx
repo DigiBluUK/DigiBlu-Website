@@ -30,12 +30,15 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: TITLE, description: SOCIAL, images: ["assets/og-image.jpg"] },
   icons: {
-    // SVG first: it carries a prefers-color-scheme query so the tab icon
-    // follows the browser's theme. The PNG is the fallback and the touch icon.
+    // The mark on the brand sweep, one look in both themes, as large as the
+    // plate allows (9 Sep 2026). SVG first; the PNG is the fallback and the
+    // touch icon; the ICO carries 16/32/48/256 for the browsers and the
+    // Windows taskbar that still ask for /favicon.ico.
     icon: [
       { url: "/assets/favicon.svg", type: "image/svg+xml" },
       { url: "/assets/favicon.png", type: "image/png" },
     ],
+    shortcut: "/favicon.ico",
     apple: "/assets/favicon.png",
   },
 };
