@@ -39,7 +39,13 @@ export type ConsentConfig = {
 
 export const consentConfig: ConsentConfig = {
   siteName: "DigiBlu",
-  gaMeasurementId: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-XXXXXXXXXX",
+  // From the environment only, no fallback (10 Sep 2026): the production
+  // value (G-RVNLDVSLJ8, the "digiblu.com" web stream) is set in Cloudflare's
+  // build variables and in .env.local for local testing. Empty means the
+  // banner offers no Analytics category and nothing from Google ever loads,
+  // which is what a preview should do; next.config.ts warns at build time
+  // so production cannot ship without it unnoticed.
+  gaMeasurementId: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "",
   categories: { analytics: true, marketing: false },
   storage: { mechanism: "localStorage", key: "digiblu_consent", expiresAfterDays: 182 },
   revision: 1,

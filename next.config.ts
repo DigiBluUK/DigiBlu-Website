@@ -50,6 +50,14 @@ const securityHeaders = [
 // so. Production leaves it unset.
 const NOINDEX = process.env.NEXT_PUBLIC_ROBOTS === "noindex";
 
+// Analytics is opt-in and comes only from the environment. A production build
+// without the measurement id still builds, offers no Analytics category and
+// loads nothing from Google - correct for a preview, a silent gap for the
+// live site - so say so loudly at build time.
+if (!process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && process.env.NODE_ENV === "production" && !NOINDEX) {
+  console.warn("\n[digiblu] NEXT_PUBLIC_GA_MEASUREMENT_ID is not set: this build offers no Analytics category and sends nothing to Google Analytics. Set it in the build variables for production.\n");
+}
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   // Plain <img> throughout, as the old site; no image optimisation service.
