@@ -30,3 +30,6 @@ content/.generated/
 .env
 .env.local
 .env.*.local
+
+# TypeScript incremental build cache (npx tsc --noEmit writes it)
+*.tsbuildinfo
