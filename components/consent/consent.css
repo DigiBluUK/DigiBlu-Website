@@ -82,3 +82,21 @@
   text-transform: uppercase;
   opacity: 0.8;
 }
+
+/* The library gives the category blocks the BUTTON radius. With the site's
+   pill buttons (999px) an expanded block became pill-shaped and, because
+   its description wrapper clips overflow, the description, the table
+   caption and the first and last table columns were cut off at the curved
+   corners (reported 10 Sep 2026). The blocks take the site's 10px card
+   radius; the buttons keep the pill. */
+#cc-main .pm__section,
+#cc-main .pm__section--toggle,
+#cc-main .pm__section--toggle .pm__section-title {
+  border-radius: 10px;
+}
+#cc-main .pm__section--toggle.is-expanded .pm__section-title {
+  border-radius: 10px 10px 0 0;
+}
+#cc-main .pm__section--toggle .pm__section-desc-wrapper {
+  border-radius: 0 0 10px 10px;
+}
