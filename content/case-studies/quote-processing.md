@@ -4,7 +4,7 @@ client: "Mobility equipment manufacturer"
 sector: "Healthcare"
 service: "Artificial Intelligence"
 title: "Automating supplier quote processing with Generative AI"
-order: 3
+order: 4
 featured: 3
 photo: "/assets/case-studies/quote-processing.jpg"
 ogImage: "/assets/og/case-studies/quote-processing.jpg"

@@ -4,7 +4,7 @@ client: "Northwest University"
 sector: "Education"
 service: "Process Excellence"
 title: "Streamlining HR and payroll integration through automation"
-order: 7
+order: 8
 featured: 0
 photo: "/assets/case-studies/northwest.jpg"
 ogImage: "/assets/og/case-studies/northwest.jpg"

@@ -4,7 +4,7 @@ client: "Cedar Creek Church"
 sector: "Faith & Community"
 service: "Digital Solutions"
 title: "Modernising operational requests with Jotform"
-order: 4
+order: 5
 featured: 0
 photo: "/assets/case-studies/cedar-creek.jpg"
 ogImage: "/assets/og/case-studies/cedar-creek.jpg"

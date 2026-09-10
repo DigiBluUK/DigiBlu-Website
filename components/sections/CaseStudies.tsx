@@ -9,7 +9,7 @@ export default function CaseStudies() {
           <h2>Where our work<br />has made a difference</h2>
 
           {/* Real client engagements, sourced from digiblu.com/case-studies. The
-               three shown here are the featured set; the full nine live in the
+               three shown here are the featured set; the full ten live in the
                CASE_STUDIES object in the script below and open via "View all". */}
 
           <div className="case-list">
@@ -37,17 +37,17 @@ export default function CaseStudies() {
             <article className="case">
               <div className="case-grid">
                 <div>
-                <span className="case-client">AssuranceSD</span>
-                <h3 className="case-headline">Transforming FMS services with digital onboarding</h3>
+                <span className="case-client">Safari Destinations</span>
+                <h3 className="case-headline">Building a strategic partnership for AI transformation</h3>
                 </div>
                 <div>
-                  <p className="case-body">Applying for government funding ran on paper, and it was hardest on the elderly and disabled applicants it exists to help. We built a secure web application with Jotform forms and e-signatures, so applications are completed and signed online with fewer errors and faster approvals.</p>
+                  <p className="case-body">Supplier rates, traveller information and management reporting ran on email, spreadsheets and manual data entry. As AI transformation partner to Safari Destinations we digitised those processes, replaced Excel reporting with business intelligence, and now run a managed service that keeps improving them.</p>
                   <div className="case-tags">
-                    <span className="case-tag">Paper-free applications</span>
-                    <span className="case-tag">Fewer errors and resubmissions</span>
-                    <span className="case-tag">Multi-state US coverage</span>
+                    <span className="case-tag">AI transformation partnership</span>
+                    <span className="case-tag">Multiple processes digitised</span>
+                    <span className="case-tag">Ongoing managed service</span>
                   </div>
-                  <a href="/case-studies/assurancesd" className="case-read-more" data-case="assurancesd">
+                  <a href="/case-studies/safari-destinations" className="case-read-more" data-case="safari-destinations">
                     Read more
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </a>
@@ -80,7 +80,7 @@ export default function CaseStudies() {
           <div className="cases-actions">
             <button type="button" className="case-viewall-btn" id="caseViewAll">
               View all case studies
-              <span className="case-count">(9)</span>
+              <span className="case-count">(10)</span>
             </button>
           </div>
           </div>

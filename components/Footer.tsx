@@ -67,6 +67,7 @@ export default function Footer({ standalone = false }: { standalone?: boolean })
                   <li><a href="/legal/modern-slavery-policy" data-legal="slavery">Modern Slavery Policy</a></li>
                   <li><a href="/legal/carbon-reduction-plan" data-legal="carbon">Carbon Reduction Plan</a></li>
                   <li><a href="/legal/armed-forces-covenant" data-legal="armed-forces">Armed Forces Covenant</a></li>
+                  <li><a href="/legal/accessibility-statement" data-legal="accessibility">Accessibility Statement</a></li>
                   <li><CookieSettingsLink /></li>
                 </ul>
               </div>

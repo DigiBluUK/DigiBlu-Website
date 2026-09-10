@@ -6,20 +6,22 @@ const { buildContent } = require("./build-content.cjs");
 // these assert what it builds, which is what every page reads.
 const c = buildContent();
 
-test("case studies: nine, ordered, sectioned, three featured in card order", () => {
+test("case studies: ten, ordered, sectioned, three featured in card order", () => {
   const all = c.caseStudies;
-  assert.equal(all.length, 9);
-  assert.equal(all[2].key, "quote-processing");
+  assert.equal(all.length, 10);
+  assert.equal(all[1].key, "safari-destinations");
+  assert.equal(all[3].key, "quote-processing");
   assert.equal(all[0].key, "sse-ovo");
   assert.deepEqual(all[0].sections.map((s) => s.heading), ["Overview", "The problem", "What we did", "Outcome"]);
   assert.match(all[0].sections[0].html, /^<p>OVO, one of the UK/);
   assert.equal(all[0].stats.length, 3);
   assert.equal(all[0].quote.cite, "Jon Willicombe, Head of Early-Stage Collections - OVO");
-  assert.deepEqual(all.filter((x) => x.featured > 0).sort((a, b) => a.featured - b.featured).map((x) => x.key), ["sse-ovo", "assurancesd", "quote-processing"]);
+  assert.deepEqual(all.filter((x) => x.featured > 0).sort((a, b) => a.featured - b.featured).map((x) => x.key), ["sse-ovo", "safari-destinations", "quote-processing"]);
 });
 
-test("legal: five by slug, sub-clauses on their own lines, no autolinks", () => {
-  assert.equal(c.legalDocs.length, 5);
+test("legal: six by slug, sub-clauses on their own lines, no autolinks", () => {
+  assert.equal(c.legalDocs.length, 6);
+  assert.equal(c.legalDocs[5].slug, "accessibility-statement");
   const privacy = c.legalDocs.find((d) => d.slug === "privacy-policy");
   assert.equal(privacy.title, "Privacy Policy");
   assert.equal(privacy.intro, "Last updated August 2026.");

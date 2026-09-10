@@ -4,8 +4,8 @@ client: "AssuranceSD"
 sector: "Financial Management Services"
 service: "Digital Solutions"
 title: "Transforming FMS services with digital onboarding"
-order: 2
-featured: 2
+order: 3
+featured: 0
 photo: "/assets/case-studies/assurancesd.jpg"
 ogImage: "/assets/og/case-studies/assurancesd.jpg"
 stats:
