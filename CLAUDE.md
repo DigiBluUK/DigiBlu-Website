@@ -263,7 +263,7 @@ There are six `.modal-overlay` dialogs: `#contactModal`, `#serviceModal`, `#case
 
 **Per-engagement share cards**: each case study has its own 1200x630 card (`assets/og/case-studies/<key>.jpg`); blog and legal pages fall back to the site-wide `og-image.jpg`. `pageHead()` takes optional `ogImage`/`ogImageAlt`, and the alt text follows the image so a card naming one case study is never announced on another page.
 
-**Favicon** is the real DigiBlu mark (`assets/favicon.png`), emitted as both `icon` and `apple-touch-icon`.
+**Favicon: the real DigiBlu mark in the light-theme ink (#0d1117) on a white rounded plate since 10 Sep 2026** - a dark disc with the db knocked out to white, the way the header logo reads in light theme - `public/assets/favicon.svg` (listed first), `favicon.png` (256, also the apple touch icon) and `public/favicon.ico` (16/32/48/256, PNG-in-ICO), all made by `scratchpad/favicon-dark.cjs` with `sharp` from the one vector trace at the same 90% fit. It was the white mark on the brand sweep from 9 Sep 2026 (asked for as "the logo with the dark blue background, as large as possible") and theme-aware before that; the sweep version was replaced on request ("not the white filled in the circle"), with the attached reference showing the dark disc on white.
 
 An SEO audit was run and its findings prioritised into a to-do list before any of it was actioned (the user explicitly asked for research first, action second). Two items have been done; the rest are tracked in Known follow-ups below.
 
