@@ -4,7 +4,7 @@ client: "Old Mutual"
 sector: "Financial Services"
 service: "TOM"
 title: "Designing, deploying and scaling an automation Centre of Excellence"
-order: 8
+order: 9
 featured: 0
 photo: "/assets/case-studies/old-mutual.jpg"
 ogImage: "/assets/og/case-studies/old-mutual.jpg"

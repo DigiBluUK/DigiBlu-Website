@@ -12,13 +12,14 @@ components/            Server components for the markup; components/behaviours/ 
 content/               The authored content as markdown with front matter (case studies, services, legal, team, accreditations)
 lib/                   Site constants (lib/site.ts) and the typed content loaders (lib/content.ts)
 public/assets/         Everything the pages reference: artwork, photography, logos, the font
+source/                The supplied team photographs the shipped headshots were made from
 scripts/               Build-time scripts and their tests (node --test)
 docs/                  Implementation plans and the sign-off checklist
 open-next.config.ts    Cloudflare Workers runtime via OpenNext
 wrangler.jsonc         Worker configuration (no account details yet)
 ```
 
-The old static site (`index.html`, `assets/`, `generate-static-pages.js`, the generated `case-studies/` and `legal/` folders, `digiblu-site.html`) is still in the tree as the reference the port was checked against. It is retired at cut-over; see the runbook in `CLAUDE.md`.
+The original hand-built static site was retired from the tree on 10 September 2026; `v2.2.0` is the first release without it, and everything up to `v2.1.0` still carries it in git history.
 
 ## Working on it
 
@@ -48,7 +49,7 @@ Cookie consent is `lib/consent/` plus `components/consent/`: vanilla-cookieconse
 | `dev` | Integration and UAT. Day-to-day work lands here. |
 | `main` | Production: the release that is live. Only moves at a release, which is tagged. |
 
-Releasing is a merge of `dev` into `main` plus a version tag. `v1.0.0` is the original static site; `v2.0.0` is the Next.js rebuild.
+Releasing is a merge of `dev` into `main` plus a version tag. `v1.0.0` is the original static site; `v2.0.0` is the Next.js rebuild; `v2.2.0` retires the old site's files from the tree.
 
 ## Status
 

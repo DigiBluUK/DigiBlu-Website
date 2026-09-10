@@ -1,20 +1,10 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-# GitHub language statistics (Linguist). The old static site and the
-# generated files are kept in the tree as the port's reference until
-# cut-over; without these they read as a 6MB HTML project.
-index.html linguist-vendored
-digiblu-site.html linguist-generated
-case-studies/*.html linguist-generated
-legal/*.html linguist-generated
-generate-static-pages.js linguist-vendored
-sitemap.xml linguist-generated
-robots.txt linguist-generated
+# GitHub language statistics (Linguist): generated and vendored files stay
+# out of the language count so the repository reads as TypeScript.
 app/globals.css linguist-generated
-assets/site.css linguist-vendored
 content/lattice.json linguist-generated
 public/** linguist-vendored
-assets/** linguist-vendored
 docs/** linguist-documentation
 *.md linguist-documentation

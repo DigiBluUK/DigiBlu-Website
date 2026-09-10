@@ -6,15 +6,16 @@ const { buildContent } = require("./build-content.cjs");
 // these assert what it builds, which is what every page reads.
 const c = buildContent();
 
-test("case studies: eight, ordered, sectioned, three featured in card order", () => {
+test("case studies: nine, ordered, sectioned, three featured in card order", () => {
   const all = c.caseStudies;
-  assert.equal(all.length, 8);
+  assert.equal(all.length, 9);
+  assert.equal(all[2].key, "quote-processing");
   assert.equal(all[0].key, "sse-ovo");
   assert.deepEqual(all[0].sections.map((s) => s.heading), ["Overview", "The problem", "What we did", "Outcome"]);
   assert.match(all[0].sections[0].html, /^<p>OVO, one of the UK/);
   assert.equal(all[0].stats.length, 3);
   assert.equal(all[0].quote.cite, "Jon Willicombe, Head of Early-Stage Collections - OVO");
-  assert.deepEqual(all.filter((x) => x.featured > 0).sort((a, b) => a.featured - b.featured).map((x) => x.key), ["sse-ovo", "assurancesd", "cedar-creek"]);
+  assert.deepEqual(all.filter((x) => x.featured > 0).sort((a, b) => a.featured - b.featured).map((x) => x.key), ["sse-ovo", "assurancesd", "quote-processing"]);
 });
 
 test("legal: five by slug, sub-clauses on their own lines, no autolinks", () => {

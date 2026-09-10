@@ -9,7 +9,7 @@ export default function CaseStudies() {
           <h2>Where our work<br />has made a difference</h2>
 
           {/* Real client engagements, sourced from digiblu.com/case-studies. The
-               three shown here are the featured set; the full eight live in the
+               three shown here are the featured set; the full nine live in the
                CASE_STUDIES object in the script below and open via "View all". */}
 
           <div className="case-list">
@@ -58,17 +58,17 @@ export default function CaseStudies() {
             <article className="case">
               <div className="case-grid">
                 <div>
-                <span className="case-client">Cedar Creek Church</span>
-                <h3 className="case-headline">Modernising operational requests with Jotform</h3>
+                <span className="case-client">National mobility solutions provider</span>
+                <h3 className="case-headline">Automating supplier quote processing with Generative AI</h3>
                 </div>
                 <div>
-                  <p className="case-body">Payments, facilities, room bookings, events and maintenance requests ran on paper, spreadsheets and email. We designed and launched six Jotform workflows in three weeks, with validation, approvals and notifications built in, so every request is captured consistently and is fully auditable.</p>
+                  <p className="case-body">Supplier quotations arrive in every format, and each one had to be read, matched against the original specification and resolved by hand. We combined Generative AI, document processing and workflow automation so routine cases resolve themselves within defined business rules, with exceptions routed to a purpose-built reconciliation app for human review.</p>
                   <div className="case-tags">
-                    <span className="case-tag">6 processes digitised</span>
-                    <span className="case-tag">3 weeks to production</span>
-                    <span className="case-tag">Fully auditable workflows</span>
+                    <span className="case-tag">AI-powered quote processing</span>
+                    <span className="case-tag">End-to-end automation</span>
+                    <span className="case-tag">Human-in-the-loop exceptions</span>
                   </div>
-                  <a href="/case-studies/cedar-creek" className="case-read-more" data-case="cedar-creek">
+                  <a href="/case-studies/quote-processing" className="case-read-more" data-case="quote-processing">
                     Read more
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </a>
@@ -80,7 +80,7 @@ export default function CaseStudies() {
           <div className="cases-actions">
             <button type="button" className="case-viewall-btn" id="caseViewAll">
               View all case studies
-              <span className="case-count">(8)</span>
+              <span className="case-count">(9)</span>
             </button>
           </div>
           </div>

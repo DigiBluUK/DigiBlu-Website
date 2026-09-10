@@ -517,12 +517,16 @@
     font-size: 14px;
     font-weight: 400;
     border-radius: 7px;
-    padding: 7px 14px;
+    padding: 8px 15px;
     cursor: pointer;
     white-space: nowrap;
     background: var(--brand-fill);
     color: #fff;
-    border: 1px solid transparent;
+    /* No border at all (10 Sep 2026). It was 1px transparent, and over the
+       hero art the transparent ring let the bright bands through at the
+       edge, which read as an outline around the button. Padding grew by
+       the 1px it had so the button keeps its size. */
+    border: 0;
   }
 
   .theme-toggle {
@@ -1856,7 +1860,9 @@
     gap: 8px;
     padding: 7px 14px;
     background: var(--brand-fill);
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    /* No ring (10 Sep 2026): the faint white border read as an outline on
+       the sweep and was asked off. The pill is its fill alone now. */
+    border: 0;
     border-radius: 999px;
   }
 
@@ -1897,9 +1903,11 @@
     margin: 28px 0;
     padding: 20px 22px;
     background: rgba(var(--ink-rgb), 0.05);
+    /* Flat brand blue, both themes (10 Sep 2026). The --brand-ink sweep it
+       carried is the family's bright end in dark theme, and beside the navy
+       stat pills that read as an off-brand light blue. A 3px rule cannot
+       show a gradient anyway, and the fill's navy end is 1.4:1 on black. */
     border-left: 3px solid var(--blue);
-    border-image-source: var(--brand-ink);
-    border-image-slice: 1;
     border-radius: 0 12px 12px 0;
   }
 

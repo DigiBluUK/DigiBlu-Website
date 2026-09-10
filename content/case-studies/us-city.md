@@ -4,7 +4,7 @@ client: "Major US city agency"
 sector: "Public Sector"
 service: "Digital Solutions"
 title: "Digitising intake at emergency humanitarian relief centers"
-order: 7
+order: 8
 featured: 0
 photo: "/assets/case-studies/us-city.jpg"
 ogImage: "/assets/og/case-studies/us-city.jpg"

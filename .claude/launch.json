@@ -2,15 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "digiblu-static",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["-y", "http-server", ".", "-p", "4173", "-c-1"],
-      "port": 4173
-    },
-    {
       "name": "digiblu-next",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["next", "dev"],
+      "runtimeArgs": [
+        "next",
+        "dev"
+      ],
       "port": 3000,
       "autoPort": true
     }

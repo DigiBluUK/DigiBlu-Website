@@ -4,7 +4,7 @@ client: "Global healthcare workforce provider"
 sector: "Healthcare"
 service: "Digital Solutions"
 title: "Halving onboarding time for a 30,000-strong healthcare workforce"
-order: 5
+order: 6
 featured: 0
 photo: "/assets/case-studies/healthcare.jpg"
 ogImage: "/assets/og/case-studies/healthcare.jpg"

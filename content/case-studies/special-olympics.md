@@ -4,7 +4,7 @@ client: "Special Olympics Canada"
 sector: "Non-profit"
 service: "Digital Solutions"
 title: "Simplifying funding applications for life-changing sport programs"
-order: 4
+order: 5
 featured: 0
 photo: "/assets/case-studies/special-olympics.jpg"
 ogImage: "/assets/og/case-studies/special-olympics.jpg"
