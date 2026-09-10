@@ -1430,6 +1430,18 @@
      the layout and the fact that nothing collapses. The buttons stay in the
      markup for the phone column and do nothing here; hover still tints. */
   @media (min-width: 761px) {
+    /* Bottom padding 40px here, not --section-y (72px), so the gap from
+       the values to Our experts reads as the standard boundary. Measured
+       10 Sep 2026 at 2173px: the last row's copy ends 31px above its own
+       box (the 64px numeral sets the row height and the copy is two lines
+       at wide widths), the hairlines sit on TOP of each value so the block
+       has no closing edge, and row two leaves its third cell empty - so the
+       standard 144px box-to-box read as ~175px of air and was reported as
+       too big. At 40px the copy-to-pill distance is 143px, the standard,
+       and the numeral-to-pill 118px. Desktop only: the phone column trims
+       its own last item and was not reported. */
+    .about { padding-bottom: 40px; }
+
     .value-list {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
