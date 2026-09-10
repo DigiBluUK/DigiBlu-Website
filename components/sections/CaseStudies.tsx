@@ -27,7 +27,7 @@ export default function CaseStudies() {
                     <span className="case-tag">100% policy compliant</span>
                   </div>
                   <a href="/case-studies/sse-ovo" className="case-read-more" data-case="sse-ovo">
-                    Read more
+                    Read more<span className="sr-only">: automating complicated customer service interactions</span>
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </a>
                 </div>
@@ -48,7 +48,7 @@ export default function CaseStudies() {
                     <span className="case-tag">Ongoing managed service</span>
                   </div>
                   <a href="/case-studies/safari-destinations" className="case-read-more" data-case="safari-destinations">
-                    Read more
+                    Read more<span className="sr-only">: building a strategic partnership for AI transformation</span>
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </a>
                 </div>
@@ -69,7 +69,7 @@ export default function CaseStudies() {
                     <span className="case-tag">Human-in-the-loop exceptions</span>
                   </div>
                   <a href="/case-studies/quote-processing" className="case-read-more" data-case="quote-processing">
-                    Read more
+                    Read more<span className="sr-only">: automating supplier quote processing with Generative AI</span>
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </a>
                 </div>

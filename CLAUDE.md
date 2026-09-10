@@ -70,6 +70,20 @@ Done on `dev` ahead of go-live, from the outstanding-items review:
 - **Housekeeping**: `.env`, `.env.local` and `.env.*.local` are ignored (`.env.example` is committed); `Nick-original-with-background.png`, a raw original moved into the team folder in error and mirrored into `public/`, is deleted from both.
 - **Dependency advisories**: production dependencies have none. Four highs sit in build tooling only, one chain through `sharp` inside wrangler/miniflare, never shipped to a browser or the Worker; npm's suggested fix downgrades wrangler, which is not sensible - update wrangler when a clean release lands.
 
+## Lighthouse (10 Sep 2026)
+
+Run against a local production build (`next build` + `next start -p 3100`, Lighthouse 12.8.2, Chrome headless, default mobile throttling and the desktop preset) on the home page, a case study and a legal page, then again after fixes:
+
+| Page | Perf mobile | Perf desktop | Accessibility | Best practices | SEO |
+|---|---|---|---|---|---|
+| Home | 91 | 100 | 100 | 100 | 100 |
+| Case study (SSE / OVO) | 96 | 100 | 100 | 100 | 100 |
+| Legal (Accessibility Statement) | 98 | 100 | 100 | 100 | 100 |
+
+**Fixed from the first run** (accessibility 98, SEO 92 on the home page, best practices 96 on the case page): (1) **heading order** - the footer column headings were `h4` after an `h2`, now `h3`, and the standalone pages' section headings were `h3` under an `h1`, now `h2` via a `heading` prop on `components/Markdown.tsx` (the dialogs keep `h3` under their `h2`); the `.case-section` / `.service-modal-item` / `.footer-col` heading rules cover both tags. (2) **link text** - the three "Read more" links now carry their case study's title in a visually hidden `.sr-only` span, so the link text is descriptive for search engines and screen readers without changing what is drawn. (3) The console 404 on the case page was the not-yet-downloaded photograph of the page under test, nothing else.
+
+**Known and accepted: on a phone the first-visit cookie banner is the Largest Contentful Paint.** The banner arrives with the JavaScript (about 2.8-3.5s under Lighthouse's simulated slow 4G) and its description paragraph out-measures the hero headline, so mobile performance reads 91 on the home page; on desktop, and for any returning visitor whose choice is stored, the headline is the LCP and the score is 100. The description was shortened on this pass (it was five lines on a phone) but still wins on area; the remaining lever is less client JavaScript (`unused-javascript` reports ~450ms across the Next chunks, the consent library and the seventeen behaviours), which is a cut-over-plus item, not a go-live one.
+
 ## Cut-over runbook
 
 When DigiBlu signs the preview off. Nothing here has been done yet.

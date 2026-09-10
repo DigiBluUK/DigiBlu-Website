@@ -82,7 +82,7 @@ export function initConsent() {
   const sections: CookieConsent.Section[] = [
     {
       title: "Your choices",
-      description: `We keep this simple. The site needs a little storage to work and to remember the choices you make here. Beyond that, we only measure how the site is used if you let us, and we do no advertising or marketing tracking at all. You can change your mind any time from Cookie settings in the footer. Details are in our ${privacy}${cookies}.`,
+      description: `This site stores only what it needs to work and to remember your choices. We measure how it is used only if you let us, and never track you for advertising. Change your mind any time from Cookie settings in the footer. Details are in our ${privacy}${cookies}.`,
     },
     {
       title: "Necessary",

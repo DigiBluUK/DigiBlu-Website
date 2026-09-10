@@ -131,6 +131,21 @@
     --text: #ffffff;
   }
 
+  /* Visually hidden, still read out and still link text (10 Sep 2026): the
+     three "Read more" links carry their case study's title this way so the
+     link text is descriptive without changing what is drawn. */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
   .skip-link {
     position: absolute;
     left: -9999px;
@@ -1884,6 +1899,7 @@
 
   .case-section { margin-bottom: 22px; }
 
+  .case-section h2,
   .case-section h3 {
     font-size: 11px;
     font-weight: 700;
@@ -3006,7 +3022,7 @@
     flex-wrap: wrap;
   }
 
-  .footer-col h4 {
+  .footer-col h3 {
     font-size: 13px;
     font-weight: 700;
     color: var(--text);
@@ -3510,6 +3526,7 @@
   .badge-modal-body h2 { margin-bottom: 10px; }
   .badge-modal-body .service-modal-intro { margin-bottom: 0; text-align: center; }
 
+  .service-modal-item h2,
   .service-modal-item h3 {
     font-size: 14.5px;
     font-weight: 700;

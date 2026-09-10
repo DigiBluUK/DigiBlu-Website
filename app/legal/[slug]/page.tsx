@@ -57,7 +57,7 @@ export default async function LegalPage({ params }: { params: Promise<{ slug: st
           <h1>{d.title}</h1>
           <p className="service-modal-intro">{d.intro}</p>
           <div className="service-modal-list">
-            <Markdown sections={d.sections} itemClass="service-modal-item" />
+            <Markdown sections={d.sections} itemClass="service-modal-item" heading="h2" />
           </div>
         </div>
       </main>

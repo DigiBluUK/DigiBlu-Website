@@ -39,7 +39,7 @@ export default function Footer({ standalone = false }: { standalone?: boolean })
                  real policy content plus a link out to the authoritative page. */}
             <div className="footer-cols">
               <div className="footer-col">
-                <h4>Services</h4>
+                <h3>Services</h3>
                 <ul>
                   {SERVICES.map(([key, name]) => (
                     <li key={key}>
@@ -50,7 +50,7 @@ export default function Footer({ standalone = false }: { standalone?: boolean })
               </div>
 
               <div className="footer-col">
-                <h4>Company</h4>
+                <h3>Company</h3>
                 <ul>
                   <li><a href="/#hero-content">Home</a></li>
                   <li><a href="/#case-studies">Case Studies</a></li>
@@ -60,7 +60,7 @@ export default function Footer({ standalone = false }: { standalone?: boolean })
               </div>
 
               <div className="footer-col">
-                <h4>Legal</h4>
+                <h3>Legal</h3>
                 <ul>
                   <li><a href="/legal/website-terms-of-use" data-legal="terms">Terms of Use</a></li>
                   <li><a href="/legal/privacy-policy" data-legal="privacy">Privacy Policy</a></li>

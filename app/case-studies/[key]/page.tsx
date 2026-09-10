@@ -81,7 +81,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ key:
               </div>
             ))}
           </div>
-          <Markdown sections={c.sections} itemClass="case-section" />
+          <Markdown sections={c.sections} itemClass="case-section" heading="h2" />
           {c.quote && (
             <figure className="case-modal-quote">
               <p>{c.quote.text}</p>
