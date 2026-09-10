@@ -70,7 +70,7 @@ export default function ContactDialog() {
                   <div className="modal-field modal-consent">
                     <label className="modal-checkbox">
                       <input type="checkbox" id="cf-consent" required />
-                      <span>I agree to DigiBlu's <a href="legal/privacy-policy.html" data-legal="privacy" target="_blank" rel="noopener">Privacy Policy</a> and consent to being contacted about my enquiry.</span>
+                      <span>I agree to DigiBlu's <a href="/legal/privacy-policy" data-legal="privacy" target="_blank" rel="noopener">Privacy and Cookies Policy</a> and consent to being contacted about my enquiry.</span>
                     </label>
                   </div>
                 </div>

@@ -1,10 +1,10 @@
 ---
 key: "privacy"
 slug: "privacy-policy"
-title: "Privacy Policy"
+title: "Privacy and Cookies Policy"
 url: "https://www.digiblu.com/privacy-policy"
-intro: "Last updated August 2026."
-description: "How DigiBlu UK Limited collects, stores and uses personal information from its website and enquiries: cookies, retention, your rights and how to complain."
+intro: "Last updated 10 September 2026."
+description: "How DigiBlu UK Limited collects, stores and uses personal information from its website and enquiries, the cookies and browser storage the site uses, your rights and how to complain."
 order: 2
 ---
 
@@ -69,16 +69,18 @@ If a dispute isn’t settled, We hope You will engage with Us in good-faith medi
 
 Information given to Us in Your capacity as an affiliate or business partner is used to recognise visitors You have referred to Us and to credit and transfer any commission due. It is not used for any other purpose, and We undertake to preserve its confidentiality - We expect any affiliate or partner to reciprocate.
 
-## 12. Cookies
+## 12. Cookies and Similar Storage
 
-Cookies are small text files placed on Your computer’s hard drive by Your browser when You visit a website, letting information gathered on one page be stored for use on another. Some last only for Your session; others last indefinitely. Your browser lets You delete or limit them.
-When You first visit Our website We ask whether You consent to cookies. If You decline, We won’t use them for Your visit except to record that You declined.
-We may use cookies to track how You use Our website, record whether You’ve seen specific messages, keep You signed in, record Your answers to surveys while You complete them, and record the conversation thread during a live chat with Our support team.
-If You choose not to use cookies, some functionality of Our website may not be available to You.
+Cookies are small text files a website stores on Your device. A website can also keep small items in Your browser’s local storage, which work in a similar way. This section sets out exactly what Our website stores and why.
+Storage the site needs to work. Our website keeps two items in Your browser’s local storage, and does not need Your consent for them: “digiblu_consent”, which records the choices You make in Our cookie banner so We do not ask You again (kept for six months); and “digiblu-theme”, which remembers whether You chose the light or dark look (set only if You use the theme button, and kept until You clear it). Neither is a cookie, neither tracks You, and neither is shared with anyone.
+Analytics cookies, only with Your permission. If You allow Analytics in Our cookie banner, We use Google Analytics 4, a service provided by Google, to see which parts of the site are read and how people arrive, so that We can improve it. Google Analytics then sets two cookies: “_ga”, which tells one visitor’s browser apart from another so that visits can be counted, and “_ga_RVNLDVSLJ8”, which keeps the state of the current visit. Both are kept for up to two years. They do not identify You to Us. Google processes this data under its own privacy policy, at policies.google.com/privacy. We have not switched on Google’s advertising features, and We do not share this data with other Google products.
+Nothing loads until You choose. When You first visit, Our cookie banner asks whether You allow Analytics. Until You answer, and if You reject, no Google code runs and no analytics cookie is set. Everything on the site works the same whether You accept or reject.
+Changing Your mind. You can change or withdraw Your choice at any time from “Cookie settings” in the footer of every page. Withdrawing Analytics stops Google Analytics immediately and deletes its cookies. Your browser also lets You view, block or delete cookies and local storage; if You clear them, We will ask You again on Your next visit.
+No advertising or marketing cookies. We do not use cookies for advertising, retargeting, social media tracking or profiling, and this website has no live chat, surveys or sign-in.
 
 ## 13. Personal Identifiers from Your Browsing Activity
 
-Requests by Your browser to Our servers for web pages and other content are recorded, including Your geographical location, internet service provider, IP address, and details of the device and software You use to browse. We use this information in aggregate to assess how popular Our webpages are and how We’re performing. If combined with other information We hold about You, this data could potentially identify You personally, even if You are not signed in.
+Each request Your browser makes for a page or a file passes through Our hosting provider, Cloudflare, which processes Your IP address and the details of Your browser and device in order to deliver the site, keep it secure and protect it from abuse. We may look at Cloudflare’s aggregate logs to check that the site is running and to investigate problems. We do not use this information to identify or profile individual visitors. Any measurement of how the site is used happens only through Google Analytics, and only with Your permission, as described in section 12.
 
 ## 14. Information We Obtain from Third Parties
 

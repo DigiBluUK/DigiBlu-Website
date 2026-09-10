@@ -53,7 +53,7 @@ export function initConsent() {
   if (started || typeof window === "undefined") return;
   started = true;
   const c = consentConfig;
-  const privacy = `<a href="${c.privacyPolicyUrl}">Privacy Policy</a>`;
+  const privacy = `<a href="${c.privacyPolicyUrl}">Privacy and Cookies Policy</a>`;
   const cookies = c.cookiePolicyUrl ? ` and <a href="${c.cookiePolicyUrl}">Cookie Policy</a>` : "";
 
   const categories: CookieConsent.CookieConsentConfig["categories"] = {
