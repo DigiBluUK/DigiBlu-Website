@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
+const os = require("node:os");
 const { readObjects, writeContent, frontMatter } = require("./extract-content.cjs");
 
 const root = path.join(__dirname, "..");
@@ -25,11 +26,17 @@ test("front matter round-trips any string through YAML", () => {
 
 test("writing the tree produces 33 files whose copy equals the source", () => {
   const o = readObjects(root);
-  const files = writeContent(root, o);
+  // Written to a temporary root, never the repository: content/ is the
+  // authored source now, and an extraction over it drops anything added
+  // since the migration (it took the legal documents' description fields
+  // with it on 10 Sep 2026) and churns every file's line endings.
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "digiblu-extract-"));
+  const files = writeContent(tmp, o);
   assert.equal(files.length, 33);
-  const sse = fs.readFileSync(path.join(root, "content/case-studies/sse-ovo.md"), "utf8");
+  const sse = fs.readFileSync(path.join(tmp, "content/case-studies/sse-ovo.md"), "utf8");
   assert.ok(sse.includes(JSON.stringify(o.CASE_STUDIES[0].title)));
   assert.ok(sse.includes("## Overview\n\n" + o.CASE_STUDIES[0].overview.split("\n")[0]));
-  const terms = fs.readFileSync(path.join(root, "content/legal/website-terms-of-use.md"), "utf8");
+  const terms = fs.readFileSync(path.join(tmp, "content/legal/website-terms-of-use.md"), "utf8");
   assert.ok(terms.includes("## " + o.LEGAL_DETAILS.terms.points[0].h + "\n\n" + o.LEGAL_DETAILS.terms.points[0].p));
+  fs.rmSync(tmp, { recursive: true, force: true });
 });

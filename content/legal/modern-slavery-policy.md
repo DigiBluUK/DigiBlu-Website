@@ -4,6 +4,7 @@ slug: "modern-slavery-policy"
 title: "Modern Slavery Policy"
 url: "https://www.digiblu.com/modern-slavery-policy"
 intro: "Last updated August 2026."
+description: "How DigiBlu UK Limited prevents slavery and human trafficking in its business and supply chains: policies, due diligence, risk assessment and training."
 order: 3
 ---
 

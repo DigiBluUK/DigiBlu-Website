@@ -4,6 +4,7 @@ slug: "privacy-policy"
 title: "Privacy Policy"
 url: "https://www.digiblu.com/privacy-policy"
 intro: "Last updated August 2026."
+description: "How DigiBlu UK Limited collects, stores and uses personal information from its website and enquiries: cookies, retention, your rights and how to complain."
 order: 2
 ---
 

@@ -4,6 +4,7 @@ slug: "website-terms-of-use"
 title: "Website Terms of Use"
 url: "https://www.digiblu.com/website-terms-of-use"
 intro: "Last updated August 2026."
+description: "The terms on which DigiBlu UK Limited makes its website available: access and acceptable use, intellectual property, liability, and law and jurisdiction."
 order: 1
 ---
 

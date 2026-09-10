@@ -4,6 +4,7 @@ slug: "armed-forces-covenant"
 title: "Armed Forces Covenant"
 url: "https://www.digiblu.com/armed-forces-covenant"
 intro: "Last signed 12 January 2026."
+description: "DigiBlu UK Limited's Armed Forces Covenant pledge and how the company demonstrates its commitment to the armed forces community."
 order: 5
 ---
 

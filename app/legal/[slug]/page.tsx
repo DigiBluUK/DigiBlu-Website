@@ -22,11 +22,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!d) return {};
   const title = `${d.title} | DigiBlu`;
   const url = `${SITE_ORIGIN}/legal/${d.slug}`;
+  // description is the front-matter summary of the document; intro is the
+  // "Last updated ..." line shown on the page, which is no description of
+  // anything in a search result (found in the 10 Sep 2026 metadata review).
+  const description = d.description || d.intro;
   return {
     title,
-    description: d.intro,
+    description,
     alternates: { canonical: url },
-    openGraph: { type: "website", siteName: "DigiBlu", title, description: d.intro, url },
+    openGraph: { type: "website", siteName: "DigiBlu", title, description, url },
   };
 }
 
@@ -37,7 +41,7 @@ export default async function LegalPage({ params }: { params: Promise<{ slug: st
     "@context": "https://schema.org",
     "@type": "WebPage",
     name: d.title,
-    description: d.intro,
+    description: d.description || d.intro,
     url: `${SITE_ORIGIN}/legal/${d.slug}`,
     isPartOf: { "@type": "WebSite", name: "DigiBlu", url: SITE_ORIGIN + "/" },
   };

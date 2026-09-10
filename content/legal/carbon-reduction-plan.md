@@ -4,6 +4,7 @@ slug: "carbon-reduction-plan"
 title: "Carbon Reduction Plan"
 url: "https://www.digiblu.com/carbon-reduction-plan"
 intro: "Last updated January 2026."
+description: "DigiBlu UK Limited's Carbon Reduction Plan: baseline and current emissions, the reduction target, and the carbon reduction projects under way."
 order: 4
 ---
 

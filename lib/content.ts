@@ -24,7 +24,7 @@ export type CaseStudy = {
   sections: Section[];
 };
 export type Service = { key: string; title: string; intro: string; order: number; sections: Section[] };
-export type LegalDoc = { key: string; slug: string; title: string; url: string; intro: string; order: number; sections: Section[] };
+export type LegalDoc = { key: string; slug: string; title: string; url: string; intro: string; description: string; order: number; sections: Section[] };
 export type TeamMember = { name: string; role: string; cls: string; photo: string; order: number; html: string };
 export type Accreditation = { key: string; title: string; img: string; onDark: boolean; order: number; html: string };
 
