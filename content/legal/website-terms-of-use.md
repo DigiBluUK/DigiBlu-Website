@@ -3,7 +3,7 @@ key: "terms"
 slug: "website-terms-of-use"
 title: "Website Terms of Use"
 url: "https://www.digiblu.com/website-terms-of-use"
-intro: "Last updated August 2026."
+intro: "Last updated 10 September 2026."
 description: "The terms on which DigiBlu UK Limited makes its website available: access and acceptable use, intellectual property, liability, and law and jurisdiction."
 order: 1
 ---
@@ -12,7 +12,7 @@ order: 1
 
 Please read these Terms and Conditions carefully and ensure that You understand them before using Our Site. If You do not agree to these Terms and Conditions, You must stop using Our Site immediately. These Terms and Conditions, together with any other documents referred to herein, set out the terms of use governing Your use of this website, www.digiblu.com (“Our Site”).
 Your agreement to comply with these Terms and Conditions is indicated by Your use of Our Site.
-The following documents also apply to Your use of Our Site: Our Privacy Policy, available on Our Site; and Our Cookie Policy, available on Our Site.
+The following document also applies to Your use of Our Site: Our Privacy and Cookies Policy, available on Our Site.
 
 ## 1. Definitions and Interpretation
 
@@ -22,7 +22,7 @@ The following documents also apply to Your use of Our Site: Our Privacy Policy, 
 
 ## 2. Information About Us
 
-Our Site is operated by DigiBlu, a company limited by shares registered in England and Wales under company number 12015792. Our registered office address is C/O CBHC Limited, Steeple House, Suite 3 First Floor, Church Lane, Chelmsford, Essex, CM1 2NH, UK.
+Our Site is operated by DigiBlu, a company limited by shares registered in England and Wales under company number 12015792. Our registered office address is C/O CBHC Limited, Steeple House, Suite 3 First Floor, Church Lane, Chelmsford, Essex, CM1 1NH, UK.
 Our VAT number is 327 8616 77.
 
 ## 3. How to Contact Us
@@ -101,7 +101,7 @@ We hereby exclude any and all liability arising out of any actions that We may t
 
 ## 15. How We Use Your Personal Information
 
-We will only use Your personal information as set out in Our Privacy Policy, available on Our Site.
+We will only use Your personal information as set out in Our Privacy and Cookies Policy, available on Our Site.
 
 ## 16. Communications from Us
 

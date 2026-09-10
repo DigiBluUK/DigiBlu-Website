@@ -32,14 +32,15 @@ needs one Bulk Redirect rule that enables the list.
   case study and goes to the case-studies section. A prefix rule catches
   any other `/our-projects/...` address.
 - **Blog and news** (`/blog`, `/post/...`, `/News/...`) go to the home
-  page. There is no blog or news section on the new site. **This is a
-  choice for DigiBlu**: a permanent redirect keeps any link equity and
-  sends a visitor somewhere useful, but Google treats a mass redirect to
-  the home page much like a "not found" for ranking purposes, so nothing
-  is gained in search terms. The alternatives are to let these addresses
-  return 404 (simplest, honest) or, if a news or insights section is
-  added later, to redirect each post to its new home then. If the
-  redirect stays, the three prefix rules cover all 31 addresses.
+  page. There is no blog or news section on the new site. **Settled with
+  DigiBlu on 10 September 2026**: a permanent redirect sends a visitor
+  from an old link somewhere useful and keeps any link equity, although
+  Google treats a mass redirect to the home page much like a "not found"
+  for ranking purposes, so nothing is gained in search terms. The
+  alternative, letting these addresses return 404, was offered and not
+  taken. If a news or insights section is added later, each post can be
+  redirected to its new home then. The three prefix rules cover all 31
+  addresses.
 
 ## Format notes
 
