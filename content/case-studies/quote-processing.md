@@ -1,7 +1,7 @@
 ---
 key: "quote-processing"
-client: "National mobility solutions provider"
-sector: "Manufacturing"
+client: "Mobility equipment manufacturer"
+sector: "Healthcare"
 service: "Artificial Intelligence"
 title: "Automating supplier quote processing with Generative AI"
 order: 3

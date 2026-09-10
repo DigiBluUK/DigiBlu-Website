@@ -58,7 +58,7 @@ export default function CaseStudies() {
             <article className="case">
               <div className="case-grid">
                 <div>
-                <span className="case-client">National mobility solutions provider</span>
+                <span className="case-client">Mobility equipment manufacturer</span>
                 <h3 className="case-headline">Automating supplier quote processing with Generative AI</h3>
                 </div>
                 <div>
