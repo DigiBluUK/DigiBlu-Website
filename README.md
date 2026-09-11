@@ -8,7 +8,7 @@ A Next.js 16 App Router site. Every page is prerendered at build time; the runti
 
 ```
 app/                   Routes: the home page, /services, /team, /accreditations, /case-studies and /case-studies/[key],
-                       /legal/[slug], /api/contact (the one dynamic route), sitemap, robots
+                       /legal/[slug], /contact, /api/contact (the one dynamic route), sitemap, robots
 components/            Server components for the markup; components/behaviours/ for the client-side behaviour
 content/               The authored content as markdown with front matter (case studies, services, legal, team, accreditations)
 lib/                   Site constants (lib/site.ts), the typed content loaders (lib/content.ts), the contact API's pieces (lib/contact/)

@@ -68,4 +68,12 @@ Preview URL: _(filled in when Cloudflare is connected; until then `http://localh
 
 ## Standalone pages
 
-- [ ] Every case-study page and legal page has its own title in the tab, the nav with a working theme button, a Back to home link, and a footer whose Services links go back to the home page.
+- [ ] Every case-study page and legal page has its own title in the tab, the nav with a working theme button, a Back to home link, and a footer whose Services links go to the services page and whose Contact Us goes to the contact page.
+
+## Pages under the dialogs, and the contact page (11 September 2026)
+
+- [ ] /services, /team, /accreditations and /case-studies open as pages with the same header and footer as a case-study page, in both themes, and read fully with JavaScript off.
+- [ ] On the home page a plain click on Learn more, an accreditation chip, View all case studies, a footer service link or Get in touch opens the dialog as before; a ctrl-click (cmd on a Mac) or a middle-click opens the matching page in a new tab instead.
+- [ ] The nav on a standalone page goes to /services, /case-studies and /team; the home page's own nav still scrolls to its sections.
+- [ ] /contact shows the two-step form in a panel; the steps, the phone filter, the consent gate and the Turnstile check behave exactly as in the dialog; Send request shows the confirmation; Done brings the empty form back.
+- [ ] A shared link to any page (paste into LinkedIn or Teams) shows that page's own title and card: the four listing pages and the contact page have their own, the legal pages the site-wide one.

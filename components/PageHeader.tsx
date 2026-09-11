@@ -6,12 +6,16 @@ export default function PageHeader() {
       <nav className="page-header">
           <a href="/#hero-content" className="logo" aria-label="DigiBlu, home"><span className="logo-mark" aria-hidden="true"></span></a>
 
+          {/* On the standalone pages the nav goes to the pages that exist
+               since 11 Sep 2026 (services, case studies, team) rather than
+               back to the home page's sections; the home page's own nav still
+               scrolls. About Us has no page of its own. */}
           <ul className="nav-center">
             <li><a href="/#hero-content">Home</a></li>
-            <li><a href="/#services">Services</a></li>
-            <li><a href="/#case-studies">Case Studies</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/case-studies">Case Studies</a></li>
             <li><a href="/#about">About Us</a></li>
-            <li><a href="/#team">Our Experts</a></li>
+            <li><a href="/team">Our Experts</a></li>
           </ul>
 
           <div className="nav-right">
@@ -38,10 +42,10 @@ export default function PageHeader() {
           <div className="mobile-menu" id="mobileMenu">
             <ul>
               <li><a href="/#hero-content">Home</a></li>
-              <li><a href="/#services">Services</a></li>
-              <li><a href="/#case-studies">Case Studies</a></li>
+              <li><a href="/services">Services</a></li>
+              <li><a href="/case-studies">Case Studies</a></li>
               <li><a href="/#about">About Us</a></li>
-              <li><a href="/#team">Our Experts</a></li>
+              <li><a href="/team">Our Experts</a></li>
               </ul>
             {/* Mirrors the homepage: below 900px only the theme toggle moves out
                  of the bar and into the menu (the CTA stays in the bar). No id on
