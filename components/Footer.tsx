@@ -41,9 +41,12 @@ export default function Footer({ standalone = false }: { standalone?: boolean })
               <div className="footer-col">
                 <h3>Services</h3>
                 <ul>
+                  {/* Real links to the services page since 11 Sep 2026; on the
+                       home page ServiceDialog.jsx opens the dialog on a plain
+                       click, keyed by data-service, and elsewhere they navigate. */}
                   {SERVICES.map(([key, name]) => (
                     <li key={key}>
-                      {standalone ? <a href="/#services">{name}</a> : <button type="button" data-service={key}>{name}</button>}
+                      <a href={`/services#${key}`} data-service={key}>{name}</a>
                     </li>
                   ))}
                 </ul>
@@ -55,6 +58,7 @@ export default function Footer({ standalone = false }: { standalone?: boolean })
                   <li><a href="/#hero-content">Home</a></li>
                   <li><a href="/#case-studies">Case Studies</a></li>
                   <li><a href="/#about">About Us</a></li>
+                  <li><a href="/team">Our Experts</a></li>
                       <li>{standalone ? <a href="/#contact">Contact Us</a> : <button type="button" className="js-contact-open">Contact Us</button>}</li>
                 </ul>
               </div>

@@ -13,12 +13,13 @@ needs one Bulk Redirect rule that enables the list.
 
 - **Services** (`/ai-artificial-intelligence`, `/digital-solutions`,
   `/process-excellence`, `/target-operating-model`,
-  `/opportunity-discovery`, `/post-implementation-services`) go to
-  `/#services`. The new site presents the six services as cards with a
-  detail dialog each, not as separate pages.
+  `/opportunity-discovery`, `/post-implementation-services`) go to the
+  matching anchor on `/services` (`#ai`, `#digital`, `#process`, `#tom`,
+  `#discovery`, `#post`), the page that carries every service in full
+  since 11 September 2026.
 - **About** (`/about-us`, `/about-us-1`) go to `/#about`; the leadership
   page (`/about-digiblu`) and every `/leadership-team/<name>` profile go to
-  `/#team`. Four of the eight old profiles are people no longer on the
+  `/team`, the page with every bio (since 11 September 2026). Four of the eight old profiles are people no longer on the
   team page (Tarryn Chetty, Will Ells, Michael Cobbledick, Steve Burke) and
   one is a placeholder ("you"); all of them land on the team section.
 - **Contact** (`/contact-us`) goes to `/#contact`, which opens the contact
@@ -29,8 +30,10 @@ needs one Bulk Redirect rule that enables the list.
   addresses (`%3A`, `%2C`) and two end in a trailing hyphen; the sources
   are given exactly as the sitemap publishes them. The eighth project
   (First National Bank, "Training for transformation") is no longer a
-  case study and goes to the case-studies section. A prefix rule catches
-  any other `/our-projects/...` address.
+  case study and goes to `/case-studies`, the index page (since 11
+  September 2026). A prefix rule catches any other `/our-projects/...`
+  address and sends it there too. The old `/case-studies` page itself
+  needs no row: the new site answers at the same address.
 - **Blog and news** (`/blog`, `/post/...`, `/News/...`) go to the home
   page. There is no blog or news section on the new site. **Settled with
   DigiBlu on 10 September 2026**: a permanent redirect sends a visitor

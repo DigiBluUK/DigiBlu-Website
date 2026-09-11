@@ -18,7 +18,8 @@ export default function ServiceDialog({ services }) {
       // Also opened by the footer's Services links (plain buttons, styled as
       // footer links rather than the card "Learn more" affordance, but they
       // carry the same data-service key so openModal() below needs no changes.
-      var openers = document.querySelectorAll('.service-learn-more, .footer-col button[data-service]');
+      // Both are real links to /services#key since 11 Sep 2026 (hand edit).
+      var openers = document.querySelectorAll('.service-learn-more, .footer-col [data-service]');
       var contactBtn = overlay.querySelector('.js-contact-open');
       var eyebrowEl = overlay.querySelector('#svcEyebrow');
       var titleEl = overlay.querySelector('#svcTitle');
@@ -86,8 +87,12 @@ export default function ServiceDialog({ services }) {
       }
 
       function openModal(e) {
+        // Real links since 11 Sep 2026 (/services#key): a modified click or
+        // a crawler gets the page, a plain click still opens the dialog.
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
         var key = e.currentTarget.getAttribute('data-service');
         if (!populate(key)) return;
+        e.preventDefault();
         lastFocused = document.activeElement;
         overlay.classList.add('open');
         document.body.style.overflow = 'hidden';

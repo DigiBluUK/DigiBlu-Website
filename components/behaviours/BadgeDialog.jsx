@@ -41,7 +41,12 @@ export default function BadgeDialog({ accreditations }) {
       if (!track) return;
       track.addEventListener('click', function (e) {
         var btn = e.target.closest('.accred-chip');
-        if (!btn || !populate(btn.dataset.badge)) return;
+        if (!btn) return;
+        // Real links since 11 Sep 2026 (/accreditations#key): a modified
+        // click or a crawler gets the page, a plain click opens the dialog.
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
+        if (!populate(btn.dataset.badge)) return;
+        e.preventDefault();
         // Focus is only restored to the real, tab-reachable copy; clicking a
         // duplicate leaves createModalController's default behaviour.
         modal.open(btn.getAttribute('tabindex') === '-1' ? undefined : btn);

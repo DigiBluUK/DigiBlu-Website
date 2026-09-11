@@ -113,6 +113,13 @@ export default function Team() {
               </span>
             </button>
           </div>
+
+          {/* The bios live on /team as a page since 11 Sep 2026; the strip's
+               slices are buttons (they expand and open the profile dialog),
+               so this is the crawlable way from the home page to the page. */}
+          <div className="cases-actions team-actions">
+            <a className="case-viewall-btn" href="/team">Read the full profiles</a>
+          </div>
         </section>
     </>
   );

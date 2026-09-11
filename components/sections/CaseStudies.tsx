@@ -78,10 +78,12 @@ export default function CaseStudies() {
           </div>
 
           <div className="cases-actions">
-            <button type="button" className="case-viewall-btn" id="caseViewAll">
+            {/* A real link to the index page since 11 Sep 2026; a plain
+                 click still opens the reader (CaseReader.jsx). */}
+            <a href="/case-studies" className="case-viewall-btn" id="caseViewAll">
               View all case studies
               <span className="case-count">(10)</span>
-            </button>
+            </a>
           </div>
           </div>
         </section>

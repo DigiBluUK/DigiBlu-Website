@@ -285,9 +285,13 @@ export default function CaseReader({ caseStudies }) {
 
       // "View all" opens the reader on whichever case study was last read
       // (the first, before any has been), with the list up front on mobile.
+      // A real link to /case-studies since 11 Sep 2026: modified clicks and
+      // crawlers get the index page, a plain click opens the reader.
       var viewAllBtn = document.getElementById('caseViewAll');
       if (viewAllBtn) {
-        viewAllBtn.addEventListener('click', function () {
+        viewAllBtn.addEventListener('click', function (e) {
+          if (isModified(e)) return;
+          e.preventDefault();
           openDetail(currentKey || caseStudies[0].key, viewAllBtn, true);
         });
       }
