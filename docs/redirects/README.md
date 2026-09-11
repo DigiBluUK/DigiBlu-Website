@@ -22,8 +22,9 @@ needs one Bulk Redirect rule that enables the list.
   `/team`, the page with every bio (since 11 September 2026). Four of the eight old profiles are people no longer on the
   team page (Tarryn Chetty, Will Ells, Michael Cobbledick, Steve Burke) and
   one is a placeholder ("you"); all of them land on the team section.
-- **Contact** (`/contact-us`) goes to `/#contact`, which opens the contact
-  dialog on load.
+- **Contact** (`/contact-us`) goes to `/contact`, the form's own page
+  (since 11 September 2026; before that `/#contact`, which opens the home
+  page's dialog on load and still works).
 - **Legal** pages keep their slugs under `/legal/`.
 - **Projects** (`/our-projects/<title>`) go to the matching
   `/case-studies/<key>` page. Wix encodes the punctuation in these

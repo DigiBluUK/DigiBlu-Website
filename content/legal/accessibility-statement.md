@@ -22,7 +22,7 @@ The two moving strips on the home page (our accreditations and our client logos)
 
 ## Feedback and contact information
 
-If you find a problem that is not listed here, or you need any content from this site in a different format, please tell us. You can use the contact form on our home page, or email us at vic.gysin@digiblu.com. Please describe the problem, the page it is on, and the browser or assistive technology you were using, and we will respond as quickly as we can.
+If you find a problem that is not listed here, or you need any content from this site in a different format, please tell us. You can use the contact form on this site (Get in touch, on every page), or email us at vic.gysin@digiblu.com. Please describe the problem, the page it is on, and the browser or assistive technology you were using, and we will respond as quickly as we can.
 
 ## Technical information about this website
 

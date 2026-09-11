@@ -7,18 +7,25 @@ import { once } from "@/lib/client/once";
 // mount against the server-rendered markup. Kept as JavaScript on purpose -
 // this is the old site's code, not a rewrite. Hand edits after generation
 // are allowed and are noted in the file where made.
+//
 // Hand edits (11 Sep 2026): the form posts to /api/contact, with a
 // Cloudflare Turnstile check on the last step, a honeypot and an error
-// line; see the Turnstile block below and the submit handler at the end.
-export default function ContactForm({ turnstileSiteKey }) {
+// line (see the Turnstile block and the submit handler); and the same
+// script wires two containers - the home page's dialog (#contactModal, an
+// overlay) and the form on /contact (#contactPage, a panel in the flow).
+// isDialog gates the overlay-only parts: openers, close, backdrop, Escape,
+// the focus trap and inert. rootId picks the container; the markup inside
+// is the same (components/ContactFormBody.tsx).
+export default function ContactForm({ turnstileSiteKey, rootId = 'contactModal' }) {
   useEffect(() => {
     once("contact-form", () => {
-      var overlay = document.getElementById('contactModal');
+      var overlay = document.getElementById(rootId);
       if (!overlay) return;
-      var panel = overlay.querySelector('.modal-panel');
+      var isDialog = overlay.classList.contains('modal-overlay');
+      var panel = isDialog ? overlay.querySelector('.modal-panel') : overlay;
       var form = overlay.querySelector('.modal-form');
       var closeBtn = overlay.querySelector('.modal-close');
-      var openers = document.querySelectorAll('.js-contact-open');
+      var openers = isDialog ? document.querySelectorAll('.js-contact-open') : [];
       var backBtn = overlay.querySelector('.modal-back');
       var nextBtn = overlay.querySelector('.modal-next');
       var submitBtn = overlay.querySelector('.modal-submit');
@@ -90,9 +97,9 @@ export default function ContactForm({ turnstileSiteKey }) {
 
       // Everything outside the dialog is made inert while it is open, so
       // neither Tab nor a screen reader can reach the page behind it.
-      var backgroundEls = [].filter.call(document.body.children, function (el) {
+      var backgroundEls = isDialog ? [].filter.call(document.body.children, function (el) {
         return el !== overlay && el.tagName !== 'SCRIPT';
-      });
+      }) : [];
 
       function setBackgroundInert(on) {
         backgroundEls.forEach(function (el) {
@@ -152,8 +159,23 @@ export default function ContactForm({ turnstileSiteKey }) {
         return true;
       }
 
+      // Back to the form view: a reopened dialog, or Done on the page, must
+      // not show the previous submission's success state or a stale step.
+      function resetForm() {
+        panel.classList.remove('sent');
+        if (form) form.reset();
+        resetTurnstile();
+        clearError();
+        showStep(1);
+      }
+
       function openModal(e) {
-        if (e) e.preventDefault();
+        if (e) {
+          // Real links to /contact since 11 Sep 2026: a modified click or a
+          // crawler gets the page, a plain click still opens the dialog.
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
+          e.preventDefault();
+        }
         lastFocused = document.activeElement;
         overlay.classList.add('open');
         document.body.style.overflow = 'hidden';
@@ -168,13 +190,7 @@ export default function ContactForm({ turnstileSiteKey }) {
         overlay.classList.remove('open');
         document.body.style.overflow = '';
         setBackgroundInert(false);
-        // Reset to the form view so a reopened modal doesn't show the
-        // previous submission's success state or a stale step.
-        panel.classList.remove('sent');
-        if (form) form.reset();
-        resetTurnstile();
-        clearError();
-        showStep(1);
+        resetForm();
         // Focus must leave the dialog, otherwise the browser keeps the subtree
         // visible (and focusable) while it still contains the active element.
         if (lastFocused && document.contains(lastFocused)) {
@@ -184,46 +200,47 @@ export default function ContactForm({ turnstileSiteKey }) {
         }
       }
 
-      openers.forEach(function (btn) {
-        btn.addEventListener('click', openModal);
-      });
+      if (isDialog) {
+        openers.forEach(function (btn) {
+          btn.addEventListener('click', openModal);
+        });
 
-      // The standalone case-study/blog/legal pages can't open this dialog
-      // directly (it only exists on the homepage), so their "Get in touch" and
-      // "Contact Us" links point at index.html#contact and this opens it on
-      // arrival. hashchange covers the link being followed while already here.
-      function openFromHash() {
-        if (window.location.hash === '#contact') openModal();
-      }
-      openFromHash();
-      window.addEventListener('hashchange', openFromHash);
-
-      closeBtn.addEventListener('click', closeModal);
-
-      overlay.addEventListener('click', function (e) {
-        if (e.target === overlay) closeModal();
-      });
-
-      document.addEventListener('keydown', function (e) {
-        if (!overlay.classList.contains('open')) return;
-
-        if (e.key === 'Escape') { closeModal(); return; }
-
-        // Focus trap: cycle Tab within the dialog.
-        if (e.key === 'Tab') {
-          var f = visibleFocusables();
-          if (!f.length) return;
-          var first = f[0];
-          var last = f[f.length - 1];
-          if (e.shiftKey && (document.activeElement === first || document.activeElement === panel)) {
-            e.preventDefault();
-            last.focus();
-          } else if (!e.shiftKey && document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-          }
+        // Links to /#contact (the redirect map's old contact address, and any
+        // link written before /contact existed) open the dialog on arrival.
+        // hashchange covers the link being followed while already here.
+        function openFromHash() {
+          if (window.location.hash === '#contact') openModal();
         }
-      });
+        openFromHash();
+        window.addEventListener('hashchange', openFromHash);
+
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+        overlay.addEventListener('click', function (e) {
+          if (e.target === overlay) closeModal();
+        });
+
+        document.addEventListener('keydown', function (e) {
+          if (!overlay.classList.contains('open')) return;
+
+          if (e.key === 'Escape') { closeModal(); return; }
+
+          // Focus trap: cycle Tab within the dialog.
+          if (e.key === 'Tab') {
+            var f = visibleFocusables();
+            if (!f.length) return;
+            var first = f[0];
+            var last = f[f.length - 1];
+            if (e.shiftKey && (document.activeElement === first || document.activeElement === panel)) {
+              e.preventDefault();
+              last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+              e.preventDefault();
+              first.focus();
+            }
+          }
+        });
+      }
 
       nextBtn.addEventListener('click', function () {
         if (currentStepIsValid() && currentStep < totalSteps) {
@@ -239,7 +256,11 @@ export default function ContactForm({ turnstileSiteKey }) {
         }
       });
 
-      doneBtn.addEventListener('click', closeModal);
+      // Done closes the dialog; on the page it brings the empty form back.
+      doneBtn.addEventListener('click', function () {
+        if (isDialog) closeModal();
+        else { resetForm(); focusFirstFieldOf(1); }
+      });
 
       // Posts to /api/contact (app/api/contact/route.ts), which validates,
       // verifies the Turnstile token and hands the enquiry on. Success shows
@@ -270,6 +291,10 @@ export default function ContactForm({ turnstileSiteKey }) {
           .catch(function () { showError(fallback); resetTurnstile(); })
           .then(function () { sending = false; submitBtn.disabled = false; submitBtn.textContent = label; });
       });
+
+      // The page's first step is the form itself, not a dialog waiting to
+      // open: set the step copy so the counter and buttons are right on load.
+      if (!isDialog) showStep(1);
     });
   }, []);
   return null;

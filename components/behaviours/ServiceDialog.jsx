@@ -60,8 +60,10 @@ export default function ServiceDialog({ services }) {
         var card = opener && opener.closest('.service-card');
         var numEl = card && card.querySelector('.service-num');
         if (numEl && numEl.textContent.trim()) return numEl.textContent.trim();
-        // Only reached if a service has no card on the page.
-        var i = Object.keys(SERVICES).indexOf(key) + 1;
+        // Only reached if a service has no card on the page. (Read the
+        // position off the services prop; the old script's SERVICES object
+        // does not exist here - found in the 11 Sep 2026 review.)
+        var i = services.findIndex(function (x) { return x.key === key; }) + 1;
         return (i < 10 ? '0' : '') + i;
       }
 

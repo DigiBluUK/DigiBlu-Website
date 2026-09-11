@@ -14,12 +14,12 @@ export default function ServiceDialog() {
               <p className="service-modal-intro" id="svcIntro"></p>
               <div className="service-modal-list" id="svcList"></div>
               <div className="service-modal-footer">
-                <button type="button" className="faq-cta-btn js-contact-open">
+                <a className="faq-cta-btn js-contact-open" href="/contact">
                   <span className="arrow-badge">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </span>
                   Discuss this service
-                </button>
+                </a>
               </div>
             </div>
           </div>

@@ -25,7 +25,7 @@ const canonical = (h) => { const m = h.match(/<link[^>]*rel="canonical"[^>]*href
 const title = (h) => { const m = h.match(/<title>([^<]*)<\/title>/); return m ? decode(m[1]) : null; };
 
 const pages = [
-  "/", "/services", "/team", "/accreditations", "/case-studies",
+  "/", "/services", "/team", "/accreditations", "/case-studies", "/contact",
   ...c.caseStudies.map((x) => "/case-studies/" + x.key),
   ...c.legalDocs.map((d) => "/legal/" + d.slug),
 ];
@@ -78,9 +78,17 @@ test("the listing pages carry the content the dialogs show", () => {
 
 test("the home page links to every listing page", () => {
   const h = html("/");
-  for (const href of ["/services#ai", "/services#post", "/accreditations#9001", "/case-studies", "/team"]) {
+  for (const href of ["/services#ai", "/services#post", "/accreditations#9001", "/case-studies", "/team", "/contact"]) {
     assert.ok(h.includes(`href="${href}"`), href);
   }
+});
+
+test("the contact page carries the form and the home page its dialog", () => {
+  const p = html("/contact");
+  for (const id of ["contactPage", "cf-first", "cf-email", "cf-consent", "cf-turnstile", "cf-website", "cf-error"]) assert.ok(p.includes(`id="${id}"`), "contact page: " + id);
+  assert.ok(!p.includes('id="contactModal"'), "contact page has no dialog overlay");
+  const h = html("/");
+  assert.ok(h.includes('id="contactModal"') && h.includes('id="cf-first"'), "home page keeps the dialog");
 });
 
 test("sitemap lists every page", () => {

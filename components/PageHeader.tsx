@@ -24,7 +24,7 @@ export default function PageHeader() {
                 <path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
               </svg>
             </button>
-            <a className="btn-signup" href="/#contact">Get in touch</a>
+            <a className="btn-signup" href="/contact">Get in touch</a>
             <button className="nav-toggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
               <svg className="icon-open" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>

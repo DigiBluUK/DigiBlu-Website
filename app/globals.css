@@ -1025,17 +1025,17 @@
      so the pulse crosses it as a wave instead of every dot breathing in
      lockstep. Buckets rather than a per-dot inline delay: 900 inline styles
      per figure is a lot of markup for the same result. */
-  .geo-flow .d0 { animation-delay: 0.0s; }
-  .geo-flow .d1 { animation-delay: -0.5s; }
-  .geo-flow .d2 { animation-delay: -1.0s; }
-  .geo-flow .d3 { animation-delay: -1.5s; }
-  .geo-flow .d4 { animation-delay: -2.0s; }
-  .geo-flow .d5 { animation-delay: -2.5s; }
-  .geo-flow .d6 { animation-delay: -3.0s; }
-  .geo-flow .d7 { animation-delay: -3.5s; }
-  .geo-flow .d8 { animation-delay: -4.0s; }
-  .geo-flow .d9 { animation-delay: -4.5s; }
-  .geo-flow .d10 { animation-delay: -5.0s; }
+  .geo-flow .d0 { animation-delay: 0.0s; }
+  .geo-flow .d1 { animation-delay: -0.5s; }
+  .geo-flow .d2 { animation-delay: -1.0s; }
+  .geo-flow .d3 { animation-delay: -1.5s; }
+  .geo-flow .d4 { animation-delay: -2.0s; }
+  .geo-flow .d5 { animation-delay: -2.5s; }
+  .geo-flow .d6 { animation-delay: -3.0s; }
+  .geo-flow .d7 { animation-delay: -3.5s; }
+  .geo-flow .d8 { animation-delay: -4.0s; }
+  .geo-flow .d9 { animation-delay: -4.5s; }
+  .geo-flow .d10 { animation-delay: -5.0s; }
   .geo-flow .d11 { animation-delay: -5.5s; }
 
   /* A field of several hundred dashes moving continuously is precisely what
@@ -3152,6 +3152,7 @@
     justify-content: center;
   }
 
+  .modal-aside h1,
   .modal-aside h2 {
     font-size: 21px;
     font-weight: 700;
@@ -3777,3 +3778,18 @@
   /* Off-screen rather than display:none: a hidden input is skipped by the
      scripts the honeypot exists to catch. Never reachable by a person. */
   .cf-hp { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+
+  /* ---------- /contact (11 Sep 2026) ----------
+     The dialog's panel, in the flow: same two columns, steps and success
+     state (.modal-panel and the .modal-* rules), minus the overlay's
+     constraints. Wider than .detail-page because the panel is two columns. */
+  .contact-page { max-width: 960px; margin: 0 auto; padding: var(--section-y) var(--gutter); }
+  .contact-page .detail-back { margin-bottom: 22px; }
+  .modal-panel.contact-panel { transform: none; max-height: none; overflow: visible; max-width: none; }
+  .contact-panel .modal-aside h1 { font-size: 26px; }
+  @media (max-width: 760px) {
+    .modal-panel.contact-panel { flex-direction: column; max-height: none; overflow: visible; }
+    .contact-panel .modal-aside { flex: 0 0 auto; }
+  }
+  /* Real links that used to be buttons (11 Sep 2026): no underline. */
+  a.btn-started, a.btn-signup { text-decoration: none; }
