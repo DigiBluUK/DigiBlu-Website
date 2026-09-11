@@ -2,11 +2,16 @@ import type { MetadataRoute } from "next";
 import { getCaseStudies, getLegalDocs } from "@/lib/content";
 import { SITE_ORIGIN } from "@/lib/site";
 
-// The home page plus every case study and legal document: fourteen URLs,
-// the same set generate-static-pages.js wrote to sitemap.xml.
+// The home page, the four listing pages (services, case studies, team,
+// accreditations, since 11 Sep 2026), every case study and every legal
+// document: twenty URLs.
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: SITE_ORIGIN + "/", changeFrequency: "monthly", priority: 1 },
+    { url: SITE_ORIGIN + "/services", changeFrequency: "monthly", priority: 0.8 },
+    { url: SITE_ORIGIN + "/case-studies", changeFrequency: "monthly", priority: 0.8 },
+    { url: SITE_ORIGIN + "/team", changeFrequency: "monthly", priority: 0.6 },
+    { url: SITE_ORIGIN + "/accreditations", changeFrequency: "yearly", priority: 0.5 },
     ...getCaseStudies().map((c) => ({ url: `${SITE_ORIGIN}/case-studies/${c.key}`, changeFrequency: "yearly" as const, priority: 0.7 })),
     ...getLegalDocs().map((d) => ({ url: `${SITE_ORIGIN}/legal/${d.slug}`, changeFrequency: "yearly" as const, priority: 0.3 })),
   ];

@@ -1,7 +1,8 @@
 @font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 100 1000; font-display: swap; src: url('/assets/dmsans.woff2') format('woff2'); }
 
   :root {
-    /* Tells the browser which way round its own native UI should render:
+
+    --error: #ff8080; /* form errors; 8.1:1 on black */    /* Tells the browser which way round its own native UI should render:
        scrollbars, form controls, spellcheck underlines. Without it the UA
        assumes light and paints a pale grey scrollbar over the dark page.
        Kept in step with the palette in all three theme states below. */
@@ -73,7 +74,8 @@
   }
 
   :root[data-theme="light"] {
-    color-scheme: light;
+
+    --error: #b3261e; /* 6.1:1 on white */    color-scheme: light;
     --ink-rgb: 13, 17, 23;
     --bg: #ffffff;
     --surface: #f6f7f9;
@@ -97,7 +99,8 @@
      so the theme works with JS disabled and honours an external toggle. */
   @media (prefers-color-scheme: light) {
     :root:not([data-theme="dark"]) {
-      color-scheme: light;
+
+      --error: #b3261e;      color-scheme: light;
       --ink-rgb: 13, 17, 23;
       --bg: #ffffff;
       --surface: #f6f7f9;
@@ -3736,3 +3739,33 @@
 
   .detail-back svg { width: 14px; height: 14px; }
   .detail-back:hover { color: var(--text); }
+
+  /* ---------- Listing pages (11 Sep 2026) ----------
+     /services, /team, /accreditations and /case-studies: the content the
+     home page's dialogs show, as real prerendered pages the dialogs now sit
+     over (the developer's pre-launch review: a dialog filled by script is
+     not crawlable). Same .detail-page frame as the case-study and legal
+     pages; the item styling reuses the dialog bodies' rules so a service on
+     the page and in the dialog are one design. scroll-margin-top keeps an
+     anchored item (/services#ai) clear of the fixed nav, using the same
+     --nav-h the nav script measures. */
+  .page-list { display: flex; flex-direction: column; gap: 44px; margin-top: 8px; }
+  .page-item { padding-top: 40px; border-top: 1px solid rgba(var(--ink-rgb), 0.12); scroll-margin-top: calc(var(--nav-h, 75px) + 26px); }
+  .page-item:first-child { padding-top: 0; border-top: none; }
+  .page-item h2 { font-size: 26px; font-weight: 700; letter-spacing: -0.4px; color: var(--text); margin-bottom: 10px; }
+  .page-item .service-modal-list { margin-bottom: 24px; }
+  .page-item .service-modal-intro:last-child { margin-bottom: 0; }
+  .team-page-item, .accred-page-item { display: flex; gap: 28px; align-items: flex-start; }
+  .team-page-item .team-modal-photo { margin: 0; flex-shrink: 0; }
+  .accred-page-visual { min-height: 0; margin: 0; width: 132px; flex-shrink: 0; justify-content: center; }
+  .accred-page-visual img { max-width: 100%; max-height: 96px; width: auto; height: auto; }
+  .accred-page-visual.on-dark-plate { padding: 14px 18px; }
+  .page-case-list { margin-top: 8px; }
+  .page-case-list .case-index-item { text-decoration: none; }
+  @media (max-width: 560px) {
+    .team-page-item, .accred-page-item { flex-direction: column; gap: 16px; }
+  }
+
+  /* Button-styled classes carried by <a> elements since 11 Sep 2026: the
+     home page's dialog openers are real links to the listing pages. */
+  a.accred-chip, a.case-viewall-btn, a.faq-cta-btn { text-decoration: none; }
