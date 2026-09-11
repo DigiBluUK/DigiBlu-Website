@@ -15,7 +15,7 @@ import PageBehaviours from "@/components/PageBehaviours";
 // reader's own row style, as real links.
 const TITLE = "Case Studies | DigiBlu";
 const DESCRIPTION =
-  "Ten client engagements where DigiBlu's work made a measurable difference, across energy, healthcare, travel, manufacturing, financial services and the public sector.";
+  "Ten client engagements where DigiBlu's work made a measurable difference, across energy, healthcare, travel, manufacturing, finance and the public sector.";
 const URL = `${SITE_ORIGIN}/case-studies`;
 const OG = "/assets/og/case-studies.jpg";
 

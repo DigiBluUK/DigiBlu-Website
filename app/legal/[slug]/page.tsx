@@ -26,11 +26,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // "Last updated ..." line shown on the page, which is no description of
   // anything in a search result (found in the 10 Sep 2026 metadata review).
   const description = d.description || d.intro;
+  // The site-wide card, named here explicitly: a page's openGraph block
+  // replaces the layout's rather than merging with it, so without this the
+  // legal pages shipped with no share image at all (found by
+  // scripts/pages.test.cjs, 11 Sep 2026).
+  const image = { url: "/assets/og-image.jpg", width: 1200, height: 630, type: "image/jpeg", alt: "DigiBlu - AI and Digital Transformation Consultancy" };
   return {
     title,
     description,
     alternates: { canonical: url },
-    openGraph: { type: "website", siteName: "DigiBlu", title, description, url },
+    openGraph: { type: "website", siteName: "DigiBlu", title, description, url, images: [image] },
+    twitter: { card: "summary_large_image", title, description, images: [image.url] },
   };
 }
 

@@ -24,6 +24,9 @@ jobs:
       - run: npm run build
         env:
           NEXT_PUBLIC_ROBOTS: noindex
+      # Over the prerendered output: metadata, canonicals, share-card files,
+      # the listing pages' content and the sitemap (11 Sep 2026).
+      - run: npm run test:pages
       - run: npm run build:cf
         env:
           NEXT_PUBLIC_ROBOTS: noindex

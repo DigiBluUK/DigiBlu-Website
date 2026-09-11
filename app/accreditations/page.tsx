@@ -12,7 +12,7 @@ import PageBehaviours from "@/components/PageBehaviours";
 // the strip's chips open. The chips link here (/accreditations#key).
 const TITLE = "Accreditations and Certifications | DigiBlu";
 const DESCRIPTION =
-  "The six certifications DigiBlu holds and what each one means: ISO 9001, ISO 14001, ISO 27001, ISO/IEC 42001, Cyber Essentials Plus and UK Government G-Cloud approved supplier.";
+  "The six certifications DigiBlu holds and what each means: ISO 9001, 14001, 27001 and 42001, Cyber Essentials Plus, and UK Government G-Cloud approved supplier.";
 const URL = `${SITE_ORIGIN}/accreditations`;
 const OG = "/assets/og/accreditations.jpg";
 

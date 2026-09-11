@@ -12,7 +12,7 @@ import PageBehaviours from "@/components/PageBehaviours";
 // content/team/*.md; the photo classes are the strip's own.
 const TITLE = "Our Experts | DigiBlu";
 const DESCRIPTION =
-  "Meet DigiBlu's leadership team: eight practitioners with client, technology and consultancy backgrounds, leading each practice area from strategy through delivery.";
+  "DigiBlu's leadership team: eight practitioners with client, technology and consultancy backgrounds, leading each practice area from strategy to delivery.";
 const URL = `${SITE_ORIGIN}/team`;
 const OG = "/assets/og/team.jpg";
 

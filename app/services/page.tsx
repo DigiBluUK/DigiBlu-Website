@@ -15,7 +15,7 @@ import PageBehaviours from "@/components/PageBehaviours";
 // which is the content order since the same day.
 const TITLE = "Services | DigiBlu";
 const DESCRIPTION =
-  "DigiBlu's six services in full: Artificial Intelligence, Opportunity Discovery, Process Excellence, Digital Solutions, Target Operating Model and Managed Services.";
+  "DigiBlu's six services: Artificial Intelligence, Opportunity Discovery, Process Excellence, Digital Solutions, Target Operating Model and Managed Services.";
 const URL = `${SITE_ORIGIN}/services`;
 const OG = "/assets/og/services.jpg";
 
