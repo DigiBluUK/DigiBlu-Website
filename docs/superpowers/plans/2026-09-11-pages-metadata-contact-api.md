@@ -49,7 +49,7 @@
 | `next.config.ts` | CSP admits `https://challenges.cloudflare.com` for scripts and frames; build-time warning when the site key is missing on a production build. |
 | `.env.example`, `.env.local` | Turnstile test keys; production notes. |
 | `app/sitemap.ts` | Four more URLs. |
-| `docs/redirects/wix-to-new-site.csv` | Old service, leadership, contact and project addresses point at the new pages. |
+| `docs/redirects/old-site-redirects.csv` | Old service, leadership, contact and project addresses point at the new pages. |
 | `scripts/contact.test.cjs` | Unit tests for the validator and the route handler (Turnstile mocked). |
 | `scripts/pages.test.cjs` | Post-build test over `.next/server/app/**.html`: metadata, canonical, share-card files, content presence, sitemap. |
 | `package.json`, `.github/workflows/ci.yml` | `test:pages` after the build. |
@@ -334,7 +334,7 @@ and update the comment to "twenty URLs".
 **Files:**
 - Modify: `components/sections/Services.tsx` (6 buttons), `components/sections/Accreditations.tsx` (12 buttons), `components/sections/CaseStudies.tsx` (View all), `components/sections/Team.tsx` (a link under the strip), `components/Footer.tsx` (services links, Our Experts)
 - Modify: `components/behaviours/ServiceDialog.jsx`, `BadgeDialog.jsx`, `CaseReader.jsx`
-- Modify: `docs/redirects/wix-to-new-site.csv`, `docs/redirects/README.md`
+- Modify: `docs/redirects/old-site-redirects.csv`, `docs/redirects/README.md`
 
 - [ ] **Step 1: Services cards** — each `<button type="button" className="service-learn-more" data-service="X">` becomes `<a href="/services#X" className="service-learn-more" data-service="X">` (closing tag too). Same for the two accreditation groups: `<button type="button" className="accred-chip" data-badge="K">` becomes `<a href="/accreditations#K" className="accred-chip" data-badge="K">`; the duplicate group keeps `tabIndex={-1}`. View all: `<a href="/case-studies" className="case-viewall-btn" id="caseViewAll">`. Team section: after the strip, add
 

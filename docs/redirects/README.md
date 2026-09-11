@@ -1,6 +1,6 @@
 # Redirects from the old Wix site
 
-`wix-to-new-site.csv` maps every address the old site publishes in its
+`old-site-redirects.csv` maps every address the old site publishes in its
 sitemaps (fetched from www.digiblu.com on 10 September 2026: 17 pages, 8
 project pages, 8 leadership profiles, 17 blog posts, 13 news items) to the
 page on the new site that carries the same content, or the nearest section
