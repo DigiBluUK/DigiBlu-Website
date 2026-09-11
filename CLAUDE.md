@@ -16,7 +16,7 @@ The tree since 10 Sep 2026, when the old static site's files were retired (cut-o
 | `public/favicon.ico`, `public/_headers` | The ICO fallback (four sizes) and the cache headers for static assets. |
 | `source/` | The supplied team photographs the shipped headshots were made from (`Vic`, `Martin`, `Dave`, `David`, `Karen`, `Dianne`, `Jon`, `Nick` as `.png`) and `derived/` keyed intermediates. The shipped files in `public/assets/team/` are outputs of `scratchpad/team/standardise.cjs` and must never be read back as its inputs. |
 | `scripts/` | `build-content.cjs` folds the markdown into the JSON module; `content.test.cjs` and `contact.test.cjs` are `npm test`; `pages.test.cjs` runs over the built output (`npm run test:pages`, after a build, and in CI after the build step). The port-time scripts (stylesheet generator, extraction, section conversion, behaviour stamping, parity) went with the old site. |
-| `docs/` | Implementation plans, `parity-checklist.md` (the human sign-off list) and `redirects/` (the Wix redirect map). |
+| `docs/` | Implementation plans, `parity-checklist.md` (the human sign-off list), `redirects/` (the old site's addresses and where each now goes, `old-site-redirects.csv`) and `website-delivery-playbook.md` (the process as it ran, phase by phase with gates, and what to simplify or improve on the next website; 11 Sep 2026). |
 | `next.config.ts`, `open-next.config.ts`, `wrangler.jsonc` | Framework config with the security headers; the Cloudflare Worker runtime; the Worker configuration (no account yet). |
 | `.claude/launch.json` | `digiblu-next`: the dev server on 3000 for the Browser pane. The old site's `digiblu-static` entry is gone with it. |
 | `BRAND.md`, `README.md` | The brand guide as built; the repository readme. |
