@@ -7,8 +7,7 @@ desktop.ini
 .vscode/
 .idea/
 
-# Node (no dependencies are currently installed — http-server is run via
-# `npx` on demand — but ignored defensively in case that changes)
+# Node
 node_modules/
 npm-debug.log*
 

@@ -15,7 +15,7 @@ lib/                   Site constants (lib/site.ts), the typed content loaders (
 public/assets/         Everything the pages reference: artwork, photography, logos, the font
 source/                The supplied team photographs the shipped headshots were made from
 scripts/               Build-time scripts and their tests (node --test)
-docs/                  Implementation plans, the sign-off checklist, the redirect list, and the delivery playbook (website-delivery-playbook.md)
+docs/                  Implementation plans, the sign-off checklist and the redirect list
 open-next.config.ts    Cloudflare Workers runtime via OpenNext
 wrangler.jsonc         Worker configuration (no account details yet)
 ```

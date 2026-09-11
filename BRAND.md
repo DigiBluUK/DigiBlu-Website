@@ -4,7 +4,7 @@ The visual and editorial system as actually built on digiblu.com. Every value
 here is taken from the live stylesheet rather than proposed, so this document
 and the site cannot drift apart: if you change one, change the other.
 
-Design tokens live in `assets/site.css` on `:root`. **Prefer a token over a
+Design tokens live in `app/globals.css` on `:root` (the file was `assets/site.css` until the Next.js port). **Prefer a token over a
 literal value** anywhere you can - the whole light/dark system depends on it.
 
 ---
@@ -309,7 +309,7 @@ automated", "90 to 45 days"). Consulting judgment, not vendor enthusiasm.
 
 | Path | Contents |
 |---|---|
-| `assets/site.css` | All styling and every design token. Single source of truth. |
+| `app/globals.css` | All styling and every design token. Single source of truth (was `assets/site.css`). |
 | `assets/dmsans.woff2` | DM Sans variable font, self-hosted |
 | `assets/logo-mask.png` | Wordmark alpha mask |
 | `assets/favicon.svg` / `.png` | Theme-aware tab icon and fallback |
@@ -320,6 +320,6 @@ automated", "90 to 45 days"). Consulting judgment, not vendor enthusiasm.
 | `assets/case-studies/*.jpg` | Per-engagement photography, 1600x600 |
 | `assets/og/case-studies/*.jpg` | Per-engagement social cards, 1200x630 |
 
-CSS `url()` values in `assets/site.css` are relative to **that file**, not to
-the page that links it. A new reference is `url('image.png')`, not
-`url('assets/image.png')`.
+CSS `url()` values in `app/globals.css` are absolute (`/assets/...`) because
+relative values resolve against **that file**, not the page that links it. A
+new reference is `url('/assets/image.png')`.
