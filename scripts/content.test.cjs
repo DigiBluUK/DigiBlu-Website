@@ -31,9 +31,11 @@ test("legal: six by slug, sub-clauses on their own lines, no autolinks", () => {
 });
 
 test("services, team, accreditations", () => {
-  assert.deepEqual(c.services.map((s) => s.key), ["ai", "process", "discovery", "digital", "tom", "post"]);
+  // Card order on the home page (01 to 06), which the services page numbers follow.
+  assert.deepEqual(c.services.map((s) => s.key), ["ai", "discovery", "process", "digital", "tom", "post"]);
   assert.equal(c.services[0].sections.length, 5);
   assert.equal(c.team.length, 8);
   assert.equal(c.team[0].photo, "/assets/team/vic-gysin.png");
+  assert.deepEqual(c.team.map((m) => m.key), ["vic-gysin", "david-williams", "karen-potgieter", "jon-hinder", "martin-mccloskey", "dianne-harris", "dave-vanderwesthuizen", "nick-bantick"]);
   assert.equal(c.accreditations.find((a) => a.key === "gcloud").onDark, true);
 });

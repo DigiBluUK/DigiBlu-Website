@@ -2,7 +2,7 @@
 key: "process"
 title: "Process Excellence"
 intro: "We simplify the people, processes, and technology behind your operations into one coherent, well-run system, drawing on Lean Six Sigma, Total Quality Management and Business Process Reengineering as the toolkit, not the goal."
-order: 2
+order: 3
 ---
 
 ## Design & Assess

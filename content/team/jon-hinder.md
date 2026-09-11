@@ -1,4 +1,5 @@
 ---
+key: "jon-hinder"
 name: "Jon Hinder"
 role: "Chief Operating Officer"
 cls: "tp-jon"

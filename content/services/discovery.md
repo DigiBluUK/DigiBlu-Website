@@ -2,7 +2,7 @@
 key: "discovery"
 title: "Opportunity Discovery"
 intro: "We assess where you stand today, surface the highest-impact opportunities, and build the case for change - combining traditional process mapping with AI-enabled discovery."
-order: 3
+order: 2
 ---
 
 ## Opportunity Assessment

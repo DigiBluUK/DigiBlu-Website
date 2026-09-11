@@ -1,4 +1,5 @@
 ---
+key: "karen-potgieter"
 name: "Karen Potgieter"
 role: "Chief Financial Officer"
 cls: "tp-karen"

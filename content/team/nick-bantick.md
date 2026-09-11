@@ -1,4 +1,5 @@
 ---
+key: "nick-bantick"
 name: "Nick Bantick"
 role: "Head of Digital Solutions"
 cls: "tp-nick"

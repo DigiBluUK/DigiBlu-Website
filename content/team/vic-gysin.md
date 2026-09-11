@@ -1,4 +1,5 @@
 ---
+key: "vic-gysin"
 name: "Vic Gysin"
 role: "Chief Executive Officer"
 cls: "tp-vic"
