@@ -28,7 +28,7 @@ export default function ContactDialog() {
             </div>
 
             <div className="modal-main">
-              <p className="step-counter" id="mm-counter" aria-live="polite">Step 1 of 3</p>
+              <p className="step-counter" id="mm-counter" aria-live="polite">Step 1 of 2</p>
               <h2 id="mm-title">Your details</h2>
               <p className="modal-sub" id="mm-sub">Let us know who we will be speaking with.</p>
 
@@ -73,7 +73,19 @@ export default function ContactDialog() {
                       <span>I agree to DigiBlu's <a href="/legal/privacy-policy" data-legal="privacy" target="_blank" rel="noopener">Privacy and Cookies Policy</a> and consent to being contacted about my enquiry.</span>
                     </label>
                   </div>
+                  {/* Cloudflare Turnstile renders here when step 2 opens (explicit
+                       render from ContactForm.jsx, site key from the build; 11 Sep
+                       2026). Empty when no site key is configured. */}
+                  <div className="modal-field modal-turnstile"><div id="cf-turnstile"></div></div>
+                  {/* Honeypot: off-screen, never shown, never filled by a person;
+                       the API rejects anything with a value in it. */}
+                  <div className="cf-hp" aria-hidden="true">
+                    <label htmlFor="cf-website">Website</label>
+                    <input id="cf-website" type="text" tabIndex={-1} autoComplete="off" />
+                  </div>
                 </div>
+
+                <p className="modal-error" id="cf-error" role="alert" hidden></p>
 
                 <div className="modal-actions">
                   <button type="button" className="modal-back" hidden>Back</button>

@@ -3769,3 +3769,11 @@
   /* Button-styled classes carried by <a> elements since 11 Sep 2026: the
      home page's dialog openers are real links to the listing pages. */
   a.accred-chip, a.case-viewall-btn, a.faq-cta-btn { text-decoration: none; }
+
+  /* ---------- Contact form: API errors, Turnstile, honeypot (11 Sep 2026) ---------- */
+  .modal-error { color: var(--error); font-size: 13.5px; font-weight: 500; margin: -4px 0 14px; }
+  .modal-turnstile { min-height: 0; margin-bottom: 12px; }
+  .modal-turnstile:empty { display: none; }
+  /* Off-screen rather than display:none: a hidden input is skipped by the
+     scripts the honeypot exists to catch. Never reachable by a person. */
+  .cf-hp { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }

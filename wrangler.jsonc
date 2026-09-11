@@ -7,4 +7,10 @@
   "assets": { "directory": ".open-next/assets", "binding": "ASSETS" }
   // account_id and routes are added when the Cloudflare project exists
   // (Priority 5). Nothing here needs an account to build locally.
+  //
+  // Environment (11 Sep 2026): NEXT_PUBLIC_* values (the GA measurement id,
+  // the Turnstile site key, robots) are build variables, inlined at build
+  // time. TURNSTILE_SECRET_KEY, read by /api/contact at request time, is a
+  // Worker secret: `wrangler secret put TURNSTILE_SECRET_KEY`, or the
+  // dashboard's Settings > Variables and Secrets. Never a "vars" entry here.
 }

@@ -33,7 +33,10 @@ export default function HomeBehaviours() {
       <CaseReader caseStudies={getCaseStudies()} />
       <BadgeDialog accreditations={getAccreditations()} />
       <LegalDialog legalDocs={getLegalDocs()} />
-      <ContactForm />
+      {/* The Turnstile site key is public by design and inlined at build
+           time; empty means no widget renders and the API refuses enquiries
+           (next.config.ts warns on a production build without it). */}
+      <ContactForm turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""} />
     </>
   );
 }

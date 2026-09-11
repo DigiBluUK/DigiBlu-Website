@@ -7,7 +7,10 @@ import { once } from "@/lib/client/once";
 // mount against the server-rendered markup. Kept as JavaScript on purpose -
 // this is the old site's code, not a rewrite. Hand edits after generation
 // are allowed and are noted in the file where made.
-export default function ContactForm() {
+// Hand edits (11 Sep 2026): the form posts to /api/contact, with a
+// Cloudflare Turnstile check on the last step, a honeypot and an error
+// line; see the Turnstile block below and the submit handler at the end.
+export default function ContactForm({ turnstileSiteKey }) {
   useEffect(() => {
     once("contact-form", () => {
       var overlay = document.getElementById('contactModal');
@@ -28,6 +31,62 @@ export default function ContactForm() {
       var lastFocused = null;
       var currentStep = 1;
       var totalSteps = formSteps.length;
+
+      var errorEl = overlay.querySelector('#cf-error');
+      var turnstileEl = overlay.querySelector('#cf-turnstile');
+      var SITE_KEY = turnstileSiteKey || '';
+      var widgetId = null;
+      var sending = false;
+
+      function showError(msg) { if (errorEl) { errorEl.textContent = msg; errorEl.hidden = false; } }
+      function clearError() { if (errorEl) { errorEl.textContent = ''; errorEl.hidden = true; } }
+
+      // Turnstile (11 Sep 2026): loaded the first time the last step shows,
+      // not with the page, and rendered explicitly then so the widget
+      // measures itself in a visible container. No site key means no
+      // widget and no script; the API then refuses every enquiry in
+      // production, which is what the build-time warning in next.config.ts
+      // is for.
+      function loadTurnstile(cb) {
+        if (!SITE_KEY) return;
+        if (window.turnstile) return cb();
+        var existing = document.getElementById('cf-turnstile-script');
+        if (existing) { existing.addEventListener('load', cb); return; }
+        var s = document.createElement('script');
+        s.id = 'cf-turnstile-script';
+        s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+        s.async = true;
+        s.defer = true;
+        s.addEventListener('load', cb);
+        document.head.appendChild(s);
+      }
+      function renderTurnstile() {
+        if (!SITE_KEY || !turnstileEl) return;
+        loadTurnstile(function () {
+          if (widgetId !== null) { window.turnstile.reset(widgetId); return; }
+          widgetId = window.turnstile.render(turnstileEl, {
+            sitekey: SITE_KEY,
+            theme: document.documentElement.getAttribute('data-theme') || 'auto',
+            'error-callback': function () { showError('The security check could not load. Please try again.'); }
+          });
+        });
+      }
+      function resetTurnstile() { if (widgetId !== null && window.turnstile) window.turnstile.reset(widgetId); }
+      function turnstileToken() {
+        return (widgetId !== null && window.turnstile) ? (window.turnstile.getResponse(widgetId) || '') : '';
+      }
+
+      function payload() {
+        var g = function (id) { var el = overlay.querySelector('#' + id); return el ? el.value : ''; };
+        var consentEl = overlay.querySelector('#cf-consent');
+        return {
+          firstName: g('cf-first'), lastName: g('cf-last'), email: g('cf-email'), phone: g('cf-phone'),
+          company: g('cf-company'), message: g('cf-message'),
+          consent: !!(consentEl && consentEl.checked),
+          website: g('cf-website'),
+          turnstileToken: turnstileToken()
+        };
+      }
 
       // Everything outside the dialog is made inert while it is open, so
       // neither Tab nor a screen reader can reach the page behind it.
@@ -73,6 +132,8 @@ export default function ContactForm() {
         backBtn.hidden = n === 1;
         nextBtn.hidden = n === totalSteps;
         submitBtn.hidden = n !== totalSteps;
+        clearError();
+        if (n === totalSteps) renderTurnstile();
       }
 
       function focusFirstFieldOf(n) {
@@ -111,6 +172,8 @@ export default function ContactForm() {
         // previous submission's success state or a stale step.
         panel.classList.remove('sent');
         if (form) form.reset();
+        resetTurnstile();
+        clearError();
         showStep(1);
         // Focus must leave the dialog, otherwise the browser keeps the subtree
         // visible (and focusable) while it still contains the active element.
@@ -178,12 +241,34 @@ export default function ContactForm() {
 
       doneBtn.addEventListener('click', closeModal);
 
+      // Posts to /api/contact (app/api/contact/route.ts), which validates,
+      // verifies the Turnstile token and hands the enquiry on. Success shows
+      // the confirmation state; anything else shows the API's message (or a
+      // generic one) on the error line and leaves the form as it was, with
+      // the Turnstile widget reset for another go.
       form.addEventListener('submit', function (e) {
         e.preventDefault();
-        if (!currentStepIsValid()) return;
-        // No backend is wired up yet: this only shows the confirmation state.
-        panel.classList.add('sent');
-        doneBtn.focus();
+        if (!currentStepIsValid() || sending) return;
+        if (SITE_KEY && !turnstileToken()) {
+          showError('Please wait for the security check to finish, then try again.');
+          return;
+        }
+        sending = true;
+        submitBtn.disabled = true;
+        var label = submitBtn.textContent;
+        submitBtn.textContent = 'Sending...';
+        clearError();
+        var fallback = 'We could not send your request. Please try again or email us.';
+        fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload()) })
+          .then(function (r) {
+            return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok && j.ok === true, error: j.error }; });
+          })
+          .then(function (res) {
+            if (res.ok) { panel.classList.add('sent'); doneBtn.focus(); }
+            else { showError(res.error || fallback); resetTurnstile(); }
+          })
+          .catch(function () { showError(fallback); resetTurnstile(); })
+          .then(function () { sending = false; submitBtn.disabled = false; submitBtn.textContent = label; });
       });
     });
   }, []);
