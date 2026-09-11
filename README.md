@@ -7,10 +7,11 @@ A Next.js 16 App Router site. Every page is prerendered at build time; the runti
 ## Structure
 
 ```
-app/                   Routes: the home page, /case-studies/[key], /legal/[slug], sitemap, robots
+app/                   Routes: the home page, /services, /team, /accreditations, /case-studies and /case-studies/[key],
+                       /legal/[slug], /api/contact (the one dynamic route), sitemap, robots
 components/            Server components for the markup; components/behaviours/ for the client-side behaviour
 content/               The authored content as markdown with front matter (case studies, services, legal, team, accreditations)
-lib/                   Site constants (lib/site.ts) and the typed content loaders (lib/content.ts)
+lib/                   Site constants (lib/site.ts), the typed content loaders (lib/content.ts), the contact API's pieces (lib/contact/)
 public/assets/         Everything the pages reference: artwork, photography, logos, the font
 source/                The supplied team photographs the shipped headshots were made from
 scripts/               Build-time scripts and their tests (node --test)
@@ -26,8 +27,9 @@ The original hand-built static site was retired from the tree on 10 September 20
 ```bash
 npm install
 npm run dev          # http://localhost:3000
-npm test             # the build-time scripts
+npm test             # the content build and the contact API
 npm run build        # prerenders every route
+npm run test:pages   # after a build: metadata, share cards and content of every prerendered page
 ```
 
 Content lives in `content/<type>/<key>.md`. Front-matter values are JSON-quoted strings, so any character in the copy is safe. `npm run content` folds the markdown into the module the pages import; `build` and `test` run it for you.
@@ -53,7 +55,7 @@ Releasing is a merge of `dev` into `main` plus a version tag. `v1.0.0` is the or
 
 ## Status
 
-Not yet deployed: Cloudflare is not connected and digiblu.com still points at the previous site. **The contact form does not send anywhere.** Submitting it shows a success screen and nothing is transmitted; the Azure Communication Services endpoint is a separate piece of work. Wire that up before sharing this outside the team.
+Not yet deployed: Cloudflare is not connected and digiblu.com still points at the previous site. **The contact form posts to `/api/contact`**, which validates the enquiry, verifies Cloudflare Turnstile and hands it to `sendEnquiry()` in `lib/contact/send.ts`; that function only records that an enquiry arrived until the Azure Communication Services call is added there, and the Turnstile keys (`.env.example`) must be set in Cloudflare. Do both before sharing this outside the team.
 
 ## Full technical notes
 

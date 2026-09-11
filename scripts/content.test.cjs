@@ -24,7 +24,8 @@ test("legal: six by slug, sub-clauses on their own lines, no autolinks", () => {
   assert.equal(c.legalDocs[5].slug, "accessibility-statement");
   const privacy = c.legalDocs.find((d) => d.slug === "privacy-policy");
   assert.equal(privacy.title, "Privacy and Cookies Policy");
-  assert.equal(privacy.intro, "Last updated 10 September 2026.");
+  assert.equal(privacy.intro, "Last updated 11 September 2026.");
+  assert.ok(privacy.sections.some((s) => s.heading === "12. Cookies and Similar Storage" && s.html.includes("Turnstile")));
   assert.ok(privacy.sections.some((s) => s.heading === "12. Cookies and Similar Storage" && s.html.includes("_ga_RVNLDVSLJ8")));
   assert.ok(privacy.sections.some((s) => s.html.includes("<br>")), "a numbered point should keep its line breaks");
   assert.ok(!privacy.sections.some((s) => s.html.includes("mailto:")), "an email address stays plain text");

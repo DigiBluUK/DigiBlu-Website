@@ -3,7 +3,7 @@ key: "privacy"
 slug: "privacy-policy"
 title: "Privacy and Cookies Policy"
 url: "https://www.digiblu.com/privacy-policy"
-intro: "Last updated 10 September 2026."
+intro: "Last updated 11 September 2026."
 description: "How DigiBlu UK Limited uses personal information from its website and enquiries, the cookies and browser storage the site uses, your rights and how to complain."
 order: 2
 ---
@@ -77,6 +77,7 @@ Analytics cookies, only with your permission. If you allow Analytics in our cook
 Nothing loads until you choose. When you first visit, our cookie banner asks whether you allow Analytics. Until you answer, and if you reject, no Google code runs and no analytics cookie is set. Everything on the site works the same whether you accept or reject.
 Changing your mind. You can change or withdraw your choice at any time from “Cookie settings” in the footer of every page. Withdrawing Analytics stops Google Analytics immediately and deletes its cookies. Your browser also lets you view, block or delete cookies and local storage; if you clear them, we will ask you again on your next visit.
 No advertising or marketing cookies. We do not use cookies for advertising, retargeting, social media tracking or profiling, and this website has no live chat, surveys or sign-in.
+Our contact form. When you send an enquiry, Cloudflare Turnstile checks that the request comes from a person rather than an automated script. It runs inside the form, uses signals about your browser that are strictly necessary for that check, and sets no cookies on our site; we do not use its pre-clearance feature. Cloudflare describes what it processes at cloudflare.com/turnstile-privacy-policy. The details you enter are passed to us so that we can respond to your enquiry, and are not used for anything else.
 
 ## 13. Personal Identifiers from Your Browsing Activity
 
