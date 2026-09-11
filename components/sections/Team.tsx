@@ -113,13 +113,10 @@ export default function Team() {
               </span>
             </button>
           </div>
-
-          {/* The bios live on /team as a page since 11 Sep 2026; the strip's
-               slices are buttons (they expand and open the profile dialog),
-               so this is the crawlable way from the home page to the page. */}
-          <div className="cases-actions team-actions">
-            <a className="case-viewall-btn" href="/team">Read the full profiles</a>
-          </div>
+          {/* The bios live on /team as a page since 11 Sep 2026; the footer's
+               Our Experts link is the crawl path there from every page. A
+               "Read the full profiles" link sat under the strip for an hour
+               and was removed on request as redundant. */}
         </section>
     </>
   );
