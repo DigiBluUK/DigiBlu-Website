@@ -3394,7 +3394,10 @@
     font-weight: 600;
     letter-spacing: 0.6px;
     text-transform: uppercase;
-    color: rgba(var(--ink-rgb), var(--ink-a-low));
+    /* --ink-a-aa, not -low: at 12px on the panel surface the low step
+       measured 4.46:1 in dark theme, a hair under AA (Lighthouse on
+       /contact, 11 Sep 2026, where the counter is visible on load). */
+    color: rgba(var(--ink-rgb), var(--ink-a-aa));
     margin-bottom: 10px;
   }
 

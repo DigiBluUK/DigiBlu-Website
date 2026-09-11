@@ -82,7 +82,20 @@ Done on `dev` ahead of go-live, from the outstanding-items review:
 - **Housekeeping**: `.env`, `.env.local` and `.env.*.local` are ignored (`.env.example` is committed); `Nick-original-with-background.png`, a raw original moved into the team folder in error and mirrored into `public/`, is deleted from both.
 - **Dependency advisories**: production dependencies have none. Four highs sit in build tooling only, one chain through `sharp` inside wrangler/miniflare, never shipped to a browser or the Worker; npm's suggested fix downgrades wrangler, which is not sensible - update wrangler when a clean release lands.
 
-## Lighthouse (10 Sep 2026)
+## Lighthouse (10 and 11 Sep 2026)
+
+**11 Sep 2026, after the listing pages, the contact page and the link changes** (same method: `next build` + `next start -p 3100`, Lighthouse 12.8.2, headless Chrome, mobile throttling and the desktop preset):
+
+| Page | Perf mobile | Perf desktop | Accessibility | Best practices | SEO |
+|---|---|---|---|---|---|
+| Home | 91 | 100 | 100 | 100 | 100 |
+| Services (`/services`) | 97 | 100 | 100 | 100 | 100 |
+| Contact (`/contact`) | 96 | 100 | 100 | 100 | 100 |
+| Case study (SSE / OVO) | 96 | 100 | 100 | 100 | 100 |
+
+**Two things the first pass of the day caught and fixed**: (1) the home page's SEO fell to 92 on `link-text` the moment the six "Learn more" buttons became links - "Learn more" alone is generic - so each carries its service's name in a visually hidden span (`Learn more<span class="sr-only"> about Artificial Intelligence</span>`), the treatment the "Read more" links already had; (2) the contact page's accessibility read 96 on `color-contrast`: the form's "Step 1 of 2" counter used `--ink-a-low` and measured 4.46:1 at 12px on the panel in dark theme, under AA by a hair, invisible to the audit before because the dialog is hidden on load; it uses `--ink-a-aa` now (about 6.8:1 dark, 6.1:1 light). Everything else in the 10 Sep notes below still holds, the phone home-page 91 included.
+
+**10 Sep 2026, the first run.**
 
 Run against a local production build (`next build` + `next start -p 3100`, Lighthouse 12.8.2, Chrome headless, default mobile throttling and the desktop preset) on the home page, a case study and a legal page, then again after fixes:
 

@@ -3,7 +3,7 @@ key: "accessibility"
 slug: "accessibility-statement"
 title: "Accessibility Statement"
 url: ""
-intro: "Last updated 10 September 2026."
+intro: "Last updated 11 September 2026."
 description: "How accessible the DigiBlu website is, what has been tested, the limitations we know about, and how to report a problem or ask for content in another format."
 order: 6
 ---
@@ -30,8 +30,8 @@ DigiBlu UK Limited is a private company, so the Public Sector Bodies (Websites a
 
 ## How we tested this website
 
-The measurements above were made on 9 and 10 September 2026 during the build of this version of the site, by DigiBlu, using automated checks of the rendered pages (colour contrast computed from the colours actually displayed in both colour schemes, layout checked at screen widths of 320, 375, 390, 740, 1440 and 1895 pixels, and target sizes measured on every control) together with a keyboard walk through every page and dialog. No third party has audited the site yet.
+The measurements above were made on 9, 10 and 11 September 2026 during the build of this version of the site, by DigiBlu, using automated checks of the rendered pages (colour contrast computed from the colours actually displayed in both colour schemes, layout checked at screen widths of 320, 375, 390, 740, 1440 and 1895 pixels, and target sizes measured on every control) together with a keyboard walk through every page and dialog. No third party has audited the site yet.
 
 ## Preparation of this statement
 
-This statement was prepared on 10 September 2026. It will be reviewed when the site changes materially and at least once a year.
+This statement was prepared on 10 September 2026 and updated on 11 September 2026, when the services, team, accreditations, case-studies and contact pages were added and checked with the same automated tests. It will be reviewed when the site changes materially and at least once a year.
