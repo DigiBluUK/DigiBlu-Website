@@ -1,6 +1,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "digiblu-website",
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    },
+  },
   // account_id is injected by Cloudflare Workers Builds (CLOUDFLARE_ACCOUNT_ID).
   // For a deploy from this machine, uncomment and set it, or export the env var.
   // "account_id": "",
