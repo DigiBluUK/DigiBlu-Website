@@ -2,7 +2,7 @@
 
 Marketing site for **DigiBlu**, a UK AI and digital transformation consultancy: [digiblu.com](https://www.digiblu.com).
 
-A Next.js 16 App Router site. Every page is prerendered at build time; the runtime (OpenNext on Cloudflare Workers) is configured so a route can render on demand if one ever needs to. Content is markdown. The stylesheet and the interaction code are the original hand-built site's, carried across verbatim.
+A Next.js 16 App Router site. Every page is prerendered at build time; the runtime (vinext on Cloudflare Workers) is configured so a route can render on demand if one ever needs to. Content is markdown. The stylesheet and the interaction code are the original hand-built site's, carried across verbatim.
 
 ## Structure
 
@@ -16,8 +16,8 @@ public/assets/         Everything the pages reference: artwork, photography, log
 source/                The supplied team photographs the shipped headshots were made from
 scripts/               Build-time scripts and their tests (node --test)
 docs/                  Implementation plans, the sign-off checklist and the redirect list
-open-next.config.ts    Cloudflare Workers runtime via OpenNext
-wrangler.jsonc         Worker configuration (no account details yet)
+vite.config.ts         vinext build and the Cloudflare adapters (KV cache, CDN cache)
+wrangler.jsonc         Worker configuration (account details come from Workers Builds)
 ```
 
 The original hand-built static site was retired from the tree on 10 September 2026; `v2.2.0` is the first release without it, and everything up to `v2.1.0` still carries it in git history.
@@ -37,8 +37,14 @@ Content lives in `content/<type>/<key>.md`. Front-matter values are JSON-quoted 
 To try the Cloudflare Worker locally:
 
 ```bash
-npm run preview:cf   # builds the Worker, populates its prerender cache, serves it with wrangler
+pnpm build:vinext    # content + vinext build into dist/
+pnpm start:vinext    # serves the built Worker with wrangler
 ```
+
+Deploys run through Cloudflare Workers Builds: build `pnpm build:vinext`, deploy
+`npx vinext-cloudflare deploy --config dist/server/wrangler.json --skip-build`.
+From this machine, `pnpm deploy:vinext` does both. `TURNSTILE_SECRET_KEY` is a
+Worker secret, set in the dashboard (see `.env.example`).
 
 ## Consent and analytics
 

@@ -1,24 +1,27 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "digiblu-website",
-  "main": ".open-next/worker.js",
+  // account_id is injected by Cloudflare Workers Builds (CLOUDFLARE_ACCOUNT_ID).
+  // For a deploy from this machine, uncomment and set it, or export the env var.
+  // "account_id": "",
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat"],
-  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" }
-  // account_id and routes are added when the Cloudflare project exists
-  // (Priority 5). Nothing here needs an account to build locally.
+  // vinext's Worker entry (not a file path - Vite resolves the package export)
+  // and the client bundle it builds. not_found_handling "none" so unknown URLs
+  // reach the Worker (the 404 page and /api/contact) instead of the asset server.
+  "main": "vinext/server/fetch-handler",
+  "assets": { "directory": "dist/client", "not_found_handling": "none", "binding": "ASSETS" },
+  // The Workers cache and the bindings the vinext cache adapters in
+  // vite.config.ts read (kvDataAdapter -> VINEXT_KV_CACHE, cdnAdapter ->
+  // CF_VERSION_METADATA). Image optimisation is off: the site uses plain <img>
+  // and next.config.ts sets images.unoptimized, so there is no IMAGES binding.
   //
   // Environment (11 Sep 2026): NEXT_PUBLIC_* values (the GA measurement id,
   // the Turnstile site key, robots) are build variables, inlined at build
   // time. TURNSTILE_SECRET_KEY, read by /api/contact at request time, is a
   // Worker secret: `wrangler secret put TURNSTILE_SECRET_KEY`, or the
   // dashboard's Settings > Variables and Secrets. Never a "vars" entry here.
-,
-  "cache": { "enabled": true }
-,
-  "version_metadata": { "binding": "CF_VERSION_METADATA" }
-,
-  "images": { "binding": "IMAGES" }
-,
+  "cache": { "enabled": true },
+  "version_metadata": { "binding": "CF_VERSION_METADATA" },
   "kv_namespaces": [{ "binding": "VINEXT_KV_CACHE", "id": "d074a2179bd3434e90fde5f17b5093a3" }]
 }

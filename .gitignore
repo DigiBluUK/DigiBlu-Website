@@ -15,9 +15,8 @@ npm-debug.log*
 *.tmp
 *.log
 
-# Next.js / OpenNext
+# Next.js / vinext
 .next/
-.open-next/
 out/
 next-env.d.ts
 .wrangler/
@@ -29,6 +28,7 @@ content/.generated/
 .env
 .env.local
 .env.*.local
+.dev.vars
 
 # TypeScript incremental build cache (npx tsc --noEmit writes it)
 *.tsbuildinfo
