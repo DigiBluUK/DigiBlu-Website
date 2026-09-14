@@ -80,6 +80,7 @@ const nextConfig: NextConfig = {
     const headers = NOINDEX ? [...securityHeaders, { key: "X-Robots-Tag", value: "noindex, nofollow" }] : securityHeaders;
     return [{ source: "/(.*)", headers }];
   },
+  allowedDevOrigins: ['dev.digiblu-digiblu-website.orb.local'],
 };
 
 export default nextConfig;

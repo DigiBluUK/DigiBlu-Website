@@ -32,3 +32,7 @@ content/.generated/
 
 # TypeScript incremental build cache (npx tsc --noEmit writes it)
 *.tsbuildinfo
+/dist/
+.vinext/
+
+.env.*
