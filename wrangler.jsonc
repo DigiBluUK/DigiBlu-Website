@@ -20,5 +20,5 @@
 ,
   "images": { "binding": "IMAGES" }
 ,
-  "kv_namespaces": [{ "binding": "VINEXT_KV_CACHE", "id": "digiblu-public-website" }]
+  "kv_namespaces": [{ "binding": "VINEXT_KV_CACHE", "id": "d074a2179bd3434e90fde5f17b5093a3" }]
 }
