@@ -2,14 +2,22 @@
 // own module loader, which node:test uses, resolves them; the bundler does too.
 import { validateEnquiry } from "../../../lib/contact/validate.ts";
 import { verifyTurnstile } from "../../../lib/contact/turnstile.ts";
-import { sendEnquiry } from "../../../lib/contact/send.ts";
+import { submitEnquiry, trackDelivery } from "../../../lib/contact/send.ts";
+import { getRequestExecutionContext } from "vinext/shims/request-context";
 
 // The contact form's endpoint (11 Sep 2026): the only dynamic route on the
 // site, run by the Cloudflare Worker. Same-origin JSON in, JSON out;
 // validates, verifies the Turnstile token with the secret from the
-// environment, then hands the enquiry to sendEnquiry() (lib/contact/send.ts),
-// which is the developer's to fill. Web-standard Request/Response only, and
-// relative imports, so scripts/contact.test.cjs can call POST directly.
+// environment, then hands the enquiry to submitEnquiry() (lib/contact/send.ts),
+// which awaits ACS accepting the message - the SDK's beginSend also checks
+// the operation status once, so an immediately rejected send still answers
+// 500 - and returns the operation's poller. The delivery outcome is tracked
+// afterwards: trackDelivery() polls the operation and logs success or
+// failure, scheduled through the Workers request context
+// (getRequestExecutionContext().waitUntil keeps the poll running past the
+// response; on Node dev the context is null and the poll runs on, never
+// rejecting). Web-standard Request/Response only, and relative imports, so
+// scripts/contact.test.cjs can call POST directly.
 //
 // Payload: { firstName, lastName, email, phone?, company?, message?,
 //            consent: true, website: "" (honeypot), turnstileToken }
@@ -40,9 +48,16 @@ export async function POST(req: Request): Promise<Response> {
   }
 
   try {
-    await sendEnquiry(v.enquiry);
+    const poller = await submitEnquiry(v.enquiry);
+    // Started unconditionally: optional chaining would short-circuit the
+    // call itself on Node, where there is no context. On the Worker,
+    // waitUntil keeps the isolate alive until the poll finishes; on Node
+    // the poll simply runs on. trackDelivery never rejects, so there is
+    // no unhandled rejection either way.
+    const delivery = trackDelivery(poller);
+    getRequestExecutionContext()?.waitUntil(delivery);
   } catch (e) {
-    console.error("[contact] sendEnquiry failed", e);
+    console.error("[contact] submitEnquiry failed", e);
     return json(500, { ok: false, error: "We could not send your request. Please try again or email us." });
   }
   return json(200, { ok: true });

@@ -22,11 +22,14 @@
   // CF_VERSION_METADATA). Image optimisation is off: the site uses plain <img>
   // and next.config.ts sets images.unoptimized, so there is no IMAGES binding.
   //
-  // Environment (11 Sep 2026): NEXT_PUBLIC_* values (the GA measurement id,
-  // the Turnstile site key, robots) are build variables, inlined at build
-  // time. TURNSTILE_SECRET_KEY, read by /api/contact at request time, is a
-  // Worker secret: `wrangler secret put TURNSTILE_SECRET_KEY`, or the
-  // dashboard's Settings > Variables and Secrets. Never a "vars" entry here.
+  // Environment (11 Sep 2026, ACS added 14 Sep 2026): NEXT_PUBLIC_* values
+  // (the GA measurement id, the Turnstile site key, robots) are build
+  // variables, inlined at build time. The values /api/contact reads at
+  // request time are Worker secrets: TURNSTILE_SECRET_KEY and
+  // AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING via
+  // `wrangler secret put <NAME>`, and CONTACT_FORM_SENDER_EMAIL_ADDRESS and
+  // CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS (plain vars are fine), or the
+  // dashboard's Settings > Variables and Secrets. Never "vars" entries here.
   "cache": { "enabled": true },
   "version_metadata": { "binding": "CF_VERSION_METADATA" },
   "kv_namespaces": [{ "binding": "VINEXT_KV_CACHE", "id": "d074a2179bd3434e90fde5f17b5093a3" }]
