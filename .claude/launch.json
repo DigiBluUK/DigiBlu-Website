@@ -10,6 +10,19 @@
       ],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "digiblu-vinext",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--config",
+        "dist/server/wrangler.json",
+        "--port",
+        "8787"
+      ],
+      "port": 8787
     }
   ]
 }
