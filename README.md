@@ -2,7 +2,7 @@
 
 Marketing site for **DigiBlu**, a UK AI and digital transformation consultancy: [digiblu.com](https://www.digiblu.com).
 
-A Next.js 16 App Router site. Every page is prerendered at build time; the runtime (vinext on Cloudflare Workers) is configured so a route can render on demand if one ever needs to. Content is markdown. The stylesheet and the interaction code are the original hand-built site's, carried across verbatim.
+A Next.js 16 App Router site on Cloudflare Workers through vinext, which prerenders one route and renders the rest on first request, then caches them. Content is markdown. The stylesheet and the interaction code are the original hand-built site's, carried across verbatim.
 
 ## Structure
 
@@ -24,15 +24,17 @@ The original hand-built static site was retired from the tree on 10 September 20
 
 ## Working on it
 
+pnpm is the package manager (`pnpm-lock.yaml`).
+
 ```bash
-npm install
-npm run dev          # http://localhost:3000
-npm test             # the content build and the contact API
-npm run build        # prerenders every route
-npm run test:pages   # after a build: metadata, share cards and content of every prerendered page
+pnpm install
+pnpm dev             # http://localhost:3000
+pnpm test            # the content build and the contact API
+pnpm build           # Next build
+pnpm test:pages      # after a build: metadata, share cards and content of every page
 ```
 
-Content lives in `content/<type>/<key>.md`. Front-matter values are JSON-quoted strings, so any character in the copy is safe. `npm run content` folds the markdown into the module the pages import; `build` and `test` run it for you.
+Content lives in `content/<type>/<key>.md`. Front-matter values are JSON-quoted strings, so any character in the copy is safe. `pnpm content` folds the markdown into the module the pages import; `build` and `test` run it for you.
 
 To try the Cloudflare Worker locally:
 
@@ -61,8 +63,8 @@ Releasing is a merge of `dev` into `main` plus a version tag. `v1.0.0` is the or
 
 ## Status
 
-Not yet deployed: Cloudflare is not connected and digiblu.com still points at the previous site. **The contact form posts to `/api/contact`**, which validates the enquiry, verifies Cloudflare Turnstile and hands it to `sendEnquiry()` in `lib/contact/send.ts`; that function only records that an enquiry arrived until the Azure Communication Services call is added there, and the Turnstile keys (`.env.example`) must be set in Cloudflare. Do both before sharing this outside the team.
+Deployed through Cloudflare Workers Builds since 14 September 2026: `main` to `digiblu-website.radu-ghitescu.workers.dev` and every other branch to `<branch>-digiblu-website.radu-ghitescu.workers.dev`, all behind Cloudflare Access. digiblu.com still points at the previous site until the DNS switch. **The contact form is live**: `/api/contact` validates the enquiry, verifies Cloudflare Turnstile and sends it through Azure Communication Services to DigiBlu's enquiries list.
 
-## Full technical notes
+## Technical notes
 
-[`CLAUDE.md`](./CLAUDE.md) has the complete build history, the design-system reference, every non-obvious decision, and the cut-over runbook. [`BRAND.md`](./BRAND.md) is the brand guide as built. Read `CLAUDE.md` before making significant changes.
+[`CLAUDE.md`](./CLAUDE.md) is the current summary: commands, environments, rules and open items. The detail behind every decision - section by section, the design tokens, consent and the contact API, content policy, the platform history and the cut-over runbook - is in [`docs/notes/`](./docs/notes/). [`BRAND.md`](./BRAND.md) is the brand guide as built. Read `CLAUDE.md`, then the relevant note, before making significant changes.
