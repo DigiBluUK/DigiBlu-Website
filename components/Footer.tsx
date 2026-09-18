@@ -41,12 +41,11 @@ export default function Footer({ standalone = false }: { standalone?: boolean })
               <div className="footer-col">
                 <h3>Services</h3>
                 <ul>
-                  {/* Real links to the services page since 11 Sep 2026; on the
-                       home page ServiceDialog.jsx opens the dialog on a plain
-                       click, keyed by data-service, and elsewhere they navigate. */}
+                  {/* Real links to the services page since 11 Sep 2026, and
+                       only links since 18 Sep 2026 (the service dialog went). */}
                   {SERVICES.map(([key, name]) => (
                     <li key={key}>
-                      <a href={`/services#${key}`} data-service={key}>{name}</a>
+                      <a href={`/services#${key}`}>{name}</a>
                     </li>
                   ))}
                 </ul>
@@ -68,12 +67,12 @@ export default function Footer({ standalone = false }: { standalone?: boolean })
               <div className="footer-col">
                 <h3>Legal</h3>
                 <ul>
-                  <li><a href="/legal/website-terms-of-use" data-legal="terms">Terms of Use</a></li>
-                  <li><a href="/legal/privacy-policy" data-legal="privacy">Privacy and Cookies Policy</a></li>
-                  <li><a href="/legal/modern-slavery-policy" data-legal="slavery">Modern Slavery Policy</a></li>
-                  <li><a href="/legal/carbon-reduction-plan" data-legal="carbon">Carbon Reduction Plan</a></li>
-                  <li><a href="/legal/armed-forces-covenant" data-legal="armed-forces">Armed Forces Covenant</a></li>
-                  <li><a href="/legal/accessibility-statement" data-legal="accessibility">Accessibility Statement</a></li>
+                  <li><a href="/legal/website-terms-of-use">Terms of Use</a></li>
+                  <li><a href="/legal/privacy-policy">Privacy and Cookies Policy</a></li>
+                  <li><a href="/legal/modern-slavery-policy">Modern Slavery Policy</a></li>
+                  <li><a href="/legal/carbon-reduction-plan">Carbon Reduction Plan</a></li>
+                  <li><a href="/legal/armed-forces-covenant">Armed Forces Covenant</a></li>
+                  <li><a href="/legal/accessibility-statement">Accessibility Statement</a></li>
                   <li><CookieSettingsLink /></li>
                 </ul>
               </div>

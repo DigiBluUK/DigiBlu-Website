@@ -1,7 +1,6 @@
 "use client";
 import { useEffect } from "react";
 import { once } from "@/lib/client/once";
-import { createModalController } from "@/lib/client/modal";
 
 // Ported from index.html lines 1235-1338 by
 // scripts/port-behaviour.cjs: the old script's body, verbatim, run once on
@@ -40,27 +39,12 @@ export default function TeamStrip({ team }) {
       function unwrap(html) { return String(html).replace(/^<p>([\s\S]*)<\/p>$/, '$1'); }
 
 
-      var overlay = document.getElementById('teamModal');
-      var modal = overlay ? createModalController(overlay) : null;
-      var photoEl = document.getElementById('teamModalPhoto');
-      var nameEl = document.getElementById('teamModalName');
-      var roleEl = document.getElementById('teamModalRole');
-      var bioEl = document.getElementById('teamModalBio');
-
-      function openProfile(i, opener) {
+      // Hand edit (18 Sep 2026): the profile dialog is gone - content lives
+      // on its page only - so opening a profile goes to that member's entry
+      // on /team, anchored by the key the page uses for its ids.
+      function openProfile(i) {
         var m = TEAM_MEMBERS[i];
-        if (!m || !modal) return;
-        // The photo classes (.tp-*) already carry each headshot as a CSS
-        // background, so the modal reuses them rather than duplicating paths.
-        photoEl.className = 'team-modal-photo ' + m.cls;
-        photoEl.setAttribute('aria-label', m.name);
-        nameEl.textContent = m.name;
-        roleEl.textContent = m.role;
-
-        if (m.html) { bioEl.innerHTML = unwrap(m.html); bioEl.hidden = false; }
-        else { bioEl.textContent = ''; bioEl.hidden = true; }
-
-        modal.open(opener);
+        if (m && m.key) window.location.assign('/team#' + m.key);
       }
 
       // Below 760px the strip is a stacked list with every name already
@@ -89,8 +73,8 @@ export default function TeamStrip({ team }) {
 
       slices.forEach(function (el, i) {
         el.addEventListener('click', function () {
-          if (stacked.matches) { setActive(i); openProfile(i, el); }
-          else if (el.classList.contains('active')) openProfile(i, el);
+          if (stacked.matches) { setActive(i); openProfile(i); }
+          else if (el.classList.contains('active')) openProfile(i);
           else setActive(i);
         });
       });

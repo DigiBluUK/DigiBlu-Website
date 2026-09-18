@@ -9,8 +9,8 @@ export default function CaseStudies() {
           <h2>Where our work<br />has made a difference</h2>
 
           {/* Real client engagements, sourced from digiblu.com/case-studies. The
-               three shown here are the featured set; the full ten live in the
-               CASE_STUDIES object in the script below and open via "View all". */}
+               three shown here are the featured set; the full ten are on
+               /case-studies, which "View all" links to. */}
 
           <div className="case-list">
             <article className="case">
@@ -26,7 +26,7 @@ export default function CaseStudies() {
                     <span className="case-tag">Under half the cost per transaction</span>
                     <span className="case-tag">100% policy compliant</span>
                   </div>
-                  <a href="/case-studies/sse-ovo" className="case-read-more" data-case="sse-ovo">
+                  <a href="/case-studies/sse-ovo" className="case-read-more">
                     Read more<span className="sr-only">: automating complicated customer service interactions</span>
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </a>
@@ -47,7 +47,7 @@ export default function CaseStudies() {
                     <span className="case-tag">Multiple processes digitised</span>
                     <span className="case-tag">Ongoing managed service</span>
                   </div>
-                  <a href="/case-studies/safari-destinations" className="case-read-more" data-case="safari-destinations">
+                  <a href="/case-studies/safari-destinations" className="case-read-more">
                     Read more<span className="sr-only">: building a strategic partnership for AI transformation</span>
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </a>
@@ -68,7 +68,7 @@ export default function CaseStudies() {
                     <span className="case-tag">End-to-end automation</span>
                     <span className="case-tag">Human-in-the-loop exceptions</span>
                   </div>
-                  <a href="/case-studies/quote-processing" className="case-read-more" data-case="quote-processing">
+                  <a href="/case-studies/quote-processing" className="case-read-more">
                     Read more<span className="sr-only">: automating supplier quote processing with Generative AI</span>
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </a>
@@ -78,9 +78,9 @@ export default function CaseStudies() {
           </div>
 
           <div className="cases-actions">
-            {/* A real link to the index page since 11 Sep 2026; a plain
-                 click still opens the reader (CaseReader.jsx). */}
-            <a href="/case-studies" className="case-viewall-btn" id="caseViewAll">
+            {/* A real link to the index page since 11 Sep 2026; the reader
+                 dialog it used to open was removed on 18 Sep 2026. */}
+            <a href="/case-studies" className="case-viewall-btn">
               View all case studies
               <span className="case-count">(10)</span>
             </a>

@@ -255,10 +255,10 @@ statically, and that opacity keeps labels legible over anything scrolling
 beneath. There is an `@supports not` fallback to a near-opaque surface.
 
 **Dialogs** - `.modal-overlay` + `.modal-panel`, with background `inert`, a
-focus trap, Escape and backdrop-click. Dialogs can stack, so closing one hands
-the scroll lock to any still-open dialog rather than releasing it. On phones the
-close control is a header row the content starts beneath, never a floating
-button over scrolling content.
+focus trap, Escape and backdrop-click. The contact form is the only one: content
+lives on pages, and a link out of the form (the privacy policy) opens in a new
+tab so nothing typed is lost. On phones the close control is a header row the
+content starts beneath, never a floating button over scrolling content.
 
 ---
 

@@ -12,57 +12,58 @@ export default function Accreditations() {
                  tab order; the duplicate is aria-hidden with tabindex="-1" so it
                  stays clickable (the strip moves, so whichever copy happens to be
                  under the cursor is arbitrary) without doubling the tab stops or
-                 announcing every certification twice. */}
+                 announcing every certification twice. Each chip links to its
+                 entry on /accreditations. */}
             <div className="accred-viewport">
               <div className="accred-track">
                 <ul className="accred-group">
-                  <li><a href="/accreditations#9001" className="accred-chip" data-badge="9001">
+                  <li><a href="/accreditations#9001" className="accred-chip">
                     <span className="accred-chip-name">ISO 9001</span>
                     <span className="accred-chip-desc">Quality Management</span>
                   </a></li>
-                  <li><a href="/accreditations#14001" className="accred-chip" data-badge="14001">
+                  <li><a href="/accreditations#14001" className="accred-chip">
                     <span className="accred-chip-name">ISO 14001</span>
                     <span className="accred-chip-desc">Environmental Management</span>
                   </a></li>
-                  <li><a href="/accreditations#27001" className="accred-chip" data-badge="27001">
+                  <li><a href="/accreditations#27001" className="accred-chip">
                     <span className="accred-chip-name">ISO 27001</span>
                     <span className="accred-chip-desc">Information Security</span>
                   </a></li>
-                  <li><a href="/accreditations#42001" className="accred-chip" data-badge="42001">
+                  <li><a href="/accreditations#42001" className="accred-chip">
                     <span className="accred-chip-name">ISO/IEC 42001</span>
                     <span className="accred-chip-desc">AI Management</span>
                   </a></li>
-                  <li><a href="/accreditations#cyber" className="accred-chip" data-badge="cyber">
+                  <li><a href="/accreditations#cyber" className="accred-chip">
                     <span className="accred-chip-name">Cyber Essentials Plus</span>
                     <span className="accred-chip-desc">Cyber Security</span>
                   </a></li>
-                  <li><a href="/accreditations#gcloud" className="accred-chip" data-badge="gcloud">
+                  <li><a href="/accreditations#gcloud" className="accred-chip">
                     <span className="accred-chip-name">UK Government G-Cloud</span>
                     <span className="accred-chip-desc">Approved Supplier</span>
                   </a></li>
                 </ul>
                 <ul className="accred-group" aria-hidden="true">
-                  <li><a href="/accreditations#9001" className="accred-chip" data-badge="9001" tabIndex={-1}>
+                  <li><a href="/accreditations#9001" className="accred-chip" tabIndex={-1}>
                     <span className="accred-chip-name">ISO 9001</span>
                     <span className="accred-chip-desc">Quality Management</span>
                   </a></li>
-                  <li><a href="/accreditations#14001" className="accred-chip" data-badge="14001" tabIndex={-1}>
+                  <li><a href="/accreditations#14001" className="accred-chip" tabIndex={-1}>
                     <span className="accred-chip-name">ISO 14001</span>
                     <span className="accred-chip-desc">Environmental Management</span>
                   </a></li>
-                  <li><a href="/accreditations#27001" className="accred-chip" data-badge="27001" tabIndex={-1}>
+                  <li><a href="/accreditations#27001" className="accred-chip" tabIndex={-1}>
                     <span className="accred-chip-name">ISO 27001</span>
                     <span className="accred-chip-desc">Information Security</span>
                   </a></li>
-                  <li><a href="/accreditations#42001" className="accred-chip" data-badge="42001" tabIndex={-1}>
+                  <li><a href="/accreditations#42001" className="accred-chip" tabIndex={-1}>
                     <span className="accred-chip-name">ISO/IEC 42001</span>
                     <span className="accred-chip-desc">AI Management</span>
                   </a></li>
-                  <li><a href="/accreditations#cyber" className="accred-chip" data-badge="cyber" tabIndex={-1}>
+                  <li><a href="/accreditations#cyber" className="accred-chip" tabIndex={-1}>
                     <span className="accred-chip-name">Cyber Essentials Plus</span>
                     <span className="accred-chip-desc">Cyber Security</span>
                   </a></li>
-                  <li><a href="/accreditations#gcloud" className="accred-chip" data-badge="gcloud" tabIndex={-1}>
+                  <li><a href="/accreditations#gcloud" className="accred-chip" tabIndex={-1}>
                     <span className="accred-chip-name">UK Government G-Cloud</span>
                     <span className="accred-chip-desc">Approved Supplier</span>
                   </a></li>

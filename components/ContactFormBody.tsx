@@ -71,7 +71,7 @@ export default function ContactFormBody({ heading = "h2" }: { heading?: "h1" | "
             <div className="modal-field modal-consent">
               <label className="modal-checkbox">
                 <input type="checkbox" id="cf-consent" required />
-                <span>I agree to DigiBlu's <a href="/legal/privacy-policy" data-legal="privacy" target="_blank" rel="noopener">Privacy and Cookies Policy</a> and consent to being contacted about my enquiry.</span>
+                <span>I agree to DigiBlu's <a href="/legal/privacy-policy" target="_blank" rel="noopener">Privacy and Cookies Policy</a> and consent to being contacted about my enquiry.</span>
               </label>
             </div>
             {/* Cloudflare Turnstile renders here when step 2 opens (explicit

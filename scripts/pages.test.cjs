@@ -91,6 +91,30 @@ test("the contact page carries the form and the home page its dialog", () => {
   assert.ok(h.includes('id="contactModal"') && h.includes('id="cf-first"'), "home page keeps the dialog");
 });
 
+// The content dialogs were removed on 18 Sep 2026 at DigiBlu's developer's
+// request: each document lives on its own page and nowhere else, so the
+// home page neither shows it nor carries it in its payload for a dialog to
+// fill (it shipped all of it before: the home page fell from 371KB to 271KB
+// when they went; most of what remains is Next's own payload of the page).
+// Probes are plain word runs so JSON escaping in the payload cannot hide a
+// match. The team bios stay: the strip's desktop card shows them.
+test("the home page carries no dialog content but the contact form", () => {
+  const h = html("/");
+  assert.equal((h.match(/class="modal-overlay"/g) || []).length, 1, "one dialog overlay, the contact form's");
+  const probe = (x) => (text(x).match(/[A-Za-z]+(?: [A-Za-z]+){5}/) || [])[0];
+  const docs = [
+    ...c.legalDocs.map((d) => ["legal " + d.slug, d.sections[0].html]),
+    ...c.services.map((x) => ["service " + x.key, x.sections[0].html]),
+    ...c.accreditations.map((x) => ["accreditation " + x.key, x.html]),
+    ...c.caseStudies.map((x) => ["case study " + x.key, x.sections[x.sections.length - 1].html]),
+  ];
+  for (const [label, body] of docs) {
+    const p = probe(body);
+    assert.ok(p, label + ": no probe");
+    assert.ok(!h.includes(p), label + ": on the home page (" + p + ")");
+  }
+});
+
 test("sitemap lists every page", () => {
   const p = ["sitemap.xml.body", "sitemap.xml"].map((f) => path.join(APP, f)).find(fs.existsSync);
   assert.ok(p, "sitemap output");

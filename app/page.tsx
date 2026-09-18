@@ -9,16 +9,14 @@ import Team from "@/components/sections/Team";
 import Footer from "@/components/Footer";
 import ScrollTop from "@/components/ScrollTop";
 import ContactDialog from "@/components/dialogs/ContactDialog";
-import ServiceDialog from "@/components/dialogs/ServiceDialog";
-import CaseReaderDialog from "@/components/dialogs/CaseReaderDialog";
-import BadgeDialog from "@/components/dialogs/BadgeDialog";
-import TeamDialog from "@/components/dialogs/TeamDialog";
-import LegalDialog from "@/components/dialogs/LegalDialog";
 import HomeBehaviours from "@/components/HomeBehaviours";
 
 // The home page in the old site's order: hero, accreditations, services,
 // case studies, clients, about, team; then the footer, the scroll-to-top
-// button and the six dialogs, which sit outside <main> as they always did.
+// button and the contact dialog, outside <main> as the dialogs always were.
+// The content dialogs (service, case reader, accreditation, team profile,
+// legal) were removed on 18 Sep 2026 at DigiBlu's developer's request:
+// each opener is a link to its page, and the content is only there.
 export default function Home() {
   return (
     <>
@@ -35,11 +33,6 @@ export default function Home() {
       <Footer />
       <ScrollTop />
       <ContactDialog />
-      <ServiceDialog />
-      <CaseReaderDialog />
-      <BadgeDialog />
-      <TeamDialog />
-      <LegalDialog />
       <HomeBehaviours />
     </>
   );

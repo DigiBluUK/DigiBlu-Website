@@ -214,8 +214,6 @@
   .case-read-more:focus-visible,
   .case-viewall-btn:focus-visible,
   .case-index-item:focus-visible,
-  .case-back-btn:focus-visible,
-  .reader-page-btn:focus-visible,
   .accred-chip:focus-visible,
   .modal-close:focus-visible,
   .modal-next:focus-visible,
@@ -1161,12 +1159,10 @@
      under the 24px WCAG 2.5.8 minimum. The overlay extends the tap target to
      44px without changing layout or the visual weight of the link. */
   .service-learn-more,
-  .case-read-more,
-  .case-back-btn { position: relative; }
+  .case-read-more { position: relative; }
 
   .service-learn-more::after,
-  .case-read-more::after,
-  .case-back-btn::after {
+  .case-read-more::after {
     content: '';
     position: absolute;
     left: 0;
@@ -1746,30 +1742,10 @@
     }
   }
 
-  /* ---------- Case study modals (index + detail) ----------
-     Both reuse .modal-overlay / .modal-panel / .modal-close from the contact
-     modal; only the inner content layout is new. */
-  .case-modal-panel { max-width: 760px; }
-
-  /* scrollbar-gutter keeps this clear of .modal-close (a 32px circle inset
-     18px from the panel edge) regardless of whether the platform renders an
-     inline scrollbar (Windows) or an overlay one (macOS) — without it, the
-     two behaved inconsistently: same rule as .service-modal-body below, so
-     both popup families sit the same relative to their close button. */
-  /* flex: 1 fills the panel. .modal-panel is a flex row and this was the
-     default `0 1 auto`, so a popup whose content is narrower than the panel
-     - the case index, which is just a list of titles - shrank to its content
-     and left ~97px of bare panel to its right. The scrollbar rides that edge,
-     so it appeared well to the LEFT of the close button in that one popup
-     while sitting to its right everywhere else. min-width: 0 keeps a long
-     unbroken string from forcing the flex item wider than the panel. */
-  .case-modal-body {
-    flex: 1 1 auto;
-    min-width: 0;
-    padding: 44px 52px 40px;
-    overflow-y: auto;
-    scrollbar-gutter: stable;
-  }
+  /* ---------- Case study content ----------
+     The case-study pages' eyebrow, client line, sections, stats and quote.
+     Named .case-modal-* because they were built for the reader dialog, which
+     was removed on 18 Sep 2026; the pages kept the names. */
 
   /* ---------- Scrollbars ----------
      Applied site-wide, not just to the modals: the page itself scrolls, and
@@ -1828,15 +1804,6 @@
      device/font-rendering. See the mobile breakpoint for the extra type
      shrink on small screens. */
   .case-modal-eyebrow { margin-bottom: 18px; max-width: calc(100% - 30px); }
-
-  .case-modal-body h2 {
-    font-size: 26px;
-    line-height: 1.2;
-    font-weight: 700;
-    letter-spacing: -0.4px;
-    color: var(--text);
-    margin-bottom: 10px;
-  }
 
   .case-modal-client {
     font-size: 12px;
@@ -1945,34 +1912,6 @@
     color: rgba(var(--ink-rgb), 0.6);
   }
 
-  .case-modal-footer {
-    padding-top: 24px;
-    border-top: 1px solid rgba(var(--ink-rgb), 0.12);
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  /* The reader dialogs' mobile-only "All case studies" / "All articles"
-     toggle (see .reader-toggle below). */
-  .case-back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    background: none;
-    border: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: var(--text);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    cursor: pointer;
-  }
-
-  .case-back-btn svg { width: 13px; height: 13px; }
-
 
   .case-index-list {
     display: flex;
@@ -2061,193 +2000,6 @@
   }
 
   .case-index-item .case-index-go svg { width: 13px; height: 13px; }
-
-  /* ---------- Reader layout ----------
-     The case-study and blog dialogs list every entry down the left and read
-     the selected one on the right, so moving between entries is one click
-     instead of close, View all, pick, back. Both dialogs share these rules;
-     the rows are the same .case-index-item the old index popups used, with
-     .is-active marking the entry being read.
-
-     .modal-panel is already a flex row, so the aside and the reading pane
-     sit side by side and each scrolls on its own inside the panel's
-     max-height. Below 900px there is no room for two columns: the aside is
-     hidden and .show-list swaps it in for the reading pane, driven by the
-     footer's .reader-toggle button, which only shows at that width.
-
-     Doubled selector on the panel: .case-modal-panel and .service-panel set
-     their own max-width at the same specificity and cascade later, so a bare
-     .reader-panel would lose to both. */
-  .modal-panel.reader-panel { max-width: 1140px; }
-
-  .reader-side {
-    position: relative;
-    flex: 0 0 330px;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    padding: 44px 22px 32px 30px;
-    border-right: 1px solid rgba(var(--ink-rgb), 0.12);
-    background: rgba(var(--ink-rgb), 0.03);
-    overflow: hidden;
-  }
-
-  /* The list scrolls, not the aside. That is what lets the pager sit pinned at
-     the bottom of the column instead of being something you have to scroll
-     past ten rows to reach.
-
-     The horizontal padding here is load-bearing, not spacing. Rows carry
-     margin: 0 -14px so their hover/selected fill bleeds past the text column,
-     and a scroll container clips whatever overflows it - so once this element
-     became the scroller, that bleed was cut off and the selected blue row
-     appeared cropped down its left edge. Matching padding (with the negative
-     margin putting the text column back where it was) gives the bleed room
-     inside the scroller instead of outside it. */
-  .reader-list {
-    flex: 1 1 auto;
-    overflow-y: auto;
-    scrollbar-gutter: stable;
-    padding: 0 14px;
-    margin: 0 -14px;
-  }
-
-  /* Rendered only when there is more than one page - see PAGE_SIZE in the
-     case-study IIFE. At eight case studies it stays hidden and appears on its
-     own once an eleventh is added. */
-  .reader-pager {
-    flex: 0 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px;
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px solid rgba(var(--ink-rgb), 0.12);
-  }
-
-  .reader-page-btn {
-    min-width: 30px;
-    height: 30px;
-    padding: 0 7px;
-    display: grid;
-    place-items: center;
-    border-radius: 8px;
-    border: 1px solid rgba(var(--ink-rgb), 0.16);
-    background: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-    cursor: pointer;
-  }
-
-  .reader-page-btn:hover:not(:disabled) { border-color: rgba(var(--ink-rgb), 0.42); }
-
-  /* The page you are on, in the same brand blue the selected row uses. White
-     on that blue is 4.56:1, so the label stays full white rather than an
-     alpha step that would drop under AA. */
-  /* border: 0 for the same reason as the form's completed step: a gradient
-     under a transparent border shows its opposite end as a 1px ring. Not
-     visible until an eleventh case study turns the pager on. The hover rule
-     above only recolours a border, so it has nothing to act on here. */
-  .reader-page-btn[aria-current="page"] {
-    background: var(--brand-fill);
-    border: 0;
-    color: #ffffff;
-  }
-
-  .reader-page-btn:disabled { opacity: 0.4; cursor: default; }
-
-  .reader-page-btn svg { width: 12px; height: 12px; }
-
-  .reader-side-count {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: rgba(var(--ink-rgb), var(--ink-a-high));
-    margin-bottom: 10px;
-  }
-
-  .reader-list .case-index-item { padding: 14px 14px; margin: 0 -14px; gap: 12px; }
-  .reader-list .case-index-item::before,
-  .reader-list .case-index-item:last-child::after { left: 14px; right: 14px; }
-  .reader-list .case-index-title { font-size: 14.5px; }
-  .reader-list .case-index-client { font-size: 10.5px; }
-
-  /* Brand blue for the entry being read - the same fixed-colour selection
-     the team strip uses, ink pinned white the way every blue surface on the
-     site does it. Both labels go to full white: white itself is only 4.56:1
-     on the blue, so any alpha step below it would fail AA. The dividers
-     around the row drop out the same way they do on hover. */
-  .reader-list .case-index-item.is-active,
-  .reader-list .case-index-item.is-active:hover {
-    background: var(--brand-fill);
-    --ink-rgb: 255, 255, 255;
-    --text: #ffffff;
-  }
-  .reader-list .case-index-item.is-active::before,
-  .reader-list .case-index-item.is-active + .case-index-item::before,
-  .reader-list .case-index-item.is-active:last-child::after { opacity: 0; }
-  .reader-list .case-index-item.is-active .case-index-client { color: #ffffff; }
-  .reader-list .case-index-item.is-active .case-index-go { background: rgba(255, 255, 255, 0.18); }
-
-  .reader-toggle { display: none; }
-
-  @media (max-width: 900px) {
-    .reader-side { display: none; }
-    .reader-toggle { display: inline-flex; }
-    .reader-panel.show-list .reader-side {
-      display: flex;
-      flex: 1 1 auto;
-      border-right: none;
-      background: none;
-    }
-    .reader-panel.show-list .case-modal-body,
-    .reader-panel.show-list .service-modal-body { display: none; }
-
-    /* Bigger hit area for touch. 30px clears the 24px bar the rest of the
-       site is audited against, but these are small standalone targets and
-       the list they page through is full-width here, so there is room. */
-    .reader-page-btn { min-width: 38px; height: 38px; }
-  }
-
-  @media (max-width: 640px) {
-    .case-modal-body { padding: 32px 34px 28px 24px; }
-
-    /* The close X becomes a header row the content starts beneath, instead of
-       floating over it. On a phone the panel is a column and the reading pane
-       is its own scroller, so the absolutely positioned X (a child of the
-       panel, not the pane) stayed put while the photograph, the eyebrow pill
-       and the stat boxes scrolled under it - reported as looking like a bug,
-       which it was. Above 640px the pane's 52px gutter keeps the X clear, so
-       this is phone-only.
-
-       Same mechanics as the full-screen contact form: the panel stops
-       scrolling, the pane scrolls, and min-height: 0 is what lets the pane
-       shrink to the space left - a flex child defaults to min-height: auto
-       and would grow the panel instead of scrolling inside it. */
-    .modal-panel.reader-panel,
-    .modal-panel.service-panel { overflow: hidden; }
-
-    .reader-panel .modal-close,
-    .service-panel .modal-close {
-      position: static;
-      flex: 0 0 auto;
-      align-self: flex-end;
-      margin: 12px 14px 0 0;
-    }
-
-    .reader-panel .case-modal-body,
-    .service-panel .service-modal-body {
-      min-height: 0;
-      padding-top: 12px;
-    }
-
-    /* The list view (.show-list) swaps the pane for the sidebar; it needs the
-       same permission to shrink, or it too grows the panel. */
-    .reader-panel.show-list .reader-side { min-height: 0; }
-  }
 
   /* ---------- Client logos ----------
      The source logos from digiblu.com are full-colour with a solid white
@@ -3432,31 +3184,12 @@
 
   .modal-panel.sent .step-counter { display: none; }
 
-  /* ---------- Service detail modal: reuses .modal-overlay / .modal-panel /
-     .modal-close from the contact modal above; single-column content only. ---------- */
-  .service-panel { max-width: 640px; }
-
-  /* Same scrollbar-gutter/right-padding treatment as .case-modal-body above,
-     so both popup families sit the same relative to .modal-close instead of
-     drifting depending on which one happens to need a scrollbar. */
-  /* Same flex fill as .case-modal-body - see the note there. */
-  .service-modal-body {
-    flex: 1 1 auto;
-    min-width: 0;
-    padding: 44px 52px 40px;
-    overflow-y: auto;
-    scrollbar-gutter: stable;
-  }
+  /* ---------- Page content: eyebrow, intro, sections ----------
+     Shared by the services, legal, accreditation and team pages and the 404.
+     Named .service-modal-* because they began in the service dialog, which
+     was removed on 18 Sep 2026. */
 
   .service-modal-eyebrow { margin-bottom: 18px; max-width: calc(100% - 30px); }
-
-  .service-modal-body h2 {
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: -0.4px;
-    color: var(--text);
-    margin-bottom: 14px;
-  }
 
   .service-modal-intro {
     font-size: 15px;
@@ -3479,22 +3212,11 @@
 
   .service-modal-item:first-child { padding-top: 0; border-top: none; }
 
-  /* Legal clauses are set via textContent with literal \n between numbered
-     sub-clauses (safer than innerHTML for static data), so this is what turns
-     those characters into visible line breaks. Scoped to the legal modal only
-     — Services/Case Studies/Blog reuse .service-modal-item with plain single-
-     paragraph text and don't need it. */
-  #legalModalList .service-modal-item p { white-space: pre-line; }
-
-  /* ---------- Badge detail modal ----------
-     Reuses .service-panel / .service-modal-body / .service-modal-eyebrow /
-     .service-modal-intro (see the Learn More popups). The Accreditations
-     strip itself is now a plain written list (see .accred-chip), but the
-     popup still shows the real original artwork — a plain <img> pointed at
-     assets/badges/*.png. */
-  .badge-panel { max-width: 420px; }
-
-  .badge-modal-body { text-align: center; }
+  /* ---------- Accreditation artwork ----------
+     The /accreditations page shows each mark's real original artwork, a
+     plain <img> pointed at /assets/badges/*.png (the home-page strip is a
+     written list, see .accred-chip). Built for the badge dialog, removed on
+     18 Sep 2026. */
 
   .badge-modal-visual-wrap {
     display: flex;
@@ -3502,13 +3224,6 @@
     align-items: center;
     min-height: 128px;
     margin-bottom: 24px;
-  }
-
-  #badgeModalVisual {
-    max-width: 100%;
-    max-height: 128px;
-    width: auto;
-    height: auto;
   }
 
   /* Every mark except G-Cloud has its own ink colour (ISO blue, the Cyber
@@ -3524,14 +3239,10 @@
     padding: 18px 26px;
   }
 
-  /* ---------- Team member profile modal ----------
-     Opened from the Our Experts strip, same pattern as the accreditation
-     chips. Reuses .service-panel and the badge modal's centred layout; the
-     photo reuses the .tp-* background classes from the strip itself so the
-     headshot paths live in exactly one place. */
-  .team-panel { max-width: 460px; }
-
-  .team-modal-body { text-align: center; }
+  /* ---------- Team page photo and role ----------
+     Each entry on /team. The photo reuses the .tp-* background classes from
+     the strip itself so the headshot paths live in exactly one place. Built
+     for the profile dialog, removed on 18 Sep 2026. */
 
   .team-modal-photo {
     display: block;
@@ -3545,22 +3256,12 @@
     box-shadow: 0 0 0 1px rgba(var(--ink-rgb), 0.16);
   }
 
-  .team-modal-body h2 { margin-bottom: 4px; }
-
   .team-modal-role {
     font-size: 14px;
     font-weight: 500;
     color: rgba(var(--ink-rgb), var(--ink-a-high));
     margin-bottom: 18px;
   }
-
-  /* Centred, like the photo, name and role above it. It was left-aligned
-     under a centred heading and read as pushed to one side (reported on the
-     badge dialog, 8 Sep 2026; the two share the layout). */
-  .team-modal-body .service-modal-intro { text-align: center; }
-
-  .badge-modal-body h2 { margin-bottom: 10px; }
-  .badge-modal-body .service-modal-intro { margin-bottom: 0; text-align: center; }
 
   .service-modal-item h2,
   .service-modal-item h3 {
@@ -3576,11 +3277,6 @@
     color: rgba(var(--ink-rgb),0.72);
   }
 
-  .service-modal-footer {
-    padding-top: 24px;
-    border-top: 1px solid rgba(var(--ink-rgb),0.12);
-  }
-
   @media (max-width: 640px) {
     .modal-panel { flex-direction: column; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto; }
     .modal-aside { flex: none; border-right: none; border-bottom: 1px solid rgba(var(--ink-rgb),0.1); padding: 30px 28px; }
@@ -3588,7 +3284,6 @@
     .modal-step { flex-direction: column; text-align: center; gap: 6px; flex: 1; }
     .modal-step .step-label { font-size: 11px; }
     .modal-field-row { grid-template-columns: 1fr; gap: 0; }
-    .service-modal-body { padding: 32px 34px 28px 24px; }
 
     /* The contact form goes full screen on a phone rather than sitting in a
        card. Reported as clunky to scroll, with fields seeming to be missing
