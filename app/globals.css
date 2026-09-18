@@ -3277,13 +3277,33 @@
   .modal-field input::placeholder,
   .modal-field textarea::placeholder { color: rgba(var(--ink-rgb),0.32); }
 
+  /* Block, not the default inline-block. An inline-block textarea sits on a
+     text baseline and leaves ~5px of descender space under itself, so the
+     gap below the message field measured 21px against the 16px between every
+     other field - which is the extra space above the consent checkbox that
+     was reported. Inputs measure 0px of slack and are left alone; setting
+     display on .modal-field input would also reach the hidden input
+     Turnstile injects inside its field. */
+  .modal-field textarea { display: block; }
+
   /* Overrides .modal-field input's width:100%/appearance:none above (higher
      specificity), which would otherwise stretch the checkbox into an
-     invisible full-width box rather than a normal native control. */
-  .modal-checkbox {
+     invisible full-width box rather than a normal native control.
+
+     The label rule needs .modal-field in front of it for the same reason:
+     .modal-field label (class + element) outranks .modal-checkbox (class
+     alone), so for months the label computed as display: block - the gap
+     never applied, the text ran straight into the box and wrapped back under
+     it, and it took the field label's 7px bottom margin and 500 weight
+     (reported as spacing issues around the checkbox). Every property the
+     field label sets is restated here so none of them leak in again. */
+  .modal-field .modal-checkbox {
     display: flex;
     align-items: flex-start;
     gap: 10px;
+    margin-bottom: 0;
+    font-size: 13px;
+    font-weight: 400;
     cursor: pointer;
   }
 
@@ -3776,7 +3796,10 @@
 
   /* ---------- Contact form: API errors, Turnstile, honeypot (11 Sep 2026) ---------- */
   .modal-error { color: var(--error); font-size: 13.5px; font-weight: 500; margin: -4px 0 14px; }
-  .modal-turnstile { min-height: 0; margin-bottom: 12px; }
+  /* No margin of its own: it takes .modal-field's 16px like every other row,
+     so step 2 ends 16px above the buttons exactly as step 1 does. It was 12px,
+     which made the last gap on the form the only one out of rhythm. */
+  .modal-turnstile { min-height: 0; }
   .modal-turnstile:empty { display: none; }
   /* Off-screen rather than display:none: a hidden input is skipped by the
      scripts the honeypot exists to catch. Never reachable by a person. */
