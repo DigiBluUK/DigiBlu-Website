@@ -73,7 +73,7 @@ Browser pane launch configs (`.claude/launch.json`): `digiblu-next` (`next dev`,
 ## Open items (18 Sep 2026)
 
 - Dialogs to pages (Radu): awaiting DigiBlu's decision, including whether the contact form stays a dialog.
-- The Privacy and Cookies Policy does not yet name Microsoft (Azure Communication Services) as a processor of enquiries: a draft awaits approval.
+- The Privacy and Cookies Policy names Microsoft (Azure Communication Services) as the service that emails enquiries to DigiBlu: on `dev` in section 12, dated 18 September 2026, awaiting DigiBlu's approval with the rest of that paragraph (the Turnstile part is unapproved too). Section 15 (DigiBlu's text) still says the websites are hosted in the UK, which is no longer accurate on Cloudflare Workers: DigiBlu's to change.
 - The NSM case study's quote is the brief's example, attributed to Tim Sunley: unconfirmed.
 - `dev` is ahead of `main` with approved work (the Safari Destinations correction, contact-form spacing): release pending, then the DNS switch.
 - David's and Karen's headshots are old 560px crops; re-source them as cut-outs.

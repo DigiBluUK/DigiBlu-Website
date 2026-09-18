@@ -24,9 +24,14 @@ test("legal: six by slug, sub-clauses on their own lines, no autolinks", () => {
   assert.equal(c.legalDocs[5].slug, "accessibility-statement");
   const privacy = c.legalDocs.find((d) => d.slug === "privacy-policy");
   assert.equal(privacy.title, "Privacy and Cookies Policy");
-  assert.equal(privacy.intro, "Last updated 11 September 2026.");
+  assert.equal(privacy.intro, "Last updated 18 September 2026.");
   assert.ok(privacy.sections.some((s) => s.heading === "12. Cookies and Similar Storage" && s.html.includes("Turnstile")));
   assert.ok(privacy.sections.some((s) => s.heading === "12. Cookies and Similar Storage" && s.html.includes("_ga_RVNLDVSLJ8")));
+  // Enquiries reach DigiBlu through Azure Communication Services (18 Sep 2026);
+  // section 14 promises disclosure only "as set out in this notice", so this
+  // naming is what keeps that true. The address stays plain text, like the rest.
+  assert.ok(privacy.sections.some((s) => s.heading === "12. Cookies and Similar Storage" && s.html.includes("Azure Communication Services") && s.html.includes("Microsoft")));
+  assert.ok(!privacy.sections.some((s) => /href="[^"]*microsoft/.test(s.html)), "the Microsoft address stays plain text");
   assert.ok(privacy.sections.some((s) => s.html.includes("<br>")), "a numbered point should keep its line breaks");
   assert.ok(!privacy.sections.some((s) => s.html.includes("mailto:")), "an email address stays plain text");
 });
