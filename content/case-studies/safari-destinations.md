@@ -15,14 +15,12 @@ stats:
     l: "Processes digitised and automated"
   - v: "Ongoing"
     l: "Managed service and improvement"
-quote:
-  text: "[Client quote to follow]"
-  cite: "[Client name], [Client role] - Safari Destinations"
+quote: null
 ---
 
 ## Overview
 
-Safari Destinations is a leading destination management company specialising in travel across Southern and East Africa. Recognising the opportunity to transform how its business operates, it selected DigiBlu as its AI transformation partner: a partnership that combines AI, automation, data and digital solutions, with DigiBlu supporting the full transformation lifecycle from identifying and assessing opportunities through delivery, managed service and continuous improvement.
+Safari Destinations is the leading destination management company in Botswana and Zimbabwe. Recognising the opportunity to transform how its business operates, it selected DigiBlu as its AI transformation partner: a partnership that combines AI, automation, data and digital solutions, with DigiBlu supporting the full transformation lifecycle from identifying and assessing opportunities through delivery, managed service and continuous improvement.
 
 ## The problem
 
