@@ -2146,9 +2146,13 @@
   /* The page you are on, in the same brand blue the selected row uses. White
      on that blue is 4.56:1, so the label stays full white rather than an
      alpha step that would drop under AA. */
+  /* border: 0 for the same reason as the form's completed step: a gradient
+     under a transparent border shows its opposite end as a 1px ring. Not
+     visible until an eleventh case study turns the pager on. The hover rule
+     above only recolours a border, so it has nothing to act on here. */
   .reader-page-btn[aria-current="page"] {
     background: var(--brand-fill);
-    border-color: transparent;
+    border: 0;
     color: #ffffff;
   }
 
@@ -3201,7 +3205,12 @@
   }
 
   .modal-step.active .step-num { background: var(--text); border-color: var(--text); color: var(--surface-2); }
-  .modal-step.done .step-num { background: var(--brand-fill); border-color: transparent; color: #fff; }
+  /* border: 0, not border-color: transparent. A background paints under a
+     transparent border but is positioned from the padding box and repeats,
+     so the 1px border showed the gradient's opposite end as a lighter ring
+     round the navy circle (reported 18 Sep 2026 - the same trap as the nav's
+     Get in touch on 10 Sep). border-box sizing keeps the circle at 24px. */
+  .modal-step.done .step-num { background: var(--brand-fill); border: 0; color: #fff; }
 
   .modal-step .step-label {
     font-size: 13px;
