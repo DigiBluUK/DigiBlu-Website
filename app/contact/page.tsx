@@ -46,14 +46,14 @@ export default function ContactPage() {
           {/* .modal-panel for the dialog's two-column layout and success
                state; .contact-panel lifts it out of the overlay's constraints. */}
           <div className="modal-panel contact-panel" id="contactPage">
-            <ContactFormBody heading="h1" />
+            <ContactFormBody />
           </div>
         </div>
       </main>
       <Footer standalone />
       <PageBehaviours />
       <PhoneDigits />
-      <ContactForm rootId="contactPage" turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""} />
+      <ContactForm turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""} />
     </>
   );
 }

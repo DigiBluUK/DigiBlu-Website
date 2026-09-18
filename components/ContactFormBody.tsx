@@ -1,18 +1,13 @@
-// The contact form's markup, shared by the home page's dialog
-// (components/dialogs/ContactDialog.tsx) and the /contact page
-// (app/contact/page.tsx) since 11 Sep 2026: one form, two containers, the
-// same script (components/behaviours/ContactForm.jsx) wiring whichever is
-// on the page. Generated from index.html originally; hand-tuned since.
-//
-// heading: the dialog titles itself with an h2 (the page behind it owns
-// the h1); on /contact this title is the page's h1.
-export default function ContactFormBody({ heading = "h2" }: { heading?: "h1" | "h2" }) {
-  const Heading = heading;
+// The contact form's markup, on /contact (app/contact/page.tsx), wired by
+// components/behaviours/ContactForm.jsx. It was also the home page's
+// dialog until 18 Sep 2026; the page is its only home now, so the title is
+// the page's h1. Generated from index.html originally; hand-tuned since.
+export default function ContactFormBody() {
   return (
     <>
       <div className="modal-aside">
         <div>
-          <Heading id="modalTitle">Get in touch</Heading>
+          <h1 id="modalTitle">Get in touch</h1>
           <p className="modal-sub">Complete these quick steps and a member of our team will be in touch.</p>
         </div>
 

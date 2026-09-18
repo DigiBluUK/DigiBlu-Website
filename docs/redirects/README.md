@@ -23,8 +23,10 @@ needs one Bulk Redirect rule that enables the list.
   team page (Tarryn Chetty, Will Ells, Michael Cobbledick, Steve Burke) and
   one is a placeholder ("you"); all of them land on the team section.
 - **Contact** (`/contact-us`) goes to `/contact`, the form's own page
-  (since 11 September 2026; before that `/#contact`, which opens the home
-  page's dialog on load and still works).
+  (since 11 September 2026; before that `/#contact`, which opened the home
+  page's dialog on load. The dialog went on 18 September 2026, so
+  `/#contact` now lands on the home page: nothing outside this project
+  ever linked to it).
 - **Legal** pages keep their slugs under `/legal/`.
 - **Projects** (`/our-projects/<title>`) go to the matching
   `/case-studies/<key>` page. Wix encodes the punctuation in these

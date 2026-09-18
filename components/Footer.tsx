@@ -58,9 +58,9 @@ export default function Footer({ standalone = false }: { standalone?: boolean })
                   <li><a href="/#case-studies">Case Studies</a></li>
                   <li><a href="/#about">About Us</a></li>
                   <li><a href="/team">Our Experts</a></li>
-                  {/* A real link to /contact everywhere since 11 Sep 2026; on the
-                       home page a plain click opens the dialog (.js-contact-open). */}
-                  <li><a href="/contact" className={standalone ? undefined : "js-contact-open"}>Contact Us</a></li>
+                  {/* /contact everywhere; the home page's contact dialog went
+                       on 18 Sep 2026. */}
+                  <li><a href="/contact">Contact Us</a></li>
                 </ul>
               </div>
 

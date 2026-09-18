@@ -254,11 +254,10 @@ panel floats over arbitrary content, so its contrast cannot be computed
 statically, and that opacity keeps labels legible over anything scrolling
 beneath. There is an `@supports not` fallback to a near-opaque surface.
 
-**Dialogs** - `.modal-overlay` + `.modal-panel`, with background `inert`, a
-focus trap, Escape and backdrop-click. The contact form is the only one: content
-lives on pages, and a link out of the form (the privacy policy) opens in a new
-tab so nothing typed is lost. On phones the close control is a header row the
-content starts beneath, never a floating button over scrolling content.
+**No dialogs** - since 18 Sep 2026 every piece of content, and the contact form,
+is a page of its own, reached by a real link. The form's panel keeps the
+`.modal-*` class names it had as a dialog. A link out of the form (the privacy
+policy) opens in a new tab so nothing typed is lost.
 
 ---
 

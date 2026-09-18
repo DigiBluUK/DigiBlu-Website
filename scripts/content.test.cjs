@@ -32,6 +32,9 @@ test("legal: six by slug, sub-clauses on their own lines, no autolinks", () => {
   // naming is what keeps that true. The address stays plain text, like the rest.
   assert.ok(privacy.sections.some((s) => s.heading === "12. Cookies and Similar Storage" && s.html.includes("Azure Communication Services") && s.html.includes("Microsoft")));
   assert.ok(!privacy.sections.some((s) => /href="[^"]*microsoft/.test(s.html)), "the Microsoft address stays plain text");
+  // The contact form reports a generate_lead event (18 Sep 2026): section 12
+  // says so, and that nothing typed goes with it.
+  assert.ok(privacy.sections.some((s) => s.heading === "12. Cookies and Similar Storage" && s.html.includes("how many send an enquiry") && s.html.includes("never what you wrote")));
   assert.ok(privacy.sections.some((s) => s.html.includes("<br>")), "a numbered point should keep its line breaks");
   assert.ok(!privacy.sections.some((s) => s.html.includes("mailto:")), "an email address stays plain text");
 });

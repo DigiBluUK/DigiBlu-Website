@@ -62,7 +62,7 @@ export default function Hero() {
                   <path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
                 </svg>
               </button>
-              <a className="btn-signup js-contact-open" href="/contact">Get in touch</a>
+              <a className="btn-signup" href="/contact">Get in touch</a>
               <button className="nav-toggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
                 <svg className="icon-open" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
                   <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
@@ -119,7 +119,7 @@ export default function Hero() {
                  the arrows already used by .case-read-more / .service-learn-more. */}
             {/* A real link to /contact since 11 Sep 2026; a plain click still
                  opens the dialog (ContactForm.jsx). */}
-            <a className="btn-started js-contact-open" href="/contact">
+            <a className="btn-started" href="/contact">
               Get in touch
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M7 17 17 7M8.5 7H17v8.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </a>

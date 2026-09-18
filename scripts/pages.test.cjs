@@ -83,24 +83,26 @@ test("the home page links to every listing page", () => {
   }
 });
 
-test("the contact page carries the form and the home page its dialog", () => {
+// The form is on /contact only since 18 Sep 2026; the home page's contact
+// buttons link there.
+test("the contact form is on its page, and only there", () => {
   const p = html("/contact");
   for (const id of ["contactPage", "cf-first", "cf-email", "cf-consent", "cf-turnstile", "cf-website", "cf-error"]) assert.ok(p.includes(`id="${id}"`), "contact page: " + id);
-  assert.ok(!p.includes('id="contactModal"'), "contact page has no dialog overlay");
   const h = html("/");
-  assert.ok(h.includes('id="contactModal"') && h.includes('id="cf-first"'), "home page keeps the dialog");
+  assert.ok(!h.includes('id="cf-first"'), "home page has no contact form");
+  assert.ok(!/class="[^"]*js-contact-open/.test(h), "home page contact links are plain links");
 });
 
-// The content dialogs were removed on 18 Sep 2026 at DigiBlu's developer's
-// request: each document lives on its own page and nowhere else, so the
-// home page neither shows it nor carries it in its payload for a dialog to
-// fill (it shipped all of it before: the home page fell from 371KB to 271KB
-// when they went; most of what remains is Next's own payload of the page).
-// Probes are plain word runs so JSON escaping in the payload cannot hide a
-// match. The team bios stay: the strip's desktop card shows them.
-test("the home page carries no dialog content but the contact form", () => {
+// The dialogs were removed on 18 Sep 2026 at DigiBlu's developer's request:
+// each document lives on its own page and nowhere else, so the home page
+// neither shows it nor carries it in its payload for a dialog to fill (it
+// shipped all of it before: the home page fell from 371KB to 271KB when the
+// content dialogs went; most of what remains is Next's own payload of the
+// page). Probes are plain word runs so JSON escaping in the payload cannot
+// hide a match. The team bios stay: the strip's desktop card shows them.
+test("the home page has no dialogs and carries no document content", () => {
   const h = html("/");
-  assert.equal((h.match(/class="modal-overlay"/g) || []).length, 1, "one dialog overlay, the contact form's");
+  assert.equal((h.match(/class="modal-overlay"/g) || []).length, 0, "no dialog overlays");
   const probe = (x) => (text(x).match(/[A-Za-z]+(?: [A-Za-z]+){5}/) || [])[0];
   const docs = [
     ...c.legalDocs.map((d) => ["legal " + d.slug, d.sections[0].html]),

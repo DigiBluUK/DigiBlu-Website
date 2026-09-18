@@ -215,7 +215,6 @@
   .case-viewall-btn:focus-visible,
   .case-index-item:focus-visible,
   .accred-chip:focus-visible,
-  .modal-close:focus-visible,
   .modal-next:focus-visible,
   .modal-back:focus-visible,
   .modal-submit:focus-visible,
@@ -234,7 +233,6 @@
   @media (prefers-reduced-motion: reduce) {
     .team-slice { transition: none; }
     .team-slice-label { transition: none; }
-    .modal-overlay,
     .modal-panel { transition: none; }
     .scroll-top-btn { transition: none; }
   }
@@ -388,8 +386,8 @@
     top: 0;
     left: 0;
     right: 0;
-    /* Below .modal-overlay's z-index: 100, so an open dialog always paints
-       above the fixed nav rather than tying with it. */
+    /* 80 was set below the dialogs' 100; there are no dialogs since
+       18 Sep 2026, and it still clears everything else on the page. */
     z-index: 80;
     background: transparent;
   }
@@ -2332,8 +2330,9 @@
      expanded panel looked like the end state, so a click on it appeared to
      do nothing. Sits on the active slice only at desktop widths (a collapsed
      56-80px slice has no room, and its first click expands rather than
-     opening the dialog anyway); on mobile every row shows it, because there
-     a tap goes straight to the profile. */
+     opening the profile anyway); on mobile every row shows it, because there
+     a tap goes straight to the profile (the member's entry on /team since
+     18 Sep 2026). */
   /* Brand blue, and deliberately the *same* fill at every width — the
      mobile block below overrides only layout now, not colour, so this is
      the single source of truth for how the affordance reads.
@@ -2399,7 +2398,7 @@
 
   /* Injected by the team IIFE from TEAM_MEMBERS, so the bios stay written in
      one place. Hidden here; the desktop card below is the only place it
-     shows. On a phone a tap opens the profile dialog, which carries it. */
+     shows. On a phone a tap opens the profile on /team, which carries it. */
   .team-slice-bio { display: none; }
 
   /* ---------- The desktop card ----------
@@ -2471,7 +2470,7 @@
 
     /* No + disc on the desktop card: the bio is already in it, so there is
        nothing for the disc to promise. Clicking the open card still opens the
-       full profile dialog, which matters below ~1100px where the bio clamps. */
+       full profile on /team, which matters below ~1100px where the bio clamps. */
     .team-slice.active .team-slice-more { display: none; }
 
     /* Inside the card the name and role may wrap. The nowrap on the base
@@ -2493,8 +2492,8 @@
 
     /* Seven lines is the whole bio at any card width from about 1100px up;
        below that the clamp trims it with an ellipsis rather than letting it
-       run out of the 280px card. The full text is one click away in the
-       profile dialog, which the + disc still opens. */
+       run out of the 280px card. The full text is one click away on /team:
+       clicking the open card goes there. */
     .team-slice.active .team-slice-bio {
       display: -webkit-box;
       -webkit-box-orient: vertical;
@@ -2831,30 +2830,6 @@
   }
 
   /* ---------- Contact Modal ---------- */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.72);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    z-index: 100;
-    opacity: 0;
-    pointer-events: none;
-    /* `visibility` (not just opacity) keeps the closed dialog's fields out of
-       the tab order. Without it every input stays keyboard-focusable. */
-    visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
-  }
-
-  .modal-overlay.open {
-    opacity: 1;
-    pointer-events: auto;
-    visibility: visible;
-    transition: opacity 0.2s ease, visibility 0s linear 0s;
-  }
 
   .modal-panel {
     position: relative;
@@ -2872,30 +2847,6 @@
     max-height: calc(100vh - 48px);
     max-height: calc(100dvh - 48px);
   }
-
-  .modal-overlay.open .modal-panel { transform: translateY(0); }
-
-  .modal-close {
-    position: absolute;
-    /* Icon-only, so this has no visible effect today — set so the button
-       can't fall back to a UA default if it ever gains a text label. */
-    font-family: 'DM Sans', sans-serif;
-    top: 18px;
-    right: 18px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: rgba(var(--ink-rgb),0.06);
-    border: 1px solid rgba(var(--ink-rgb),0.14);
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 1;
-  }
-
-  .modal-close svg { width: 14px; height: 14px; }
 
   /* Left: plain black brand panel with the step tracker. */
   .modal-aside {
@@ -3285,43 +3236,6 @@
     .modal-step .step-label { font-size: 11px; }
     .modal-field-row { grid-template-columns: 1fr; gap: 0; }
 
-    /* The contact form goes full screen on a phone rather than sitting in a
-       card. Reported as clunky to scroll, with fields seeming to be missing
-       when they were not - which is what the card does: it is a short box
-       inside the viewport, the whole panel scrolls as one (see the rule
-       above), and the on-screen keyboard shrinks what is left until only a
-       field or two is visible with no sign there is more.
-
-       Two changes fix it. The panel fills the screen, so the scrollable area
-       is as tall as the device allows. And the panel itself stops scrolling -
-       .modal-main becomes the scroll container instead, so the header and its
-       step tracker stay put while the fields move under them, which is what
-       tells you where you are in the form.
-
-       min-height: 0 is required, not tidiness: a flex child defaults to
-       min-height: auto and will refuse to shrink below its content, so
-       .modal-main would grow the panel instead of scrolling inside it. */
-    #contactModal { padding: 0; }
-
-    #contactModal .modal-panel {
-      width: 100%;
-      max-width: none;
-      height: 100vh;
-      height: 100dvh;
-      max-height: 100dvh;
-      border: none;
-      border-radius: 0;
-      overflow: hidden;
-    }
-
-    #contactModal .modal-aside { flex: 0 0 auto; }
-
-    #contactModal .modal-main {
-      flex: 1 1 auto;
-      min-height: 0;
-      overflow-y: auto;
-    }
-
     /* The eyebrow pill is the only content that reaches the panel's top-right
        corner, where .modal-close sits (32px wide, inset 18px). The max-width
        that keeps it clear of the X lives on the base rule now (applies at
@@ -3469,12 +3383,12 @@
   .detail-back:hover { color: var(--text); }
 
   /* ---------- Listing pages (11 Sep 2026) ----------
-     /services, /team, /accreditations and /case-studies: the content the
-     home page's dialogs show, as real prerendered pages the dialogs now sit
-     over (the developer's pre-launch review: a dialog filled by script is
-     not crawlable). Same .detail-page frame as the case-study and legal
-     pages; the item styling reuses the dialog bodies' rules so a service on
-     the page and in the dialog are one design. scroll-margin-top keeps an
+     /services, /team, /accreditations and /case-studies: built as pages
+     under the home page's dialogs (the developer's pre-launch review: a
+     dialog filled by script is not crawlable), and the only place that
+     content lives since the dialogs went on 18 Sep 2026. Same .detail-page
+     frame as the case-study and legal pages; the item styling came from the
+     dialog bodies' rules, hence the class names. scroll-margin-top keeps an
      anchored item (/services#ai) clear of the fixed nav, using the same
      --nav-h the nav script measures. */
   .page-list { display: flex; flex-direction: column; gap: 44px; margin-top: 8px; }
@@ -3495,7 +3409,7 @@
   }
 
   /* Button-styled classes carried by <a> elements since 11 Sep 2026: the
-     home page's dialog openers are real links to the listing pages. */
+     home page's openers are links to the listing pages. */
   a.accred-chip, a.case-viewall-btn, a.faq-cta-btn { text-decoration: none; }
 
   /* ---------- Contact form: API errors, Turnstile, honeypot (11 Sep 2026) ---------- */
@@ -3510,9 +3424,10 @@
   .cf-hp { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
 
   /* ---------- /contact (11 Sep 2026) ----------
-     The dialog's panel, in the flow: same two columns, steps and success
-     state (.modal-panel and the .modal-* rules), minus the overlay's
-     constraints. Wider than .detail-page because the panel is two columns. */
+     The form's panel, in the flow: two columns, steps and success state
+     (.modal-panel and the .modal-* rules, named from the dialog it was until
+     18 Sep 2026), minus the dialog's constraints. Wider than .detail-page
+     because the panel is two columns. */
   .contact-page { max-width: 960px; margin: 0 auto; padding: var(--section-y) var(--gutter); }
   .contact-page .detail-back { margin-bottom: 22px; }
   .modal-panel.contact-panel { transform: none; max-height: none; overflow: visible; max-width: none; }

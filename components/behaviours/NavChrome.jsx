@@ -92,11 +92,10 @@ export default function NavChrome() {
       });
 
       menu.addEventListener('click', function (e) {
-        // Nav links close the menu; so does the CTA, which would otherwise
-        // leave the panel sitting open behind the contact dialog. The theme
+        // Nav links close the menu, the Get in touch link among them. The theme
         // toggle deliberately does not — you should be able to see the theme
         // change without the menu shutting on you.
-        if (e.target.tagName === 'A' || e.target.closest('.js-contact-open')) setMenu(false);
+        if (e.target.closest('a')) setMenu(false);
       });
 
       document.addEventListener('click', function (e) {
