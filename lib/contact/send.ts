@@ -73,7 +73,9 @@ export function buildEnquiryEmail(enquiry: Enquiry, senderAddress: string, recip
       return `<tr><th align="left" valign="top">${escapeHtml(label)}</th><td>${cell}</td></tr>`;
     }),
     "</table>",
-    `<p>Reply to: <a href="mailto:${escapeHtml(enquiry.email)}">${escapeHtml(enquiry.email)}</a></p>`,
+    // encodeURIComponent: in a mailto link, ? & # would start or split
+    // header fields (a "?bcc=" in the address would add a recipient).
+    `<p>Reply to: <a href="mailto:${escapeHtml(encodeURIComponent(enquiry.email))}">${escapeHtml(enquiry.email)}</a></p>`,
     "</body></html>",
   ].join("");
   return {
@@ -81,6 +83,25 @@ export function buildEnquiryEmail(enquiry: Enquiry, senderAddress: string, recip
     content: { subject: `New contact form submission: ${name}`, plainText, html },
     recipients: { to: [{ address: recipientAddress }] },
     replyTo: [{ address: enquiry.email }],
+  };
+}
+
+// What an error may put in the logs (21 Sep 2026). A raw error object can
+// carry secrets: the SDK's "Invalid connection string" error quotes the
+// whole connection string, access key included, and a validation error can
+// quote an address. So the logs get the error's name, code and status, and
+// its message with any access key and email address redacted.
+export function loggableError(e: unknown): Record<string, unknown> {
+  const err = (e && typeof e === "object" ? e : {}) as { name?: unknown; code?: unknown; statusCode?: unknown; message?: unknown };
+  const message = typeof err.message === "string" ? err.message : String(e);
+  return {
+    name: typeof err.name === "string" ? err.name : undefined,
+    code: err.code,
+    statusCode: err.statusCode,
+    message: message
+      .replace(/accesskey=[^;\s]*/gi, "accesskey=[redacted]")
+      .replace(/[^\s@;,<>"']+@[^\s@;,<>"']+/g, "[email]")
+      .slice(0, 300),
   };
 }
 
@@ -110,6 +131,6 @@ export async function trackDelivery(poller: SendPoller): Promise<void> {
     // The ACS message id, not the enquiry: no personal data goes to the logs.
     console.log("[contact] enquiry emailed", { at: new Date().toISOString(), id: result.id });
   } catch (e) {
-    console.error("[contact] ACS email delivery failed", e);
+    console.error("[contact] ACS email delivery failed", { at: new Date().toISOString(), ...loggableError(e) });
   }
 }

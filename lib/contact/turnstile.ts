@@ -9,7 +9,9 @@ export async function verifyTurnstile(token: string, secret: string, remoteIp?: 
   const body = new URLSearchParams({ secret, response: token });
   if (remoteIp) body.set("remoteip", remoteIp);
   try {
-    const res = await fetch(VERIFY_URL, { method: "POST", body });
+    // A stalled verify must not hold the request open: after 5s it fails
+    // closed, and the visitor sees "try again".
+    const res = await fetch(VERIFY_URL, { method: "POST", body, signal: AbortSignal.timeout(5000) });
     if (!res.ok) return false;
     const data = (await res.json()) as { success?: boolean };
     return data.success === true;

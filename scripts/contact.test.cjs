@@ -41,6 +41,35 @@ test("validateEnquiry: rejects missing names, bad email, no consent, a filled ho
   ]) assert.equal(validateEnquiry(bad).ok, false, JSON.stringify(bad).slice(0, 40));
 });
 
+// 21 Sep 2026: single-line fields lose control characters (they go into the
+// subject), the message keeps its line breaks, and an address with ? # & %
+// is refused (they would split the reply link's mailto).
+test("validateEnquiry: control characters and mailto-breaking addresses", async () => {
+  const { validateEnquiry } = await load("../lib/contact/validate.ts");
+  const r = validateEnquiry({ ...good, firstName: "Jane\r\nBcc: x", company: "Acme\tLtd", message: "One\nTwo" + String.fromCharCode(7) });
+  assert.equal(r.ok, true);
+  assert.equal(r.enquiry.firstName, "Jane Bcc: x");
+  assert.equal(r.enquiry.company, "Acme Ltd");
+  assert.equal(r.enquiry.message, "One\nTwo");
+  for (const email of ["x?bcc=a@b.co@c.co", "x@b.co?bcc=a@b.co", "a#b@c.co", "a&b@c.co", "a%40@b.co"]) {
+    assert.equal(validateEnquiry({ ...good, email }).ok, false, email);
+  }
+  assert.equal(validateEnquiry({ ...good, email: "first.last+tag@sub.example.co.uk" }).ok, true);
+});
+
+test("loggableError: no access key and no address reaches the logs", async () => {
+  const { loggableError } = await load("../lib/contact/send.ts");
+  const e = new Error(`Invalid connection string ${ACS_CONNECTION_STRING}`);
+  const out = JSON.stringify(loggableError(e));
+  assert.ok(!out.includes(Buffer.from("test-access-key").toString("base64")), "access key redacted");
+  assert.match(out, /accesskey=\[redacted\]/);
+  const v = loggableError(Object.assign(new Error("Invalid replyTo address jane@example.com"), { code: "InvalidRequest", statusCode: 400 }));
+  assert.equal(v.code, "InvalidRequest");
+  assert.equal(v.statusCode, 400);
+  assert.ok(!JSON.stringify(v).includes("jane@example.com"), "address redacted");
+  assert.equal(typeof loggableError("plain string").message, "string");
+});
+
 test("buildEnquiryEmail: subject, addresses, reply-to, escaped content", async () => {
   const { buildEnquiryEmail } = await load("../lib/contact/send.ts");
   const m = buildEnquiryEmail(
@@ -57,6 +86,9 @@ test("buildEnquiryEmail: subject, addresses, reply-to, escaped content", async (
   assert.ok(!m.content.html.includes("<Acme"), "html must escape user input");
   assert.match(m.content.html, /&lt;Acme &amp; Co&gt;/);
   assert.match(m.content.html, /Line one<br>Line two/);
+  // The reply link's address is URL-encoded, so nothing in it can add a field.
+  const plus = buildEnquiryEmail({ firstName: "A", lastName: "B", email: "a+b@example.com", phone: "", company: "", message: "" }, SENDER, RECIPIENT);
+  assert.match(plus.content.html, /href="mailto:a%2Bb%40example\.com"/);
 });
 
 test("POST /api/contact: 200 with a verified token, 403 without, 400 on bad input, 500 when the submit fails", async () => {
@@ -118,6 +150,8 @@ test("POST /api/contact: 200 with a verified token, 403 without, 400 on bad inpu
     assert.equal(bad.status, 400);
     assert.equal((await bad.json()).error, "Please enter a valid email address.");
     assert.equal((await POST(req("{not json"))).status, 400);
+    // A body far past any real enquiry is refused before it is parsed.
+    assert.equal((await POST(req({ ...good, message: "x".repeat(40 * 1024) }))).status, 413);
     assert.equal(sentEmails.length, 1, "nothing is sent for rejected submissions");
     delete process.env.AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING;
     const unconfigured = await POST(req(good));
@@ -141,6 +175,10 @@ test("POST /api/contact: 200 with a verified token, 403 without, 400 on bad inpu
     assert.equal(sentEmails.length, 2, "the auth failure submits nothing, the at-once failure submits one");
     assert.equal(operationPolls, 2, "each accepted submission is polled once during submit");
     assert.equal(errors.filter((a) => a[0] === "[contact] submitEnquiry failed").length, 3, "every submit-time failure is logged (unconfigured, auth, at-once failure)");
+    // What was logged carries no access key and no address from the enquiry.
+    const logged = JSON.stringify(errors);
+    assert.ok(!logged.includes(Buffer.from("test-access-key").toString("base64")), "no access key in the logs");
+    assert.ok(!logged.includes("jane@example.com"), "no visitor address in the logs");
   } finally {
     // Let any not-yet-settled background poll finish before the fetch mock
     // goes away, so it cannot hit the real network.

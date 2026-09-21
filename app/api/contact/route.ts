@@ -2,7 +2,7 @@
 // own module loader, which node:test uses, resolves them; the bundler does too.
 import { validateEnquiry } from "../../../lib/contact/validate.ts";
 import { verifyTurnstile } from "../../../lib/contact/turnstile.ts";
-import { submitEnquiry, trackDelivery } from "../../../lib/contact/send.ts";
+import { loggableError, submitEnquiry, trackDelivery } from "../../../lib/contact/send.ts";
 import { getRequestExecutionContext } from "vinext/shims/request-context";
 
 // The contact form's endpoint (11 Sep 2026): the only dynamic route on the
@@ -21,14 +21,22 @@ import { getRequestExecutionContext } from "vinext/shims/request-context";
 //
 // Payload: { firstName, lastName, email, phone?, company?, message?,
 //            consent: true, website: "" (honeypot), turnstileToken }
-// Answers: 200 { ok: true } | 400/403/500 { ok: false, error }
+// Answers: 200 { ok: true } | 400/403/413/500 { ok: false, error }
 const json = (status: number, body: Record<string, unknown>) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 
+// A full enquiry at every field's limit is under 20KB even in 4-byte
+// characters; anything bigger is not the form.
+const MAX_BODY = 32 * 1024;
+const TOO_LARGE = "Your message is too long. Please shorten it or email us.";
+
 export async function POST(req: Request): Promise<Response> {
+  if (Number(req.headers.get("content-length") || 0) > MAX_BODY) return json(413, { ok: false, error: TOO_LARGE });
   let input: unknown;
   try {
-    input = await req.json();
+    const body = await req.text();
+    if (body.length > MAX_BODY) return json(413, { ok: false, error: TOO_LARGE });
+    input = JSON.parse(body);
   } catch {
     return json(400, { ok: false, error: "Please fill in the form." });
   }
@@ -57,7 +65,8 @@ export async function POST(req: Request): Promise<Response> {
     const delivery = trackDelivery(poller);
     getRequestExecutionContext()?.waitUntil(delivery);
   } catch (e) {
-    console.error("[contact] submitEnquiry failed", e);
+    // loggableError, not e: the raw error can quote the connection string.
+    console.error("[contact] submitEnquiry failed", { at: new Date().toISOString(), ...loggableError(e) });
     return json(500, { ok: false, error: "We could not send your request. Please try again or email us." });
   }
   return json(200, { ok: true });
