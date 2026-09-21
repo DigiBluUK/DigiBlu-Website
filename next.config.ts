@@ -13,7 +13,7 @@ import type { NextConfig } from "next";
 // init, JSON-LD); the alternative, a per-request nonce, needs middleware
 // and would make every page dynamic, which the static-by-default design
 // rules out. 'unsafe-eval' is NOT allowed. Inline styles are allowed for
-// the same reason (style attributes in the markup and the dialogs).
+// the same reason (style attributes in the markup and set by the scripts).
 const GOOGLE_SCRIPT = "https://www.googletagmanager.com";
 const GOOGLE_COLLECT = "https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com";
 const TURNSTILE = "https://challenges.cloudflare.com";
@@ -44,7 +44,7 @@ const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
   { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
 ];
 

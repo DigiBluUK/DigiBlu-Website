@@ -1,39 +1,25 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
-import { SITE_URL as SITE, SITE_TITLE as TITLE, SITE_DESCRIPTION as DESCRIPTION, SITE_SOCIAL as SOCIAL } from "@/lib/site";
+import { SITE_URL as SITE, SITE_TITLE as TITLE, SITE_DESCRIPTION as DESCRIPTION, SITE_SOCIAL as SOCIAL, SITE_OPEN_GRAPH } from "@/lib/site";
 import { CONSENT_DEFAULT_SCRIPT } from "@/lib/consent/gtag";
 import Consent from "@/components/consent/Consent";
 
-// The old <head> of index.html, expressed the Next way. The host and the
-// site-wide strings live in lib/site.ts, shared with the routes, the sitemap
-// and robots; the host moves to digiblu.com at cut-over in that one place.
+// The site-wide <head>. The host and the site-wide strings live in
+// lib/site.ts, shared with the routes, the sitemap and robots. No canonical
+// or og:url here (21 Sep 2026): every page, the 404 included, inherits the
+// layout's metadata, and those two named the home page; app/page.tsx sets
+// its own, like every other route.
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: SITE },
-  openGraph: {
-    type: "website",
-    siteName: "DigiBlu",
-    title: TITLE,
-    description: SOCIAL,
-    url: SITE,
-    images: [
-      {
-        url: "assets/og-image.jpg",
-        width: 1200,
-        height: 630,
-        type: "image/jpeg",
-        alt: "DigiBlu - AI and Digital Transformation Consultancy",
-      },
-    ],
-  },
+  openGraph: SITE_OPEN_GRAPH,
   twitter: { card: "summary_large_image", title: TITLE, description: SOCIAL, images: ["assets/og-image.jpg"] },
   icons: {
-    // The mark on the brand sweep, one look in both themes, as large as the
-    // plate allows (9 Sep 2026). SVG first; the PNG is the fallback and the
+    // The dark mark on a white rounded plate, one look in both themes
+    // (10 Sep 2026). SVG first; the PNG is the fallback and the
     // touch icon; the ICO carries 16/32/48/256 for the browsers and the
     // Windows taskbar that still ask for /favicon.ico.
     icon: [
@@ -79,7 +65,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // before React hydrates, and that attribute is not in the server markup.
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="preload" as="image" href="/assets/hero.svg" type="image/svg+xml" fetchPriority="high" />
         {/* Consent Mode defaults first: everything Google denied before any
             Google code could run. The consent manager updates them later. */}
         <script dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_SCRIPT }} />

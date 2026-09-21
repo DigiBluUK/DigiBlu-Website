@@ -3,8 +3,8 @@ import { getCaseStudies, getLegalDocs } from "@/lib/content";
 import { SITE_ORIGIN } from "@/lib/site";
 
 // The home page, the four listing pages (services, case studies, team,
-// accreditations) and the contact page (all 11 Sep 2026), every case study
-// and every legal document: twenty-one URLs.
+// accreditations), the contact page, every case study and every legal
+// document (22 URLs on 21 Sep 2026).
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: SITE_ORIGIN + "/", changeFrequency: "monthly", priority: 1 },

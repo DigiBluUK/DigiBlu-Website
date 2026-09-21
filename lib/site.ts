@@ -12,3 +12,22 @@ export const SITE_DESCRIPTION =
   "DigiBlu pairs experienced consulting practitioners with deep technical expertise, delivering AI, automation and digital transformation that gets to value fast.";
 export const SITE_SOCIAL =
   "Experienced practitioners with client, technology and consultancy backgrounds. Pragmatic, technology-agnostic partners focused on speed to value.";
+
+// The site-wide share card. The root layout uses it as every page's
+// default, and the home page repeats it with its own url, because a page's
+// openGraph replaces the layout's rather than merging with it.
+export const SITE_OPEN_GRAPH = {
+  type: "website" as const,
+  siteName: "DigiBlu",
+  title: SITE_TITLE,
+  description: SITE_SOCIAL,
+  images: [
+    {
+      url: "assets/og-image.jpg",
+      width: 1200,
+      height: 630,
+      type: "image/jpeg",
+      alt: "DigiBlu - AI and Digital Transformation Consultancy",
+    },
+  ],
+};

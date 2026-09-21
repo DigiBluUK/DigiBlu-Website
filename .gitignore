@@ -21,7 +21,7 @@ out/
 next-env.d.ts
 .wrangler/
 
-# generated from content/**/*.md at build time (npm run content)
+# generated from content/**/*.md at build time (pnpm content)
 content/.generated/
 
 # Environment files with real values (the example is committed)
@@ -36,3 +36,4 @@ content/.generated/
 .vinext/
 
 .env.*
+!.env.example

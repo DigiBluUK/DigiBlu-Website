@@ -8,10 +8,10 @@ export type ConsentConfig = {
   /** Shown in the banner and preferences copy. */
   siteName: string;
   /** GA4 measurement id, or empty to run without analytics at all. Read from
-   *  the environment so production and previews can differ; the fallback is
-   *  the placeholder from the brief and must be replaced before launch. A
-   *  measurement id is not a secret (every visitor's browser sees it), but
-   *  keeping it out of the source keeps environments separate. */
+   *  the environment only (NEXT_PUBLIC_GA_MEASUREMENT_ID), with no fallback,
+   *  so production and previews can differ. A measurement id is not a secret
+   *  (every visitor's browser sees it), but keeping it out of the source
+   *  keeps environments separate. */
   gaMeasurementId: string;
   /** Categories the banner offers. Necessary is always on. Analytics is only
    *  offered when a measurement id is set; marketing stays off until a
