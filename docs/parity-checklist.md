@@ -1,79 +1,61 @@
-# DigiBlu site: sign-off checklist for the Next.js build
+# DigiBlu site: release sign-off checklist
 
-Check the preview URL of the `dev` branch against these. Do the whole list twice: once in dark theme and once in light (the sun/moon button in the nav). Do the phone column on a real phone or a browser narrower than 900px. Tick each line when it matches; note anything that does not.
+For DigiBlu's sign-off before a release (fast-forwarding `main` to `dev`) and again on the live site after the DNS switch. Current as of 21 September 2026.
 
-Preview URL: _(filled in when Cloudflare is connected; until then `http://localhost:3000` from `npm run dev`)_
+**Where**: the `dev` preview, https://dev-digiblu-website.radu-ghitescu.workers.dev/ (behind Cloudflare Access: sign in with a DigiBlu login). After the switch, https://digiblu.com/.
 
-## Everywhere
+**How**: go through the list on a desktop browser and on a real phone (or a browser window narrower than 900px), each in dark theme and in light (the sun/moon button in the nav). Tick a line when it matches; for anything that does not, note the page, the device and the theme.
 
-- [ ] The nav sits over the hero at the top, then turns into a rounded glass panel once you scroll. Its links go to the right sections; Get in touch opens the contact form.
-- [ ] The theme button flips the whole site between dark and light, remembers the choice on reload, and its label reads the mode it will switch to.
-- [ ] Below 900px the hamburger opens a menu with the same links and the theme button; a link closes it.
-- [ ] A round arrow button appears bottom-right after scrolling and takes you to the top.
+**First, the automated checks** (there is no CI, so someone has to run them): `pnpm test`, then `pnpm build` and `pnpm test:pages`. On this machine pnpm runs as `npx -y pnpm@latest <script>`.
+
+## Every page
+
+- [ ] The nav is fixed at the top: transparent at rest, then a rounded frosted-glass panel once you scroll. On the home page its links scroll to the sections; on every other page they go to Services, Case Studies, About Us (on the home page) and Our Experts. Get in touch goes to the contact page.
+- [ ] The theme button flips the whole site between dark and light, remembers the choice on reload, and its label names the mode it will switch to.
+- [ ] Below 900px the hamburger opens a menu with the same links and the theme button; tapping a link closes it.
+- [ ] A round arrow button appears bottom right after you scroll down and takes you back to the top. It is hidden while the cookie banner is showing.
 - [ ] No sideways scrolling at any width, down to 320px.
-- [ ] Every dialog closes with its X, with Escape, and by clicking the dark backdrop; focus goes back to what opened it.
+- [ ] No pop-up dialogs anywhere except the cookie choices: every Learn more, Read more, badge, profile, legal and contact link opens a page.
+- [ ] Footer: the address reads "DigiBlu UK Limited, First Floor, Steeple House, Church Lane, Chelmsford, CM1 1NH, United Kingdom." with "Registered in England and Wales, company number 12015792." under it. The Services links go to each service on the services page, Our Experts to the team page, Contact Us to the contact page, the six Legal links to their pages; Cookie settings reopens the cookie choices; the LinkedIn icon opens in a new tab.
+- [ ] Each page has its own title in the browser tab.
 
-## Hero
+## Cookie banner and analytics
 
-- [ ] "Applied AI, real ROI" on one line on desktop; breaks only at the comma on a phone.
-- [ ] The nested-frames artwork fills the section behind the nav, with lights travelling along its ridges (one or two at a time, never all three).
-- [ ] The paragraph and the Get in touch button sit at the bottom.
+- [ ] On a first visit (use a private window), a compact box appears bottom right (full width on a phone) with Accept all, Reject optional and Manage preferences, none favoured over the others. The page stays usable behind it.
+- [ ] Reject optional: the banner goes and stays gone after a reload, and nothing loads from Google (browser developer tools, Network tab, filter "google").
+- [ ] Accept all: Google Analytics loads, and GA4 Realtime shows the visit. (Only on a build with the measurement id set: production.)
+- [ ] Cookie settings in the footer reopens the choices; switching Analytics off stops it.
 
-## Accreditations
+## Home page
 
-- [ ] A single line of six certifications scrolls continuously, pauses on hover, and moves at the same pace as the client logos.
-- [ ] Clicking any of them (either copy) opens a dialog with the real badge, its name and a description; G-Cloud's badge sits on a dark plate in both themes.
+- [ ] Hero: "Applied AI, real ROI" on one line on desktop, breaking only at the comma on a phone; the framed artwork behind the nav, with lights travelling along its ridges; the paragraph and the Get in touch button at the bottom.
+- [ ] Accreditations: six certifications scroll in a single continuous line, pause on hover, and each opens its entry on the accreditations page.
+- [ ] Services: six blue cards numbered 01 to 06 animate in as the section arrives; each Learn more opens that service on the services page.
+- [ ] Case studies: three cards - SSE / OVO, Safari Destinations, and the supplier quote-processing study for the mobility equipment manufacturer - with headlines on two lines and no full stops. Read more opens each one's page; View all case studies opens the case studies page.
+- [ ] Clients: fourteen logos scroll continuously as single-colour marks, muted at rest and full on hover, with no jump at the seam.
+- [ ] Who we are: two paragraphs light up word by word as you scroll, beside the dot-lattice figure whose "db" fills with the brand gradient mid-screen; on desktop the dots part around the cursor. Our values: all five open on desktop (3 + 2), revealed one after another on a phone.
+- [ ] Meet the leadership team: eight people. On desktop the open card shows a colour photo in a white circle with name, role and bio, and the others grey circles; clicking a closed slice opens it, clicking the open one goes to that person on the team page. On a phone: a list of eight rows, and tapping one goes to that person on the team page.
 
-## Services
+## The other pages
 
-- [ ] Six blue-to-navy cards, numbered 01 to 06, animate in as the section arrives.
-- [ ] Learn more on each opens a dialog with "Service 0N", the title, an intro and its bullet list; Discuss this service hands over to the contact form.
-- [ ] The six links in the footer's Services column open the same dialogs.
+- [ ] Services page: all six services in full, numbered 01 to 06, each with Discuss this service going to the contact page. An address such as `/services#discovery` lands on that service just below the nav.
+- [ ] Case studies page: all ten case studies, each linking to its own page.
+- [ ] Each of the ten case-study pages: the photograph in natural colour, three blue stat pills, Overview / The problem / What we did / Outcome, the quote, and a Back to home link.
+- [ ] Team page: all eight bios; each person opened from the home page's strip lands on their own bio.
+- [ ] Accreditations page: the six badges with their descriptions; the G-Cloud badge sits on a dark plate in both themes.
+- [ ] The six legal pages (Terms of Use, Privacy and Cookies Policy, Modern Slavery Policy, Carbon Reduction Plan, Armed Forces Covenant, Accessibility Statement): the full text, with "Last updated ..." ("Last signed ..." for the Covenant) under the title.
+- [ ] A mistyped address (for example `/nothing-here`) shows the site's own "That page is not here" page, with the nav and the footer.
+- [ ] After the DNS switch only (link previews cannot get past Cloudflare Access): a link pasted into LinkedIn or Teams shows that page's own title and picture card.
 
-## Case studies
+## Contact form (the contact page)
 
-- [ ] Three cards (SSE / OVO, AssuranceSD, Cedar Creek Church) with headlines on two lines and no full stops.
-- [ ] Read more opens the reader on that engagement: photo in natural colour, three blue stat pills, four sections, the client quote. Ctrl-click or middle-click opens the standalone page instead.
-- [ ] View all case studies opens the reader with eight rows in the sidebar; clicking a row switches the reading pane. On a phone the "All case studies" button swaps between list and article.
-- [ ] `/case-studies/sse-ovo` (and the other seven) load as real pages with the same content, a Back to home link, and the nav.
+- [ ] Step 1 needs first name, last name and a valid work email before Next works; the optional phone field drops letters as you type.
+- [ ] Step 2: company and message are optional; Send request needs the consent box ticked and the security check to finish. The Privacy and Cookies Policy link opens in a new tab, and nothing typed is lost.
+- [ ] A real test enquiry shows the "Request sent" screen and arrives in the enquiries mailbox within a few minutes, with the sender as the reply-to address. (If it never arrives, the failure shows only in Cloudflare Observability: ask Radu.)
+- [ ] With analytics accepted, that enquiry appears in GA4 as a `generate_lead` event (Realtime or DebugView; production only); with analytics rejected, nothing goes to Google. The event never carries anything that was typed.
+- [ ] Done brings back an empty form. On a phone the form fills the screen and the fields scroll under its header.
 
-## Clients
+## Keyboard and motion
 
-- [ ] Fourteen logos scroll continuously as single-ink marks, muted at rest, full on hover, no jump at the seam.
-
-## Who we are
-
-- [ ] "Who we are" (no full stop), two paragraphs that light up word by word as you scroll, with the dot-lattice figure beside them.
-- [ ] The figure's "db" phases into the brand gradient as it reaches the middle of the screen; on desktop the dots part around the cursor; there are no stray grey dots around the letterform.
-- [ ] Our values: on desktop all five are open in a 3 + 2 grid; hovering a value turns its number and top line into the brand gradient. On a phone they reveal one after another as you scroll.
-
-## Meet the leadership team
-
-- [ ] Eight people. The open card shows a colour photo in a white circle with name, role and bio; the rest show grey circles. All eight heads sit at the same size and height in their circles; Vic, Martin and Dave are open-collar.
-- [ ] Clicking a closed slice opens it; clicking the open one, or the arrows, works; clicking the open card again opens the profile dialog with the full bio.
-- [ ] On a phone: a list of eight rows; tapping one highlights it and opens the profile.
-
-## Footer
-
-- [ ] Address reads "DigiBlu UK Limited, First Floor, Steeple House, Church Lane, Chelmsford, CM1 1NH, United Kingdom."
-- [ ] Legal links open the policy in a dialog (Terms, Privacy, Modern Slavery, Carbon Reduction Plan, Armed Forces Covenant); ctrl-click opens the standalone page. The intros read "Last updated ..." only.
-- [ ] Contact Us opens the contact form. The LinkedIn icon opens in a new tab.
-
-## Contact form
-
-- [ ] Step 1 needs first name, last name and a valid email before Next works; the phone field drops letters as you type.
-- [ ] Step 2 needs the consent box ticked before Submit works; the Privacy Policy link opens the policy on top of the form and closing it returns you to the form.
-- [ ] Submit shows the "Request sent" screen. (Nothing is sent yet: the Azure Communication Services endpoint is a separate piece of work.)
-- [ ] On a phone the form is full screen and the fields scroll under the header.
-
-## Standalone pages
-
-- [ ] Every case-study page and legal page has its own title in the tab, the nav with a working theme button, a Back to home link, and a footer whose Services links go to the services page and whose Contact Us goes to the contact page.
-
-## Pages under the dialogs, and the contact page (11 September 2026)
-
-- [ ] /services, /team, /accreditations and /case-studies open as pages with the same header and footer as a case-study page, in both themes, and read fully with JavaScript off.
-- [ ] On the home page a plain click on Learn more, an accreditation chip, View all case studies, a footer service link or Get in touch opens the dialog as before; a ctrl-click (cmd on a Mac) or a middle-click opens the matching page in a new tab instead.
-- [ ] The nav on a standalone page goes to /services, /case-studies and /team; the home page's own nav still scrolls to its sections.
-- [ ] /contact shows the two-step form in a panel; the steps, the phone filter, the consent gate and the Turnstile check behave exactly as in the dialog; Send request shows the confirmation; Done brings the empty form back.
-- [ ] A shared link to any page (paste into LinkedIn or Teams) shows that page's own title and card: the four listing pages and the contact page have their own, the legal pages the site-wide one.
+- [ ] On any page, the first Tab stop is "Skip to content", which jumps past the nav. Every link and button after it shows a visible blue focus ring, in a sensible order, and the menu, the theme button, the contact form and the cookie banner all work from the keyboard alone (Escape closes the cookie preferences).
+- [ ] With the device's reduce-motion setting on (Windows: Settings > Accessibility > Visual effects > Animation effects off; Mac and iPhone: Reduce motion): the two logo strips stand still, the Services cards and the Who we are text show in full without scroll animation, the About section does not pin, and the scroll-to-top button jumps rather than glides.

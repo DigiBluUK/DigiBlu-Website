@@ -1,11 +1,13 @@
 # DigiBlu Brand Guide
 
-The visual and editorial system as actually built on digiblu.com. Every value
-here is taken from the live stylesheet rather than proposed, so this document
-and the site cannot drift apart: if you change one, change the other.
+The visual and editorial system as actually built in this repository for
+digiblu.com. Every value here is taken from the stylesheet rather than
+proposed, so this document and the site cannot drift apart: if you change one,
+change the other.
 
 Design tokens live in `app/globals.css` on `:root` (the file was `assets/site.css` until the Next.js port). **Prefer a token over a
 literal value** anywhere you can - the whole light/dark system depends on it.
+Asset paths below (`assets/...`) are under `public/` and served at `/assets/...`.
 
 ---
 
@@ -36,8 +38,8 @@ photography in both themes. Anything nested inside them that belongs to the
 | Asset | Use |
 |---|---|
 | `assets/logo-mask.png` | The wordmark. A single-ink alpha mask, painted with `mask-image` + `background-color`, so it takes the current theme's ink automatically. Aspect ratio **4.1184:1**, measured from the mask ink bounds (313x76) - re-derive it if the mask is ever regenerated. |
-| `assets/favicon.svg` | Tab icon. Navy plate with white mark in light mode, white plate with navy mark in dark, via a media query inside the SVG. |
-| `assets/favicon.png` | 256px fallback and `apple-touch-icon` - white mark on a navy rounded plate. |
+| `assets/favicon.svg` | Tab icon, listed first. The mark in the light-theme ink (`#0d1117`, a dark disc with the db knocked out to white) on a white rounded plate, the same in both themes: it is not theme-aware (since 10 Sep 2026). The rounded plate is what keeps it legible on a dark tab strip. |
+| `assets/favicon.png` | 256px fallback and `apple-touch-icon`: the same dark mark on the white rounded plate. `public/favicon.ico` carries 16, 32, 48 and 256px of it for browsers that ask for `/favicon.ico`. |
 
 **Rules**
 
@@ -60,7 +62,7 @@ photography in both themes. Anything nested inside them that belongs to the
 |---|---|---|---|
 | `--bg` | `#000000` | `#ffffff` | Page background |
 | `--surface` | `#050505` | `#f6f7f9` | Raised panels |
-| `--surface-2` | `#060606` | `#ffffff` | Dialog panels |
+| `--surface-2` | `#060606` | `#ffffff` | Floating panels: the contact form's panel, the mobile menu, the cookie banner and preferences dialog, the accreditation chips' hover |
 | `--field-bg` | `#0d0d0d` | `#f1f3f6` | Form fields |
 | `--text` | `#ffffff` | `#0d1117` | Primary text |
 | `--ink-rgb` | `255, 255, 255` | `13, 17, 23` | Channels behind every alpha colour |
@@ -95,7 +97,6 @@ Panels cycle through these by position so that neighbouring cards never repeat.
 | Token | Dark | Light |
 |---|---|---|
 | `--ink-a-faint` | 0.40 | 0.60 |
-| `--ink-a-low` | 0.45 | 0.62 |
 | `--ink-a-mid` | 0.50 | 0.64 |
 | `--ink-a-high` | 0.55 | 0.66 |
 | `--ink-a-aa` | 0.58 | 0.66 |
@@ -193,18 +194,19 @@ long settle. It is the only custom curve in the stylesheet.
 
 ### Case studies
 
-Real photography of the sector, under a brand scrim:
+Real photography of the sector, in natural colour under a light neutral
+vignette (`.case-art-scrim`):
 
 ```css
-filter: grayscale(0.55) contrast(1.05);
 background: linear-gradient(135deg,
-  rgba(10, 31, 110, 0.70) 0%,
-  rgba(29, 110, 245, 0.38) 52%,
-  rgba(5, 11, 40, 0.78) 100%);
+  rgba(0, 0, 0, 0.30) 0%,
+  rgba(0, 0, 0, 0.06) 50%,
+  rgba(0, 0, 0, 0.36) 100%);
 ```
 
-The scrim and partial desaturation are what let photographs from many different
-sources read as one set - a warm image and a cold one land in the same key.
+The vignette darkens the corners so photographs from many different sources
+still sit as one set, without a colour cast. (Until 8 Sep 2026 they were
+partially desaturated under a brand-blue scrim; that was removed on request.)
 Aspect ratio 16:6, dropping to 16:4.5 at or below 640px so a photograph never
 takes a third of a phone screen before the title appears.
 
@@ -244,20 +246,32 @@ panels.
 
 **Eyebrow pill** - `padding: 6px 14px`, 1px hairline border, `border-radius:
 999px`, 11.5px uppercase at 1.4px tracking. Text-only in most sections; the one
-over photography gets a dark chip behind it, because border contrast against a
-photograph cannot be computed the way it can against a flat surface.
+over the Case Studies artwork gets a dark chip behind it, because border
+contrast against artwork cannot be computed the way it can against a flat
+surface.
 
-**Frosted nav** - Transparent over the hero, becoming an inset rounded glass
-panel past 24px of scroll: `rgba(var(--glass-rgb), 0.68)` with
-`backdrop-filter: blur(12px)`. **0.68 is a floor, not a taste call** - the
-panel floats over arbitrary content, so its contrast cannot be computed
-statically, and that opacity keeps labels legible over anything scrolling
-beneath. There is an `@supports not` fallback to a near-opaque surface.
+**Frosted nav** - Fixed at the top of every page (the standalone pages too,
+since 21 Sep 2026). Transparent at rest, over the hero on the home page,
+becoming an inset rounded glass panel past 24px of scroll:
+`rgba(var(--glass-rgb), 0.68)` with `backdrop-filter: blur(12px)`. **0.68 is a
+floor, not a taste call** - the panel floats over arbitrary content, so its
+contrast cannot be computed statically, and that opacity keeps labels legible
+over anything scrolling beneath. There is an `@supports not` fallback to a
+near-opaque surface.
+
+**Scroll-to-top disc** - Bottom right on every page, appearing past 480px of
+scroll. It hides while the cookie banner is up, since both live bottom right.
+
+**Cookie banner** - A compact box at the bottom right (full width on a phone),
+on `--surface-2` with the site's font, radii and pill buttons, so it follows
+the theme. Accept all and Reject optional carry equal weight.
 
 **No dialogs** - since 18 Sep 2026 every piece of content, and the contact form,
 is a page of its own, reached by a real link. The form's panel keeps the
 `.modal-*` class names it had as a dialog. A link out of the form (the privacy
-policy) opens in a new tab so nothing typed is lost.
+policy) opens in a new tab so nothing typed is lost. The one dialog left is the
+cookie preferences dialog (vanilla-cookieconsent), opened from the banner or
+from Cookie settings in the footer.
 
 ---
 
@@ -289,7 +303,8 @@ automated", "90 to 45 days"). Consulting judgment, not vendor enthusiasm.
 **Rules**
 
 - **No em dashes in visible copy.** Use a spaced hyphen ( - ). This applies to
-  every content string, including data in the JavaScript objects.
+  every content string: the markdown in `content/` and any visible text in the
+  components. Check for `&mdash;` as well as the character.
 - **No fabricated people, quotes, figures or clients.** Named individuals must
   be real and published. Attribution is fine; invention is not.
 - **Real links only.** Every navigation target resolves to a real section or a
@@ -300,7 +315,11 @@ automated", "90 to 45 days"). Consulting judgment, not vendor enthusiasm.
   source's own numbered sections. It is a legal document: paraphrasing changes
   what it says. Where the source itself has a genuine gap, note the gap rather
   than inventing content to fill it.
-- Anonymised clients stay anonymous, in copy and in imagery.
+- Anonymised clients stay anonymous, in copy and in imagery, and in the
+  repository too, which is public: never record which real client an
+  anonymised case study is, in notes, commit messages, keys or file names. A
+  client's logo can appear in the client strip; the link between that logo and
+  an anonymised case study must not appear anywhere.
 
 ---
 
@@ -311,12 +330,14 @@ automated", "90 to 45 days"). Consulting judgment, not vendor enthusiasm.
 | `app/globals.css` | All styling and every design token. Single source of truth (was `assets/site.css`). |
 | `assets/dmsans.woff2` | DM Sans variable font, self-hosted |
 | `assets/logo-mask.png` | Wordmark alpha mask |
-| `assets/favicon.svg` / `.png` | Theme-aware tab icon and fallback |
-| `assets/hero.jpg`, `footer-bg.jpg` | Hero and Case Studies artwork |
-| `assets/team/*.png` | Leadership portraits, face-centred cut-outs |
+| `assets/favicon.svg` / `.png` | Tab icon and its PNG fallback: the dark mark on a white rounded plate, not theme-aware |
+| `assets/hero.svg`, `cases-bg.svg` | Hero and Case Studies artwork: vector rebuilds of the original rasters. The rasters they were traced from (`hero.jpg`, `footer-bg.jpg`) are kept in `source/` as trace references and are not served |
+| `assets/team/*.png`, `*.webp` | Leadership portraits, face-centred cut-outs (WebP first, PNG fallback) |
 | `assets/clients/*.png` | Client logo alpha masks |
 | `assets/badges/*.png` | Accreditation artwork |
 | `assets/case-studies/*.jpg` | Per-engagement photography, 1600x600 |
+| `assets/og-image.jpg` | The site-wide social card, 1200x630 (home and legal pages) |
+| `assets/og/*.jpg` | Social cards for the listing pages and the contact page, 1200x630 |
 | `assets/og/case-studies/*.jpg` | Per-engagement social cards, 1200x630 |
 
 CSS `url()` values in `app/globals.css` are absolute (`/assets/...`) because

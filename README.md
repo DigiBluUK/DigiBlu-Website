@@ -15,7 +15,8 @@ lib/                   Site constants (lib/site.ts), the typed content loaders (
 public/assets/         Everything the pages reference: artwork, photography, logos, the font
 source/                The supplied team photographs the shipped headshots were made from
 scripts/               Build-time scripts and their tests (node --test)
-docs/                  Implementation plans, the sign-off checklist and the redirect list
+docs/                  notes/ (the dated detail behind every decision), parity-checklist.md (the release sign-off list)
+                       and redirects/ (the old Wix addresses and where each goes, for the DNS switch)
 vite.config.ts         vinext build and the Cloudflare adapters (KV cache, CDN cache)
 wrangler.jsonc         Worker configuration (account details come from Workers Builds)
 ```

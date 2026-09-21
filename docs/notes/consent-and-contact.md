@@ -10,6 +10,11 @@ The consent-management foundation (vanilla-cookieconsent, Consent Mode v2, GA4),
 > **no CI**; the contact form sends email through Azure Communication Services; and the
 > old static site is retired, so where a note names `index.html`, `assets/site.css` or the
 > claude.ai artifact build, read `app/globals.css` and the components.
+> **There are no dialogs since 18 Sep 2026** (built on the `pages-only` branch, merged into `dev`
+> on 21 Sep 2026): every service, case study, bio, accreditation, legal document and the contact
+> form is a page of its own, and `lib/client/modal.js` (`createModalController`) and
+> `components/dialogs/` no longer exist. Where a note describes a dialog, the case-study reader or
+> a dialog opener, it is history.
 
 ## Consent and analytics (9 Sep 2026)
 

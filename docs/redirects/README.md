@@ -3,8 +3,11 @@
 `old-site-redirects.csv` maps every address the old site publishes in its
 sitemaps (fetched from www.digiblu.com on 10 September 2026: 17 pages, 8
 project pages, 8 leadership profiles, 17 blog posts, 13 news items) to the
-page on the new site that carries the same content, or the nearest section
-of the home page where the content is now a dialog. The file is in
+page on the new site that carries the same content, or, where the new site
+has no page for it, the nearest page or home-page section (About Us, for
+example, is a section of the home page). Since 18 September 2026 the new
+site has no dialogs: every target is a page, or a section of the home page
+reached by its anchor. The file is in
 Cloudflare's Bulk Redirects CSV format and uploads as one list
 (Cloudflare dashboard > Bulk Redirects > Create list > Upload CSV), then
 needs one Bulk Redirect rule that enables the list.
@@ -21,7 +24,7 @@ needs one Bulk Redirect rule that enables the list.
   page (`/about-digiblu`) and every `/leadership-team/<name>` profile go to
   `/team`, the page with every bio (since 11 September 2026). Four of the eight old profiles are people no longer on the
   team page (Tarryn Chetty, Will Ells, Michael Cobbledick, Steve Burke) and
-  one is a placeholder ("you"); all of them land on the team section.
+  one is a placeholder ("you"); all of them land on the `/team` page.
 - **Contact** (`/contact-us`) goes to `/contact`, the form's own page
   (since 11 September 2026; before that `/#contact`, which opened the home
   page's dialog on load. The dialog went on 18 September 2026, so
@@ -66,6 +69,18 @@ needs one Bulk Redirect rule that enables the list.
 - Targets use `https://digiblu.com`. If the live host ends up as
   `www.digiblu.com`, replace the host in the target column before
   uploading.
+
+## Before uploading
+
+The list reflects the old site's sitemaps as they stood on 10 September
+2026. Fetch them again (`https://www.digiblu.com/sitemap.xml` and the
+sitemaps it lists) and look for addresses added since: the prefix rows
+already catch any new `/our-projects/...`, `/leadership-team/...`,
+`/blog/...`, `/post/...` or `/News/...` address, but a new top-level page
+needs a row of its own. Then upload the file as described above, with the
+target host changed first if the live host is to be `www.digiblu.com`.
+The cut-over runbook in `docs/notes/platform.md` puts this step in order
+with the DNS switch.
 
 ## After go-live
 
