@@ -5,6 +5,7 @@ import PageHeader from "@/components/PageHeader";
 import BackLink from "@/components/BackLink";
 import ContactFormBody from "@/components/ContactFormBody";
 import Footer from "@/components/Footer";
+import ScrollTop from "@/components/ScrollTop";
 import PageBehaviours from "@/components/PageBehaviours";
 import PhoneDigits from "@/components/behaviours/PhoneDigits";
 import ContactForm from "@/components/behaviours/ContactForm";
@@ -51,6 +52,7 @@ export default function ContactPage() {
         </div>
       </main>
       <Footer standalone />
+      <ScrollTop />
       <PageBehaviours />
       <PhoneDigits />
       <ContactForm turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""} />

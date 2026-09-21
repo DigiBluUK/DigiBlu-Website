@@ -1,8 +1,14 @@
 // Generated from index.html by scripts/html-to-jsx.cjs; hand-fixes are
 // allowed after generation, so do not regenerate over a tuned file.
+//
+// Fixed and frosted like the home page's nav since 21 Sep 2026: the nav sits
+// in the same .site-nav wrapper (id siteNav), so NavChrome measures --nav-h
+// from it and adds .scrolled past 24px. .page-nav + main takes the measured
+// height as padding, so the page starts where it did when the nav was in flow.
 export default function PageHeader() {
   return (
     <>
+      <div className="site-nav page-nav" id="siteNav">
       <nav className="page-header">
           <a href="/#hero-content" className="logo" aria-label="DigiBlu, home"><span className="logo-mark" aria-hidden="true"></span></a>
 
@@ -65,6 +71,7 @@ export default function PageHeader() {
             </div>
           </div>
         </nav>
+      </div>
     </>
   );
 }

@@ -158,6 +158,10 @@ Every section of the home page, top to bottom, and the dialogs: how each behaves
 
 12. **Scroll-to-top button** — bottom-right, appears past 480px scroll, respects `prefers-reduced-motion`.
 
+### Standalone pages' chrome (21 Sep 2026)
+
+Asked for on the case-study, case-study index and services pages, applied to every standalone page: the nav is the home page's fixed, frosted bar and the scroll-to-top disc is there too. `PageHeader`'s `nav.page-header` sits inside `div.site-nav.page-nav#siteNav`, so `NavChrome` measures `--nav-h` from it and toggles `.scrolled` past 24px exactly as on the home page, and `.page-header .logo/.theme-toggle/.nav-toggle` keep their theme ink at rest (there is no hero behind them). `.page-nav + main { padding-top: var(--nav-h) }` replaces the height the nav took in flow: measured before and after, the first line sits at 147px on desktop and 131px on a phone either way. Each page renders `<ScrollTop />` after its footer; `NavChrome`'s scroll-top block already wired `#scrollTopBtn` wherever it exists. Checked in `digiblu-vinext`: glass at 12px when scrolled (both themes), the mobile menu opens under the bar, `/services#discovery` lands 59px below the nav on a phone, no horizontal overflow.
+
 ### Dialogs
 
 There are six `.modal-overlay` dialogs: `#contactModal`, `#serviceModal`, `#caseDetailModal`, `#badgeModal`, `#legalModal`, `#teamModal`. (`#blogDetailModal` went with the blog.) The two index popups (`#caseIndexModal`, `#blogIndexModal`) were folded into the detail dialogs as reader sidebars - see Case Studies and Blogs above.

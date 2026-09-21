@@ -3,6 +3,7 @@ import SkipLink from "@/components/SkipLink";
 import PageHeader from "@/components/PageHeader";
 import BackLink from "@/components/BackLink";
 import Footer from "@/components/Footer";
+import ScrollTop from "@/components/ScrollTop";
 import PageBehaviours from "@/components/PageBehaviours";
 
 // The site's own 404, in the standalone pages' chrome, in place of Next's
@@ -26,6 +27,7 @@ export default function NotFound() {
         </div>
       </main>
       <Footer standalone />
+      <ScrollTop />
       <PageBehaviours />
     </>
   );

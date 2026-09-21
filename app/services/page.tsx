@@ -6,6 +6,7 @@ import PageHeader from "@/components/PageHeader";
 import PageIntro from "@/components/PageIntro";
 import Markdown from "@/components/Markdown";
 import Footer from "@/components/Footer";
+import ScrollTop from "@/components/ScrollTop";
 import PageBehaviours from "@/components/PageBehaviours";
 
 // Every service in full on one page (the developer's review of 11 Sep 2026:
@@ -74,6 +75,7 @@ export default function ServicesPage() {
         </div>
       </main>
       <Footer standalone />
+      <ScrollTop />
       <PageBehaviours />
     </>
   );

@@ -3339,6 +3339,13 @@
     color: var(--text);
   }
 
+  /* The standalone pages' nav is fixed like the home page's (21 Sep 2026),
+     so it is out of flow: main takes its measured height as padding, which
+     puts every page's first line exactly where it sat when the nav was in
+     flow. The 76px default in :root covers the moment before NavChrome
+     measures it. */
+  .page-nav + main { padding-top: var(--nav-h); }
+
   .detail-page {
     max-width: 760px;
     margin: 0 auto;

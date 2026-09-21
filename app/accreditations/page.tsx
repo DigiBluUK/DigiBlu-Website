@@ -5,6 +5,7 @@ import SkipLink from "@/components/SkipLink";
 import PageHeader from "@/components/PageHeader";
 import PageIntro from "@/components/PageIntro";
 import Footer from "@/components/Footer";
+import ScrollTop from "@/components/ScrollTop";
 import PageBehaviours from "@/components/PageBehaviours";
 
 // The six certifications with their descriptions and marks as a page
@@ -66,6 +67,7 @@ export default function AccreditationsPage() {
         </div>
       </main>
       <Footer standalone />
+      <ScrollTop />
       <PageBehaviours />
     </>
   );

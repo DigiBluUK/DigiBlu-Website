@@ -7,6 +7,7 @@ import PageHeader from "@/components/PageHeader";
 import BackLink from "@/components/BackLink";
 import Markdown from "@/components/Markdown";
 import Footer from "@/components/Footer";
+import ScrollTop from "@/components/ScrollTop";
 import PageBehaviours from "@/components/PageBehaviours";
 
 // One static page per legal document, from content/legal/*.md. The slugs
@@ -68,6 +69,7 @@ export default async function LegalPage({ params }: { params: Promise<{ slug: st
         </div>
       </main>
       <Footer standalone />
+      <ScrollTop />
       <PageBehaviours />
     </>
   );

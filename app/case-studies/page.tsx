@@ -5,6 +5,7 @@ import SkipLink from "@/components/SkipLink";
 import PageHeader from "@/components/PageHeader";
 import PageIntro from "@/components/PageIntro";
 import Footer from "@/components/Footer";
+import ScrollTop from "@/components/ScrollTop";
 import PageBehaviours from "@/components/PageBehaviours";
 
 // The index of every case study as a page (11 Sep 2026). Each case study
@@ -73,6 +74,7 @@ export default function CaseStudiesIndexPage() {
         </div>
       </main>
       <Footer standalone />
+      <ScrollTop />
       <PageBehaviours />
     </>
   );

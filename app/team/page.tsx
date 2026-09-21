@@ -5,6 +5,7 @@ import SkipLink from "@/components/SkipLink";
 import PageHeader from "@/components/PageHeader";
 import PageIntro from "@/components/PageIntro";
 import Footer from "@/components/Footer";
+import ScrollTop from "@/components/ScrollTop";
 import PageBehaviours from "@/components/PageBehaviours";
 
 // The eight leadership bios as a page (11 Sep 2026): on the home page they
@@ -69,6 +70,7 @@ export default function TeamPage() {
         </div>
       </main>
       <Footer standalone />
+      <ScrollTop />
       <PageBehaviours />
     </>
   );
