@@ -121,7 +121,8 @@ export function initConsent() {
     disablePageInteraction: false,
     hideFromBots: true,
     guiOptions: {
-      consentModal: { layout: "box", position: "bottom left", equalWeightButtons: true, flipButtons: false },
+      // Bottom right and compact since 21 Sep 2026; see consent.css.
+      consentModal: { layout: "box inline", position: "bottom right", equalWeightButtons: true, flipButtons: false },
       preferencesModal: { layout: "box", equalWeightButtons: true, flipButtons: false },
     },
     categories,

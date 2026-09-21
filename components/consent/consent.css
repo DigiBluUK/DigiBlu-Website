@@ -64,15 +64,75 @@
   text-underline-offset: 2px;
 }
 
-/* The banner sits clear of the scroll-to-top disc (bottom right) by
-   living bottom left; on a phone it spans the width above the thumb zone. */
-#cc-main .cm--box.cm--bottom {
-  margin-bottom: 16px;
+/* The banner: bottom right and compact since 21 Sep 2026 (it was bottom left
+   at the library's size, and read as large; on a phone it covered half the
+   screen). "box inline" in lib/consent/consent.ts puts Accept all and Reject
+   optional side by side, with Manage preferences under them; the rules
+   below tighten the type and spacing. Buttons stay 36px, clear of the 24px
+   target minimum. On a phone it spans the width, as before. */
+#cc-main .cm--box {
+  max-width: 21rem;
+}
+#cc-main .cm__texts {
+  padding-top: 14px;
+}
+#cc-main .cm__title {
+  font-size: 15px;
+}
+#cc-main .cm__title + .cm__desc {
+  margin-top: 6px;
+}
+#cc-main .cm__desc {
+  font-size: 13px;
+  line-height: 1.5;
+  padding-bottom: 12px;
+}
+#cc-main .cm__btns {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+#cc-main .cm__btn {
+  min-height: 36px;
+  font-size: 13px;
+  padding: 6px 12px;
+}
+#cc-main .cm__btn + .cm__btn,
+#cc-main .cm__btn-group + .cm__btn-group {
+  margin-top: 6px;
+}
+#cc-main .cm--inline .cm__btn + .cm__btn {
+  margin-top: 0;
+  margin-left: 6px;
+}
+#cc-main .cm__footer {
+  padding: 6px 0 8px;
+  font-size: 12px;
 }
 @media (max-width: 640px) {
   #cc-main .cm {
     max-width: none;
   }
+  /* The library stacks every button on a phone, with !important; Accept all
+     and Reject optional stay side by side here too (about 40px shorter),
+     Manage preferences under them. Equal widths keep them equal weight. */
+  #cc-main .cm--inline .cm__btn-group {
+    flex-direction: row !important;
+  }
+  #cc-main .cm--inline .cm__btn-group .cm__btn {
+    flex: 1 1 0 !important;
+  }
+  #cc-main .cm--inline .cm__btn-group .cm__btn + .cm__btn {
+    margin: 0 0 0 6px !important;
+  }
+}
+
+/* The scroll-to-top disc lives bottom right too, so it steps aside while the
+   banner is up (the library marks <html> with .show--consent then); one
+   choice brings it back. */
+html.show--consent .scroll-top-btn {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 /* The cookie tables: the site's small type and hairlines. */
