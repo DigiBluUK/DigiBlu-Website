@@ -1,8 +1,8 @@
 @font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 100 1000; font-display: swap; src: url('/assets/dmsans.woff2') format('woff2'); }
 
   :root {
-
-    --error: #ff8080; /* form errors; 8.1:1 on black */    /* Tells the browser which way round its own native UI should render:
+    --error: #ff8080; /* form errors; 8.1:1 on black */
+    /* Tells the browser which way round its own native UI should render:
        scrollbars, form controls, spellcheck underlines. Without it the UA
        assumes light and paints a pale grey scrollbar over the dark page.
        Kept in step with the palette in all three theme states below. */
@@ -43,12 +43,12 @@
        depending on a neighbour's padding. */
     --section-y: 72px;
     --head-gap: 48px;
-    /* Real height of the fixed nav bar, measured and kept in sync by a small
-       script (see the .site-nav IIFE) rather than hand-guessed, since .hero's
-       padding-top and html's scroll-padding-top both need to match it
-       exactly or content ends up either hidden under the nav or gapped too
-       far below it. 76px is the layout-thrash-free initial value before JS
-       runs (matches the nav's own padding + control height). */
+    /* Real height of the fixed nav bar, measured and kept in sync by
+       components/behaviours/NavChrome.jsx rather than hand-guessed, since
+       .hero's padding-top and html's scroll-padding-top both need to match
+       it exactly or content ends up either hidden under the nav or gapped
+       too far below it. 76px is the initial value before the script runs
+       (the nav's own padding + control height). */
     --nav-h: 76px;
     /* Escape hatch for elements that sit inside a surface which pins its own
        ink (.hero, .cases) but are visually part of the page rather than that
@@ -65,7 +65,6 @@
        them because the same alpha on white measured only 2.6-4.3:1. Anything
        already at 0.6+ clears 4.5:1 in both themes and is left alone. */
     --ink-a-faint: 0.40;
-    --ink-a-low: 0.45;
     --ink-a-mid: 0.50;
     --ink-a-high: 0.55;
     /* Already hand-tuned in an earlier pass to clear 4.5:1 against black;
@@ -74,8 +73,8 @@
   }
 
   :root[data-theme="light"] {
-
-    --error: #b3261e; /* 6.1:1 on white */    color-scheme: light;
+    --error: #b3261e; /* 6.1:1 on white */
+    color-scheme: light;
     --ink-rgb: 13, 17, 23;
     --bg: #ffffff;
     --surface: #f6f7f9;
@@ -89,18 +88,18 @@
     --page-text: #0d1117;
     --glass-rgb: 255, 255, 255;
     --ink-a-faint: 0.60;
-    --ink-a-low: 0.62;
     --ink-a-mid: 0.64;
     --ink-a-high: 0.66;
     --ink-a-aa: 0.66;
   }
 
   /* Follow the OS preference until an explicit choice is stamped on the root,
-     so the theme works with JS disabled and honours an external toggle. */
+     so the theme works with JS disabled and honours an external toggle.
+     Every value must match the :root[data-theme="light"] block above. */
   @media (prefers-color-scheme: light) {
     :root:not([data-theme="dark"]) {
-
-      --error: #b3261e;      color-scheme: light;
+      --error: #b3261e;
+      color-scheme: light;
       --ink-rgb: 13, 17, 23;
       --bg: #ffffff;
       --surface: #f6f7f9;
@@ -113,9 +112,10 @@
       --page-ink-rgb: 13, 17, 23;
       --page-text: #0d1117;
       --glass-rgb: 255, 255, 255;
-      --a-muted: 0.75;
-      --a-soft: 0.66;
-      --a-faint: 0.60;
+      --ink-a-faint: 0.60;
+      --ink-a-mid: 0.64;
+      --ink-a-high: 0.66;
+      --ink-a-aa: 0.66;
     }
   }
 
@@ -125,7 +125,6 @@
   .service-card.accent,
   .btn-signup,
   .faq-cta-btn,
-  .team-nav button,
   .modal-next,
   .modal-submit,
   .modal-done,
@@ -165,8 +164,8 @@
 
   .skip-link:focus { left: var(--gutter); }
 
-  /* Reuses the site's standard round-button treatment (same size/shadow-free
-     brand blue as the nav toggles), just floated and gated on scroll. */
+  /* The floating scroll-to-top disc (components/ScrollTop.tsx), shown by
+     NavChrome.jsx once the page has scrolled. */
   .scroll-top-btn {
     position: fixed;
     right: 24px;
@@ -185,7 +184,11 @@
     opacity: 0;
     transform: translateY(12px);
     pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.25s ease;
+    /* Hidden means out of the tab order too. visibility waits for the fade
+       out to finish before it hides the button, and returns at once when
+       .visible is added (its zero delay below). */
+    visibility: hidden;
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
     z-index: 90;
   }
 
@@ -193,6 +196,8 @@
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
+    visibility: visible;
+    transition-delay: 0s;
   }
 
   .scroll-top-btn svg { width: 18px; height: 18px; }
@@ -231,9 +236,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .team-slice { transition: none; }
-    .team-slice-label { transition: none; }
-    .modal-panel { transition: none; }
     .scroll-top-btn { transition: none; }
   }
 
@@ -313,14 +315,13 @@
   }
 
   /* hero.svg, not hero.jpg, since 8 Sep 2026: a vector rebuild of the same
-     artwork, traced from the JPEG's own pixels (see scratchpad hero-trace
-     notes in CLAUDE.md). The JPEG was 1672x941 at 0.055 bytes/pixel - it
+     artwork, traced from the JPEG's own pixels. The JPEG was 1672x941 at 0.055 bytes/pixel - it
      upscaled 1.5x on an ordinary laptop and 3x on a 2560-wide screen at DPR 2,
      and its 8x8 blocks and gradient banding showed (reported as blurred and
      pixelated). The SVG is sharp at any size and a fraction of the bytes.
      Same 1672x941 coordinate space, so the .hero-spark paths traced from the
-     JPEG still ride the rims. hero.jpg stays in the repo only as the raster
-     source the share cards were built from. */
+     JPEG still ride the rims. hero.jpg is kept in source/ (not served) as the
+     raster the share cards were built from. */
   .hero::before {
     content: '';
     position: absolute;
@@ -378,7 +379,7 @@
      nav itself stays the max-width-centred content row it always was, so
      none of its children needed to change. Transparent at rest so it reads
      as part of the hero photo on load; solidifies once .scrolled is added
-     by the script below, both because a transparent bar over arbitrary page
+     by NavChrome.jsx, both because a transparent bar over arbitrary page
      content further down would be illegible and to give a visual cue that
      it has detached from the hero. */
   .site-nav {
@@ -444,6 +445,12 @@
     border: 1px solid transparent;
   }
 
+  /* After the rule above on purpose: a media query adds no specificity, so
+     an earlier copy would lose to it. */
+  @media (prefers-reduced-motion: reduce) {
+    nav { transition: none; }
+  }
+
   /* .logo / .theme-toggle / .nav-toggle hardcode white (not --ink-rgb) for
      the transparent, over-the-hero-photo state, so redefining --text above
      doesn't reach them on its own — same asymmetry, different fix. */
@@ -472,7 +479,7 @@
   /* Real DigiBlu logo (digiblu.com header mark), painted as a single-ink
      mask so it reads correctly white-on-hero here and follows --text via
      .page-header .logo on the standalone pages, same mechanism as the
-     client-logo/accred-badge masks rather than a two-tone image.
+     client-logo masks rather than a two-tone image.
 
      The mask is built from a *repaired* copy of DigiBlu's master file: that
      master is clipped on its right edge, leaving the final "U" with a 3px
@@ -517,8 +524,6 @@
     font-size: 15px;
     font-weight: 400;
   }
-
-  .nav-center svg { width: 11px; height: 11px; opacity: 0.85; }
 
   .nav-right {
     display: flex;
@@ -697,7 +702,9 @@
     mask-size: contain;
   }
 
-  h1 {
+  /* The hero headline. Scoped to .hero since 21 Sep 2026: it was a global h1
+     rule, and the contact page's title took its line-height by accident. */
+  .hero h1 {
     font-size: clamp(42px, 7.2vw, 92px);
     line-height: 1.06;
     font-weight: 300;
@@ -761,10 +768,9 @@
   }
 
   /* ---------- Accreditations ----------
-     Written list of the six real certifications, replacing the earlier badge
-     marquee on request — easier to read than an image strip, and each chip
-     still opens the same badge popup (BADGE_DETAILS in the script) with the
-     real artwork and a plain-language description. */
+     Written list of the six real certifications, replacing an earlier badge
+     marquee on request - easier to read than an image strip. Each chip links
+     to its entry on /accreditations, which shows the real artwork. */
   .accred {
     background: var(--bg);
     padding: 40px 0;
@@ -877,22 +883,16 @@
   }
 
   /* ---------- Geometric figure ----------
-     A solid mass dissolving into rectangular fragments, generated rather than
-     drawn: a deterministic hash thresholded against a horizontal ramp, with
-     runs merged vertically and then horizontally. The horizontal merge is not
-     an optimisation - without it the solid left mass is ten abutting rects and
-     the browser leaves faint vertical seams where their edges land on
-     sub-pixel boundaries.
+     The About figure: a 30x30 dot lattice in which the DigiBlu "db" is drawn
+     by dot size alone (components/sections/Lattice.tsx, from
+     content/lattice.json), each dot breathing in place. Fill is
+     currentColor, so one drawing serves both themes. Purely decorative,
+     hence aria-hidden and no role.
 
-     Fill is currentColor, so one file serves both themes. Purely decorative,
-     hence aria-hidden and no role. */
-  /* A flow field of short dashes animating in place.
-
-     Theme-aware, not a pinned black plate. It was fixed black with white
-     strokes at first, which left a black square sitting on the white page in
-     light theme; the strokes now follow --text and the plate follows --bg, so
-     the field is white on black in dark theme and black on white in light,
-     and the plate is invisible against the page either way. */
+     Theme-aware, not a pinned black plate. It was fixed black at first,
+     which left a black square sitting on the white page in light theme; the
+     dots follow --text and the plate follows --bg, so the plate is invisible
+     against the page either way. */
   .geo-figure {
     position: relative;
     align-self: center;
@@ -910,15 +910,15 @@
        is a software repaint of 978 circles every frame - Chromium does not
        composite transforms on SVG children - and without these it dirtied
        the layer the whole section shares. A Surface Pro X showed a glitch a
-       desktop did not; this is the cheap half of the answer, the probe in
-       the geo IIFE (.is-lowend) is the other. */
+       desktop did not; this is the cheap half of the answer, the frame-time
+       probe in GeoFigure.jsx (.is-lowend) is the other. */
     will-change: transform;
     contain: paint;
   }
 
   /* A device that cannot hold the pulse at ~38fps gets the figure still:
      no breath, no cursor response, the mark still lighting on scroll. Set
-     once by the frame-time probe in the geo IIFE. */
+     once by the frame-time probe in GeoFigure.jsx. */
   .geo-figure.is-lowend .geo-flow circle { animation: none; transition: none; }
   .geo-figure.is-lowend .geo-flow .mk-lit { transition: none; }
 
@@ -928,19 +928,19 @@
     height: 100%;
   }
 
-  /* Each dash is already drawn at its own angle, so the animation only has to
-     add a sway - it never composes with a base rotation, which SVG makes
-     awkward. transform-box: fill-box puts the origin at each dash's own
-     centre, so they pivot in place rather than swinging about the viewBox. */
-  /* Two transform channels on purpose. The idle sway animates the `rotate`
-     property; the pointer response writes the `transform` property. They
-     compose (translate/rotate/scale are applied before transform), so the two
-     add rather than fight - and an inline transform cannot be clobbered by the
-     running animation, which would happen if both used the same property.
+  /* transform-box: fill-box puts the origin at each dot's own centre, so the
+     pulse scales it in place rather than about the viewBox.
+
+     Two transform channels on purpose. The idle pulse animates the `scale`
+     property; the pointer response (GeoCursor.jsx) writes the `transform`
+     property. They compose (translate/rotate/scale are applied before
+     transform), so the two add rather than fight - and an inline transform
+     cannot be clobbered by the running animation, which would happen if
+     both used the same property.
 
      The transition is what makes the pointer response smooth: each move
-     restarts it, so the dashes ease toward their new angle and ease back when
-     the cursor leaves rather than snapping. */
+     restarts it, so the dots ease toward their new position and ease back
+     when the cursor leaves rather than snapping. */
   .geo-flow circle {
     transform-box: fill-box;
     transform-origin: 50% 50%;
@@ -950,7 +950,7 @@
   }
 
   /* The pulse is paused while the page is scrolling and while the figure is
-     off-screen (both classes set by the geo IIFE). Chromium does not
+     off-screen (both classes set by GeoFigure.jsx). Chromium does not
      composite transforms on individual SVG elements, so 900 circles animating
      scale is a full software repaint of the figure on every frame - fine on a
      desktop GPU, and exactly what made an ARM tablet stutter through the About
@@ -960,12 +960,9 @@
   .geo-figure.is-scrolling .geo-flow circle,
   .geo-figure.is-offscreen .geo-flow circle { animation-play-state: paused; }
 
-  /* fill transitions on hover only. Scrolling writes --mark-lit continuously
-     and supplies its own continuity; a transition there merely restarted 78
-     fill interpolations on every scroll tick, for a change no one could see. */
-  .geo-figure.is-hovering .geo-flow circle {
-    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
+  /* The lit mark fades on hover only. Scrolling writes --mark-lit
+     continuously and supplies its own continuity; a transition there merely
+     restarted on every scroll tick, for a change no one could see. */
   .geo-figure.is-hovering .geo-flow .mk-lit { transition: opacity 0.3s ease; }
 
   /* A breath, not a swing. The lattice is exact, so the motion has to stay
@@ -989,20 +986,17 @@
     50%      { scale: 1.06; }
   }
 
-  /* The mark phases into brand blue as the figure travels up the viewport,
-     rather than switching at a threshold: --mark-lit is a 0..1 value written
-     by the geo IIFE from the scroll position, so the colour tracks the gesture
-     - fully blue with the figure centred, easing back to ink as it leaves.
-     Hovering forces it to 1, and because the variable is set inline by script
-     that override is applied in the same place rather than as a CSS rule,
-     which an inline style would outrank.
+  /* The mark phases into the brand sweep as the figure travels up the
+     viewport, rather than switching at a threshold: --mark-lit is a 0..1
+     value written by GeoFigure.jsx from the scroll position, so the colour
+     tracks the gesture - fully lit with the figure centred, easing back to
+     ink as it leaves. Hovering forces it to 1, and because the variable is
+     set inline by script that override is applied in the same place rather
+     than as a CSS rule, which the inline style would outrank.
 
      Only fill changes - the mark keeps its size, so the lattice never shifts.
      The .mk rule overrides the svg's own fill="currentColor" presentation
-     attribute, which CSS outranks.
-
-     color-mix is behind @supports so a browser without it still gets a legible
-     mark in full ink rather than no fill at all. */
+     attribute, which CSS outranks. */
   .geo-flow circle.mk { fill: var(--text); }
 
   /* The lit mark is a second copy of the 78 dots, in a group whose opacity is
@@ -1017,13 +1011,11 @@
   .geo-flow .mk-lit { opacity: var(--mark-lit, 0); }
   .geo-flow .mk-lit circle.mk { fill: url(#geoBrand); }
 
-  /* Twelve delay buckets, assigned by position when the lattice is generated,
-     so the pulse crosses it as a wave instead of every dot breathing in
-     lockstep. Buckets rather than a per-dot inline delay: 900 inline styles
-     per figure is a lot of markup for the same result. */
-  .geo-flow .d0 { animation-delay: 0.0s; }
-  .geo-flow .d1 { animation-delay: -0.5s; }
-  .geo-flow .d2 { animation-delay: -1.0s; }
+  /* Delay buckets, assigned by position when the lattice was generated, so
+     the pulse crosses it as a wave instead of every dot breathing in
+     lockstep. content/lattice.json uses d3 to d11 only. Buckets rather than
+     a per-dot inline delay: 900 inline styles per figure is a lot of markup
+     for the same result. */
   .geo-flow .d3 { animation-delay: -1.5s; }
   .geo-flow .d4 { animation-delay: -2.0s; }
   .geo-flow .d5 { animation-delay: -2.5s; }
@@ -1034,8 +1026,8 @@
   .geo-flow .d10 { animation-delay: -5.0s; }
   .geo-flow .d11 { animation-delay: -5.5s; }
 
-  /* A field of several hundred dashes moving continuously is precisely what
-     this preference is about. Reduced motion gets the field, still. */
+  /* Several hundred dots moving continuously is precisely what this
+     preference is about. Reduced motion gets the lattice, still. */
   @media (prefers-reduced-motion: reduce) {
     .geo-flow circle { animation: none; transition: none; }
   }
@@ -1047,7 +1039,7 @@
      viewport so it stays generous without crowding the values beneath.
 
      The cursor response does not apply on touch (no hover to track) but the
-     idle sway still runs, so it is not a static image there. */
+     idle pulse still runs, so it is not a static image there. */
   @media (max-width: 900px) {
     .geo-figure {
       width: min(68vw, 290px);
@@ -1215,24 +1207,12 @@
     padding: var(--section-y) var(--gutter);
   }
 
-  /* The section holds still while the values run 01 to 05, then releases and
-     the page carries on into Services. Sticky content plus a spacer that the
-     hold consumes - no scroll hijacking, no preventDefault, so a flick, a
-     scrollbar drag and a keyboard PageDown all behave normally and the user is
-     never actually trapped.
-
-     Gated on viewport HEIGHT as much as width: a sticky element taller than
-     the viewport pins its top and puts its own bottom permanently out of
-     reach. The composition measures ~734px, so below 860px of viewport the
-     pin is dropped entirely and the values simply advance as the section
-     passes, which is also what every width under 901px gets. */
-  .about-pin-space { display: none; }
-
   /* The desktop sticky hold (.about-inner sticky, .about-pin-space 85vh)
      was removed on 8 Sep 2026 along with the one-at-a-time values it existed
      to run. Every value is open at once on desktop now, so there is nothing
      for a hold to pace; the spacer stays in the markup at display: none and
-     the pin script reads its zero height as "not live". */
+     lib/client/about-pin.js reads its zero height as "not live". */
+  .about-pin-space { display: none; }
 
   .pill {
     display: inline-flex;
@@ -1248,9 +1228,6 @@
     margin-bottom: 18px;
   }
 
-  /* The narrative sits left with the geometric figure beside it. The content
-     arrangement is unchanged - the values still sit beneath, not alongside -
-     the figure just occupies space the 820px measure was leaving empty. */
   /* The text column is the measure itself and the figure column takes the
      rest, with the figure at the START of it, beside the copy. It was
      minmax(0, 1fr) + a 430px track with the figure centred in that track,
@@ -1516,7 +1493,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .value-item { transition: none; }
+    .value-text,
+    .value-open { transition: none; }
   }
 
   @media (max-width: 900px) {
@@ -1533,11 +1511,11 @@
      other section, rather than reading as half-height because only one side
      contributed padding. */
   /* cases-bg.svg, not footer-bg.jpg, since 8 Sep 2026: a vector rebuild of the
-     same artwork by the method hero.svg used (see CLAUDE.md, Files table). The
-     JPEG was 1500x844 at 0.046 bytes/pixel and showed its 8x8 blocks and
+     same artwork by the method hero.svg used. The JPEG was 1500x844 at 0.046
+     bytes/pixel and showed its 8x8 blocks and
      gradient banding once upscaled (reported as blurred and pixelated). Same
-     1500x844 coordinate space. footer-bg.jpg stays only as the reference it
-     was traced from. */
+     1500x844 coordinate space. footer-bg.jpg is kept in source/ (not served)
+     as the reference it was traced from. */
   .cases {
     --ink-rgb: 255, 255, 255;
     --text: #ffffff;
@@ -1590,11 +1568,10 @@
     border-bottom: 1px solid rgba(var(--ink-rgb), 0.16);
   }
 
-  /* Label rail above each study, mirroring the spec-sheet rule + meta pairing. */
   /* The client name, sitting directly above the headline. It replaces both
      the old .case-meta row (sector + service on the left, client on the
-     right) and the .blog-tag pill that sat above the title - the sector and
-     service repeated what the copy and the detail popup already say, and the
+     right) and the tag pill that sat above the title - the sector and
+     service repeated what the copy and the case-study page already say, and the
      client was stranded on the far right where it read as a reference code
      rather than the name of the organisation. Same type treatment the meta
      row used, so nothing about the section's voice changes. */
@@ -1658,7 +1635,7 @@
     color: rgba(var(--ink-rgb), 0.65);
   }
 
-  /* Same underlined affordance as the Services cards, so "open a popup" reads
+  /* Same underlined affordance as the Services cards, so "read more" reads
      the same way in both sections. */
   .case-read-more {
     display: inline-flex;
@@ -1690,10 +1667,6 @@
     justify-content: center;
     margin-top: 40px;
   }
-
-  /* `hidden` alone loses to the `display: flex` rule above — reused here by
-     the blog section's "View more" button, which toggles this at runtime. */
-  .cases-actions[hidden] { display: none; }
 
   .case-viewall-btn {
     display: inline-flex;
@@ -1740,14 +1713,8 @@
     }
   }
 
-  /* ---------- Case study content ----------
-     The case-study pages' eyebrow, client line, sections, stats and quote.
-     Named .case-modal-* because they were built for the reader dialog, which
-     was removed on 18 Sep 2026; the pages kept the names. */
-
   /* ---------- Scrollbars ----------
-     Applied site-wide, not just to the modals: the page itself scrolls, and
-     the raw platform bar is an opaque grey slab that reads as chrome bolted
+     Applied site-wide: the page itself scrolls, and the raw platform bar is an opaque grey slab that reads as chrome bolted
      onto the design. It only shows at all on machines whose OS draws inline
      (non-overlay) scrollbars, so the site looked different device to device.
 
@@ -1794,14 +1761,14 @@
     background-clip: content-box;
   }
 
-  /* max-width is load-bearing, not cosmetic: this pill is display:inline-flex
-     with no width of its own, so without a cap it never wraps and can
-     overflow straight into .modal-close (32px circle, inset 18px) once the
-     panel gets narrow enough — at any viewport, not just the mobile
-     breakpoint below, since long sector/service strings differ in width by
-     device/font-rendering. See the mobile breakpoint for the extra type
-     shrink on small screens. */
-  .case-modal-eyebrow { margin-bottom: 18px; max-width: calc(100% - 30px); }
+  /* ---------- Case study content ----------
+     The case-study pages' eyebrow, client line, sections, stats and quote.
+     Named .case-modal-* because they were built for the reader dialog, which
+     was removed on 18 Sep 2026; the pages kept the names. */
+
+  /* The eyebrow pill wraps inside the column rather than overflowing it when
+     a sector/service line is long; see the 640px block for the smaller type. */
+  .case-modal-eyebrow { margin-bottom: 18px; max-width: 100%; }
 
   .case-modal-client {
     font-size: 12px;
@@ -1821,20 +1788,13 @@
     margin-bottom: 28px;
   }
 
-  /* Pills, matching the section-header .pill on the homepage (hairline ring,
-     999px radius, small uppercase label), on request (8 Sep 2026). They were
-     solid brand-blue boxes with the number stacked over the label; the ring
-     reads lighter beside the photograph and ties the reader to the page. The
-     number and label sit on one line, and the whole row simply wraps, so the
-     old mobile rule that stretched each box to full width is gone with the
-     boxes. Theme tokens throughout - nothing here is a fixed-colour surface
-     any more, so no pinned ink. */
-  /* Brand blue fill, same pill (8 Sep 2026, on request - "make the big stat
-     pills brand blue, keep the shape"). A fixed-colour surface in both
-     themes, so ink is pinned white locally. Both texts are FULL white, not the
-     muted alpha the hairline version used: white on #1d6ef5 is 4.56:1, so a
-     0.55-0.66 alpha label would land under 3:1 and fail AA at 11px. The
-     hierarchy against the number comes from size and weight instead. */
+  /* Pills in the homepage .pill shape (999px radius, small uppercase label),
+     number and label on one line, the row wrapping as needed. Brand fill
+     (8 Sep 2026, on request - "make the big stat pills brand blue, keep the
+     shape"): a fixed-colour surface in both themes, so ink is pinned white
+     locally. Both texts are full white, not a muted alpha: at the sweep's
+     bright end a muted 11px label would fail AA, so the hierarchy against
+     the number comes from size and weight instead. */
   .case-stat {
     --ink-rgb: 255, 255, 255;
     --text: #ffffff;
@@ -1867,8 +1827,7 @@
 
   .case-section { margin-bottom: 22px; }
 
-  .case-section h2,
-  .case-section h3 {
+  .case-section h2 {
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 1.5px;
@@ -2065,8 +2024,7 @@
     mask-position: center;
     -webkit-mask-size: contain;
     mask-size: contain;
-    /* Muted at rest and full on hover, matching the accreditation marquee so
-       the two logo rows read as one system. */
+    /* Muted at rest and full on hover. */
     opacity: 0.55;
     transition: opacity 0.2s ease;
   }
@@ -2077,10 +2035,9 @@
   /* Heights are normalised by area rather than by height alone: the source
      lockups run from icon+wordmark blocks to thin single-line wordmarks, so
      matching heights would leave the wide ones visually dominant. Each
-     height is derived from a constant target area, then hand-trimmed —
-     extreme-aspect wordmarks (AssuranceSD, GatenbySanderson) are stepped
-     down further so their width doesn't dominate, same call already made
-     for G-Cloud in the Accreditations strip. */
+     height is derived from a constant target area, then hand-trimmed -
+     extreme-aspect wordmarks are stepped down further so their width
+     doesn't dominate. */
   .cl-equiniti   { width: 53px;  height: 42px; -webkit-mask-image: url('/assets/clients/equiniti.png');               mask-image: url('/assets/clients/equiniti.png'); }
   .cl-sunrise    { width: 106px; height: 27px; -webkit-mask-image: url('/assets/clients/sunrise-medical.png');        mask-image: url('/assets/clients/sunrise-medical.png'); }
   .cl-nsm        { width: 98px;  height: 35px; -webkit-mask-image: url('/assets/clients/nsm.png');                    mask-image: url('/assets/clients/nsm.png'); }
@@ -2191,8 +2148,8 @@
      width (head width ≈ 0.75 × head height, against a 2.8-head crop), so a
      56px slice showed ~20% — a vertical sliver *through* the face, which is
      what read as the photos being cropped. 80px ≈ 28.6% clears the whole
-     head. If the crop factor in process_team_faces.js ever changes, this
-     needs re-deriving with it. */
+     head. If the headshots are ever re-cropped at a different factor, this
+     needs re-deriving with them. */
   .team-slice {
     position: relative;
     flex: 0 0 80px;
@@ -2205,28 +2162,24 @@
     transition: flex-grow 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  /* Brand blue behind the selected member rather than the theme surface.
+  /* The brand fill behind the selected member rather than the theme surface.
      The headshots are chroma-keyed cutouts, so their semi-transparent edge
      pixels composite against whatever sits behind them - on --surface that
      is near-white in light theme and near-black in dark, so the same cutout
-     showed a pale halo in one and a dark fringe in the other. A fixed blue
+     showed a pale halo in one and a dark fringe in the other. A fixed fill
      gives every photo one constant backdrop, so the edges resolve the same
-     way in both themes, and it ties the expanded card to the brand.
-     Transitioned so the colour arrives with the expand rather than snapping
-     ahead of it. */
-  .team-slice { transition: flex-grow 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.4s ease; }
-
+     way in both themes, and it ties the expanded card to the brand. It is a
+     gradient, which cannot be transitioned, so it switches on as the expand
+     starts. */
   .team-slice.active {
     flex-grow: 1;
     background: var(--brand-fill);
   }
 
-  /* Real headshots (chroma-keyed cutouts, see the Team section comment in
-     index.html), not the old generic silhouette icon. Grayscale is the
-     photo treatment requested — dimmed at rest, full strength once active,
-     same muted/hover language as the client-logo and accreditation rows. */
-  /* The source crops are face-centred (see process_team_faces.js), which is
-     what makes a plain centred cover-crop safe here: the active slice is a
+  /* Real headshots (chroma-keyed cutouts), not the old generic silhouette
+     icon. Grayscale is the photo treatment requested - dimmed at rest, full
+     strength once active, same muted/hover language as the client logos. */
+  /* The source crops are face-centred, which is what makes a plain centred cover-crop safe here: the active slice is a
      wide, short box (783x280 on desktop) so cover shows only ~36% of the
      image height, and that band has to land on the face at every viewport
      width. Centring the face in the image rather than nudging
@@ -2333,18 +2286,16 @@
      opening the profile anyway); on mobile every row shows it, because there
      a tap goes straight to the profile (the member's entry on /team since
      18 Sep 2026). */
-  /* Brand blue, and deliberately the *same* fill at every width — the
-     mobile block below overrides only layout now, not colour, so this is
-     the single source of truth for how the affordance reads.
+  /* The brand fill, and deliberately the *same* fill at every width - the
+     mobile block below overrides only layout, not colour, so this is the
+     single source of truth for how the affordance reads.
 
-     It has to be a fixed colour rather than a theme token: on desktop this
-     sits at the slice's top right, above where the ::after scrim reaches
-     (that gradient only covers the bottom ~78%), and the headshots are
-     transparent-background cutouts — so at that corner it can be sitting
-     on the plain surface rather than the photo. A theme-derived fill went
-     white-on-near-white there in light mode (~1:1). Solid blue separates
-     from both surfaces (4.20:1 light, 4.47:1 dark) and from the photos,
-     which are grayscale-filtered and so can never collide with it. */
+     It has to be a fixed colour rather than a theme token: it can sit on
+     the plain surface rather than the photo (the headshots are
+     transparent-background cutouts), and a theme-derived fill went
+     white-on-near-white there in light mode (~1:1). The brand fill
+     separates from both surfaces and from the photos, which are
+     grayscale-filtered and so can never collide with it. */
   .team-slice-more {
     position: absolute;
     z-index: 1;
@@ -2358,7 +2309,7 @@
     color: #ffffff;
     background: var(--brand-fill);
     opacity: 0;
-    transition: opacity 0.3s ease 0.15s, background 0.2s ease;
+    transition: opacity 0.3s ease 0.15s;
   }
 
   /* The glyph used to be a plus inside its own drawn ring, sitting in the
@@ -2372,10 +2323,8 @@
 
   .team-slice.active .team-slice-more { opacity: 1; }
 
-  /* No --blue-dark token exists (every other blue control in this file is
-     a flat var(--blue) with no hover shift), so this is a one-off literal:
-     var(--blue) at 88% brightness. Raises white-on-blue from 4.56:1 to
-     5.61:1, so the hover state is never the weaker of the two. */
+  /* Hover lifts the disc a step; a filter, since a gradient fill cannot be
+     shifted by swapping one colour. */
   .team-slice.active:hover .team-slice-more { filter: brightness(1.18); }
 
   .team-slice-name {
@@ -2396,7 +2345,7 @@
     white-space: nowrap;
   }
 
-  /* Injected by the team IIFE from TEAM_MEMBERS, so the bios stay written in
+  /* Injected by TeamStrip.jsx from content/team, so the bios stay written in
      one place. Hidden here; the desktop card below is the only place it
      shows. On a phone a tap opens the profile on /team, which carries it. */
   .team-slice-bio { display: none; }
@@ -2408,19 +2357,13 @@
      backdrop with the photo laid over it "did not sit well", and that a
      click should open the person up in place rather than only enlarge them.
 
-     The backdrop is the blue-to-navy gradient the case-study art panels
-     already use, so the card reads as the same brand surface. It stays a
-     FIXED colour for the same reason the blue was: the headshots are
-     cutouts, and their semi-transparent edges must composite against one
-     constant backdrop or they halo in one theme and fringe in the other.
+     The backdrop is the active slice's --brand-fill (see .team-slice.active
+     above), a FIXED colour so the cutouts' semi-transparent edges composite
+     against one constant backdrop in both themes.
 
      The photo shows in colour here. Grayscale stays on the collapsed circles,
      which are an index; the open card is the person. */
   @media (min-width: 761px) {
-    .team-slice.active {
-      background: var(--brand-fill);
-    }
-
     /* The photo sits in a framed tile, not a raw column. Painted straight
        onto the card, a cutout's flat bottom edge (where the source crop ended)
        read as the picture being cut off. Inside a rounded, slightly lighter
@@ -2540,11 +2483,11 @@
       cursor: default;
     }
 
-    /* The tap that opens a profile also moves the highlight here (see the
-       click handler), so the blue row is whichever member was last opened.
-       Ink pinned white, as on the desktop active slice; the role label goes
-       to full white because white itself is only 4.56:1 on the blue, so the
-       muted alpha the other rows use would fail AA. */
+    /* The tap that opens a profile also moves the highlight here
+       (TeamStrip.jsx), so the filled row is whichever member was last
+       opened. Ink pinned white, as on the desktop active slice; the role
+       label goes to full white because the muted alpha the other rows use
+       would fail AA on the fill. */
     .team-slice.active { --ink-rgb: 255, 255, 255; --text: #ffffff; }
     .team-slice.active .team-slice-role { color: #ffffff; }
 
@@ -2610,10 +2553,15 @@
     }
   }
 
-  /* Named for the FAQ section it was built for. That section has been
-     removed, but this button is also the service-detail modal's footer CTA
-     and the blog modal's "Read full article" toggle, so the rule stays.
-     Known naming debt, same as .case-viewall-btn being reused by the blog. */
+  /* After the team rules on purpose: a media query adds no specificity, so
+     at the top of the file these lost to the later .team-slice rules. */
+  @media (prefers-reduced-motion: reduce) {
+    .team-slice { transition: none; }
+    .team-slice-label { transition: none; }
+  }
+
+  /* Named for the FAQ section it was built for, long removed; it is now the
+     /services page's "Get in touch" link. Known naming debt. */
   .faq-cta-btn {
     display: inline-flex;
     align-items: center;
@@ -2641,10 +2589,9 @@
   .faq-cta-btn svg { width: 14px; height: 14px; }
 
   /* ---------- Art panels ----------
-     Named for the blog, which is gone; the case studies reuse these for the
-     panel above each engagement's title, so they stay. Generated gradient
-     plus a service icon rather than photography - there is no rights-cleared
-     imagery, and the gradient reuses the Services accent-card treatment. */
+     Named for the blog, which is gone; the case-study pages use these for
+     the photograph above each title. The gradient is what shows under the
+     photograph, and on its own if the photo fails to load. */
   .blog-art {
     position: relative;
     border-radius: 16px;
@@ -2654,21 +2601,17 @@
     place-items: center;
   }
 
-  /* Four hues so adjacent cards in the grid never repeat the same panel. */
+  /* Four hues, picked by position in the list (app/case-studies/[key]/page.tsx),
+     so neighbouring case studies never share one. */
   .blog-art.a1 { background: linear-gradient(135deg, #4a8dff 0%, #1b4fd6 45%, #0a1f6e 100%); }
   .blog-art.a2 { background: linear-gradient(135deg, #1b4fd6 0%, #0a1f6e 55%, #050b28 100%); }
   .blog-art.a3 { background: linear-gradient(135deg, #6aa4ff 0%, #2f63e0 50%, #12307f 100%); }
   .blog-art.a4 { background: linear-gradient(135deg, #0a1f6e 0%, #1b4fd6 60%, #4a8dff 100%); }
 
   /* Case-study photography. Each engagement leads with a real photograph of
-     its sector rather than the gradient panel alone - but under a brand scrim
-     and partly desaturated, so eight photographs from eight different sources
-     still read as one set and as part of this site. It also means a warm
-     source (the sunset pylon) and a cold one (the green hospital corridor)
-     land in the same key instead of fighting each other.
-
-     The .aN gradient underneath is deliberately kept: it is what shows if a
-     photo ever fails to load, so the panel degrades to what it used to be. */
+     its sector, under the light neutral scrim below. The .aN gradient
+     underneath is deliberately kept: it is what shows if a photo ever fails
+     to load, so the panel degrades to what it used to be. */
   .case-art-photo {
     position: absolute;
     inset: 0;
@@ -2684,42 +2627,34 @@
     position: absolute;
     inset: 0;
     /* Neutral, not brand blue: a light darkening towards the corners so
-       the eight photographs still sit as one set without a colour cast. */
+       the photographs still sit as one set without a colour cast. */
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0.06) 50%, rgba(0, 0, 0, 0.36) 100%);
   }
 
 
-  /* The art panel leading the blog detail modal and the standalone blog
-     pages. Shorter than the 16/10 grid card so it introduces the article
-     without pushing the heading below the fold in a dialog. */
+  /* The art panel leading each case-study page. Shorter than the base 16/10
+     so it introduces the page without pushing the title below the fold. */
   .blog-modal-art { margin-bottom: 22px; }
-  .blog-modal-art:empty { display: none; }
   .blog-modal-art .blog-art { aspect-ratio: 16 / 6; border-radius: 14px; }
 
   /* Shorter on a phone. At 16/6 the photograph took a third of the first
      screen before the title had even appeared; 16/4.5 keeps it as a header
-     band rather than the page's subject. The scrim and desaturation are what
-     make a shallow crop still read - they are doing the work, not the area. */
+     band rather than the page's subject. */
   @media (max-width: 640px) {
     .blog-modal-art { margin-bottom: 16px; }
     .blog-modal-art .blog-art { aspect-ratio: 16 / 4.5; border-radius: 12px; }
   }
 
-  /* ---------- Footer ---------- */
-  /* A plain themed surface tone (not the artwork treatment tried and
-     reverted earlier), just enough to read as a distinct band rather than
-     blending into whatever plain --bg section sits above it. */
-  /* Same background as the rest of the page (black in dark, white in light)
+  /* ---------- Footer ----------
+     Same background as the rest of the page (black in dark, white in light)
      so the footer marries up with the site rather than sitting in its own
-     tinted band — a brand-navy footer and a deeper-neutral band were both
+     tinted band - a brand-navy footer and a deeper-neutral band were both
      tried and explicitly rejected. The single hairline is the *only*
-     intended division from the FAQ section above; keep it. */
-  /* Matches .footer-bottom's own 0.1 rule below rather than --hairline
-     (0.28), so the two horizontal lines in the footer read as one weight
-     instead of the top one shouting over the one above the copyright.
-     Written as a literal rather than by changing --hairline, which is
-     shared with buttons, pills, the theme toggle and .footer-social - all
-     of which need the stronger edge to stay legible as controls. */
+     intended division from the section above; keep it. It matches
+     .footer-bottom's own 0.1 rule rather than --hairline (0.28), so the
+     footer's two horizontal lines read as one weight; --hairline stays
+     stronger for the controls that share it (buttons, pills, the theme
+     toggle, .footer-socials). */
   footer {
     position: relative;
     background: var(--bg);
@@ -2792,11 +2727,10 @@
      of a 19px one. */
   .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 2px; }
 
-  /* Shared by real <a> anchors (in-page section links) and <button>s (service
-     and legal popups, the contact modal) so a visitor can't tell which
-     mechanism a given footer link uses — same block layout, same type
-     colour, no underline. The button reset (background/border/font/
-     text-align/cursor) is inert on <a> elements. */
+  /* Shared by the footer's links and its one <button> (Cookie settings), so
+     the two read the same - same block layout, same type colour, no
+     underline. The button reset (background/border/font/text-align/cursor)
+     is inert on <a> elements. */
   .footer-col a,
   .footer-col button {
     display: block;
@@ -2829,26 +2763,21 @@
     .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; }
   }
 
-  /* ---------- Contact Modal ---------- */
+  /* ---------- Contact form (/contact) ----------
+     The .modal-* names are from the dialog the form was until 18 Sep 2026;
+     the panel sits in the page flow now (see the /contact block at the end
+     of the file). */
 
   .modal-panel {
     position: relative;
     width: 100%;
-    max-width: 780px;
     background: var(--surface-2);
     border: 1px solid rgba(var(--ink-rgb),0.14);
     border-radius: 20px;
     display: flex;
-    overflow: hidden;
-    transform: translateY(10px);
-    transition: transform 0.2s ease;
-    /* dvh tracks the browser chrome as it collapses, so the panel can never
-       compute taller than the space actually visible. */
-    max-height: calc(100vh - 48px);
-    max-height: calc(100dvh - 48px);
   }
 
-  /* Left: plain black brand panel with the step tracker. */
+  /* Left: the title and the step tracker. */
   .modal-aside {
     flex: 0 0 250px;
     background: var(--surface);
@@ -2859,9 +2788,9 @@
     justify-content: center;
   }
 
-  .modal-aside h1,
-  .modal-aside h2 {
+  .modal-aside h1 {
     font-size: 21px;
+    line-height: 1.06;
     font-weight: 700;
     letter-spacing: -0.4px;
     color: var(--text);
@@ -3045,8 +2974,6 @@
     border-color: var(--blue);
   }
 
-  .modal-panel:focus { outline: none; }
-
   .modal-actions {
     display: flex;
     gap: 10px;
@@ -3088,7 +3015,6 @@
   .modal-success svg {
     width: 40px;
     height: 40px;
-    color: var(--brand-ink-2);
     margin: 0 auto 18px;
   }
 
@@ -3140,7 +3066,7 @@
      Named .service-modal-* because they began in the service dialog, which
      was removed on 18 Sep 2026. */
 
-  .service-modal-eyebrow { margin-bottom: 18px; max-width: calc(100% - 30px); }
+  .service-modal-eyebrow { margin-bottom: 18px; max-width: 100%; }
 
   .service-modal-intro {
     font-size: 15px;
@@ -3180,7 +3106,7 @@
   /* Every mark except G-Cloud has its own ink colour (ISO blue, the Cyber
      Essentials shield fill) and reads fine on any surface. G-Cloud's only
      published asset is white line-art on a transparent background — shown
-     plainly it vanishes against the modal's light-theme white panel. A
+     plainly it vanishes against the light-theme white page. A
      permanent dark plate (not theme-dependent) keeps it legible in both
      themes without altering the artwork itself, mirroring how DigiBlu's own
      site only ever shows this mark on a black band. */
@@ -3229,18 +3155,13 @@
   }
 
   @media (max-width: 640px) {
-    .modal-panel { flex-direction: column; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto; }
     .modal-aside { flex: none; border-right: none; border-bottom: 1px solid rgba(var(--ink-rgb),0.1); padding: 30px 28px; }
     .modal-steps { flex-direction: row; margin-top: 20px; }
     .modal-step { flex-direction: column; text-align: center; gap: 6px; flex: 1; }
     .modal-step .step-label { font-size: 11px; }
     .modal-field-row { grid-template-columns: 1fr; gap: 0; }
 
-    /* The eyebrow pill is the only content that reaches the panel's top-right
-       corner, where .modal-close sits (32px wide, inset 18px). The max-width
-       that keeps it clear of the X lives on the base rule now (applies at
-       every width, not just here) — this breakpoint just buys back some
-       density on small screens with smaller type once it wraps. */
+    /* Smaller eyebrow type on small screens, where it is likelier to wrap. */
     .case-modal-eyebrow,
     .service-modal-eyebrow {
       font-size: 10.5px;
@@ -3319,12 +3240,11 @@
     .hero-bottom p { font-size: 17px; }
   }
 
-  /* ---------- Standalone content pages (case studies / blog / legal) ----------
-     Generated by generate-static-pages.js so each has a real, crawlable URL —
-     see CLAUDE.md. They reuse the homepage nav/footer chrome and the modals'
-     own content classes (.case-modal-*, .service-modal-*, .blog-full-text)
-     directly, since those are already theme-aware (rgba(var(--ink-rgb),...)),
-     not tied to sitting inside a dark .modal-panel specifically. */
+  /* ---------- Standalone pages (case studies, legal, listings, 404, /contact) ----------
+     Each has a real, crawlable URL. They reuse the home page's nav/footer
+     chrome and the content classes named for the old dialogs
+     (.case-modal-*, .service-modal-*), which are theme-aware
+     (rgba(var(--ink-rgb), ...)). */
 
   /* .logo / .theme-toggle / .nav-toggle hardcode white because on the homepage
      nav always sits on .hero's dark photo background regardless of theme.
@@ -3352,13 +3272,8 @@
     padding: var(--section-y) var(--gutter);
   }
 
-  /* The page title is an <h1> here (these are real standalone pages, unlike
-     the modals where the same content sits under the homepage's own h1).
-     Without this rule it fell back to the browser default h2/h1 styling —
-     wrong size, no bottom margin — since every other heading rule on the
-     site is scoped to a specific section (.blog h2, .cases h2, ...) and
-     none of them match inside .detail-page. Sized a step above the modal's
-     26px because it's a page title rather than a panel title. */
+  /* The page title, at page-title scale (the hero's 42-92px h1 rule does
+     not reach it). */
   .detail-page h1 {
     font-size: clamp(26px, 3.4vw, 34px);
     line-height: 1.18;
@@ -3410,7 +3325,6 @@
   .accred-page-visual img { max-width: 100%; max-height: 96px; width: auto; height: auto; }
   .accred-page-visual.on-dark-plate { padding: 14px 18px; }
   .page-case-list { margin-top: 8px; }
-  .page-case-list .case-index-item { text-decoration: none; }
   @media (max-width: 560px) {
     .team-page-item, .accred-page-item { flex-direction: column; gap: 16px; }
   }
@@ -3432,15 +3346,13 @@
 
   /* ---------- /contact (11 Sep 2026) ----------
      The form's panel, in the flow: two columns, steps and success state
-     (.modal-panel and the .modal-* rules, named from the dialog it was until
-     18 Sep 2026), minus the dialog's constraints. Wider than .detail-page
+     (.modal-panel and the .modal-* rules above). Wider than .detail-page
      because the panel is two columns. */
   .contact-page { max-width: 960px; margin: 0 auto; padding: var(--section-y) var(--gutter); }
   .contact-page .detail-back { margin-bottom: 22px; }
-  .modal-panel.contact-panel { transform: none; max-height: none; overflow: visible; max-width: none; }
   .contact-panel .modal-aside h1 { font-size: 26px; }
   @media (max-width: 760px) {
-    .modal-panel.contact-panel { flex-direction: column; max-height: none; overflow: visible; }
+    .modal-panel { flex-direction: column; }
     .contact-panel .modal-aside { flex: 0 0 auto; }
   }
   /* Real links that used to be buttons (11 Sep 2026): no underline. */

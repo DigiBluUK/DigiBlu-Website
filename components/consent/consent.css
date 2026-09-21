@@ -40,18 +40,34 @@
   --cc-footer-border-color: var(--hairline);
   --cc-webkit-scrollbar-bg: rgba(var(--ink-rgb), 0.06);
   --cc-webkit-scrollbar-hover-bg: rgba(var(--ink-rgb), 0.16);
-  color-scheme: light dark;
+}
+
+/* The library zeroes the transition under reduced motion, but the value
+   above loads after its stylesheet and would win, so restate it here. */
+@media (prefers-reduced-motion: reduce) {
+  #cc-main {
+    --cc-modal-transition-duration: 0s;
+  }
 }
 
 /* The primary buttons carry the brand sweep like every other primary fill
-   on the site; white text on it clears AA at button size. */
-#cc-main .cm__btn--primary,
-#cc-main .pm__btn--primary {
+   on the site; white text on it clears AA at button size. The library marks
+   only its secondary buttons (and the banner's close button), so primaries
+   are the plain .cm__btn / .pm__btn. border: 0, not a transparent border,
+   which would show the gradient as a ring; the padding takes back the 1px
+   the border had, so the buttons keep their size. */
+#cc-main .cm__btn:not(.cm__btn--secondary):not(.cm__btn--close) {
   background: var(--brand-fill);
-  border-color: transparent;
+  border: 0;
+  padding: 7px 13px;
 }
-#cc-main .cm__btn--primary:hover,
-#cc-main .pm__btn--primary:hover {
+#cc-main .pm__btn:not(.pm__btn--secondary) {
+  background: var(--brand-fill);
+  border: 0;
+  padding: calc(0.5em + 1px) calc(1.5em + 1px);
+}
+#cc-main .cm__btn:not(.cm__btn--secondary):not(.cm__btn--close):hover,
+#cc-main .pm__btn:not(.pm__btn--secondary):hover {
   background: var(--brand-fill);
   filter: brightness(1.12);
 }
@@ -108,10 +124,9 @@
   padding: 6px 0 8px;
   font-size: 12px;
 }
+/* On a phone the library itself sets .cm to max-width: none !important, so
+   the banner spans the width without a rule here. */
 @media (max-width: 640px) {
-  #cc-main .cm {
-    max-width: none;
-  }
   /* The library stacks every button on a phone, with !important; Accept all
      and Reject optional stay side by side here too (about 40px shorter),
      Manage preferences under them. Equal widths keep them equal weight. */
