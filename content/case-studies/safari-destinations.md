@@ -15,7 +15,9 @@ stats:
     l: "Processes digitised and automated"
   - v: "Ongoing"
     l: "Managed service and improvement"
-quote: null
+quote:
+  text: "“DigiBlu is grateful to Safari Destinations as a trusted transformation partner to work alongside their teams in reshaping how AI and Automation technologies can enable smarter, more efficient ways of working.”"
+  cite: "Dave van der Westhuizen, Senior Engagement Lead - DigiBlu"
 ---
 
 ## Overview
