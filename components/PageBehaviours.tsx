@@ -1,8 +1,8 @@
 import NavChrome from "@/components/behaviours/NavChrome";
 
-// The standalone routes (case studies, legal) carry only the nav chrome:
-// theme toggles, the mobile menu and the scrolled glass. No dialogs live
-// there, so nothing else mounts.
+// Every page but home carries only the nav chrome: the theme toggles, the
+// mobile menu, the scrolled glass and the scroll-to-top disc. The contact
+// page mounts its form's scripts itself.
 export default function PageBehaviours() {
   return <NavChrome />;
 }

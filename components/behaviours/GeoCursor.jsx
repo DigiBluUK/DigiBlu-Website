@@ -48,8 +48,16 @@ export default function GeoCursor() {
       var px = 0, py = 0, active = false, queued = false;
 
       function apply() {
-        if (fig.classList.contains('is-lowend')) { queued = false; return; }
         queued = false;
+        // Hand edit (21 Sep 2026): the frame-time probe can mark the figure
+        // low-end while the pointer is over it; clear any dots already moved
+        // before standing down, or they keep that transform for good.
+        if (fig.classList.contains('is-lowend')) {
+          for (var j = 0; j < dash.length; j++) {
+            if (dash[j].set) { dash[j].el.style.transform = ''; dash[j].set = false; }
+          }
+          return;
+        }
         for (var i = 0; i < dash.length; i++) {
           var d = dash[i];
           if (!active) {

@@ -8,12 +8,9 @@ import Footer from "@/components/Footer";
 import ScrollTop from "@/components/ScrollTop";
 import PageBehaviours from "@/components/PageBehaviours";
 
-// The index of every case study as a page (11 Sep 2026). Each case study
-// had its own page already; the list of them existed only inside the
-// reader dialog, filled by script, so a crawler on the home page found the
-// three featured links and nothing else. The home page's "View all" links
-// here and still opens the reader on a plain click. The rows are the
-// reader's own row style, as real links.
+// The index of every case study (11 Sep 2026). The home page's "View all"
+// links here. The rows keep the style of the reader dialog they came from,
+// removed on 18 Sep 2026.
 const TITLE = "Case Studies | DigiBlu";
 const DESCRIPTION =
   "Ten client engagements where DigiBlu's work made a measurable difference, across energy, healthcare, travel, manufacturing, finance and the public sector.";
@@ -73,7 +70,7 @@ export default function CaseStudiesIndexPage() {
           </div>
         </div>
       </main>
-      <Footer standalone />
+      <Footer />
       <ScrollTop />
       <PageBehaviours />
     </>

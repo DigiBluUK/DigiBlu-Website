@@ -1,5 +1,10 @@
+import { getCaseStudies } from "@/lib/content";
+
 // Generated from index.html by scripts/html-to-jsx.cjs; hand-fixes are
-// allowed after generation, so do not regenerate over a tuned file.
+// allowed after generation, so do not regenerate over a tuned file. The
+// three cards are authored here (their tags and blurbs are not in the
+// content); pages.test.cjs checks they are the content's featured three, in
+// order. The count is the content's, so a new case study updates it.
 export default function CaseStudies() {
   return (
     <>
@@ -82,7 +87,7 @@ export default function CaseStudies() {
                  dialog it used to open was removed on 18 Sep 2026. */}
             <a href="/case-studies" className="case-viewall-btn">
               View all case studies
-              <span className="case-count">(10)</span>
+              <span className="case-count">{`(${getCaseStudies().length})`}</span>
             </a>
           </div>
           </div>

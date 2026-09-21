@@ -1,6 +1,6 @@
 // Folds content/**/*.md into one JSON module, content/.generated/content.json,
 // that lib/content.ts imports. The markdown stays the source of truth; this
-// runs before every build and test (npm run content) so the loaders never
+// runs before every build and test (pnpm content) so the loaders never
 // touch the disk at request time - the Cloudflare Worker has no disk, and a
 // route rendered on demand there died with readdir ENOENT while the loaders
 // read the folder with fs.

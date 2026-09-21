@@ -1,5 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const { buildContent } = require("./build-content.cjs");
 
 // The content module lib/content.ts imports is built by build-content.cjs;
@@ -37,6 +39,34 @@ test("legal: six by slug, sub-clauses on their own lines, no autolinks", () => {
   assert.ok(privacy.sections.some((s) => s.heading === "12. Cookies and Similar Storage" && s.html.includes("how many send an enquiry") && s.html.includes("never what you wrote")));
   assert.ok(privacy.sections.some((s) => s.html.includes("<br>")), "a numbered point should keep its line breaks");
   assert.ok(!privacy.sections.some((s) => s.html.includes("mailto:")), "an email address stays plain text");
+});
+
+// No em dashes anywhere in the copy (21 Sep 2026): the site uses a spaced
+// hyphen. Checks the built content, so every field of every document counts.
+test("content: no em dashes", () => {
+  const all = JSON.stringify(buildContent());
+  assert.ok(!all.includes(String.fromCharCode(0x2014)) && !all.includes("&mdash;"), "em dash in content");
+});
+
+// The old site's addresses, to be uploaded as a Cloudflare Bulk Redirects
+// list at the DNS switch: every row well formed, every target a page this
+// site serves, every anchor one the page carries (21 Sep 2026).
+test("redirects: every target is a page this site serves", () => {
+  const c = buildContent();
+  const rows = fs.readFileSync(path.join(__dirname, "..", "docs", "redirects", "old-site-redirects.csv"), "utf8").trim().split(/\r?\n/);
+  assert.equal(rows[0], "source_url,target_url,status,preserve_query_string,include_subdomains,subpath_matching,preserve_path_suffix");
+  const keys = (list) => new Set(list.map((x) => x.key));
+  const anchors = { "/services": keys(c.services), "/team": keys(c.team), "/accreditations": keys(c.accreditations), "/": new Set(["about", "case-studies", "services", "team", "hero-content"]) };
+  const pages = new Set(["/", "/services", "/team", "/accreditations", "/case-studies", "/contact", ...c.caseStudies.map((x) => "/case-studies/" + x.key), ...c.legalDocs.map((d) => "/legal/" + d.slug)]);
+  for (const row of rows.slice(1)) {
+    const cols = row.split(",");
+    assert.equal(cols.length, 7, "columns: " + row);
+    assert.equal(cols[2], "301", "status: " + row);
+    const u = new URL(cols[1]);
+    assert.equal(u.origin, "https://digiblu.com", "origin: " + row);
+    assert.ok(pages.has(u.pathname), "page: " + row);
+    if (u.hash) assert.ok(anchors[u.pathname] && anchors[u.pathname].has(u.hash.slice(1)), "anchor: " + row);
+  }
 });
 
 test("services, team, accreditations", () => {

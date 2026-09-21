@@ -25,7 +25,7 @@ export default function PageHeader() {
           </ul>
 
           <div className="nav-right">
-            <button className="theme-toggle" id="themeToggle" aria-label="Switch to light mode">
+            <button type="button" className="theme-toggle" id="themeToggle" aria-label="Switch to light mode">
               <svg className="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
                 <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round"/>
               </svg>
@@ -35,7 +35,7 @@ export default function PageHeader() {
               </svg>
             </button>
             <a className="btn-signup" href="/contact">Get in touch</a>
-            <button className="nav-toggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
+            <button type="button" className="nav-toggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
               <svg className="icon-open" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
               </svg>
@@ -58,7 +58,7 @@ export default function PageHeader() {
                  this toggle — #themeToggle must stay unique; the script binds by
                  class, and sets the visible label to match the aria-label. */}
             <div className="mobile-menu-actions">
-              <button className="theme-toggle" aria-label="Switch to light mode">
+              <button type="button" className="theme-toggle" aria-label="Switch to light mode">
                 <svg className="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
                   <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round"/>
                 </svg>

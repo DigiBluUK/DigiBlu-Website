@@ -91,7 +91,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ key:
           )}
         </div>
       </main>
-      <Footer standalone />
+      <Footer />
       <ScrollTop />
       <PageBehaviours />
     </>

@@ -8,9 +8,9 @@ import Footer from "@/components/Footer";
 import ScrollTop from "@/components/ScrollTop";
 import PageBehaviours from "@/components/PageBehaviours";
 
-// The eight leadership bios as a page (11 Sep 2026): on the home page they
-// exist only inside the profile dialog. Real, published people, from
-// content/team/*.md; the photo classes are the strip's own.
+// The eight leadership bios (11 Sep 2026). The home page's team strip and
+// the footer's Our Experts link here (/team#key). Real, published people,
+// from content/team/*.md; the photo classes are the strip's own.
 const TITLE = "Our Experts | DigiBlu";
 const DESCRIPTION =
   "DigiBlu's leadership team: eight practitioners with client, technology and consultancy backgrounds, leading each practice area from strategy to delivery.";
@@ -69,7 +69,7 @@ export default function TeamPage() {
           </div>
         </div>
       </main>
-      <Footer standalone />
+      <Footer />
       <ScrollTop />
       <PageBehaviours />
     </>

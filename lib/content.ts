@@ -1,7 +1,7 @@
 import data from "@/content/.generated/content.json";
 
 // The authored content, from content/**/*.md by way of one JSON module that
-// scripts/build-content.cjs writes before every build and test (npm run
+// scripts/build-content.cjs writes before every build and test (pnpm
 // content). A static import rather than fs reads on purpose: the loaders
 // run wherever a page renders, and the Cloudflare Worker has no disk - an
 // on-demand render there died with readdir ENOENT when this read the folder.
@@ -43,9 +43,6 @@ export function getCaseStudies(): CaseStudy[] {
 }
 export function getCaseStudy(key: string): CaseStudy | undefined {
   return content.caseStudies.find((c) => c.key === key);
-}
-export function getFeaturedCaseStudies(): CaseStudy[] {
-  return content.caseStudies.filter((c) => c.featured > 0).sort((a, b) => a.featured - b.featured);
 }
 export function getServices(): Service[] {
   return content.services;

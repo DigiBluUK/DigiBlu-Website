@@ -1,4 +1,3 @@
-import { getTeam } from "@/lib/content";
 import NavChrome from "@/components/behaviours/NavChrome";
 import ServicesReveal from "@/components/behaviours/ServicesReveal";
 import AboutNarrative from "@/components/behaviours/AboutNarrative";
@@ -7,12 +6,11 @@ import GeoFigure from "@/components/behaviours/GeoFigure";
 import GeoCursor from "@/components/behaviours/GeoCursor";
 import TeamStrip from "@/components/behaviours/TeamStrip";
 
-// Reads the content once at build time and hands each behaviour its props.
-// Every child is a client component that renders nothing and wires the
-// server-rendered markup on mount. Only the team strip takes content (its
-// desktop card shows the bio); the content dialogs and their data went on
-// 18 Sep 2026, so the home page no longer ships every document in its
-// payload.
+// Mounts the home page's behaviours. Every child is a client component that
+// renders nothing and wires the server-rendered markup on mount; none takes
+// content any more (the dialogs went on 18 Sep 2026, and the team strip's
+// bios are server-rendered since 21 Sep 2026), so the home page ships no
+// document text in its payload.
 export default function HomeBehaviours() {
   return (
     <>
@@ -22,7 +20,7 @@ export default function HomeBehaviours() {
       <Values />
       <GeoFigure />
       <GeoCursor />
-      <TeamStrip team={getTeam().map(({ key, html }) => ({ key, html }))} />
+      <TeamStrip />
     </>
   );
 }

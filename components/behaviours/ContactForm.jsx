@@ -199,7 +199,10 @@ export default function ContactForm({ turnstileSiteKey, rootId = 'contactPage' }
           .then(function (res) {
             if (res.ok) {
               panel.classList.add('sent');
-              doneBtn.focus();
+              // The heading, not Done (21 Sep 2026): focusing the button
+              // straight after the role="status" block appears talks over it.
+              var sentTitle = overlay.querySelector('#cf-sent-title');
+              (sentTitle || doneBtn).focus();
               trackEvent('generate_lead', { lead_source: 'contact_form' });
             }
             else { showError(res.error || fallback); resetTurnstile(); }

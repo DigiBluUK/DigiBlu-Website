@@ -7,7 +7,7 @@ import { once } from "@/lib/client/once";
 // mount against the server-rendered markup. Kept as JavaScript on purpose -
 // this is the old site's code, not a rewrite. Hand edits after generation
 // are allowed and are noted in the file where made.
-export default function TeamStrip({ team }) {
+export default function TeamStrip() {
   useEffect(() => {
     once("team-strip", () => {
       var slices = document.querySelectorAll('.team-slice');
@@ -29,22 +29,16 @@ export default function TeamStrip({ team }) {
         });
       }
 
-      // Name, role and photo are all real and published on
-      // digiblu.com/about-digiblu. That page carries nothing beyond name and
-      // title, so the bios were placeholders until DigiBlu supplied this copy
-      // (feedback #11) - it is theirs verbatim, not written here. Three role
-      // titles changed with it and the strip labels were updated to match.
-      // Content from props (content/team/*.md), in the script's own shape.
-      var TEAM_MEMBERS = team;
-      function unwrap(html) { return String(html).replace(/^<p>([\s\S]*)<\/p>$/, '$1'); }
 
 
       // Hand edit (18 Sep 2026): the profile dialog is gone - content lives
       // on its page only - so opening a profile goes to that member's entry
       // on /team, anchored by the key the page uses for its ids.
+      // Hand edit (21 Sep 2026): the key comes from the slice itself
+      // (data-key, rendered from content/team), not a parallel array.
       function openProfile(i) {
-        var m = TEAM_MEMBERS[i];
-        if (m && m.key) window.location.assign('/team#' + m.key);
+        var key = slices[i] && slices[i].getAttribute('data-key');
+        if (key) window.location.assign('/team#' + key);
       }
 
       // Below 760px the strip is a stacked list with every name already
@@ -56,20 +50,8 @@ export default function TeamStrip({ team }) {
       // the profile.
       var stacked = window.matchMedia('(max-width: 760px)');
 
-      // The desktop card shows the bio beside the photo (see .team-slice-bio).
-      // Injected here rather than authored in the markup, so the bios stay in
-      // TEAM_MEMBERS, the one place they are written - the dialog reads the
-      // same array, so the two can never disagree. A span, not a <p>: the
-      // slice is a <button>, which allows phrasing content only.
-      slices.forEach(function (el, i) {
-        var m = TEAM_MEMBERS[i];
-        var label = el.querySelector('.team-slice-label');
-        if (!m || !label || label.querySelector('.team-slice-bio')) return;
-        var bio = document.createElement('span');
-        bio.className = 'team-slice-bio';
-        bio.innerHTML = unwrap(m.html);
-        label.appendChild(bio);
-      });
+      // The desktop card's bio is server-rendered since 21 Sep 2026
+      // (components/sections/Team.tsx); it used to be injected here.
 
       slices.forEach(function (el, i) {
         el.addEventListener('click', function () {

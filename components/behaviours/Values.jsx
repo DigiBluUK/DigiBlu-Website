@@ -57,8 +57,11 @@ export default function Values() {
           // scroll event flipped 03/04/05 on and off, which is the "revealing
           // out of order" a phone showed. A boolean is a real force argument.
           item.classList.toggle('is-revealed', !!(i <= n || (keep && item.classList.contains('is-revealed'))));
+          // Hand edit (21 Sep 2026): aria-expanded says whether the copy is
+          // on screen, which on a phone is every revealed value (not only
+          // the open one) and on desktop is all five.
           var b = item.querySelector('.value-open');
-          if (b) b.setAttribute('aria-expanded', String(on));
+          if (b) b.setAttribute('aria-expanded', String(isDesktop() || item.classList.contains('is-revealed')));
         });
       }
 
@@ -81,9 +84,13 @@ export default function Values() {
 
       if (reduce || !list) {
         // Nothing may be reachable only through a gesture that never happens,
-        // so reveal the lot and open the first.
+        // so reveal the lot and open the first. Hand edit (21 Sep 2026):
+        // setOpen(0, true), not setOpen(0) - without keep it took the reveal
+        // straight back off 02 to 05, leaving a phone with one value showing;
+        // and on desktop the grid shows all five, so they are all open.
+        if (isDesktop()) { openAll(); return; }
         items.forEach(function (item) { item.classList.add('is-revealed'); });
-        setOpen(0);
+        setOpen(0, true);
         return;
       }
 

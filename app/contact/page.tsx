@@ -10,10 +10,9 @@ import PageBehaviours from "@/components/PageBehaviours";
 import PhoneDigits from "@/components/behaviours/PhoneDigits";
 import ContactForm from "@/components/behaviours/ContactForm";
 
-// The contact form as a page (11 Sep 2026, the developer's review): the
-// same markup and script as the home page's dialog, in a panel in the
-// flow rather than an overlay. Every "Get in touch" and "Contact Us" is a
-// real link here; on the home page a plain click still opens the dialog.
+// The contact form's page (11 Sep 2026), and its only home since the home
+// page's dialog went on 18 Sep 2026: every "Get in touch" and "Contact Us"
+// links here.
 const TITLE = "Get in touch | DigiBlu";
 const DESCRIPTION = "Tell DigiBlu about your project or question and a member of the team will be in touch. Two quick steps: your details, then your enquiry.";
 const URL = `${SITE_ORIGIN}/contact`;
@@ -44,14 +43,14 @@ export default function ContactPage() {
       <main>
         <div className="contact-page" id="detail-content">
           <BackLink />
-          {/* .modal-panel for the dialog's two-column layout and success
-               state; .contact-panel lifts it out of the overlay's constraints. */}
+          {/* .modal-panel gives the two-column layout and the success state
+               (the class names are from when this was a dialog). */}
           <div className="modal-panel contact-panel" id="contactPage">
             <ContactFormBody />
           </div>
         </div>
       </main>
-      <Footer standalone />
+      <Footer />
       <ScrollTop />
       <PageBehaviours />
       <PhoneDigits />

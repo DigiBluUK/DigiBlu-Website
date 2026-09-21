@@ -26,7 +26,7 @@ export default function NotFound() {
           </p>
         </div>
       </main>
-      <Footer standalone />
+      <Footer />
       <ScrollTop />
       <PageBehaviours />
     </>

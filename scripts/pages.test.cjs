@@ -5,7 +5,9 @@ const path = require("node:path");
 
 // Runs against the prerendered output of `next build` (.next/server/app):
 // what a crawler, a share preview and a visitor without JavaScript get.
-// `npm run test:pages`, after `npm run build`; CI runs it after the build.
+// `pnpm test:pages`, after `pnpm build`. There is no CI: run it before a
+// release. Note it checks the Next build, not the vinext bundle Cloudflare
+// deploys; check behaviour in the digiblu-vinext launch config.
 // Added 11 Sep 2026 with the listing pages, after the developer's review
 // found dialog-only content and a dead host in the metadata.
 const APP = path.join(__dirname, "..", ".next", "server", "app");
@@ -31,7 +33,7 @@ const pages = [
 ];
 
 test("a build exists", () => {
-  assert.ok(fs.existsSync(path.join(APP, "index.html")), "run npm run build first");
+  assert.ok(fs.existsSync(path.join(APP, "index.html")), "run pnpm build first");
 });
 
 test("every page: unique title, description, canonical on the origin, share card that exists, no dead host", () => {
@@ -55,7 +57,7 @@ test("every page: unique title, description, canonical on the origin, share card
   }
 });
 
-test("the listing pages carry the content the dialogs show", () => {
+test("the listing pages carry every service, bio, accreditation and case study", () => {
   const first = (x) => text(x).trim().slice(0, 40);
   const s = text(html("/services"));
   for (const x of c.services) {
@@ -115,6 +117,39 @@ test("the home page has no dialogs and carries no document content", () => {
     assert.ok(p, label + ": no probe");
     assert.ok(!h.includes(p), label + ": on the home page (" + p + ")");
   }
+});
+
+// 21 Sep 2026: every page has the fixed nav and the scroll-to-top disc; the
+// listing pages answer every anchor the home page, the footer and the
+// redirect list link to; the home page's featured cards are the content's
+// featured three, in order, and its count is the content's; the team strip
+// is rendered from the content, in order.
+test("every page has the fixed nav and the scroll-to-top disc", () => {
+  for (const p of pages) {
+    const h = html(p);
+    assert.ok(h.includes('id="siteNav"'), p + ": #siteNav");
+    assert.ok(h.includes('id="scrollTopBtn"'), p + ": #scrollTopBtn");
+  }
+});
+
+test("the listing pages carry an anchor for every key", () => {
+  const ids = (h) => new Set([...h.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
+  const s = ids(html("/services"));
+  for (const x of c.services) assert.ok(s.has(x.key), "/services#" + x.key);
+  const t = ids(html("/team"));
+  for (const m of c.team) assert.ok(t.has(m.key), "/team#" + m.key);
+  const a = ids(html("/accreditations"));
+  for (const x of c.accreditations) assert.ok(a.has(x.key), "/accreditations#" + x.key);
+});
+
+test("the home page: featured cards, case study count and team strip match the content", () => {
+  const h = html("/");
+  const featured = c.caseStudies.filter((x) => x.featured > 0).sort((a, b) => a.featured - b.featured).map((x) => x.key);
+  const cards = [...h.matchAll(/href="\/case-studies\/([^"#]+)" class="case-read-more"/g)].map((m) => m[1]);
+  assert.deepEqual(cards, featured, "featured cards");
+  assert.ok(h.includes('<span class="case-count">(' + c.caseStudies.length + ")</span>"), "View all count");
+  const strip = [...h.matchAll(/data-key="([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(strip, [...c.team].sort((a, b) => a.order - b.order).map((m) => m.key), "team strip order");
 });
 
 test("sitemap lists every page", () => {

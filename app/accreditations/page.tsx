@@ -8,9 +8,8 @@ import Footer from "@/components/Footer";
 import ScrollTop from "@/components/ScrollTop";
 import PageBehaviours from "@/components/PageBehaviours";
 
-// The six certifications with their descriptions and marks as a page
-// (11 Sep 2026): on the home page they exist only inside the badge dialog
-// the strip's chips open. The chips link here (/accreditations#key).
+// The six certifications with their descriptions and marks (11 Sep 2026).
+// The home page's chips link here (/accreditations#key).
 const TITLE = "Accreditations and Certifications | DigiBlu";
 const DESCRIPTION =
   "The six certifications DigiBlu holds and what each means: ISO 9001, 14001, 27001 and 42001, Cyber Essentials Plus, and UK Government G-Cloud approved supplier.";
@@ -66,7 +65,7 @@ export default function AccreditationsPage() {
           </div>
         </div>
       </main>
-      <Footer standalone />
+      <Footer />
       <ScrollTop />
       <PageBehaviours />
     </>

@@ -68,7 +68,7 @@ export default async function LegalPage({ params }: { params: Promise<{ slug: st
           </div>
         </div>
       </main>
-      <Footer standalone />
+      <Footer />
       <ScrollTop />
       <PageBehaviours />
     </>

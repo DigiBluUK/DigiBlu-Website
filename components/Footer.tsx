@@ -1,9 +1,6 @@
 import CookieSettingsLink from "@/components/consent/CookieSettingsLink";
 // Generated from index.html by scripts/html-to-jsx.cjs; hand-fixes are
 // allowed after generation, so do not regenerate over a tuned file.
-// standalone: on the case-study and legal pages, where the home page's
-// dialogs do not exist, the six services and Contact Us are links back to
-// the home page - exactly what generate-static-pages.js rendered there.
 const SERVICES: [string, string][] = [
   ["ai", "Artificial Intelligence"],
   ["discovery", "Opportunity Discovery"],
@@ -13,7 +10,7 @@ const SERVICES: [string, string][] = [
   ["post", "Managed Services"],
 ];
 
-export default function Footer({ standalone = false }: { standalone?: boolean }) {
+export default function Footer() {
   return (
     <>
         <footer>
@@ -31,12 +28,10 @@ export default function Footer({ standalone = false }: { standalone?: boolean })
               </div>
             </div>
 
-            {/* Every footer link now stays inside this single-page site rather than
-                 navigating to the real digiblu.com: Company links are in-page
-                 anchors matching the header nav's own section IDs, Services links
-                 open the same #serviceModal as the "Learn more" buttons on the
-                 Services cards, and Legal links open #legalModal with condensed,
-                 real policy content plus a link out to the authoritative page. */}
+            {/* Every footer link stays on this site: Company links go to the
+                 home page's sections and the team and contact pages, Services
+                 links to each service on /services, and Legal links to each
+                 document's page. The one external link is LinkedIn. */}
             <div className="footer-cols">
               <div className="footer-col">
                 <h3>Services</h3>

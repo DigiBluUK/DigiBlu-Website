@@ -93,7 +93,9 @@ export default function ContactFormBody() {
 
         <div className="modal-success" role="status">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="tickBrand" gradientUnits="userSpaceOnUse" x1="2" y1="2" x2="22" y2="22"><stop offset="0" className="gb1"/><stop offset="0.55" className="gb2"/><stop offset="1" className="gb3"/></linearGradient></defs><circle cx="12" cy="12" r="10" stroke="url(#tickBrand)" strokeWidth="1.6"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="url(#tickBrand)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          <h2>Request sent</h2>
+          {/* Focused when the send succeeds (tabIndex -1), so a screen reader
+               announces "Request sent" rather than only the Done button. */}
+          <h2 id="cf-sent-title" tabIndex={-1}>Request sent</h2>
           <p>Thanks for reaching out. A member of the DigiBlu team will be in touch shortly.</p>
           <button type="button" className="modal-done">Done</button>
         </div>

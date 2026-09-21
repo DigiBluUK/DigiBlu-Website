@@ -9,11 +9,10 @@ import Footer from "@/components/Footer";
 import ScrollTop from "@/components/ScrollTop";
 import PageBehaviours from "@/components/PageBehaviours";
 
-// Every service in full on one page (the developer's review of 11 Sep 2026:
-// the write-ups existed only inside the Learn more dialog, which nothing can
-// crawl). The home page's cards and the footer link here (/services#key),
-// and the dialog still opens on a plain click there. Numbered in card order,
-// which is the content order since the same day.
+// Every service in full on one page (11 Sep 2026), the only place the
+// write-ups live since the dialogs went on 18 Sep 2026. The home page's cards
+// and the footer link here (/services#key). Numbered in card order, which is
+// the content order.
 const TITLE = "Services | DigiBlu";
 const DESCRIPTION =
   "DigiBlu's six services: Artificial Intelligence, Opportunity Discovery, Process Excellence, Digital Solutions, Target Operating Model and Managed Services.";
@@ -74,7 +73,7 @@ export default function ServicesPage() {
           </div>
         </div>
       </main>
-      <Footer standalone />
+      <Footer />
       <ScrollTop />
       <PageBehaviours />
     </>
