@@ -30,7 +30,7 @@ Humanitarian relief centers can be hectic: high footfall, language barriers, hei
 
 ## What we did
 
-We launched a HIPAA-compliant form at short notice so support staff could capture intake information on tablets. Two-way integration with the core database ensured data was captured against the correct individual and made its way onto their record. Given the volume of arrivals and the range of complex needs, the form was integrated with a PowerBI dashboard so management could see, in real time, whether enough support was available.
+We launched a HIPAA-compliant form at short notice so support staff could capture intake information on tablets. Two-way integration with the core database ensured data was captured against the correct individual and made its way onto their record. Given the volume of arrivals and the range of complex needs, the form was integrated with a Power BI dashboard so management could see, in real time, whether enough support was available.
 
 ## Outcome
 

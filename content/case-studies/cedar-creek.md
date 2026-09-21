@@ -30,7 +30,7 @@ Several processes relied on paper, spreadsheets and other manual methods, so inf
 
 ## What we did
 
-We ran process workshops with the church’s stakeholders to validate requirements and agree the best future process for each type of request, confirming Jotform was well suited. We then designed and configured six Jotform solutions - payment requests, expense pre-approvals, facilities improvements, room and event requests and maintenance work orders - with validation, conditional logic, automated notifications and approval workflows, plus integrations for calendar scheduling and collaboration. Designed, tested and launched within three weeks, with documentation and training so the team can manage the forms independently.
+We ran process workshops with the church’s stakeholders to validate requirements and agree the best future process for each type of request, confirming Jotform was well suited. We then designed and configured six Jotform solutions - payment requests, expense pre-approvals, facilities improvements, room requests, event requests and maintenance work orders - with validation, conditional logic, automated notifications and approval workflows, plus integrations for calendar scheduling and collaboration. Designed, tested and launched within three weeks, with documentation and training so the team can manage the forms independently.
 
 ## Outcome
 

@@ -30,7 +30,7 @@ In an industry already stretched for resources, candidate onboarding had become 
 
 ## What we did
 
-We combined Jotform automation with Robotic Process Automation. Status-driven forms trigger automatically at each onboarding step, cutting manual handovers and errors. Real-time validation lets candidates submit complete, accurate information first time. Bots update business systems with candidate details, documents and background checks, handle NMC and DBS checks and schedule virtual interviews. Custom dashboards pull form data into a warehouse and feed PowerBI for live leadership insight.
+We combined Jotform automation with Robotic Process Automation. Status-driven forms trigger automatically at each onboarding step, cutting manual handovers and errors. Real-time validation lets candidates submit complete, accurate information first time. Bots update business systems with candidate details, documents and background checks, handle NMC and DBS checks and schedule virtual interviews. Custom dashboards pull form data into a warehouse and feed Power BI for live leadership insight.
 
 ## Outcome
 
