@@ -14,7 +14,7 @@ export default function CaseStudies() {
           <h2>Where our work<br />has made a difference</h2>
 
           {/* Real client engagements, sourced from digiblu.com/case-studies. The
-               three shown here are the featured set; the full ten are on
+               three shown here are the featured set; the full list is on
                /case-studies, which "View all" links to. */}
 
           <div className="case-list">
@@ -63,18 +63,18 @@ export default function CaseStudies() {
             <article className="case">
               <div className="case-grid">
                 <div>
-                <span className="case-client">Mobility equipment manufacturer</span>
-                <h3 className="case-headline">Automating supplier quote processing with Generative AI</h3>
+                <span className="case-client">AssuranceSD</span>
+                <h3 className="case-headline">Transforming FMS services with digital onboarding</h3>
                 </div>
                 <div>
-                  <p className="case-body">Supplier quotations arrive in every format, and each one had to be read, matched against the original specification and resolved by hand. We combined Generative AI, document processing and workflow automation so routine cases resolve themselves within defined business rules, with exceptions routed to a purpose-built reconciliation app for human review.</p>
+                  <p className="case-body">Applying for government funding ran on paper, and it was hardest on the elderly and disabled applicants it exists to help. We built a secure web application with Jotform forms and e-signatures, so applications are completed and signed online with fewer errors and faster approvals.</p>
                   <div className="case-tags">
-                    <span className="case-tag">AI-powered quote processing</span>
-                    <span className="case-tag">End-to-end automation</span>
-                    <span className="case-tag">Human-in-the-loop exceptions</span>
+                    <span className="case-tag">Paper-free applications</span>
+                    <span className="case-tag">Fewer errors and resubmissions</span>
+                    <span className="case-tag">Multi-state US coverage</span>
                   </div>
-                  <a href="/case-studies/quote-processing" className="case-read-more">
-                    Read more<span className="sr-only">: automating supplier quote processing with Generative AI</span>
+                  <a href="/case-studies/assurancesd" className="case-read-more">
+                    Read more<span className="sr-only">: transforming FMS services with digital onboarding</span>
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </a>
                 </div>

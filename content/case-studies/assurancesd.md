@@ -5,7 +5,7 @@ sector: "Financial Management Services"
 service: "Digital Solutions"
 title: "Transforming FMS services with digital onboarding"
 order: 3
-featured: 0
+featured: 3
 photo: "/assets/case-studies/assurancesd.jpg"
 ogImage: "/assets/og/case-studies/assurancesd.jpg"
 stats:

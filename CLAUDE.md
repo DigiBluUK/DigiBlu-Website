@@ -31,7 +31,7 @@ Browser pane launch configs (`.claude/launch.json`): `digiblu-next` (`next dev`,
 |---|---|
 | `app/` | Routes: home, `/services`, `/team`, `/accreditations`, `/case-studies` and `/case-studies/[key]`, `/legal/[slug]`, `/contact`, `/api/contact` (the one dynamic route), `not-found`, `sitemap`, `robots`. `app/globals.css` is the whole stylesheet. |
 | `components/` | Server components for the markup (`sections/`, footer, page chrome, the contact form's body); `behaviours/*.jsx` are the ported scripts, mounted by `HomeBehaviours.tsx` and `PageBehaviours.tsx`. |
-| `content/` | **The source of truth for copy**: `case-studies/` (10), `services/` (6), `legal/` (6), `team/` (8), `accreditations/` (6), `lattice.json` (the About figure). |
+| `content/` | **The source of truth for copy**: `case-studies/` (9), `services/` (6), `legal/` (6), `team/` (8), `accreditations/` (6), `lattice.json` (the About figure). |
 | `lib/` | `site.ts` (origin), `content.ts` (typed loaders), `contact/` (validate, Turnstile, send), `consent/`, `client/` (`once.ts`, the About pin). |
 | `public/assets/` | Everything the pages reference. Edit and add files here directly. |
 | `source/` | Not served: the supplied team photographs the headshots were made from, and `hero.jpg` / `footer-bg.jpg`, the rasters the hero and case-study art were traced from (the share cards were built from `hero.jpg`). |
@@ -54,7 +54,7 @@ Browser pane launch configs (`.claude/launch.json`): `digiblu-next` (`next dev`,
 - No fabricated people, quotes, figures or clients. Real, published names are fine.
 - Real links only.
 - Third-party article content is condensed, never copied. Legal text is verbatim and complete; a gap in DigiBlu's own source is noted, never filled. Sections 12 and 13 of the Privacy and Cookies Policy are ours (approved by DigiBlu): keep them true.
-- Anonymised clients stay anonymous: the healthcare workforce provider, the US city agency and the mobility equipment manufacturer. **The GitHub repository is public**, so this covers every file, notes and commit messages included: never write their real names, or anything that links one to its case study. (The home page's client logo strip may show clients by name; it never ties one to a case study.)
+- Anonymised clients stay anonymous: the healthcare workforce provider and the US city agency (and the mobility equipment manufacturer, whose case study was removed on 23 Sep 2026; if it returns, it stays anonymised). **The GitHub repository is public**, so this covers every file, notes and commit messages included: never write their real names, or anything that links one to its case study. (The home page's client logo strip may show clients by name; it never ties one to a case study.)
 - Photography must be licensed for commercial use without attribution, and must carry no other organisation's branding. Look at a candidate before proposing it; alt text is not a branding check.
 
 **Design** (`BRAND.md` has the system)
@@ -71,14 +71,14 @@ Browser pane launch configs (`.claude/launch.json`): `digiblu-next` (`next dev`,
 - Assert the absence of broken references rather than counting successes.
 - Baseline to keep: no contrast failures in either theme, no horizontal overflow from 320 to 1895px, tap targets at least 24px, every control usable from the keyboard.
 
-## Open items (21 Sep 2026)
+## Open items (23 Sep 2026)
 
 - The Privacy and Cookies Policy names Microsoft (Azure Communication Services) as the service that emails enquiries to DigiBlu: on `dev` in section 12, dated 18 September 2026, awaiting DigiBlu's approval with the rest of that paragraph (the Turnstile part is unapproved too), and so is the Google Analytics line on counting enquiries. Section 15 (DigiBlu's text) still says the websites are hosted in the UK, which is no longer accurate on Cloudflare Workers: DigiBlu's to change.
-- The quote-processing case study's quote is the brief's example, attributed to Tim Sunley: unconfirmed.
+- The quote-processing case study was removed on 23 Sep 2026 (not approved by the client) and AssuranceSD is featured third again. Its markdown, photo and share card are in git history if it is approved later.
 - For DigiBlu to decide (21 Sep 2026 review): two published quote credits differ from the team page (healthcare: "Dave Van der Westhuizen, Lead Consultant"; Old Mutual: "Jonathan Hinder, COO"); Special Olympics' stat reads "17,500" where the text says "more than 17,500"; "Northwest University" may officially be North-West University; the Carbon Reduction Plan (their text) gives net zero by 2050 and by the end of 2030, and 33.71 against 33.6 tCO2e.
-- For Radu: where the ACS resource keeps its data (for the policy); `waitUntil` stops 30s after the response, so a slow send's outcome can go unlogged; whether to pin pnpm with a `packageManager` field (Workers Builds picks its own version). `react-server-dom-webpack` was pinned to 19.2.8 on 21 Sep 2026 to match React (it had resolved to 19.3.0, which requires React 19.3).
+- For Radu: `waitUntil` stops 30s after the response, so a slow send's outcome can go unlogged; whether to pin pnpm with a `packageManager` field (Workers Builds picks its own version); he wants a failed send's contact details in the logs so someone can follow up, which the current logging does not capture (tested 21 Sep 2026) - his change, and the privacy policy needs a line when he makes it. ACS stores nothing (Radu, 21 Sep 2026: a pass-through gateway in DigiBlu's Azure tenant), so the policy needs no data-location line. `react-server-dom-webpack` was pinned to 19.2.8 on 21 Sep 2026 to match React (it had resolved to 19.3.0, which requires React 19.3).
 - The anonymised clients' real names are in the repository's history (removed from the files on 21 Sep 2026); making the repository private, or rewriting its history, is DigiBlu's call.
-- `dev` is ahead of `main`: the Safari Destinations correction and quote, contact-form spacing, pages instead of dialogs, the enquiry event, the standalone pages' nav and scroll-to-top, the compact cookie banner, the 21 Sep 2026 review fixes, and the policy lines awaiting approval. Release pending, then the DNS switch.
+- Released to `main` as v2.5.0 on 23 Sep 2026 (everything since v2.4.0: pages instead of dialogs, the Safari Destinations case study, the enquiry event, the page chrome and cookie banner, the 21 Sep 2026 review fixes, the policy lines above, and the quote-processing case study's removal). Next: the DNS switch with Radu, which DigiBlu gave the go-ahead for on 23 Sep 2026.
 - David's and Karen's headshots are old 560px crops; re-source them as cut-outs.
 - The generators for the About figure, the headshots and the share cards were one-off scripts in a session scratchpad and are not in the repo.
 

@@ -13,7 +13,7 @@ import PageBehaviours from "@/components/PageBehaviours";
 // removed on 18 Sep 2026.
 const TITLE = "Case Studies | DigiBlu";
 const DESCRIPTION =
-  "Ten client engagements where DigiBlu's work made a measurable difference, across energy, healthcare, travel, manufacturing, finance and the public sector.";
+  "Nine client engagements where DigiBlu's work made a measurable difference, across energy, healthcare, travel, education, finance and the public sector.";
 const URL = `${SITE_ORIGIN}/case-studies`;
 const OG = "/assets/og/case-studies.jpg";
 

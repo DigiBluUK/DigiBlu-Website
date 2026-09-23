@@ -31,7 +31,7 @@ For DigiBlu's sign-off before a release (fast-forwarding `main` to `dev`) and ag
 - [ ] Hero: "Applied AI, real ROI" on one line on desktop, breaking only at the comma on a phone; the framed artwork behind the nav, with lights travelling along its ridges; the paragraph and the Get in touch button at the bottom.
 - [ ] Accreditations: six certifications scroll in a single continuous line, pause on hover, and each opens its entry on the accreditations page.
 - [ ] Services: six blue cards numbered 01 to 06 animate in as the section arrives; each Learn more opens that service on the services page.
-- [ ] Case studies: three cards - SSE / OVO, Safari Destinations, and the supplier quote-processing study for the mobility equipment manufacturer - with headlines on two lines and no full stops. Read more opens each one's page; View all case studies opens the case studies page.
+- [ ] Case studies: three cards - SSE / OVO, Safari Destinations and AssuranceSD - with headlines on two lines and no full stops. Read more opens each one's page; View all case studies opens the case studies page.
 - [ ] Clients: fourteen logos scroll continuously as single-colour marks, muted at rest and full on hover, with no jump at the seam.
 - [ ] Who we are: two paragraphs light up word by word as you scroll, beside the dot-lattice figure whose "db" fills with the brand gradient mid-screen; on desktop the dots part around the cursor. Our values: all five open on desktop (3 + 2), revealed one after another on a phone.
 - [ ] Meet the leadership team: eight people. On desktop the open card shows a colour photo in a white circle with name, role and bio, and the others grey circles; clicking a closed slice opens it, clicking the open one goes to that person on the team page. On a phone: a list of eight rows, and tapping one goes to that person on the team page.
@@ -39,8 +39,8 @@ For DigiBlu's sign-off before a release (fast-forwarding `main` to `dev`) and ag
 ## The other pages
 
 - [ ] Services page: all six services in full, numbered 01 to 06, each with Discuss this service going to the contact page. An address such as `/services#discovery` lands on that service just below the nav.
-- [ ] Case studies page: all ten case studies, each linking to its own page.
-- [ ] Each of the ten case-study pages: the photograph in natural colour, three blue stat pills, Overview / The problem / What we did / Outcome, the quote, and a Back to home link.
+- [ ] Case studies page: all nine case studies, each linking to its own page.
+- [ ] Each of the nine case-study pages: the photograph in natural colour, three blue stat pills, Overview / The problem / What we did / Outcome, the quote, and a Back to home link.
 - [ ] Team page: all eight bios; each person opened from the home page's strip lands on their own bio.
 - [ ] Accreditations page: the six badges with their descriptions; the G-Cloud badge sits on a dark plate in both themes.
 - [ ] The six legal pages (Terms of Use, Privacy and Cookies Policy, Modern Slavery Policy, Carbon Reduction Plan, Armed Forces Covenant, Accessibility Statement): the full text, with "Last updated ..." ("Last signed ..." for the Covenant) under the title.
