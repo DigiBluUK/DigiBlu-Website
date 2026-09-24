@@ -55,7 +55,7 @@ needs one Bulk Redirect rule that enables the list.
 
 - `source_url` is the host and path without a scheme. `include_subdomains`
   is `true` on every row so the same rule matches `www.digiblu.com/...`
-  as well as `digiblu.com/...`; the separate www-to-apex redirect set up
+  as well as `digiblu.com/...`; the separate apex-to-www redirect set up
   with the custom domain runs first anyway.
 - `subpath_matching` is `true` on the five prefix rows
   (`/leadership-team`, `/our-projects`, `/blog`, `/post`, `/News`), which
@@ -66,9 +66,8 @@ needs one Bulk Redirect rule that enables the list.
   `/our-projects/...` rows win over the `/our-projects` prefix row.
 - `preserve_query_string` is `false` throughout; nothing on the new site
   reads a query string.
-- Targets use `https://digiblu.com`. If the live host ends up as
-  `www.digiblu.com`, replace the host in the target column before
-  uploading.
+- Targets use `https://www.digiblu.com`, the canonical host (24 Sep
+  2026: the old site is indexed under it and digiblu.com redirects there).
 
 ## Before uploading
 
@@ -77,8 +76,7 @@ The list reflects the old site's sitemaps as they stood on 10 September
 sitemaps it lists) and look for addresses added since: the prefix rows
 already catch any new `/our-projects/...`, `/leadership-team/...`,
 `/blog/...`, `/post/...` or `/News/...` address, but a new top-level page
-needs a row of its own. Then upload the file as described above, with the
-target host changed first if the live host is to be `www.digiblu.com`.
+needs a row of its own. Then upload the file as described above.
 The cut-over runbook in `docs/notes/platform.md` puts this step in order
 with the DNS switch.
 

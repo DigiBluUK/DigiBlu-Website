@@ -14,7 +14,7 @@ const APP = path.join(__dirname, "..", ".next", "server", "app");
 const PUBLIC = path.join(__dirname, "..", "public");
 const { buildContent } = require("./build-content.cjs");
 const c = buildContent();
-const ORIGIN = (process.env.SITE_ORIGIN || "https://digiblu.com").replace(/\/+$/, "");
+const ORIGIN = (process.env.SITE_ORIGIN || "https://www.digiblu.com").replace(/\/+$/, "");
 
 const html = (route) => fs.readFileSync(path.join(APP, route === "/" ? "index.html" : route.slice(1) + ".html"), "utf8");
 const text = (h) => h.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
@@ -157,4 +157,8 @@ test("sitemap lists every page", () => {
   assert.ok(p, "sitemap output");
   const xml = fs.readFileSync(p, "utf8");
   for (const page of pages) assert.ok(xml.includes(`<loc>${ORIGIN}${page === "/" ? "/" : page}</loc>`), "sitemap: " + page);
+  // Every URL has a lastmod (24 Sep 2026).
+  const urls = xml.split("<url>").slice(1);
+  assert.equal(urls.length, pages.length, "one <url> per page");
+  for (const u of urls) assert.match(u, /<lastmod>\d{4}-\d{2}-\d{2}T[^<]+<\/lastmod>/, "lastmod: " + (u.match(/<loc>([^<]+)/) || [])[1]);
 });

@@ -3,7 +3,7 @@ key: "privacy"
 slug: "privacy-policy"
 title: "Privacy and Cookies Policy"
 url: "https://www.digiblu.com/privacy-policy"
-intro: "Last updated 18 September 2026."
+intro: "Last updated 24 September 2026."
 description: "How DigiBlu UK Limited uses personal information from its website and enquiries, the cookies and browser storage the site uses, your rights and how to complain."
 order: 2
 ---
@@ -89,7 +89,7 @@ We do not disclose Your personal information to third parties except as set out 
 
 ## 15. Data May Be Processed Outside the European Union
 
-Our websites are hosted in the UK, but We may use outsourced services outside the EU or EEA in other parts of Our business, so data could be processed outside the European Union. Where this happens, We require that data processing standards meet or exceed EU/EEA requirements, and that the processor follows the same binding corporate rules on data processing.
+We may use outsourced services outside the EU or EEA in Our business, so data could be processed outside the European Union. Where this happens, We require that data processing standards meet or exceed EU/EEA requirements, and that the processor follows the same binding corporate rules on data processing.
 
 ## 16. Your Duty to Inform Us of Changes
 

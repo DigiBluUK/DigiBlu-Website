@@ -3,9 +3,11 @@
 // the production domain since 11 Sep 2026: it was the retired GitHub Pages
 // host, which put a dead address in every canonical, share card and JSON-LD
 // of any build that forgot the variable (the developer's review saw exactly
-// that). Previews are noindex, so a canonical pointing at digiblu.com from
-// a preview is correct.
-export const SITE_ORIGIN = (process.env.SITE_ORIGIN || "https://digiblu.com").replace(/\/+$/, "");
+// that). Previews are noindex, so a canonical pointing at the live host from
+// a preview is correct. www.digiblu.com since 24 Sep 2026: it is the host the
+// old site is indexed under (digiblu.com redirects to it), so keeping it
+// avoids re-indexing every page under a new host.
+export const SITE_ORIGIN = (process.env.SITE_ORIGIN || "https://www.digiblu.com").replace(/\/+$/, "");
 export const SITE_URL = SITE_ORIGIN + "/";
 export const SITE_TITLE = "DigiBlu | AI and Digital Transformation Consultancy";
 export const SITE_DESCRIPTION =

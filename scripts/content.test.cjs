@@ -28,7 +28,10 @@ test("legal: six by slug, sub-clauses on their own lines, no autolinks", () => {
   assert.equal(c.legalDocs[5].slug, "accessibility-statement");
   const privacy = c.legalDocs.find((d) => d.slug === "privacy-policy");
   assert.equal(privacy.title, "Privacy and Cookies Policy");
-  assert.equal(privacy.intro, "Last updated 18 September 2026.");
+  assert.equal(privacy.intro, "Last updated 24 September 2026.");
+  // Cloudflare serves the site from its edge worldwide, so the policy makes no
+  // claim about where it is hosted (removed from section 15, 24 Sep 2026).
+  assert.ok(!privacy.sections.some((s) => /hosted in the UK/i.test(s.html)), "no UK-hosting claim");
   assert.ok(privacy.sections.some((s) => s.heading === "12. Cookies and Similar Storage" && s.html.includes("Turnstile")));
   assert.ok(privacy.sections.some((s) => s.heading === "12. Cookies and Similar Storage" && s.html.includes("_ga_RVNLDVSLJ8")));
   // Enquiries reach DigiBlu through Azure Communication Services (18 Sep 2026);
@@ -65,10 +68,21 @@ test("redirects: every target is a page this site serves", () => {
     assert.equal(cols.length, 7, "columns: " + row);
     assert.equal(cols[2], "301", "status: " + row);
     const u = new URL(cols[1]);
-    assert.equal(u.origin, "https://digiblu.com", "origin: " + row);
+    assert.equal(u.origin, "https://www.digiblu.com", "origin: " + row);
     assert.ok(pages.has(u.pathname), "page: " + row);
     if (u.hash) assert.ok(anchors[u.pathname] && anchors[u.pathname].has(u.hash.slice(1)), "anchor: " + row);
   }
+});
+
+// Every sitemap URL has a lastmod (24 Sep 2026), from git where it can.
+test("lastmod: a valid date for every page", () => {
+  const pages = ["/", "/services", "/case-studies", "/team", "/accreditations", "/contact", ...c.caseStudies.map((x) => "/case-studies/" + x.key), ...c.legalDocs.map((d) => "/legal/" + d.slug)];
+  for (const p of pages) {
+    const v = c.lastmod[p];
+    assert.ok(v && !Number.isNaN(Date.parse(v)), "lastmod " + p);
+    assert.ok(Date.parse(v) <= Date.now() + 60000, "lastmod in the future " + p);
+  }
+  assert.equal(Object.keys(c.lastmod).length, pages.length, "no lastmod for a page that does not exist");
 });
 
 test("services, team, accreditations", () => {

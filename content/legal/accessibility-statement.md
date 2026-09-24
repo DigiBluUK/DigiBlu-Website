@@ -10,7 +10,7 @@ order: 6
 
 ## Our commitment
 
-This statement applies to the website at digiblu.com, which is run by DigiBlu UK Limited. We want as many people as possible to be able to use it. That means you should be able to read it in a light or a dark colour scheme, zoom in to 400% without text spilling off the screen, move through every page using only a keyboard, and read the content in a logical order with headings and labels in place. We also keep the language as plain as we can.
+This statement applies to the website at www.digiblu.com, which is run by DigiBlu UK Limited. We want as many people as possible to be able to use it. That means you should be able to read it in a light or a dark colour scheme, zoom in to 400% without text spilling off the screen, move through every page using only a keyboard, and read the content in a logical order with headings and labels in place. We also keep the language as plain as we can.
 
 ## How accessible this website is
 

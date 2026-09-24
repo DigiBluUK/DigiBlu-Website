@@ -34,6 +34,8 @@ type Content = {
   legalDocs: LegalDoc[];
   team: TeamMember[];
   accreditations: Accreditation[];
+  /** Page path to ISO date: the sitemap's lastmod (scripts/build-content.cjs). */
+  lastmod: Record<string, string>;
 };
 
 const content = data as Content;
@@ -43,6 +45,10 @@ export function getCaseStudies(): CaseStudy[] {
 }
 export function getCaseStudy(key: string): CaseStudy | undefined {
   return content.caseStudies.find((c) => c.key === key);
+}
+/** The sitemap's lastmod for a page path, from build-content.cjs. */
+export function getLastModified(pagePath: string): string | undefined {
+  return content.lastmod[pagePath];
 }
 export function getServices(): Service[] {
   return content.services;
