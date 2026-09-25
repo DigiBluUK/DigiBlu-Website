@@ -1,7 +1,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "digiblu-website",
+  // Runtime vars/secrets are managed in the Cloudflare dashboard, not here, so
+  // a deploy must not treat this file as the source of truth and delete them.
+  // Secrets are never deleted; this protects plain vars (CONTACT_FORM_*).
+  "keep_vars": true,
   "observability": {
+    "enabled": true,
     "logs": {
       "enabled": true,
       "invocation_logs": true
@@ -32,5 +37,21 @@
   // dashboard's Settings > Variables and Secrets. Never "vars" entries here.
   "cache": { "enabled": true },
   "version_metadata": { "binding": "CF_VERSION_METADATA" },
-  "kv_namespaces": [{ "binding": "VINEXT_KV_CACHE", "id": "d074a2179bd3434e90fde5f17b5093a3" }]
+  "kv_namespaces": [{ "binding": "VINEXT_KV_CACHE", "id": "d074a2179bd3434e90fde5f17b5093a3" }],
+  // Worker Previews (branch previews shown in the Cloudflare dashboard). At
+  // runtime the preview runs the Worker's production code, but only the
+  // bindings named here, so a preview never touches production state unless
+  // the same resource is named. `assets`, `compatibility_*` and `observability`
+  // stay at the top level and are inherited/uploaded per branch.
+  "previews": {
+    "version_metadata": { "binding": "CF_VERSION_METADATA" },
+    "kv_namespaces": [{ "binding": "VINEXT_KV_CACHE", "id": "d074a2179bd3434e90fde5f17b5093a3" }],
+    // Preview telemetry is configured independently from production so a
+    // preview's logs and traces show under its own Observability tab.
+    "observability": {
+      "enabled": true,
+      "logs": { "enabled": true, "invocation_logs": true, "persist": true },
+      "traces": { "enabled": true, "head_sampling_rate": 1, "persist": true }
+    }
+  }
 }

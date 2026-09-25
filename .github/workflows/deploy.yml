@@ -22,13 +22,26 @@ jobs:
         env:
           NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ vars.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
           NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+          NEXT_PUBLIC_ROBOTS: noindex
 
-      - name: Deploy
+      - name: Deploy preview
+        id: preview
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          pnpm exec vinext-cloudflare deploy --config dist/server/wrangler.json --skip-build
+          set -o pipefail
+          output="$(pnpm exec wrangler preview --config dist/server/wrangler.json --name dev --json)"
+          printf '%s\n' "$output"
+          preview_url="$(printf '%s' "$output" | jq -r '(.preview.urls // [])[0] // empty')"
+          if [ -n "$preview_url" ]; then
+            echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
+            {
+              echo "### Cloudflare Preview"
+              echo ""
+              echo "$preview_url"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
 
   # Prod: semantic tag e.g. v1.0.0
   production:
