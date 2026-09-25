@@ -7,9 +7,10 @@ export default function Clients() {
           <span className="pill">Clients</span>
           <h2>Trusted across sectors<br />and geographies</h2>
 
-          {/* Real client logos, reproduced from the auto-scrolling "Our Clients
-               represent multiple sectors & geographies" carousel on digiblu.com
-               (all 14 logos across its 3 slides). Rendered as single-ink masks
+          {/* Real client logos, first reproduced from the auto-scrolling "Our
+               Clients represent multiple sectors & geographies" carousel on the
+               old site. A logo appears only with the client's approval: one was
+               removed on 25 Sep 2026 for that reason. Rendered as single-ink masks
                (see .client-logo), same treatment as the Accreditations strip, and
                looped the same way: two identical groups, only the first carrying
                real accessible names. */}
@@ -19,7 +20,6 @@ export default function Clients() {
               <ul className="clients-group">
                 <li><span className="client-logo cl-equiniti" role="img" aria-label="Equiniti"></span></li>
                 <li><span className="client-logo cl-sunrise" role="img" aria-label="Sunrise Medical"></span></li>
-                <li><span className="client-logo cl-nsm" role="img" aria-label="National Seating &amp; Mobility"></span></li>
                 <li><span className="client-logo cl-acacium" role="img" aria-label="Acacium Group"></span></li>
                 <li><span className="client-logo cl-medinet" role="img" aria-label="Medinet"></span></li>
                 <li><span className="client-logo cl-edmundson" role="img" aria-label="Edmundson Electrical"></span></li>
@@ -35,7 +35,6 @@ export default function Clients() {
               <ul className="clients-group" aria-hidden="true">
                 <li><span className="client-logo cl-equiniti"></span></li>
                 <li><span className="client-logo cl-sunrise"></span></li>
-                <li><span className="client-logo cl-nsm"></span></li>
                 <li><span className="client-logo cl-acacium"></span></li>
                 <li><span className="client-logo cl-medinet"></span></li>
                 <li><span className="client-logo cl-edmundson"></span></li>

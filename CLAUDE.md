@@ -6,7 +6,7 @@ Marketing site for DigiBlu (www.digiblu.com), a UK AI and digital transformation
 
 ## Commands
 
-pnpm is the package manager. It is not installed globally here: run it as `npx -y pnpm@latest <script>`.
+pnpm is the package manager, pinned in `package.json` (`packageManager`). It is not installed globally here: run it as `npx -y pnpm@latest <script>`, which switches to the pinned version.
 
 | Command | Does |
 |---|---|
@@ -19,11 +19,14 @@ Browser pane launch configs (`.claude/launch.json`): `digiblu-next` (`next dev`,
 
 ## Environments and releases
 
-- **`dev` is UAT, `main` is production.** Work on `dev` and push to `origin dev`. A release is DigiBlu's call: fast-forward `main` to `dev`, tag, push.
-- **Cloudflare Workers Builds deploys every push** (set up by Radu, DigiBlu's developer, on 14 Sep 2026): `main` to `https://digiblu-website.radu-ghitescu.workers.dev/`, any other branch to `https://<branch>-digiblu-website.radu-ghitescu.workers.dev/` - a hyphen before `digiblu-website`, not a dot (the dotted form fails TLS). All are behind Cloudflare Access (a DigiBlu login), so they cannot be fetched from this machine; ask the user to check them.
-- **There is no CI and no test gate: a push to `main` deploys.** Run the tests before a release.
-- **Radu sometimes commits straight to `main`.** Before a release, `git log dev..origin/main`, and bring anything there into `dev` first.
-- **www.digiblu.com still points at the old Wix site** (the canonical host: digiblu.com redirects to it). The DNS switch is coordinated with Radu. Before it: confirm the production build variables, and upload `docs/redirects/old-site-redirects.csv` as a Cloudflare Bulk Redirects list.
+- **Live at https://www.digiblu.com since 25 Sep 2026.** `digiblu.com` redirects to `www`, and the old Wix addresses redirect through a Cloudflare Bulk Redirects list uploaded from `docs/redirects/old-site-redirects.csv` (both set up by Radu, DigiBlu's developer).
+- **Deploys run in GitHub Actions** (`.github/workflows/deploy.yml`, Radu's, 25 Sep 2026; Cloudflare's own builds cannot deploy on tags):
+  - a push to `main` builds with `NEXT_PUBLIC_ROBOTS=noindex` and deploys the preview, `https://dev-digiblu-website.digiblu.workers.dev/` (behind Cloudflare Access: a DigiBlu Cloudflare account, so it cannot be fetched from this machine; ask the user to check it);
+  - **a pushed tag starting with `v` deploys to production.** Semantic versions; v2.6.0 was the first published release.
+- **Work on `main`: a push is a preview, a tag is a release.** Tag only when DigiBlu says release: `git tag -a vX.Y.Z -m "..." && git push origin vX.Y.Z`. The `dev` branch no longer deploys anything and is behind `main`: do not work on it.
+- **The pipeline runs no tests.** Before tagging: `pnpm test`, `pnpm build` then `pnpm test:pages`, and a check in `digiblu-vinext`. After tagging, follow the run at https://github.com/DigiBluUK/DigiBlu-Website/actions (the repository is public, so the API answers without a login), then check the live site.
+- **Radu commits to `main` too:** `git fetch` and fast-forward before starting work.
+- **Configuration:** the build variables (`NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`) are GitHub repository variables; runtime variables and secrets live in the Cloudflare dashboard, and `keep_vars` in `wrangler.jsonc` stops a deploy removing them. Never add `vars` to `wrangler.jsonc`.
 
 ## Layout
 
@@ -36,7 +39,8 @@ Browser pane launch configs (`.claude/launch.json`): `digiblu-next` (`next dev`,
 | `public/assets/` | Everything the pages reference. Edit and add files here directly. |
 | `source/` | Not served: the supplied team photographs the headshots were made from, and `hero.jpg` / `footer-bg.jpg`, the rasters the hero and case-study art were traced from (the share cards were built from `hero.jpg`). |
 | `scripts/` | `build-content.cjs` and the three test files. |
-| `docs/` | `notes/` (the detail), `redirects/` (the old site's addresses, for the DNS switch), `parity-checklist.md` (the release sign-off list). |
+| `docs/` | `notes/` (the detail), `redirects/` (the old site's addresses, live as a Cloudflare Bulk Redirects list since 25 Sep 2026), `parity-checklist.md` (the sign-off list). |
+| `.github/workflows/deploy.yml` | The deploy pipeline (Radu's): preview on a push to `main`, production on a `v*` tag. |
 
 ## How things work
 
@@ -54,7 +58,8 @@ Browser pane launch configs (`.claude/launch.json`): `digiblu-next` (`next dev`,
 - No fabricated people, quotes, figures or clients. Real, published names are fine.
 - Real links only.
 - Third-party article content is condensed, never copied. Legal text is verbatim and complete; a gap in DigiBlu's own source is noted, never filled. Sections 12 and 13 of the Privacy and Cookies Policy are ours (approved by DigiBlu): keep them true.
-- Anonymised clients stay anonymous: the healthcare workforce provider and the US city agency (and the mobility equipment manufacturer, whose case study was removed on 23 Sep 2026; if it returns, it stays anonymised). **The GitHub repository is public**, so this covers every file, notes and commit messages included: never write their real names, or anything that links one to its case study. (The home page's client logo strip may show clients by name; it never ties one to a case study.)
+- Anonymised clients stay anonymous: the healthcare workforce provider and the US city agency.
+- **A client's name, logo or case study appears only with the client's approval.** A case study (23 Sep 2026) and a logo (25 Sep 2026) were removed for want of it; restore neither until DigiBlu confirms the approval. **The GitHub repository is public**, so this covers every file, notes and commit messages included: never write their real names, or anything that links one to its case study. (The home page's client logo strip may show clients by name; it never ties one to a case study.)
 - Photography must be licensed for commercial use without attribution, and must carry no other organisation's branding. Look at a candidate before proposing it; alt text is not a branding check.
 
 **Design** (`BRAND.md` has the system)
@@ -71,14 +76,15 @@ Browser pane launch configs (`.claude/launch.json`): `digiblu-next` (`next dev`,
 - Assert the absence of broken references rather than counting successes.
 - Baseline to keep: no contrast failures in either theme, no horizontal overflow from 320 to 1895px, tap targets at least 24px, every control usable from the keyboard.
 
-## Open items (23 Sep 2026)
+## Open items (25 Sep 2026)
 
-- The Privacy and Cookies Policy names Microsoft (Azure Communication Services) as the service that emails enquiries to DigiBlu: on `dev` in section 12, dated 18 September 2026, awaiting DigiBlu's approval with the rest of that paragraph (the Turnstile part is unapproved too), and so is the Google Analytics line on counting enquiries. Section 15 no longer says the website is hosted in the UK (removed 24 Sep 2026 with DigiBlu's approval: Cloudflare serves it from its edge worldwide, so no hosting location can be claimed).
-- The quote-processing case study was removed on 23 Sep 2026 (not approved by the client) and AssuranceSD is featured third again. Its markdown, photo and share card are in git history if it is approved later.
+- The Privacy and Cookies Policy names Microsoft (Azure Communication Services) as the service that emails enquiries to DigiBlu (section 12, live since v2.5.0), with the Turnstile paragraph and the Google Analytics line on counting enquiries: none formally approved by DigiBlu yet. Section 15 makes no claim about where the site is hosted (removed 24 Sep 2026 with DigiBlu's approval: Cloudflare serves it from its edge worldwide).
+- The About section's dot figure overflows the page between about 901 and 1190px wide (a 1024px tablet in landscape scrolls sideways), since 8 Sep 2026: `.about-top`'s second column is `minmax(0, 1fr)`, which collapses to nothing when the text column takes the space, while the figure keeps its 210px or more. `minmax(0, 860px) auto` fixes it (found 25 Sep 2026, not yet made).
+- Every sitemap `lastmod` on the live site is the deploy commit's date: `actions/checkout` fetches one commit, so the git history `build-content.cjs` reads is not there. `fetch-depth: 0` on both checkout steps fixes it (Radu's file).
 - For DigiBlu to decide (21 Sep 2026 review): two published quote credits differ from the team page (healthcare: "Dave Van der Westhuizen, Lead Consultant"; Old Mutual: "Jonathan Hinder, COO"); Special Olympics' stat reads "17,500" where the text says "more than 17,500"; "Northwest University" may officially be North-West University; the Carbon Reduction Plan (their text) gives net zero by 2050 and by the end of 2030, and 33.71 against 33.6 tCO2e.
-- For Radu: `waitUntil` stops 30s after the response, so a slow send's outcome can go unlogged; whether to pin pnpm with a `packageManager` field (Workers Builds picks its own version); he wants a failed send's contact details in the logs so someone can follow up, which the current logging does not capture (tested 21 Sep 2026) - his change, and the privacy policy needs a line when he makes it. ACS stores nothing (Radu, 21 Sep 2026: a pass-through gateway in DigiBlu's Azure tenant), so the policy needs no data-location line. `react-server-dom-webpack` was pinned to 19.2.8 on 21 Sep 2026 to match React (it had resolved to 19.3.0, which requires React 19.3).
-- The anonymised clients' real names are in the repository's history (removed from the files on 21 Sep 2026); making the repository private, or rewriting its history, is DigiBlu's call.
-- Released to `main` as v2.5.1 on 24 Sep 2026 with Radu's pre-launch points (www.digiblu.com as the canonical host, no UK-hosting claim, sitemap lastmod), after v2.5.0 on 23 Sep 2026 (everything since v2.4.0: pages instead of dialogs, the Safari Destinations case study, the enquiry event, the page chrome and cookie banner, the 21 Sep 2026 review fixes, the policy lines above, and the quote-processing case study's removal). Next: the DNS switch with Radu, which DigiBlu gave the go-ahead for on 23 Sep 2026.
+- For Radu: `waitUntil` stops 30s after the response, so a slow send's outcome can go unlogged; he wants a failed send's contact details in the logs so someone can follow up, which the current logging does not capture (tested 21 Sep 2026) - his change, and the privacy policy needs a line when he makes it. ACS stores nothing (a pass-through gateway in DigiBlu's Azure tenant), so the policy needs no data-location line.
+- The `dev` branch is unused since 25 Sep 2026 (`main` is the preview); delete it when DigiBlu agrees.
+- Names removed from the files at clients' request are still in the public repository's history; making the repository private, or rewriting its history, is DigiBlu's call.
 - David's and Karen's headshots are old 560px crops; re-source them as cut-outs.
 - The generators for the About figure, the headshots and the share cards were one-off scripts in a session scratchpad and are not in the repo.
 

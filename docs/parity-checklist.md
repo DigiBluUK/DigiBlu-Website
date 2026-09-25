@@ -1,8 +1,8 @@
 # DigiBlu site: release sign-off checklist
 
-For DigiBlu's sign-off before a release (fast-forwarding `main` to `dev`) and again on the live site after the DNS switch. Current as of 21 September 2026.
+For DigiBlu's sign-off before a release (a `v*` tag, which deploys production) and again on the live site after it. Current as of 25 September 2026.
 
-**Where**: the `dev` preview, https://dev-digiblu-website.radu-ghitescu.workers.dev/ (behind Cloudflare Access: sign in with a DigiBlu login). After the switch, https://digiblu.com/.
+**Where**: the preview of `main`, https://dev-digiblu-website.digiblu.workers.dev/ (behind Cloudflare Access: sign in with a DigiBlu Cloudflare account). Live: https://www.digiblu.com/.
 
 **How**: go through the list on a desktop browser and on a real phone (or a browser window narrower than 900px), each in dark theme and in light (the sun/moon button in the nav). Tick a line when it matches; for anything that does not, note the page, the device and the theme.
 
@@ -32,7 +32,7 @@ For DigiBlu's sign-off before a release (fast-forwarding `main` to `dev`) and ag
 - [ ] Accreditations: six certifications scroll in a single continuous line, pause on hover, and each opens its entry on the accreditations page.
 - [ ] Services: six blue cards numbered 01 to 06 animate in as the section arrives; each Learn more opens that service on the services page.
 - [ ] Case studies: three cards - SSE / OVO, Safari Destinations and AssuranceSD - with headlines on two lines and no full stops. Read more opens each one's page; View all case studies opens the case studies page.
-- [ ] Clients: fourteen logos scroll continuously as single-colour marks, muted at rest and full on hover, with no jump at the seam.
+- [ ] Clients: thirteen logos scroll continuously as single-colour marks, muted at rest and full on hover, with no jump at the seam.
 - [ ] Who we are: two paragraphs light up word by word as you scroll, beside the dot-lattice figure whose "db" fills with the brand gradient mid-screen; on desktop the dots part around the cursor. Our values: all five open on desktop (3 + 2), revealed one after another on a phone.
 - [ ] Meet the leadership team: eight people. On desktop the open card shows a colour photo in a white circle with name, role and bio, and the others grey circles; clicking a closed slice opens it, clicking the open one goes to that person on the team page. On a phone: a list of eight rows, and tapping one goes to that person on the team page.
 

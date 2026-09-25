@@ -1991,11 +1991,11 @@
     /* Paced to match the Accreditations strip, on request. Speed is what
        matters here, not duration: the two rows are different widths, so equal
        durations would read as different speeds. Accreditations runs 1623px in
-       20s = 81px/s, so this row (2232px) needs 27s, and the mobile block below
-       needs 21s for its narrower 1735px track. All three land within 2% of
-       each other. Re-derive these if logos are added or removed - the group
+       20s = 81px/s, so this row (2078px since 25 Sep 2026, thirteen logos)
+       needs 25.5s, and the mobile block below needs 20s for its narrower
+       1616px track. All three land within 1% of each other. Re-derive these if logos are added or removed - the group
        width changes with them and a stale duration silently changes the pace. */
-    animation: clients-scroll 27s linear infinite;
+    animation: clients-scroll 25.5s linear infinite;
   }
 
   .clients-track:hover { animation-play-state: paused; }
@@ -2040,7 +2040,6 @@
      doesn't dominate. */
   .cl-equiniti   { width: 53px;  height: 42px; -webkit-mask-image: url('/assets/clients/equiniti.png');               mask-image: url('/assets/clients/equiniti.png'); }
   .cl-sunrise    { width: 106px; height: 27px; -webkit-mask-image: url('/assets/clients/sunrise-medical.png');        mask-image: url('/assets/clients/sunrise-medical.png'); }
-  .cl-nsm        { width: 98px;  height: 35px; -webkit-mask-image: url('/assets/clients/nsm.png');                    mask-image: url('/assets/clients/nsm.png'); }
   .cl-acacium    { width: 115px; height: 24px; -webkit-mask-image: url('/assets/clients/acacium.png');                mask-image: url('/assets/clients/acacium.png'); }
   .cl-medinet    { width: 97px;  height: 29px; -webkit-mask-image: url('/assets/clients/medinet.png');                mask-image: url('/assets/clients/medinet.png'); }
   .cl-edmundson  { width: 126px; height: 21px; -webkit-mask-image: url('/assets/clients/edmundson-electrical.png');   mask-image: url('/assets/clients/edmundson-electrical.png'); }
@@ -2059,11 +2058,10 @@
 
   @media (max-width: 620px) {
     .clients-group { gap: 36px; padding-right: 36px; }
-    .clients-track { animation-duration: 21s; }
+    .clients-track { animation-duration: 20s; }
     /* Scale the whole row down together so the optical balance is preserved. */
     .cl-equiniti   { width: 45px;  height: 36px; }
     .cl-sunrise    { width: 90px;  height: 23px; }
-    .cl-nsm        { width: 83px;  height: 30px; }
     .cl-acacium    { width: 98px;  height: 21px; }
     .cl-medinet    { width: 82px;  height: 24px; }
     .cl-edmundson  { width: 107px; height: 18px; }

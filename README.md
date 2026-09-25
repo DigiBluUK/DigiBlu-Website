@@ -16,9 +16,10 @@ public/assets/         Everything the pages reference: artwork, photography, log
 source/                The supplied team photographs the shipped headshots were made from
 scripts/               Build-time scripts and their tests (node --test)
 docs/                  notes/ (the dated detail behind every decision), parity-checklist.md (the release sign-off list)
-                       and redirects/ (the old Wix addresses and where each goes, for the DNS switch)
+                       and redirects/ (the old Wix addresses and where each goes, live as Bulk Redirects)
+.github/workflows/     deploy.yml: preview on a push to main, production on a v* tag
 vite.config.ts         vinext build and the Cloudflare adapters (KV cache, CDN cache)
-wrangler.jsonc         Worker configuration (account details come from Workers Builds)
+wrangler.jsonc         Worker configuration (runtime variables and secrets live in the Cloudflare dashboard)
 ```
 
 The original hand-built static site was retired from the tree on 10 September 2026; `v2.2.0` is the first release without it, and everything up to `v2.1.0` still carries it in git history.
@@ -44,8 +45,8 @@ pnpm build:vinext    # content + vinext build into dist/
 pnpm start:vinext    # serves the built Worker with wrangler
 ```
 
-Deploys run through Cloudflare Workers Builds: build `pnpm build:vinext`, deploy
-`npx vinext-cloudflare deploy --config dist/server/wrangler.json --skip-build`.
+Deploys run in GitHub Actions (`.github/workflows/deploy.yml`): build `pnpm build:vinext`, deploy
+`vinext-cloudflare deploy --config dist/server/wrangler.json --skip-build`.
 From this machine, `pnpm deploy:vinext` does both. `TURNSTILE_SECRET_KEY` is a
 Worker secret, set in the dashboard (see `.env.example`).
 
@@ -64,7 +65,7 @@ Releasing is a merge of `dev` into `main` plus a version tag. `v1.0.0` is the or
 
 ## Status
 
-Deployed through Cloudflare Workers Builds since 14 September 2026: `main` to `digiblu-website.radu-ghitescu.workers.dev` and every other branch to `<branch>-digiblu-website.radu-ghitescu.workers.dev`, all behind Cloudflare Access. digiblu.com still points at the previous site until the DNS switch. **The contact form is live**: `/api/contact` validates the enquiry, verifies Cloudflare Turnstile and sends it through Azure Communication Services to DigiBlu's enquiries list.
+Live at [www.digiblu.com](https://www.digiblu.com) since 25 September 2026 (`digiblu.com` redirects to it). A push to `main` deploys the preview at `dev-digiblu-website.digiblu.workers.dev`, behind Cloudflare Access; a tag starting with `v` deploys production. **The contact form is live**: `/api/contact` validates the enquiry, verifies Cloudflare Turnstile and sends it through Azure Communication Services to DigiBlu's enquiries list.
 
 ## Technical notes
 

@@ -105,6 +105,8 @@ Run against a local production build (`next build` + `next start -p 3100`, Light
 
 ## Cut-over runbook
 
+> **Done on 25 Sep 2026: www.digiblu.com is live.** Radu moved DNS, set up the apex-to-www redirect and the Bulk Redirects list, and moved deploys to GitHub Actions (`.github/workflows/deploy.yml`): a push to `main` deploys the preview at `https://dev-digiblu-website.digiblu.workers.dev/`, a `v*` tag deploys production (v2.6.0 first). The steps below are the record of what was planned.
+
 **Current as of 21 Sep 2026.** What is left is the release and the DNS switch, both coordinated with Radu (DigiBlu's developer), who owns the Cloudflare account and set up Workers Builds on 14 Sep 2026. The original runbook is kept below as history.
 
 1. **Release.** DigiBlu signs off the `dev` preview (`https://dev-digiblu-website.radu-ghitescu.workers.dev/`) against `docs/parity-checklist.md`. Then `git log dev..origin/main` and bring anything Radu committed to `main` into `dev`; run `pnpm test`, and `pnpm build` then `pnpm test:pages` (there is no CI to do it); fast-forward `main` to `dev`, tag, push. Workers Builds deploys `main` to `https://digiblu-website.radu-ghitescu.workers.dev/`. Both addresses are behind Cloudflare Access, so the user checks them in a browser; they cannot be fetched from this machine.
