@@ -17,15 +17,6 @@ jobs:
       - uses: actions/checkout@v7
       - uses: pnpm/setup@v3
 
-      - name: Create secrets file
-        run: |
-          cat > .env.secrets <<EOF
-          AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING=${{ secrets.AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING }}
-          TURNSTILE_SECRET_KEY=${{ secrets.TURNSTILE_SECRET_KEY }}
-          CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS=${{ vars.CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS }}
-          CONTACT_FORM_SENDER_EMAIL_ADDRESS=${{ vars.CONTACT_FORM_SENDER_EMAIL_ADDRESS }}
-          EOF
-
       - name: Build
         run: pnpm install && pnpm run build:vinext
         env:
@@ -38,7 +29,6 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           pnpm exec vinext-cloudflare deploy --config dist/server/wrangler.json --skip-build
-          pnpm exec wrangler secret bulk .env.secrets --config dist/server/wrangler.json
 
   # Prod: semantic tag e.g. v1.0.0
   production:
@@ -49,15 +39,6 @@ jobs:
       - uses: actions/checkout@v7
       - uses: pnpm/setup@v3
 
-      - name: Create secrets file
-        run: |
-          cat > .env.secrets <<EOF
-          AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING=${{ secrets.AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING }}
-          TURNSTILE_SECRET_KEY=${{ secrets.TURNSTILE_SECRET_KEY }}
-          CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS=${{ vars.CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS }}
-          CONTACT_FORM_SENDER_EMAIL_ADDRESS=${{ vars.CONTACT_FORM_SENDER_EMAIL_ADDRESS }}
-          EOF
-
       - name: Build
         run: pnpm install && pnpm run build:vinext
         env:
@@ -70,4 +51,3 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           pnpm exec vinext-cloudflare deploy --config dist/server/wrangler.json --skip-build
-          pnpm exec wrangler secret bulk .env.secrets --config dist/server/wrangler.json
