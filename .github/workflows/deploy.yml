@@ -1,0 +1,68 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+
+jobs:
+  # Preview: main branch
+  dev:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create secrets file
+        run: |
+          cat > .env.secrets <<EOF
+          AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING=${{ secrets.AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING }}
+          TURNSTILE_SECRET_KEY=${{ secrets.TURNSTILE_SECRET_KEY }}
+          CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS=${{ env.CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS }}
+          CONTACT_FORM_SENDER_EMAIL_ADDRESS=${{ env.CONTACT_FORM_SENDER_EMAIL_ADDRESS }}
+          EOF
+
+      - name: Build
+        run: pnpm install && pnpm run build
+        env:
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ env.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+
+      - name: Build & upload dev version
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: versions upload --preview-alias dev --secrets-file .env.secrets
+
+  # Prod: semantic tag e.g. v1.0.0
+  production:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create secrets file
+        run: |
+          cat > .env.secrets <<EOF
+          AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING=${{ secrets.AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING }}
+          TURNSTILE_SECRET_KEY=${{ secrets.TURNSTILE_SECRET_KEY }}
+          CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS=${{ env.CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS }}
+          CONTACT_FORM_SENDER_EMAIL_ADDRESS=${{ env.CONTACT_FORM_SENDER_EMAIL_ADDRESS }}
+          EOF
+
+      - name: Build
+        run: pnpm install && pnpm run build
+        env:
+          NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ env.NEXT_PUBLIC_GA_MEASUREMENT_ID }}}
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ env.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+
+      - name: Build & deploy to production
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --secrets-file .env.secrets
