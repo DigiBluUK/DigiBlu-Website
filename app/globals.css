@@ -1236,9 +1236,15 @@
      floating (8 Sep 2026). The two columns are centred on each other, so
      the figure sits level with the paragraphs rather than hanging below
      them. */
+  /* auto, not minmax(0, 1fr), for the figure's column (25 Sep 2026): with
+     1fr the text column took every pixel between about 901 and 1190px and
+     the figure's column collapsed to nothing, so the figure (210px or more)
+     hung off the page and the page scrolled sideways. auto keeps room for
+     the figure and the text column gives way; wider than that, the layout
+     is unchanged. */
   .about-top {
     display: grid;
-    grid-template-columns: minmax(0, 860px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 860px) auto;
     gap: 64px;
     align-items: center;
     margin-bottom: 52px;

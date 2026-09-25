@@ -23,7 +23,7 @@ Browser pane launch configs (`.claude/launch.json`): `digiblu-next` (`next dev`,
 - **Deploys run in GitHub Actions** (`.github/workflows/deploy.yml`, Radu's, 25 Sep 2026; Cloudflare's own builds cannot deploy on tags):
   - a push to `main` builds with `NEXT_PUBLIC_ROBOTS=noindex` and deploys the preview, `https://dev-digiblu-website.digiblu.workers.dev/` (behind Cloudflare Access: a DigiBlu Cloudflare account, so it cannot be fetched from this machine; ask the user to check it);
   - **a pushed tag starting with `v` deploys to production.** Semantic versions; v2.6.0 was the first published release.
-- **Work on `main`: a push is a preview, a tag is a release.** Tag only when DigiBlu says release: `git tag -a vX.Y.Z -m "..." && git push origin vX.Y.Z`. The `dev` branch no longer deploys anything and is behind `main`: do not work on it.
+- **Work on `main`: a push is a preview, a tag is a release.** Tag only when DigiBlu says release: `git tag -a vX.Y.Z -m "..." && git push origin vX.Y.Z`. The `dev` branch deploys nothing; it is kept for future testing (see Open items).
 - **The pipeline runs no tests.** Before tagging: `pnpm test`, `pnpm build` then `pnpm test:pages`, and a check in `digiblu-vinext`. After tagging, follow the run at https://github.com/DigiBluUK/DigiBlu-Website/actions (the repository is public, so the API answers without a login), then check the live site.
 - **Radu commits to `main` too:** `git fetch` and fast-forward before starting work.
 - **Configuration:** the build variables (`NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`) are GitHub repository variables; runtime variables and secrets live in the Cloudflare dashboard, and `keep_vars` in `wrangler.jsonc` stops a deploy removing them. Never add `vars` to `wrangler.jsonc`.
@@ -79,12 +79,11 @@ Browser pane launch configs (`.claude/launch.json`): `digiblu-next` (`next dev`,
 ## Open items (25 Sep 2026)
 
 - The Privacy and Cookies Policy names Microsoft (Azure Communication Services) as the service that emails enquiries to DigiBlu (section 12, live since v2.5.0), with the Turnstile paragraph and the Google Analytics line on counting enquiries: none formally approved by DigiBlu yet. Section 15 makes no claim about where the site is hosted (removed 24 Sep 2026 with DigiBlu's approval: Cloudflare serves it from its edge worldwide).
-- The About section's dot figure overflows the page between about 901 and 1190px wide (a 1024px tablet in landscape scrolls sideways), since 8 Sep 2026: `.about-top`'s second column is `minmax(0, 1fr)`, which collapses to nothing when the text column takes the space, while the figure keeps its 210px or more. `minmax(0, 860px) auto` fixes it (found 25 Sep 2026, not yet made).
-- Every sitemap `lastmod` on the live site is the deploy commit's date: `actions/checkout` fetches one commit, so the git history `build-content.cjs` reads is not there. `fetch-depth: 0` on both checkout steps fixes it (Radu's file).
+- Every sitemap `lastmod` on the live site is the deploy commit's date: `actions/checkout` fetches one commit, so the git history `build-content.cjs` reads is not there. `fetch-depth: 0` on both checkout steps fixes it (Radu's file). Parked by DigiBlu on 25 Sep 2026.
 - For DigiBlu to decide (21 Sep 2026 review): two published quote credits differ from the team page (healthcare: "Dave Van der Westhuizen, Lead Consultant"; Old Mutual: "Jonathan Hinder, COO"); Special Olympics' stat reads "17,500" where the text says "more than 17,500"; "Northwest University" may officially be North-West University; the Carbon Reduction Plan (their text) gives net zero by 2050 and by the end of 2030, and 33.71 against 33.6 tCO2e.
 - For Radu: `waitUntil` stops 30s after the response, so a slow send's outcome can go unlogged; he wants a failed send's contact details in the logs so someone can follow up, which the current logging does not capture (tested 21 Sep 2026) - his change, and the privacy policy needs a line when he makes it. ACS stores nothing (a pass-through gateway in DigiBlu's Azure tenant), so the policy needs no data-location line.
-- The `dev` branch is unused since 25 Sep 2026 (`main` is the preview); delete it when DigiBlu agrees.
-- Names removed from the files at clients' request are still in the public repository's history; making the repository private, or rewriting its history, is DigiBlu's call.
+- The `dev` branch is kept (DigiBlu, 25 Sep 2026) to be repurposed for future testing; nothing deploys from it yet, so pushing it has no effect until the pipeline is given a job for it.
+- Names removed from the files at clients' request are still in the public repository's history; DigiBlu chose on 25 Sep 2026 to leave it for now.
 - David's and Karen's headshots are old 560px crops; re-source them as cut-outs.
 - The generators for the About figure, the headshots and the share cards were one-off scripts in a session scratchpad and are not in the repo.
 
