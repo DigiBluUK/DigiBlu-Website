@@ -22,21 +22,23 @@ jobs:
           cat > .env.secrets <<EOF
           AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING=${{ secrets.AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING }}
           TURNSTILE_SECRET_KEY=${{ secrets.TURNSTILE_SECRET_KEY }}
-          CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS=${{ env.CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS }}
-          CONTACT_FORM_SENDER_EMAIL_ADDRESS=${{ env.CONTACT_FORM_SENDER_EMAIL_ADDRESS }}
+          CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS=${{ vars.CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS }}
+          CONTACT_FORM_SENDER_EMAIL_ADDRESS=${{ vars.CONTACT_FORM_SENDER_EMAIL_ADDRESS }}
           EOF
 
       - name: Build
         run: pnpm install && pnpm run build:vinext
         env:
-          NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ env.NEXT_PUBLIC_GA_MEASUREMENT_ID }}}
-          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ env.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+          NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ vars.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
 
       - name: Deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: pnpm dlx @vinext/cloudflare deploy --preview --secrets-file .env.secrets
+        run: |
+          pnpm exec vinext-cloudflare deploy --config dist/server/wrangler.json --skip-build
+          pnpm exec wrangler secret bulk .env.secrets --config dist/server/wrangler.json
 
   # Prod: semantic tag e.g. v1.0.0
   production:
@@ -52,18 +54,20 @@ jobs:
           cat > .env.secrets <<EOF
           AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING=${{ secrets.AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING }}
           TURNSTILE_SECRET_KEY=${{ secrets.TURNSTILE_SECRET_KEY }}
-          CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS=${{ env.CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS }}
-          CONTACT_FORM_SENDER_EMAIL_ADDRESS=${{ env.CONTACT_FORM_SENDER_EMAIL_ADDRESS }}
+          CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS=${{ vars.CONTACT_FORM_RECIPIENT_EMAIL_ADDRESS }}
+          CONTACT_FORM_SENDER_EMAIL_ADDRESS=${{ vars.CONTACT_FORM_SENDER_EMAIL_ADDRESS }}
           EOF
 
       - name: Build
         run: pnpm install && pnpm run build:vinext
         env:
-          NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ env.NEXT_PUBLIC_GA_MEASUREMENT_ID }}}
-          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ env.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+          NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ vars.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
 
       - name: Deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: pnpm dlx @vinext/cloudflare deploy --preview --secrets-file .env.secrets
+        run: |
+          pnpm exec vinext-cloudflare deploy --config dist/server/wrangler.json --skip-build
+          pnpm exec wrangler secret bulk .env.secrets --config dist/server/wrangler.json
